@@ -71,7 +71,8 @@ ggNtuplizer = cms.EDProducer("ggNtuplizer",
                                                                cms.InputTag('isoDepPhotonWithNeutral')),
                              puJetIDAlgos = cms.untracked.VPSet(stdalgos),
                              pfLooseId = pfJetIDSelector.clone(),
-                             CaloTowerColl = cms.InputTag("towerMaker")
-
+                             CaloTowerColl = cms.InputTag("towerMaker"),
+                             scRemover03 = cms.PSet(isolation_cone_size_forSCremoval = cms.untracked.double(0.3)),
+                             scRemover04 = cms.PSet(isolation_cone_size_forSCremoval = cms.untracked.double(0.4))
                              )
 

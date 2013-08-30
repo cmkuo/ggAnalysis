@@ -145,6 +145,9 @@ protected:
   std::vector<edm::InputTag> inputTagIsoValElectronsPFId_;
   std::vector<edm::InputTag> inputTagIsoValPhotonsPFId_;
 
+  // SC footprint remover parameters
+  edm::ParameterSet scRemover03Pset_;
+  edm::ParameterSet scRemover04Pset_;
   InputTag genParticlesCollection_;
   InputTag vtxlabel_;
   InputTag tracklabel_;
@@ -461,6 +464,15 @@ protected:
   Float_t  phoSCRChIso_[maxP];
   Float_t  phoSCRPhoIso_[maxP];
   Float_t  phoSCRNeuIso_[maxP];
+  Float_t  phoSCRChIso04_[maxP];
+  Float_t  phoSCRPhoIso04_[maxP];
+  Float_t  phoSCRNeuIso04_[maxP];
+  Float_t  phoRandConeChIso_[maxP];
+  Float_t  phoRandConePhoIso_[maxP];
+  Float_t  phoRandConeNeuIso_[maxP];
+  Float_t  phoRandConeChIso04_[maxP];
+  Float_t  phoRandConePhoIso04_[maxP];
+  Float_t  phoRandConeNeuIso04_[maxP];
   Float_t  phoSeedTime_[maxP];
   Float_t  phoLICTD_[maxP];
   Float_t  phoCiCPF4phopfIso005_[maxP];
@@ -968,9 +980,6 @@ protected:
   Int_t    jetNConstituents_[maxP];
   Float_t  jetCombinedSecondaryVtxBJetTags_[maxP]; ////  rob      ------------> recommended
   Float_t  jetCombinedSecondaryVtxMVABJetTags_[maxP]; ////  rob
-  Float_t  jetJetProbabilityBJetTags_[maxP];   // rob
-  Float_t  jetJetBProbabilityBJetTags_[maxP];   // rob
-  Float_t  jetTrackCountingHighPurBJetTags_[maxP];  // rob 
   Float_t  jetBetaStar_[maxP][100];
   Int_t    jetGenJetIndex_[maxP];
   Float_t  jetGenJetEn_[maxP];

@@ -131,6 +131,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   inputTagIsoValElectronsPFId_ = ps.getParameter< std::vector<edm::InputTag> >("IsoValElectronPF");
   inputTagIsoValPhotonsPFId_   = ps.getParameter< std::vector<edm::InputTag> >("IsoValPhoton");
 
+  // SC footprint remover parameters
+  scRemover03Pset_ = ps.getParameter<edm::ParameterSet>("scRemover03");
+  scRemover04Pset_ = ps.getParameter<edm::ParameterSet>("scRemover04");
+
   cicPhotonId_ = new CiCPhotonID(ps);
   trackMET_ = new trackMET(ps);
 
@@ -438,6 +442,15 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("phoSCRChIso", phoSCRChIso_, "phoSCRChIso[nPho]/F");
   tree_->Branch("phoSCRPhoIso", phoSCRPhoIso_, "phoSCRPhoIso[nPho]/F");
   tree_->Branch("phoSCRNeuIso", phoSCRNeuIso_, "phoSCRNeuIso[nPho]/F");
+  tree_->Branch("phoSCRChIso04", phoSCRChIso04_, "phoSCRChIso04[nPho]/F");
+  tree_->Branch("phoSCRPhoIso04", phoSCRPhoIso04_, "phoSCRPhoIso04[nPho]/F");
+  tree_->Branch("phoSCRNeuIso04", phoSCRNeuIso04_, "phoSCRNeuIso04[nPho]/F");
+  tree_->Branch("phoRandConeChIso", phoRandConeChIso_, "phoRandConeChIso[nPho]/F");
+  tree_->Branch("phoRandConePhoIso", phoRandConePhoIso_, "phoRandConePhoIso[nPho]/F");
+  tree_->Branch("phoRandConeNeuIso", phoRandConeNeuIso_, "phoRandConeNeuIso[nPho]/F");
+  tree_->Branch("phoRandConeChIso04", phoRandConeChIso04_, "phoRandConeChIso04[nPho]/F");
+  tree_->Branch("phoRandConePhoIso04", phoRandConePhoIso04_, "phoRandConePhoIso04[nPho]/F");
+  tree_->Branch("phoRandConeNeuIso04", phoRandConeNeuIso04_, "phoRandConeNeuIso04[nPho]/F");
   tree_->Branch("phoRegrE", phoRegrE_, "phoRegrE[nPho]/F");
   tree_->Branch("phoRegrEerr", phoRegrEerr_, "phoRegrEerr[nPho]/F");
   tree_->Branch("phoSeedTime", phoSeedTime_, "phoSeedTime[nPho]/F");
@@ -816,9 +829,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("jetNConstituents", jetNConstituents_, "jetNConstituents[nJet]/I");
     tree_->Branch("jetCombinedSecondaryVtxBJetTags", jetCombinedSecondaryVtxBJetTags_, "jetCombinedSecondaryVtxBJetTags[nJet]/F");  // rob !!!
     tree_->Branch("jetCombinedSecondaryVtxMVABJetTags", jetCombinedSecondaryVtxMVABJetTags_, "jetCombinedSecondaryVtxMVABJetTags[nJet]/F");  // rob !!!
-    tree_->Branch("jetJetProbabilityBJetTags", jetJetProbabilityBJetTags_, "jetJetProbabilityBJetTags[nJet]/F");  // rob !!!
-    tree_->Branch("jetJetBProbabilityBJetTags", jetJetBProbabilityBJetTags_, "jetJetBProbabilityBJetTags[nJet]/F");  // rob !!!
-    tree_->Branch("jetTrackCountingHighPurBJetTags", jetTrackCountingHighPurBJetTags_, "jetTrackCountingHighPurBJetTags[nJet]/F");  // rob !!!
     tree_->Branch("jetBetaStar", jetBetaStar_, "jetBetaStar[nJet][100]/F");
     // CMG Jet Id Variables
     tree_->Branch("jetPFLooseId", jetPFLooseId_, "jetPFLooseId[nJet]/O");
@@ -1084,7 +1094,8 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
   }
 
   // supercluster footprint removal
-  SuperClusterFootprintRemoval scRemover(e, edm::ParameterSet(), es);
+  SuperClusterFootprintRemoval scRemover03(e, es, scRemover03Pset_);
+  SuperClusterFootprintRemoval scRemover04(e, es, scRemover04Pset_);
 
   // rho collection
   Handle<double> rhoHandle25;
@@ -2088,11 +2099,6 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       const reco::Photon *recoPhoton = dynamic_cast<const reco::Photon *>(recoPhoRef.get());
       //isolation.mvaID(pfCandidates.product(),recoPhoton,recVtxs_);
 
-      // Access PF isolation
-      //phoPFChIso_[nPho_]  = (*(*photonIsoVals)[0])[recoPhoRef];
-      //phoPFPhoIso_[nPho_] = (*(*photonIsoVals)[1])[recoPhoRef];
-      //phoPFNeuIso_[nPho_] = (*(*photonIsoVals)[2])[recoPhoRef];
-
       // PF isolation from Alternate code
       isolator.fGetIsolation(recoPhoton, &thePfColl, myVtxRef, recVtxs_);
       phoPFChIso_[nPho_]  = isolator.getIsolationCharged();
@@ -2385,10 +2391,22 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoSCBrem_[nPho_]     = phoSCPhiWidth_[nPho_]/phoSCEtaWidth_[nPho_]; 
       
       // supercluster removal PF isolations
-      phoSCRChIso_[nPho_]   = scRemover.PFIsolation("charged", (*iPho).superCluster(), 0);
-      phoSCRPhoIso_[nPho_]  = scRemover.PFIsolation("photon",  (*iPho).superCluster());
-      phoSCRNeuIso_[nPho_]  = scRemover.PFIsolation("neutral", (*iPho).superCluster());
-    
+      phoSCRChIso_[nPho_]   = scRemover03.PFIsolation("charged", (*iPho).superCluster(), firstGoodVtx);// not sure about vertex index
+      phoSCRPhoIso_[nPho_]  = scRemover03.PFIsolation("photon",  (*iPho).superCluster());
+      phoSCRNeuIso_[nPho_]  = scRemover03.PFIsolation("neutral", (*iPho).superCluster());
+      
+      phoSCRChIso04_[nPho_]   = scRemover04.PFIsolation("charged", (*iPho).superCluster(), firstGoodVtx);// not sure about vertex index
+      phoSCRPhoIso04_[nPho_]  = scRemover04.PFIsolation("photon",  (*iPho).superCluster());
+      phoSCRNeuIso04_[nPho_]  = scRemover04.PFIsolation("neutral", (*iPho).superCluster());
+
+      phoRandConeChIso_[nPho_]   = scRemover03.RandomConeIsolation("charged", (*iPho).superCluster(), firstGoodVtx);// not sure about vertex index
+      phoRandConePhoIso_[nPho_]  = scRemover03.RandomConeIsolation("photon",  (*iPho).superCluster());
+      phoRandConeNeuIso_[nPho_]  = scRemover03.RandomConeIsolation("neutral", (*iPho).superCluster());
+      
+      phoRandConeChIso04_[nPho_]   = scRemover04.RandomConeIsolation("charged", (*iPho).superCluster(), firstGoodVtx);// not sure about vertex index
+      phoRandConePhoIso04_[nPho_]  = scRemover04.RandomConeIsolation("photon",  (*iPho).superCluster());
+      phoRandConeNeuIso04_[nPho_]  = scRemover04.RandomConeIsolation("neutral", (*iPho).superCluster());
+
       //cout<<"==="<<endl;
       //cout<<phoPFChIso_[nPho_]<<" "<<phoPFPhoIso_[nPho_]<<" "<<phoPFNeuIso_[nPho_]<<endl;
       //cout<<phoSCRChIso_[nPho_]<<" "<<phoSCRPhoIso_[nPho_]<<" "<<phoSCRNeuIso_[nPho_]<<endl;
@@ -3322,9 +3340,6 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       // b-tagging
       jetCombinedSecondaryVtxBJetTags_[nJet_]    = iJet->bDiscriminator("combinedSecondaryVertexBJetTags");   //   rob !!!!
       jetCombinedSecondaryVtxMVABJetTags_[nJet_] = iJet->bDiscriminator("combinedSecondaryVertexMVABJetTags");   //   rob !!!!
-      jetJetProbabilityBJetTags_[nJet_]          = iJet->bDiscriminator("jetProbabilityBJetTags"); 
-      jetJetBProbabilityBJetTags_[nJet_]         = iJet->bDiscriminator("jetBProbabilityBJetTags"); 
-      jetTrackCountingHighPurBJetTags_[nJet_]    = iJet->bDiscriminator("trackCountingHighPurBJetTags"); 
 
       // betastar
       for (int iVTX = 0; iVTX < 100; iVTX++) jetBetaStar_[nJet_][iVTX] = 0.;
