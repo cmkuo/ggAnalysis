@@ -85,6 +85,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tracklabel_        = ps.getParameter<InputTag>("TrackLabel");
   gsfElectronlabel_  = ps.getParameter<InputTag>("gsfElectronLabel");
   pfMETlabel_        = ps.getParameter<InputTag>("pfMETLabel");
+  pfType01METlabel_  = ps.getParameter<InputTag>("pfType01METLabel");
   recoPfMETlabel_    = ps.getParameter<InputTag>("recoPfMETLabel");
 
   genParticlesCollection_    = ps.getParameter<InputTag>("genParticleSrc");
@@ -209,12 +210,18 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("puBX", puBX_, "puBX[nPUInfo]/I");
     tree_->Branch("puTrue", puTrue_, "puTrue[nPUInfo]/F");
   }
-  // pfMET
+  // pfMET Type1
   tree_->Branch("pfMET", &pfMET_, "pfMET/F");
   tree_->Branch("pfMETPhi", &pfMETPhi_, "pfMETPhi/F");
   tree_->Branch("pfMETsumEt", &pfMETsumEt_, "pfMETsumEt/F");
   tree_->Branch("pfMETmEtSig", &pfMETmEtSig_, "pfMETmEtSig/F");
   tree_->Branch("pfMETSig", &pfMETSig_, "pfMETSig/F");
+  // pfMET Type0+1
+  tree_->Branch("pfType01MET",       &pfType01MET_,       "pfType01MET/F");
+  tree_->Branch("pfType01METPhi",    &pfType01METPhi_,    "pfType01METPhi/F");
+  tree_->Branch("pfType01METsumEt",  &pfType01METsumEt_,  "pfType01METsumEt/F");
+  tree_->Branch("pfType01METmEtSig", &pfType01METmEtSig_, "pfType01METmEtSig/F");
+  tree_->Branch("pfType01METSig",    &pfType01METSig_,    "pfType01METSig/F");
   // reco pfMET
   tree_->Branch("recoPfMET", &recoPfMET_, "recoPfMET/F");
   tree_->Branch("recoPfMETPhi", &recoPfMETPhi_, "recoPfMETPhi/F");
@@ -373,8 +380,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   //tree_->Branch("phoHcalIsoSolidDR03", phoHcalIsoSolidDR03_, "phoHcalIsoSolidDR03[nPho]/F");
   //tree_->Branch("phoTrkIsoSolidDR04", phoTrkIsoSolidDR04_, "phoTrkIsoSolidDR04[nPho]/F");
   tree_->Branch("phoTrkIsoHollowDR04", phoTrkIsoHollowDR04_, "phoTrkIsoHollowDR04[nPho]/F");
-  tree_->Branch("phoCiCTrkIsoDR03", phoCiCTrkIsoDR03_, "phoCiCTrkIsoDR03[nPho][100]/F");
-  tree_->Branch("phoCiCTrkIsoDR04", phoCiCTrkIsoDR04_, "phoCiCTrkIsoDR04[nPho][100]/F");
+  //tree_->Branch("phoCiCTrkIsoDR03", phoCiCTrkIsoDR03_, "phoCiCTrkIsoDR03[nPho][100]/F");
+  //tree_->Branch("phoCiCTrkIsoDR04", phoCiCTrkIsoDR04_, "phoCiCTrkIsoDR04[nPho][100]/F");
   tree_->Branch("phoCiCdRtoTrk", phoCiCdRtoTrk_, "phoCiCdRtoTrk[nPho]/F");
   tree_->Branch("phoEcalIsoDR04", phoEcalIsoDR04_, "phoEcalIsoDR04[nPho]/F");
   tree_->Branch("phoHcalIsoDR04", phoHcalIsoDR04_, "phoHcalIsoDR04[nPho]/F");
@@ -883,6 +890,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
       tree_->Branch("jetGenPt", jetGenPt_, "jetGenPt[nJet]/F");
       tree_->Branch("jetGenEta", jetGenEta_, "jetGenEta[nJet]/F");
       tree_->Branch("jetGenPhi", jetGenPhi_, "jetGenPhi[nJet]/F");
+      tree_->Branch("jetGenPartonMomID", jetGenPartonMomID_, "jetGenPartonMomID[nJet]/I");
     }
     // Low Pt Jets
     if (dumpTrks_) {
@@ -975,6 +983,7 @@ void ggNtuplizer::getHandles(edm::Event & event,
 			     edm::Handle<GsfElectronCollection> &       gsfElectronHandle,
 			     edm::Handle<edm::View<pat::MET> > &        METHandle,
 			     edm::Handle<edm::View<pat::MET> > &        pfMETHandle,
+			     edm::Handle<edm::View<pat::MET> > &        pfType01METHandle,
 			     edm::Handle<reco::PFMETCollection> &       recoPfMETHandle,
 			     edm::Handle<edm::View<pat::Electron> > &   electronHandle,
 			     edm::Handle<edm::View<pat::Photon> > &     photonHandle,
@@ -1007,6 +1016,7 @@ void ggNtuplizer::getHandles(edm::Event & event,
   event.getByLabel(gsfElectronlabel_      , gsfElectronHandle);
   event.getByLabel(METCollection_         , METHandle);
   event.getByLabel(pfMETlabel_            , pfMETHandle);
+  event.getByLabel(pfType01METlabel_      , pfType01METHandle);
   event.getByLabel(recoPfMETlabel_        , recoPfMETHandle);
   event.getByLabel(electronCollection_    , electronHandle);
   event.getByLabel(photonCollection_      , photonHandle);
@@ -1043,6 +1053,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 		   gsfElectronHandle_,
 		   METHandle_,
 		   pfMETHandle_,
+		   pfType01METHandle_,
 		   recoPfMETHandle_,
 		   electronHandle_,
 		   photonHandle_,
@@ -1531,6 +1542,17 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       genMET_    = pfMET->genMET()->et();
       genMETPhi_ = pfMET->genMET()->phi();
     }
+  }
+
+  if (pfType01METHandle_.isValid()) {
+    const pat::MET *pfType01MET = 0;
+    pfType01MET = &(pfType01METHandle_->front());
+
+    pfType01MET_       = pfType01MET->et();
+    pfType01METPhi_    = pfType01MET->phi();
+    pfType01METsumEt_  = pfType01MET->sumEt();
+    pfType01METmEtSig_ = (pfType01MET->mEtSig() < 1.e10) ? pfType01MET->mEtSig() : 0;
+    pfType01METSig_    = (pfType01MET->significance() < 1.e10) ? pfType01MET->significance() : 0;;
   }
 
   if (recoPfMETHandle_.isValid()) {
@@ -2251,8 +2273,8 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
         phoPhiVtx_[nPho_][iv] = v3->Phi();
         phoEtVtx_[nPho_][iv]  = iPho->energy() * TMath::Sin(2*TMath::ATan(TMath::Exp( - v3->Eta() )));
 
-        phoCiCTrkIsoDR03_[nPho_][iv] = getPhotonTrkIso((*recVtxsBS_)[iv].z(), (*recVtxsBS_)[iv].x(), (*recVtxsBS_)[iv].y(), (*recVtxsBS_)[iv].z(), v3->Eta(), v3->Phi(), tracksHandle_, 0.3, 0.02, 0.0, 1., 0.1, 1);
-        phoCiCTrkIsoDR04_[nPho_][iv] = getPhotonTrkIso((*recVtxsBS_)[iv].z(), (*recVtxsBS_)[iv].x(), (*recVtxsBS_)[iv].y(), (*recVtxsBS_)[iv].z(), v3->Eta(), v3->Phi(), tracksHandle_, 0.4, 0.02, 0.0, 1., 0.1, 1);
+        //phoCiCTrkIsoDR03_[nPho_][iv] = getPhotonTrkIso((*recVtxsBS_)[iv].z(), (*recVtxsBS_)[iv].x(), (*recVtxsBS_)[iv].y(), (*recVtxsBS_)[iv].z(), v3->Eta(), v3->Phi(), tracksHandle_, 0.3, 0.02, 0.0, 1., 0.1, 1);
+        //phoCiCTrkIsoDR04_[nPho_][iv] = getPhotonTrkIso((*recVtxsBS_)[iv].z(), (*recVtxsBS_)[iv].x(), (*recVtxsBS_)[iv].y(), (*recVtxsBS_)[iv].z(), v3->Eta(), v3->Phi(), tracksHandle_, 0.4, 0.02, 0.0, 1., 0.1, 1);
 
 	delete v3;
       }
@@ -3451,6 +3473,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       jetPartonID_[nJet_] = iJet->partonFlavour();
 
       jetGenPartonID_[nJet_]    = -99;
+      jetGenPartonMomID_[nJet_] = -99;
       if (!isData_ && genParticlesHandle_.isValid() ) {
         if ((*iJet).genParton()) {
           jetGenPartonID_[nJet_] = (*iJet).genParton()->pdgId();
@@ -3458,6 +3481,10 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
           jetGenPt_[nJet_]       = (*iJet).genParton()->pt();
           jetGenEta_[nJet_]      = (*iJet).genParton()->eta();
           jetGenPhi_[nJet_]      = (*iJet).genParton()->phi();
+
+	  if ((*iJet).genParton()->mother()) {
+	    jetGenPartonMomID_[nJet_] = (*iJet).genParton()->mother()->pdgId();
+	  }
 	}
       }
 

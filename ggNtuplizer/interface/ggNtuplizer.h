@@ -92,6 +92,7 @@ protected:
 		  edm::Handle<GsfElectronCollection> &       gsfElectronHandle,
 		  edm::Handle<edm::View<pat::MET> > &        METHandle,
 		  edm::Handle<View<pat::MET> > &             pfMETHandle_,
+		  edm::Handle<View<pat::MET> > &             pfType01METHandle_,
 		  edm::Handle<reco::PFMETCollection> &       recoPfMETHandle_,
 		  edm::Handle<edm::View<pat::Electron> > &   electronHandle,
 		  edm::Handle<edm::View<pat::Photon> > &     photonHandle,
@@ -156,6 +157,7 @@ protected:
   InputTag trgEvent_;
   InputTag METCollection_;
   InputTag pfMETlabel_;
+  InputTag pfType01METlabel_;
   InputTag recoPfMETlabel_;
   InputTag electronCollection_;
   InputTag photonCollection_;
@@ -279,12 +281,18 @@ protected:
   Float_t  METy_;
   Float_t  METPhi_;
   Float_t  METsumEt_;
-  // pfMET
+  // pfMET Type1
   Float_t  pfMET_;
   Float_t  pfMETPhi_;
   Float_t  pfMETsumEt_;
   Float_t  pfMETmEtSig_;
   Float_t  pfMETSig_;
+  // pfMET (Type 0+1)
+  Float_t  pfType01MET_;
+  Float_t  pfType01METPhi_;
+  Float_t  pfType01METsumEt_;
+  Float_t  pfType01METmEtSig_;
+  Float_t  pfType01METSig_;
   // reco pf met
   Float_t  recoPfMET_;
   Float_t  recoPfMETPhi_;
@@ -991,6 +999,7 @@ protected:
   Float_t  jetGenPt_[maxP];
   Float_t  jetGenEta_[maxP];
   Float_t  jetGenPhi_[maxP];
+  Int_t    jetGenPartonMomID_[maxP];
   // Jet ID MVA variables
   Float_t  jetMVAs_[maxP][4];
   Int_t    jetWPLevels_[maxP][4];
@@ -1113,6 +1122,7 @@ protected:
   Handle<View<pat::MET> >       METHandle_;
   Handle<View<pat::MET> >       tcMETHandle_;
   Handle<View<pat::MET> >       pfMETHandle_;
+  Handle<View<pat::MET> >       pfType01METHandle_;
   Handle<reco::PFMETCollection> recoPfMETHandle_;
   Handle<View<pat::Electron> >  electronHandle_;
   Handle<View<pat::Photon> >    photonHandle_;
