@@ -3,7 +3,7 @@ import FWCore.ParameterSet.Config as cms
 process = cms.Process("ggkIT")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
 process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("Configuration.StandardSequences.GeometryDB_cff")
@@ -19,7 +19,7 @@ process.maxEvents = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-    'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
+    'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -36,6 +36,13 @@ process.patJetCorrFactors.useRho = cms.bool(True)
 
 process.ak5PFJets.doAreaFastjet = True
 process.patJets.addTagInfos = cms.bool(True)
+
+# Taus
+from PhysicsTools.PatAlgos.tools.tauTools import *
+process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
+process.cleanPatTaus.preselection = cms.string(' tauID("decayModeFinding") > 0.5 ')
+process.cleanPatTaus.finalCut     = cms.string(' pt > 15.0 & abs(eta) < 2.5 ')
+process.load("ggAnalysis.ggNtuplizer.ggTau_cff")
 
 #process.patJetCorrFactors.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 #process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets25','rho')
@@ -125,6 +132,7 @@ process.p = cms.Path(
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
+    process.recoTauClassicHPSSequence*
     process.ggNtuplizer)
 
 #process.out_step = cms.EndPath(process.output)
