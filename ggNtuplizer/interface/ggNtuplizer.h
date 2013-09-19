@@ -200,6 +200,12 @@ protected:
   InputTag eleNoCutsLabel_;
   InputTag recVtxsBSLabel_;
 
+  InputTag QGTagsHandleMLPLabel_;
+  InputTag QGTagsHandleLikelihoodLabel_;
+  InputTag QGtagjetLabel_;
+  InputTag jetsCHSprunedLabel_;
+  InputTag jetsCHSLabel_;
+
   std::vector<edm::ParameterSet> jetMVAAlgos_; 
   PFJetIDSelectionFunctor pfLooseId_;
   std::vector<edm::InputTag> inputTagMuonTags_; // muon cocktail
@@ -211,6 +217,7 @@ protected:
   Bool_t dumpESClusterInfo_;
   Bool_t dumpTrks_;
   Bool_t dumpJets_;
+  Bool_t dumpSubJets_;
   Bool_t useAllPF_;
   Bool_t develop_;
   Bool_t doCentrality_;
@@ -1072,6 +1079,27 @@ protected:
   Float_t  rho25_elePFiso_;
   Float_t  rho2011_;
   Float_t  rho2012_;
+
+  //QGtag
+  Float_t  QGTag_MLP_;
+  Float_t  QGTag_likelihood_;
+  
+  //SubJet
+  Int_t nCA8Jet_;
+  vector<float>  CA8JetPt_;
+  vector<float>  CA8JetEta_;
+  vector<float>  CA8JetPhi_;
+  vector<float>  CA8JetMass_;
+  vector<float>  CA8JetArea_;
+  vector<float>  CA8Jet_tau1_;
+  vector<float>  CA8Jet_tau2_;
+  vector<float>  CA8Jet_tau3_;
+  vector<float>  CA8prunedJetMass_;
+  vector<int>    CA8prunedJet_nSubJets_;
+  vector<vector<float> >  CA8prunedJet_SubjetPt_;
+  vector<vector<float> >  CA8prunedJet_SubjetEta_;
+  vector<vector<float> >  CA8prunedJet_SubjetPhi_;
+  vector<vector<float> >  CA8prunedJet_SubjetMass_;
 
   // Jet
   Int_t    nJet_;

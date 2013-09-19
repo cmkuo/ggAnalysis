@@ -65,6 +65,10 @@
 #include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 
+bool compareMass(TLorentzVector l1, TLorentzVector l2){
+  return (l1.M()>l2.M());
+}
+
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
 
   trgResults_        = ps.getParameter<InputTag>("triggerResults");
@@ -76,7 +80,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   dumpESHits_        = ps.getParameter<bool>("dumpESHits");
   dumpESClusterInfo_ = ps.getParameter<bool>("dumpESClusterInfo");
   dumpTrks_          = ps.getParameter<bool>("dumpTrks"); 
-  dumpJets_          = ps.getParameter<bool>("dumpJets"); 
+  dumpJets_          = ps.getParameter<bool>("dumpJets");
+  dumpSubJets_       = ps.getParameter<bool>("dumpSubJets");
   runOnParticleGun_  = ps.getParameter<bool>("runOnParticleGun");
   develop_           = ps.getParameter<bool>("development");
   doCentrality_      = ps.getParameter<bool>("doCentrality");
@@ -127,6 +132,13 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   muonNoCutsLabel_           = edm::InputTag("muons");
   eleNoCutsLabel_            = edm::InputTag("gsfElectrons");
   recVtxsBSLabel_            = edm::InputTag("offlinePrimaryVerticesWithBS","");
+
+  QGTagsHandleMLPLabel_      = edm::InputTag("QGTagger","qgMLP");
+  QGTagsHandleLikelihoodLabel_ = edm::InputTag("QGTagger","qgLikelihood");
+  QGtagjetLabel_             = edm::InputTag("selectedPatJetsAK5PF");
+  jetsCHSprunedLabel_        = edm::InputTag("selectedPatJetsCA8CHSpruned");
+  jetsCHSLabel_              = edm::InputTag("selectedPatJetsCA8CHSwithNsub");
+
   jetMVAAlgos_               = ps.getUntrackedParameter<std::vector<edm::ParameterSet> >("puJetIDAlgos");
   pfLooseId_                 = ps.getParameter<edm::ParameterSet>("pfLooseId");
   
@@ -908,6 +920,30 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("rho25_elePFiso", &rho25_elePFiso_, "rho25_elePFiso/F");
   tree_->Branch("rho2011", &rho2011_, "rho2011/F");
   tree_->Branch("rho2012", &rho2012_, "rho2012/F");
+
+  //QGTag
+  tree_->Branch("QGTag_MLP", &QGTag_MLP_, "QGTag_MLP/F");
+  tree_->Branch("QGTag_likelihood", &QGTag_likelihood_, "QGTag_likelihood/F");
+  
+  // SubJet
+  if (dumpSubJets_) {
+    tree_->Branch("nCA8Jet",&nCA8Jet_, "nCA8Jet/I"); 
+    tree_->Branch("CA8JetPt", &CA8JetPt_);
+    tree_->Branch("CA8JetEta", &CA8JetEta_);
+    tree_->Branch("CA8JetPhi", &CA8JetPhi_);
+    tree_->Branch("CA8JetMass", &CA8JetMass_);
+    tree_->Branch("CA8JetArea", &CA8JetArea_);
+    tree_->Branch("CA8Jet_tau1", &CA8Jet_tau1_);
+    tree_->Branch("CA8Jet_tau2", &CA8Jet_tau2_);
+    tree_->Branch("CA8Jet_tau3", &CA8Jet_tau3_);
+    tree_->Branch("CA8prunedJetMass", &CA8prunedJetMass_);
+    tree_->Branch("CA8prunedJet_nSubJets", &CA8prunedJet_nSubJets_) ;
+    tree_->Branch("CA8prunedJet_SubjetPt", &CA8prunedJet_SubjetPt_);
+    tree_->Branch("CA8prunedJet_SubjetEta", &CA8prunedJet_SubjetEta_);
+    tree_->Branch("CA8prunedJet_SubjetPhi", &CA8prunedJet_SubjetPhi_);
+    tree_->Branch("CA8prunedJet_SubjetMass", &CA8prunedJet_SubjetMass_);
+  }
+
   // Jet
   if (dumpJets_) {
     tree_->Branch("nJet", &nJet_, "nJet/I");
@@ -1559,6 +1595,22 @@ void ggNtuplizer::clearVectors() {
   PFPhoPhi_.clear();  
   PFPhoType_.clear();
   PFPhoIso_.clear();
+
+  // SubJet
+  CA8JetPt_.clear();
+  CA8JetEta_.clear();
+  CA8JetPhi_.clear();
+  CA8JetMass_.clear();
+  CA8JetArea_.clear();
+  CA8Jet_tau1_.clear();
+  CA8Jet_tau2_.clear();
+  CA8Jet_tau3_.clear();
+  CA8prunedJetMass_.clear();
+  CA8prunedJet_nSubJets_.clear();
+  CA8prunedJet_SubjetPt_.clear();
+  CA8prunedJet_SubjetEta_.clear();
+  CA8prunedJet_SubjetPhi_.clear();
+  CA8prunedJet_SubjetMass_.clear();
 
   // jets
   jetTrg_.clear();
@@ -4596,6 +4648,105 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 
       nJet_++;
     }
+
+  //#Lvdp
+  // gluon tagger
+  edm::Handle<edm::ValueMap<float> >  QGTagsHandleMLP;
+  edm::Handle<edm::ValueMap<float> >  QGTagsHandleLikelihood;
+  e.getByLabel(QGTagsHandleMLPLabel_, QGTagsHandleMLP);
+  e.getByLabel(QGTagsHandleLikelihoodLabel_, QGTagsHandleLikelihood);
+  
+  QGTag_MLP_ = -999.;
+  QGTag_likelihood_ = -999.;
+  edm::Handle<edm::View<pat::Jet> > QGtagjetHandle;
+  //  Handle<PFJetCollection> jets;
+  e.getByLabel(QGtagjetLabel_, QGtagjetHandle);
+  for (View<pat::Jet>::const_iterator iQGJet = QGtagjetHandle->begin(); iQGJet != QGtagjetHandle->end(); ++iQGJet){
+    int ijet = iQGJet - QGtagjetHandle->begin();
+    edm::RefToBase<pat::Jet> jetRef = QGtagjetHandle->refAt(ijet);//(edm::Ref<pat::Jet>(QGtagjetHandle,iQGJet));
+    //cout<<ijet<<'\t'<<iQGJet->pt()<<'\t'<<iQGJet->eta()<<endl;
+    if(iQGJet->pt()>20.){
+      //  if (QGTagsHandleMLP.isValid()) cout << "MLP: " << (*QGTagsHandleMLP)[jetRef] << endl;
+      //if (QGTagsHandleLikelihood.isValid()) cout << "Likelihood: " << (*QGTagsHandleLikelihood)[jetRef] << endl;
+      if (QGTagsHandleMLP.isValid()) QGTag_MLP_ = (*QGTagsHandleMLP)[jetRef] ;
+      if (QGTagsHandleLikelihood.isValid()) QGTag_likelihood_ = (*QGTagsHandleLikelihood)[jetRef] ;
+    }
+  }
+  
+  nCA8Jet_ = 0;
+  //jet substructure
+  edm::Handle<edm::View<pat::Jet> > jetsCHSpruned;
+  e.getByLabel(jetsCHSprunedLabel_, jetsCHSpruned);
+
+  edm::Handle<edm::View<pat::Jet> > jetsCHS;
+  e.getByLabel(jetsCHSLabel_, jetsCHS);
+
+  View<pat::Jet>::const_iterator beginCHS = jetsCHS->begin();
+  View<pat::Jet>::const_iterator endCHS = jetsCHS->end();
+  View<pat::Jet>::const_iterator ijetCHS = beginCHS;
+    
+  View<pat::Jet>::const_iterator beginCHSpruned = jetsCHSpruned->begin();
+  View<pat::Jet>::const_iterator endCHSpruned = jetsCHSpruned->end();
+  View<pat::Jet>::const_iterator ijetCHSpruned = beginCHSpruned;
+
+  // Loop over the "hard" jets
+  for(ijetCHS = beginCHS; ijetCHS != endCHS; ++ijetCHS ){
+    if( ijetCHS->pt() < 50.0 ) continue;
+    nCA8Jet_++;
+    CA8JetPt_.push_back( ijetCHS->pt() );
+    CA8JetEta_.push_back( ijetCHS->eta() );
+    CA8JetPhi_.push_back( ijetCHS->phi() );
+    CA8JetMass_.push_back( ijetCHS->mass() );
+    CA8JetArea_.push_back( ijetCHS->jetArea() );
+    CA8Jet_tau1_.push_back( ijetCHS->userFloat("tau1") );
+    CA8Jet_tau2_.push_back( ijetCHS->userFloat("tau2") );
+    CA8Jet_tau3_.push_back( ijetCHS->userFloat("tau3") );
+    
+    View<pat::Jet>::const_iterator ijetCHSmatch;
+    bool CA8matched = false;
+    // iterate over pruned jets, choose the mathed one
+    for( ijetCHSpruned = beginCHSpruned; ijetCHSpruned != endCHSpruned; ++ijetCHSpruned ){
+      if(reco::deltaR(ijetCHS->momentum(), ijetCHSpruned->momentum()) < 0.25) {
+	ijetCHSmatch = ijetCHSpruned;
+	CA8matched = true;
+	break;
+      }
+    }
+    
+    CA8prunedJetMass_.push_back( !CA8matched ? -999. : ijetCHSmatch->mass() );
+    CA8prunedJet_nSubJets_.push_back( !CA8matched ? 0 : ijetCHSmatch->numberOfDaughters() );
+    std::vector<TLorentzVector> subJets;
+    if( CA8matched ){
+      for(unsigned int idaughter=0; idaughter!=ijetCHSmatch->numberOfDaughters(); idaughter++){
+	if( ijetCHSmatch->daughter(idaughter) != 0 && ijetCHSmatch->daughter(idaughter)->pt()>0.)
+	  subJets.push_back( TLorentzVector(ijetCHSmatch->daughter(idaughter)->px(),
+					    ijetCHSmatch->daughter(idaughter)->py(),
+					    ijetCHSmatch->daughter(idaughter)->pz(),
+					    ijetCHSmatch->daughter(idaughter)->energy())
+			     );
+      }
+      
+      //Now sort the vector.
+      std::sort(subJets.begin(),subJets.end(),compareMass);
+    }
+    std::vector<float> SubjetPt;
+    std::vector<float> SubjetEta;
+    std::vector<float> SubjetPhi;
+    std::vector<float> SubjetMass;
+
+    for(std::vector<TLorentzVector>::iterator isubJet = subJets.begin(); isubJet!=subJets.end(); isubJet++){
+      SubjetPt.push_back(isubJet->Perp());
+      SubjetEta.push_back(isubJet->Eta());
+      SubjetPhi.push_back(isubJet->Phi());
+      SubjetMass.push_back(isubJet->M());
+    }
+    CA8prunedJet_SubjetPt_.push_back(SubjetPt);
+    CA8prunedJet_SubjetEta_.push_back(SubjetEta);
+    CA8prunedJet_SubjetPhi_.push_back(SubjetPhi);
+    CA8prunedJet_SubjetMass_.push_back(SubjetMass);
+  } // end loop over "hard" jets
+  
+  // end Lvdp
 
   
   nConv_=0;

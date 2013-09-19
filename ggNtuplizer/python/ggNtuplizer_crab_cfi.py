@@ -73,6 +73,7 @@ ggNtuplizer = cms.EDProducer("ggNtuplizer",
                              pfLooseId = pfJetIDSelector.clone(),
                              CaloTowerColl = cms.InputTag("towerMaker"),
                              scRemover03 = cms.PSet(isolation_cone_size_forSCremoval = cms.untracked.double(0.3)),
-                             scRemover04 = cms.PSet(isolation_cone_size_forSCremoval = cms.untracked.double(0.4))
+                             scRemover04 = cms.PSet(isolation_cone_size_forSCremoval = cms.untracked.double(0.4)),
+                             tauSrc = cms.InputTag("cleanPatTaus")
                              )
 
