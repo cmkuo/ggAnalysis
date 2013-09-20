@@ -67,6 +67,21 @@ from PhysicsTools.PatAlgos.tools.metTools import *
 addTcMET(process, 'TC')
 addPfMET(process, 'PF')
 
+process.load("JetMETCorrections.Type1MET.pfMETCorrectionType0_cfi")
+process.pfType0pfcp1CorrectedMet = process.pfType1CorrectedMet.clone()
+process.pfType0pfcp1CorrectedMet.srcType1Corrections = cms.VInputTag(
+    cms.InputTag('pfMETcorrType0'),
+    cms.InputTag('pfJetMETcorr', 'type1')
+    )
+
+process.patMETsType0pfcp1PF = process.patMETsPF.clone()
+process.patMETsType0pfcp1PF.metSource = cms.InputTag("pfType0pfcp1CorrectedMet")
+
+process.produceType0MET = cms.Sequence(
+    process.pfType0pfcp1CorrectedMet*
+    process.patMETsType0pfcp1PF
+    )
+
 #process.patJetGenJetMatch.matched = cms.InputTag('iterativeCone5GenJets')
 
 process.cleanPatPhotons.checkOverlaps.electrons.requireNoOverlaps = cms.bool(False)
@@ -129,7 +144,9 @@ process.p = cms.Path(
     process.fjSequence*
     process.ak5PFJets*
     process.ggBoostedEleModIsoSequence*
+    process.type0PFMEtCorrection*
     process.patDefaultSequence*
+    process.produceType0MET*
     process.eleIsoSequence*
     process.phoIsoSequence*
     process.eleRegressionEnergy*

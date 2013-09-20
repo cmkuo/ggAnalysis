@@ -2,9 +2,9 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ggkIT")
 
-process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1)
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+#process.load("FWCore.MessageLogger.MessageLogger_cfi")
+#process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
+#process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
@@ -20,6 +20,8 @@ process.maxEvents = cms.untracked.PSet(
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
     'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
+    #'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
+    #'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -65,6 +67,21 @@ addJetCollection(process,
 from PhysicsTools.PatAlgos.tools.metTools import *
 addTcMET(process, 'TC')
 addPfMET(process, 'PF')
+
+process.load("JetMETCorrections.Type1MET.pfMETCorrectionType0_cfi")
+process.pfType0pfcp1CorrectedMet = process.pfType1CorrectedMet.clone()
+process.pfType0pfcp1CorrectedMet.srcType1Corrections = cms.VInputTag(
+    cms.InputTag('pfMETcorrType0'),
+    cms.InputTag('pfJetMETcorr', 'type1')
+    )
+
+process.patMETsType0pfcp1PF = process.patMETsPF.clone()
+process.patMETsType0pfcp1PF.metSource = cms.InputTag("pfType0pfcp1CorrectedMet")
+
+process.produceType0MET = cms.Sequence(
+    process.pfType0pfcp1CorrectedMet*
+    process.patMETsType0pfcp1PF
+    )
 
 #process.patJetGenJetMatch.matched = cms.InputTag('iterativeCone5GenJets')
 
@@ -289,11 +306,13 @@ process.patElectrons.electronIDSources = cms.PSet(
 process.p = cms.Path(
     process.fjSequence*
     process.ak5PFJets*
-     process.pfNoPileUpSequence* ###########
+    process.pfNoPileUpSequence* ###########
     process.pfParticleSelectionSequence*
     process.ggBoostedEleModIsoSequence*
     process.eleMVAID*
+    process.type0PFMEtCorrection*
     process.patDefaultSequence*
+    process.produceType0MET*
     process.eleIsoSequence*
     process.phoIsoSequence*
     ca8Jets* ###########
