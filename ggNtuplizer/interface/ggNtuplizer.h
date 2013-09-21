@@ -44,6 +44,7 @@
 #include "Geometry/CaloGeometry/interface/CaloSubdetectorGeometry.h"
 #include "Geometry/CaloTopology/interface/EcalPreshowerTopology.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
+#include "RecoEgamma/EgammaTools/interface/EcalClusterLocal.h"
 #include "RecoEgamma/EgammaTools/interface/EGEnergyCorrector.h"
 #include "RecoEgamma/EgammaElectronAlgos/interface/ElectronHcalHelper.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
@@ -227,6 +228,7 @@ protected:
 
   HLTConfigProvider hltConfigProvider_;
   EcalClusterLazyTools *lazyTool;
+  EcalClusterLocal _ecalLocal;
   EGEnergyCorrector egCorrEle_;
   EGEnergyCorrector egCorrPho_;
   CiCPhotonID *cicPhotonId_;
@@ -393,10 +395,27 @@ protected:
   vector<float>  eleSigmaIEtaIPhi_;
   vector<float>  eleSigmaIPhiIPhi_;
   vector<float>  eleEmax_;
+  vector<float>  eleE2ndMax_;
+  vector<float>  eleETop_;
+  vector<float>  eleEBottom_;
+  vector<float>  eleELeft_;
+  vector<float>  eleERight_;
+  vector<float>  eleSeedEta_;
+  vector<float>  eleSeedPhi_;
+  vector<float>  eleCrysEta_;
+  vector<float>  eleCrysPhi_;
+  vector<int>    eleCrysIEta_;
+  vector<int>    eleCrysIPhi_;
+  vector<float>  eleR9_;  
+  vector<int>    eleNClus_;
   vector<float>  eleE1x5_;
   vector<float>  eleE3x3_;
   vector<float>  eleE5x5_;
   vector<float>  eleE2x5Max_;
+  vector<float>  eleE2x5Top_;
+  vector<float>  eleE2x5Bottom_;
+  vector<float>  eleE2x5Left_;
+  vector<float>  eleE2x5Right_;
   vector<float>  eleRegrE_;
   vector<float>  eleRegrEerr_;
   vector<float>  elePhoRegrE_;
@@ -502,18 +521,34 @@ protected:
   vector<float>  phoHoverEBCdepth1_;
   vector<float>  phoHoverEBCdepth2_;
   vector<float>  phoHoverE12_;
+  vector<int>    phoNClus_;
   vector<float>  phoSigmaIEtaIEta_;
   vector<float>  phoSigmaIEtaIPhi_;
   vector<float>  phoSigmaIPhiIPhi_;
   vector<float>  phoEmax_;
+  vector<float>  phoE2ndMax_;
   vector<float>  phoE3x3_;
   vector<float>  phoE5x5_;
   vector<float>  phoE2x5Max_;
+  vector<float>  phoE2x5Top_;
+  vector<float>  phoE2x5Bottom_;
+  vector<float>  phoE2x5Left_;
+  vector<float>  phoE2x5Right_;
   vector<float>  phoE5x1_;
   vector<float>  phoE1x5_;
   vector<float>  phoE3x1_;
   vector<float>  phoE1x3_;
   vector<float>  phoE2x2_;
+  vector<float>  phoETop_;
+  vector<float>  phoEBottom_;
+  vector<float>  phoELeft_;
+  vector<float>  phoERight_;
+  vector<float>  phoSeedEta_;
+  vector<float>  phoSeedPhi_;
+  vector<float>  phoCrysEta_;
+  vector<float>  phoCrysPhi_;
+  vector<int>    phoCrysIEta_;
+  vector<int>    phoCrysIPhi_;
   vector<float>  phoRegrE_;
   vector<float>  phoRegrEerr_;
   vector<float>  phoPFChIso_;

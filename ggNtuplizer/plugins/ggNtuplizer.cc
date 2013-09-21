@@ -292,6 +292,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("elePt", &elePt_);
   tree_->Branch("eleEta", &eleEta_);
   tree_->Branch("elePhi", &elePhi_);
+  tree_->Branch("eleR9", &eleR9_);
   tree_->Branch("eleEtaVtx", &eleEtaVtx_);
   tree_->Branch("elePhiVtx", &elePhiVtx_);
   tree_->Branch("eleEtVtx", &eleEtVtx_);
@@ -321,10 +322,25 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("eleSigmaIEtaIPhi", &eleSigmaIEtaIPhi_);
   tree_->Branch("eleSigmaIPhiIPhi", &eleSigmaIPhiIPhi_);
   tree_->Branch("eleEmax", &eleEmax_);
+  tree_->Branch("eleE2ndMax", &eleE2ndMax_);
+  tree_->Branch("eleETop", &eleETop_);
+  tree_->Branch("eleEBottom", &eleEBottom_);
+  tree_->Branch("eleELeft", &eleELeft_);
+  tree_->Branch("eleERight", &eleERight_);  
   tree_->Branch("eleE1x5", &eleE1x5_);
   tree_->Branch("eleE3x3", &eleE3x3_);
   tree_->Branch("eleE5x5", &eleE5x5_);
   tree_->Branch("eleE2x5Max", &eleE2x5Max_);
+  tree_->Branch("eleE2x5Top", &eleE2x5Top_);
+  tree_->Branch("eleE2x5Bottom", &eleE2x5Bottom_);
+  tree_->Branch("eleE2x5Left", &eleE2x5Left_);
+  tree_->Branch("eleE2x5Right", &eleE2x5Right_);
+  tree_->Branch("eleSeedEta", &eleSeedEta_);
+  tree_->Branch("eleSeedPhi", &eleSeedPhi_);
+  tree_->Branch("eleCrysEta", &eleCrysEta_);
+  tree_->Branch("eleCrysPhi", &eleCrysPhi_);
+  tree_->Branch("eleCrysIEta", &eleCrysIEta_);
+  tree_->Branch("eleCrysIPhi", &eleCrysIPhi_);
   tree_->Branch("eleRegrE", &eleRegrE_);
   tree_->Branch("eleRegrEerr", &eleRegrEerr_);
   tree_->Branch("elePhoRegrE", &elePhoRegrE_);
@@ -413,6 +429,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("phoEtaVtx", &phoEtaVtx_);
   tree_->Branch("phoPhiVtx", &phoPhiVtx_);
   tree_->Branch("phoR9", &phoR9_);
+  tree_->Branch("phoNClus", &phoNClus_);
   if (develop_) {
     tree_->Branch("phoCetaCorrE" , &phoCetaCorrE_ );
     tree_->Branch("phoCetaCorrEt", &phoCetaCorrEt_);
@@ -486,6 +503,11 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("phoCiCPF4chgpfIsoNoVETO08", &phoCiCPF4chgpfIsoNoVETO08_);
   }
   tree_->Branch("phoEmax", &phoEmax_);
+  tree_->Branch("phoETop", &phoETop_);
+  tree_->Branch("phoEBottom", &phoEBottom_);
+  tree_->Branch("phoELeft", &phoELeft_);
+  tree_->Branch("phoERight", &phoERight_);
+  tree_->Branch("phoE2ndMax", &phoE2ndMax_);
   tree_->Branch("phoE3x3", &phoE3x3_);
   tree_->Branch("phoE3x1", &phoE3x1_);
   tree_->Branch("phoE1x3", &phoE1x3_);
@@ -493,6 +515,17 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("phoE1x5", &phoE1x5_);
   tree_->Branch("phoE2x2", &phoE2x2_);
   tree_->Branch("phoE2x5Max", &phoE2x5Max_);
+  tree_->Branch("phoE2x5Top", &phoE2x5Top_);
+  tree_->Branch("phoE2x5Bottom", &phoE2x5Bottom_);
+  tree_->Branch("phoE2x5Left", &phoE2x5Left_);
+  tree_->Branch("phoE2x5Right", &phoE2x5Right_);
+  tree_->Branch("phoSeedEta", &phoSeedEta_);
+  tree_->Branch("phoSeedPhi", &phoSeedPhi_);
+  tree_->Branch("phoCrysEta", &phoCrysEta_);
+  tree_->Branch("phoCrysPhi", &phoCrysPhi_);
+  tree_->Branch("phoCrysEta", &phoCrysEta_);
+  tree_->Branch("phoCrysIEta", &phoCrysIEta_);
+  tree_->Branch("phoCrysIPhi", &phoCrysIPhi_);
   tree_->Branch("phoPFChIso", &phoPFChIso_);
   tree_->Branch("phoPFPhoIso", &phoPFPhoIso_);
   tree_->Branch("phoPFNeuIso", &phoPFNeuIso_);
@@ -2519,6 +2552,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       elePt_           .push_back(recoElectron->pt()); // iEle->pt();
       eleEta_          .push_back(iEle->eta());
       elePhi_          .push_back(iEle->phi());
+      eleR9_           .push_back(iEle->r9());
       eleHoverE_       .push_back(iEle->hadronicOverEm());
       eleHoverE12_     .push_back(iEle->hcalOverEcalBc());
       eleEoverP_       .push_back(iEle->eSuperClusterOverP());
@@ -2578,7 +2612,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleESEn_       .push_back(iEle->superCluster()->preshowerEnergy());
       eleSCEtaWidth_ .push_back(iEle->superCluster()->etaWidth());
       eleSCPhiWidth_ .push_back(iEle->superCluster()->phiWidth());
-
+      
       eleVtx_x_.push_back(iEle->trackPositionAtVtx().x());
       eleVtx_y_.push_back(iEle->trackPositionAtVtx().y());
       eleVtx_z_.push_back(iEle->trackPositionAtVtx().z());
@@ -2635,7 +2669,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleModIsoHcal_       .push_back(iEle->userIso(2));
       
       const reco::CaloClusterPtr eleSeed = (*iEle).superCluster()->seed();
-      
+      eleNClus_.push_back((*iEle).superCluster()->clustersSize());
       vector<float> eleCov;
       eleCov = lazyTool->localCovariances(*eleSeed);
       eleSigmaIEtaIEta_.push_back(iEle->sigmaIetaIeta());
@@ -2643,11 +2677,37 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleSigmaIPhiIPhi_.push_back(eleCov[2]);
       
       eleEmax_     .push_back(lazyTool->eMax(*eleSeed));
+      eleE2ndMax_  .push_back(lazyTool->e2nd(*eleSeed));
+      eleETop_     .push_back(lazyTool->eTop(*eleSeed));
+      eleEBottom_  .push_back(lazyTool->eBottom(*eleSeed));
+      eleELeft_    .push_back(lazyTool->eLeft(*eleSeed));
+      eleERight_   .push_back(lazyTool->eRight(*eleSeed));
+      eleSeedEta_  .push_back(eleSeed->eta());
+      eleSeedPhi_  .push_back(eleSeed->phi());
       eleE1x5_     .push_back(lazyTool->e1x5(*eleSeed));
       eleE3x3_     .push_back(lazyTool->e3x3(*eleSeed));
       eleE5x5_     .push_back(iEle->e5x5());
-      eleE2x5Max_  .push_back(iEle->e2x5Max());
-
+      eleE2x5Max_  .push_back(lazyTool->e2x5Max(*eleSeed));
+      eleE2x5Left_  .push_back(lazyTool->e2x5Left(*eleSeed));
+      eleE2x5Right_  .push_back(lazyTool->e2x5Right(*eleSeed));
+      eleE2x5Top_  .push_back(lazyTool->e2x5Top(*eleSeed));     
+      eleE2x5Bottom_  .push_back(lazyTool->e2x5Bottom(*eleSeed));   
+      if (iEle->isEB()){
+       float betacry, bphicry, bthetatilt, bphitilt;
+       int bieta, biphi;
+         _ecalLocal.localCoordsEB(*eleSeed,es,betacry,bphicry,bieta,biphi,bthetatilt,bphitilt);
+         eleCrysEta_.push_back(betacry);
+         eleCrysPhi_.push_back(bphicry);
+         eleCrysIEta_.push_back(bieta);
+         eleCrysIPhi_.push_back(biphi);
+      }
+       else{
+         phoCrysEta_.push_back(-99);
+         phoCrysPhi_.push_back(-99);
+         phoCrysIEta_.push_back(-9999);
+         phoCrysIPhi_.push_back(-9999);
+      }
+       
       // Energy Regression Correction
       if (!egCorrEle_.IsInitialized()) {   
 	//std::string filenameEle = "http://homepages.spa.umn.edu/~rekovic/cms/regweights52xV3/gbrv3ele_52x.root";
@@ -3002,6 +3062,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoCaloPos_z_.push_back(iPho->caloPosition().z());
 
       phoR9_.push_back(iPho->r9());
+      phoNClus_.push_back((*iPho).superCluster()->clustersSize());
       phoTrkIsoHollowDR03_.push_back(iPho->trkSumPtHollowConeDR03());
       phoEcalIsoDR03_     .push_back(iPho->ecalRecHitSumEtConeDR03());
       phoHcalIsoDR03_     .push_back(iPho->hcalTowerSumEtConeDR03());
@@ -3222,6 +3283,11 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoLICTD_.push_back(LICTD);
       
       phoEmax_.push_back(iPho->maxEnergyXtal());
+      phoE2ndMax_.push_back(lazyTool->e2nd(*phoSeed));
+      phoETop_.push_back(lazyTool->eTop(*phoSeed));
+      phoEBottom_.push_back(lazyTool->eBottom(*phoSeed));
+      phoELeft_.push_back(lazyTool->eLeft(*phoSeed));
+      phoERight_.push_back(lazyTool->eRight(*phoSeed));
       phoE3x3_.push_back(iPho->e3x3());
       phoE5x5_.push_back(iPho->e5x5());
       phoE1x5_.push_back(iPho->e1x5());
@@ -3229,7 +3295,28 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoE1x3_.push_back(lazyTool->e1x3(*phoSeed));
       phoE2x2_.push_back(lazyTool->e2x2(*phoSeed));
       phoE2x5Max_.push_back(iPho->e2x5());
-
+      phoE2x5Top_.push_back(lazyTool->e2x5Top(*phoSeed));
+      phoE2x5Bottom_.push_back(lazyTool->e2x5Bottom(*phoSeed));
+      phoE2x5Top_.push_back(lazyTool->e2x5Top(*phoSeed));
+      phoE2x5Right_.push_back(lazyTool->e2x5Right(*phoSeed));
+      phoE2x5Left_.push_back(lazyTool->e2x5Left(*phoSeed));
+      phoE2x5Max_.push_back(lazyTool->e2x5Max(*phoSeed));
+       if(iPho->isEB()){
+      float betacry, bphicry, bthetatilt, bphitilt;
+      int bieta, biphi;
+         _ecalLocal.localCoordsEB(*phoSeed,es,betacry,bphicry,bieta,biphi,bthetatilt,bphitilt);
+         phoCrysEta_.push_back(betacry);
+         phoCrysPhi_.push_back(bphicry);
+         phoCrysIEta_.push_back(bieta);
+         phoCrysIPhi_.push_back(biphi);
+      }
+       else{
+         phoCrysEta_.push_back(-99);
+         phoCrysPhi_.push_back(-99);
+         phoCrysIEta_.push_back(-9999);
+         phoCrysIPhi_.push_back(-9999);
+      }
+       
       // Regression Correction
       if (!egCorrPho_.IsInitialized()) {
 	//std::string filenamePho = "http://homepages.spa.umn.edu/~rekovic/cms/regweights52xV3/gbrv3ph_52x.root";
