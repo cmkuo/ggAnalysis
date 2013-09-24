@@ -14,7 +14,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(100)
+        input = cms.untracked.int32(10)
             )
 
 process.source = cms.Source("PoolSource",
@@ -109,160 +109,8 @@ process.QGTagger.isPatJet  = cms.untracked.bool(True)
 #process.QGTagger.useCHS  = cms.untracked.bool(True)
 
 #jet substructure
-from RecoJets.Configuration.RecoGenJets_cff import ak7GenJetsNoNu
-process.ca8GenJetsNoNu = ak7GenJetsNoNu.clone()
-process.ca8GenJetsNoNu.rParam = 0.8
-process.ca8GenJetsNoNu.jetAlgorithm = "CambridgeAachen"
-
-
-from CommonTools.ParticleFlow.pfNoPileUp_cff import * 
-
-# JETS  CA8 ----------------------------
-from RecoJets.JetProducers.ak5PFJets_cfi import ak5PFJets
-process.ca8PFJetsCHS = ak5PFJets.clone(
-    src = 'pfNoPileUp',
-    jetPtMin = cms.double(10.0),
-    doAreaFastjet = cms.bool(True),
-    rParam = cms.double(0.8),
-    jetAlgorithm = cms.string("CambridgeAachen"),
-    )
-jetSource = 'ca8PFJetsCHS'
-
-# corrections 
-from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import *
-process.patJetCorrFactorsCA8CHS = patJetCorrFactors.clone()
-process.patJetCorrFactorsCA8CHS.src = jetSource
-# will need to add L2L3 corrections in the cfg
-process.patJetCorrFactorsCA8CHS.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-process.patJetCorrFactorsCA8CHS.payload = 'AK7PFchs'
-process.patJetCorrFactorsCA8CHS.useRho = True
-# parton and gen jet matching
-
-from PhysicsTools.PatAlgos.mcMatchLayer0.jetMatch_cfi import *
-process.patJetPartonMatchCA8CHS = patJetPartonMatch.clone()
-process.patJetPartonMatchCA8CHS.src = jetSource
-process.patJetGenJetMatchCA8CHS = patJetGenJetMatch.clone()
-process.patJetGenJetMatchCA8CHS.src = jetSource
-process.patJetGenJetMatchCA8CHS.matched = 'ca8GenJetsNoNu'
-
-from PhysicsTools.PatAlgos.mcMatchLayer0.jetFlavourId_cff import *
-process.patJetPartonAssociationCA8CHS = patJetPartonAssociation.clone()
-process.patJetPartonAssociationCA8CHS.jets = jetSource
-
-# pat jets
-
-from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cfi import *
-process.patJetsCA8CHS = patJets.clone()
-process.patJetsCA8CHS.jetSource = jetSource
-process.patJetsCA8CHS.addJetCharge = False
-process.patJetsCA8CHS.embedCaloTowers = False
-process.patJetsCA8CHS.embedPFCandidates = False
-process.patJetsCA8CHS.addAssociatedTracks = False
-process.patJetsCA8CHS.addBTagInfo = False
-process.patJetsCA8CHS.addDiscriminators = False
-process.patJetsCA8CHS.getJetMCFlavour = False
-process.patJetsCA8CHS.jetCorrFactorsSource = cms.VInputTag(cms.InputTag('patJetCorrFactorsCA8CHS'))
-process.patJetsCA8CHS.genPartonMatch = cms.InputTag('patJetPartonMatchCA8CHS')
-process.patJetsCA8CHS.genJetMatch = cms.InputTag('patJetGenJetMatchCA8CHS')
-
-from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
-process.selectedPatJetsCA8CHS = selectedPatJets.clone()
-process.selectedPatJetsCA8CHS.src = 'patJetsCA8CHS'
-process.selectedPatJetsCA8CHS.cut = 'pt()>20'
-
-from RecoJets.Configuration.GenJetParticles_cff import genParticlesForJetsNoNu
-process.jetMCSequenceCA8CHS = cms.Sequence(
-    process.patJetPartonMatchCA8CHS +
-    genParticlesForJetsNoNu +
-    process.ca8GenJetsNoNu +
-    process.patJetGenJetMatchCA8CHS
-    )
-
-process.PATCMGJetSequenceCA8CHS = cms.Sequence(
-    process.ca8PFJetsCHS +
-    process.jetMCSequenceCA8CHS +
-    process.patJetCorrFactorsCA8CHS +
-    process.patJetsCA8CHS +
-    process.selectedPatJetsCA8CHS
-    )
-# JETS PRUNED CA8 ----------------------------
-
-from RecoJets.JetProducers.ak5PFJetsPruned_cfi import ak5PFJetsPruned
-process.ca8PFJetsCHSpruned = ak5PFJetsPruned.clone(
-    src = 'pfNoPileUp',
-    jetPtMin = cms.double(10.0),
-    doAreaFastjet = cms.bool(True),
-    rParam = cms.double(0.8),
-    jetAlgorithm = cms.string("CambridgeAachen"),
-    )
-
-jetSource = 'ca8PFJetsCHSpruned'
-
-# corrections 
-from PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import *
-process.patJetCorrFactorsCA8CHSpruned = patJetCorrFactors.clone()
-process.patJetCorrFactorsCA8CHSpruned.src = jetSource
-# will need to add L2L3 corrections in the cfg
-process.patJetCorrFactorsCA8CHSpruned.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
-process.patJetCorrFactorsCA8CHSpruned.payload = 'AK7PFchs'
-process.patJetCorrFactorsCA8CHSpruned.useRho = True
-# parton and gen jet matching
-
-from PhysicsTools.PatAlgos.mcMatchLayer0.jetMatch_cfi import *
-process.patJetPartonMatchCA8CHSpruned = patJetPartonMatch.clone()
-process.patJetPartonMatchCA8CHSpruned.src = jetSource
-process.patJetGenJetMatchCA8CHSpruned = patJetGenJetMatch.clone()
-process.patJetGenJetMatchCA8CHSpruned.src = jetSource
-process.patJetGenJetMatchCA8CHSpruned.matched = 'ca8GenJetsNoNu'
-
-from PhysicsTools.PatAlgos.mcMatchLayer0.jetFlavourId_cff import *
-process.patJetPartonAssociationCA8CHSpruned = patJetPartonAssociation.clone()
-process.patJetPartonAssociationCA8CHSpruned.jets = jetSource
-
-# pat jets
-
-from PhysicsTools.PatAlgos.producersLayer1.jetProducer_cfi import *
-process.patJetsCA8CHSpruned = patJets.clone()
-process.patJetsCA8CHSpruned.jetSource = jetSource
-process.patJetsCA8CHSpruned.addJetCharge = False
-process.patJetsCA8CHSpruned.embedCaloTowers = False
-process.patJetsCA8CHSpruned.embedPFCandidates = False
-process.patJetsCA8CHSpruned.addAssociatedTracks = False
-process.patJetsCA8CHSpruned.addBTagInfo = False
-process.patJetsCA8CHSpruned.addDiscriminators = False
-process.patJetsCA8CHSpruned.getJetMCFlavour = False
-process.patJetsCA8CHSpruned.jetCorrFactorsSource = cms.VInputTag(cms.InputTag('patJetCorrFactorsCA8CHSpruned'))
-process.patJetsCA8CHSpruned.genPartonMatch = cms.InputTag('patJetPartonMatchCA8CHSpruned')
-process.patJetsCA8CHSpruned.genJetMatch = cms.InputTag('patJetGenJetMatchCA8CHSpruned')
-
-from PhysicsTools.PatAlgos.selectionLayer1.jetSelector_cfi import *
-process.selectedPatJetsCA8CHSpruned = selectedPatJets.clone()
-process.selectedPatJetsCA8CHSpruned.src = 'patJetsCA8CHSpruned'
-process.selectedPatJetsCA8CHSpruned.cut = 'pt()>20'
-
-process.jetMCSequenceCA8CHSpruned = cms.Sequence(
-    process.patJetPartonMatchCA8CHSpruned +
-    process.patJetGenJetMatchCA8CHSpruned
-    )
-
-process.PATCMGJetSequenceCA8CHSpruned = cms.Sequence(
-    process.ca8PFJetsCHSpruned +
-    process.jetMCSequenceCA8CHSpruned +
-    process.patJetCorrFactorsCA8CHSpruned +
-    process.patJetsCA8CHSpruned +
-    process.selectedPatJetsCA8CHSpruned
-    )
-
-
-#### Adding Nsubjetiness
-
-process.selectedPatJetsCA8CHSwithNsub = cms.EDProducer("NjettinessAdder",
-                              src=cms.InputTag("selectedPatJetsCA8CHS"),
-                              cone=cms.double(0.8)
-                              )
-
+process.load("ExoDiBosonResonances.PATtupleProduction.PAT_ca8jets_cff")
 ca8Jets = cms.Sequence( process.PATCMGJetSequenceCA8CHS + process.PATCMGJetSequenceCA8CHSpruned + process.selectedPatJetsCA8CHSwithNsub)
-
 #end Lvdp
 
 
@@ -316,6 +164,7 @@ process.p = cms.Path(
     process.eleIsoSequence*
     process.phoIsoSequence*
     ca8Jets* ###########
+    process.QuarkGluonTagger*
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
