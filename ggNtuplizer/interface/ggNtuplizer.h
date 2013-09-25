@@ -400,6 +400,7 @@ protected:
   vector<float>  eleEBottom_;
   vector<float>  eleELeft_;
   vector<float>  eleERight_;
+  vector<float>  eleSeedE_;
   vector<float>  eleSeedEta_;
   vector<float>  eleSeedPhi_;
   vector<float>  eleCrysEta_;
@@ -545,6 +546,7 @@ protected:
   vector<float>  phoERight_;
   vector<float>  phoSeedEta_;
   vector<float>  phoSeedPhi_;
+  vector<float>  phoSeedE_;
   vector<float>  phoCrysEta_;
   vector<float>  phoCrysPhi_;
   vector<int>    phoCrysIEta_;

@@ -336,6 +336,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("eleE2x5Left", &eleE2x5Left_);
   tree_->Branch("eleE2x5Right", &eleE2x5Right_);
   tree_->Branch("eleSeedEta", &eleSeedEta_);
+  tree_->Branch("eleSeedE", &eleSeedE_);
   tree_->Branch("eleSeedPhi", &eleSeedPhi_);
   tree_->Branch("eleCrysEta", &eleCrysEta_);
   tree_->Branch("eleCrysPhi", &eleCrysPhi_);
@@ -519,6 +520,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("phoE2x5Bottom", &phoE2x5Bottom_);
   tree_->Branch("phoE2x5Left", &phoE2x5Left_);
   tree_->Branch("phoE2x5Right", &phoE2x5Right_);
+  tree_->Branch("phoSeedE", &phoSeedE_);
   tree_->Branch("phoSeedEta", &phoSeedEta_);
   tree_->Branch("phoSeedPhi", &phoSeedPhi_);
   tree_->Branch("phoCrysEta", &phoCrysEta_);
@@ -2682,6 +2684,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleEBottom_  .push_back(lazyTool->eBottom(*eleSeed));
       eleELeft_    .push_back(lazyTool->eLeft(*eleSeed));
       eleERight_   .push_back(lazyTool->eRight(*eleSeed));
+      eleSeedE_  .push_back(eleSeed->energy());
       eleSeedEta_  .push_back(eleSeed->eta());
       eleSeedPhi_  .push_back(eleSeed->phi());
       eleE1x5_     .push_back(lazyTool->e1x5(*eleSeed));
@@ -3281,7 +3284,9 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 	}
       }
       phoLICTD_.push_back(LICTD);
-      
+      phoSeedEta_.push_back(phoSeed->eta());
+      phoSeedPhi_.push_back(phoSeed->phi());
+      phoSeedE_.push_back(phoSeed->energy());
       phoEmax_.push_back(iPho->maxEnergyXtal());
       phoE2ndMax_.push_back(lazyTool->e2nd(*phoSeed));
       phoETop_.push_back(lazyTool->eTop(*phoSeed));
@@ -4789,7 +4794,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       if (QGTagsHandleLikelihood.isValid()) QGTag_likelihood_ = (*QGTagsHandleLikelihood)[jetRef] ;
     }
   }
-  
+  if(dumpSubJets_){
   nCA8Jet_ = 0;
   //jet substructure
   edm::Handle<edm::View<pat::Jet> > jetsCHSpruned;
@@ -4864,7 +4869,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
   } // end loop over "hard" jets
   
   // end Lvdp
-
+  }
   
   nConv_=0;
   
