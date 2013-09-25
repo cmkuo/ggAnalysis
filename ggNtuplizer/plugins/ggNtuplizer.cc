@@ -758,15 +758,14 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("tauLeadChargedHadronEta", &tauLeadChargedHadronEta_);
   tree_->Branch("tauLeadChargedHadronPhi", &tauLeadChargedHadronPhi_);
   tree_->Branch("tauLeadChargedHadronPt", &tauLeadChargedHadronPt_);
-
-  tree_->Branch("nPFPho", &nPFPho_, "nPFPho_/I");    
-  tree_->Branch("PFPhoE", &PFPhoE_);
-  tree_->Branch("PFPhoEt", &PFPhoEt_);
-  tree_->Branch("PFPhoEta", &PFPhoEta_);
-  tree_->Branch("PFPhoPhi", &PFPhoPhi_);
-  tree_->Branch("PFPhoType", &PFPhoType_);
-  tree_->Branch("PFPhoIso", &PFPhoIso_);
   if (develop_) {
+    tree_->Branch("nPFPho", &nPFPho_, "nPFPho_/I");    
+    tree_->Branch("PFPhoE", &PFPhoE_);
+    tree_->Branch("PFPhoEt", &PFPhoEt_);
+    tree_->Branch("PFPhoEta", &PFPhoEta_);
+    tree_->Branch("PFPhoPhi", &PFPhoPhi_);
+    tree_->Branch("PFPhoType", &PFPhoType_);
+    tree_->Branch("PFPhoIso", &PFPhoIso_);
     tree_->Branch("PFPhoMaxEtaWidth_", PFPhoMaxEtaWidth_, "PFPhoMaxEtaWidth_[nPFPho_]/F");
     tree_->Branch("PFPhoMaxPhiWidth_", PFPhoMaxPhiWidth_, "PFPhoMaxPhiWidth_[nPFPho_]/F");
     tree_->Branch("nPFPhoClust_", nPFPhoClust_, "nPFPhoClust_[nPFPho_]/I");
@@ -4084,13 +4083,12 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
     } // loop over tau candidates
   } // tau handle is valid
 
-
-  // PFPhotons
+    // PFPhotons
   nPFPho_  = 0;
   nPFEle_  = 0;
   nPFchad_ = 0;
   nPFnhad_ = 0;    
-
+  
   float PFPhoE = 0;
   float PFPhoEt = 0;
   float PFPhoEta = 0;
@@ -4098,7 +4096,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
   float PFPhoIso = 0;
   int PFPhoType = 999;
 
-  if (!develop_) { // loop all PF candidates
+  if (develop_) { // loop all PF candidates
 
     for (unsigned iCand=0; iCand< pfAllCandidates->size(); ++iCand) {
       
