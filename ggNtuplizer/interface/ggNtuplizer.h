@@ -1170,6 +1170,8 @@ protected:
   vector<int>    jetNConstituents_;
   vector<float>  jetCombinedSecondaryVtxBJetTags_; // recommended
   vector<float>  jetCombinedSecondaryVtxMVABJetTags_;
+  vector<float>  jetJetProbabilityBJetTags_;
+  vector<float>  jetJetBProbabilityBJetTags_;
   vector<vector<float> >  jetBetaStar_;
   vector<int>    jetGenJetIndex_;
   vector<float>  jetGenJetEn_;

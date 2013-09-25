@@ -1010,6 +1010,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("jetNConstituents", &jetNConstituents_);
     tree_->Branch("jetCombinedSecondaryVtxBJetTags", &jetCombinedSecondaryVtxBJetTags_);
     tree_->Branch("jetCombinedSecondaryVtxMVABJetTags", &jetCombinedSecondaryVtxMVABJetTags_);
+    tree_->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
+    tree_->Branch("jetJetBProbabilityBJetTags", &jetJetBProbabilityBJetTags_);
     tree_->Branch("jetBetaStar", &jetBetaStar_);
     // CMG Jet Id Variables
     tree_->Branch("jetPFLooseId", &jetPFLooseId_);
@@ -1679,6 +1681,8 @@ void ggNtuplizer::clearVectors() {
   jetNConstituents_.clear();
   jetCombinedSecondaryVtxBJetTags_.clear();
   jetCombinedSecondaryVtxMVABJetTags_.clear();
+  jetJetProbabilityBJetTags_.clear();
+  jetJetBProbabilityBJetTags_.clear();
   jetBetaStar_.clear();
   jetGenJetIndex_.clear();
   jetGenJetEn_.clear();
@@ -4551,8 +4555,10 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       jetSoftLeptIdEle95_  .push_back(jetSoftLeptIdEle95);
 
       // b-tagging
-      jetCombinedSecondaryVtxBJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexBJetTags"));   //   rob !!!!
-      jetCombinedSecondaryVtxMVABJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexMVABJetTags"));   //   rob !!!!
+      jetCombinedSecondaryVtxBJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexBJetTags"));
+      jetCombinedSecondaryVtxMVABJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexMVABJetTags"));
+      jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("jetProbabilityBJetTags"));  
+      jetJetBProbabilityBJetTags_.push_back(iJet->bDiscriminator("jetBProbabilityBJetTags"));
 
       // betastar
       vector<float> jetBetaStar;
