@@ -1034,8 +1034,16 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("jetNCharged", &jetNCharged_);
     tree_->Branch("jetMVAs", &jetMVAs_); // 0: simple, 1: full, 2: cut based, 3: philv1
     tree_->Branch("jetWPLevels", &jetWPLevels_); // 0: simple, 1: full, 2: cut based, 3: philv1
-    tree_->Branch("jetMVAsExt", jetMVAsExt_, "jetMVAsExt[nJet][4][100]/F");             // 0: simple, 1: full, 2: cut based, 3: philv1; vtxbs
-    tree_->Branch("jetWPLevelsExt", jetWPLevelsExt_, "jetWPLevelsExt[nJet][4][100]/I"); // 0: simple, 1: full, 2: cut based, 3: philv1; vtxbs
+//     tree_->Branch("jetMVAsExt", jetMVAsExt_, "jetMVAsExt[nJet][4][100]/F");             // 0: simple, 1: full, 2: cut based, 3: philv1; vtxbs
+//     tree_->Branch("jetWPLevelsExt", jetWPLevelsExt_, "jetWPLevelsExt[nJet][4][100]/I"); // 0: simple, 1: full, 2: cut based, 3: philv1; vtxbs
+    tree_->Branch("jetMVAsExt_simple", &jetMVAsExt_simple_);
+    tree_->Branch("jetWPLevelsExt_simple", &jetWPLevelsExt_simple_);
+    tree_->Branch("jetMVAsExt_full", &jetMVAsExt_full_);
+    tree_->Branch("jetWPLevelsExt_full", &jetWPLevelsExt_full_);
+    tree_->Branch("jetMVAsExt_cutBased", &jetMVAsExt_cutBased_);
+    tree_->Branch("jetWPLevelsExt_cutBased", &jetWPLevelsExt_cutBased_);
+    tree_->Branch("jetMVAsExt_philv1", &jetMVAsExt_philv1_);
+    tree_->Branch("jetWPLevelsExt_philv1", &jetWPLevelsExt_philv1_);
 
     //b-jet regression variables
     tree_->Branch("jetMt", &jetMt_);
@@ -4622,12 +4630,21 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       vector<float> jetBetaStarCMGExt;
       vector<float> jetBetaStarClassicExt;
 
-      for(unsigned int iVtx = 0; iVtx < 100; ++iVtx) {
-	for(unsigned int imva = 0; imva < jetMVAAlgos_.size(); ++imva) {
-	  jetMVAsExt_[nJet_][imva][iVtx]  = -3.;
-	  jetWPLevelsExt_[nJet_][imva][iVtx] = -1;
-	}
-      }
+      jetMVAsExt_simple_.clear();
+      jetMVAsExt_full_.clear();
+      jetMVAsExt_cutBased_.clear();
+      jetMVAsExt_philv1_.clear();
+      jetWPLevelsExt_simple_.clear();
+      jetWPLevelsExt_full_.clear();
+      jetWPLevelsExt_cutBased_.clear();
+      jetWPLevelsExt_philv1_.clear();
+
+//       for(unsigned int iVtx = 0; iVtx < 100; ++iVtx) {
+//         for(unsigned int imva = 0; imva < jetMVAAlgos_.size(); ++imva) {
+//           jetMVAsExt_[nJet_][imva][iVtx]  = -3.;
+//           jetWPLevelsExt_[nJet_][imva][iVtx] = -1;
+//         }
+//       }
 
       if (pujetIDalgos_.size()>0) {
         float jecSetup = 0.0;
@@ -4674,6 +4691,9 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 	  }
         } // loop over algos
 
+        vector<float> tmp_MVAsExt[4];
+        vector<int> tmp_WPsExt[4];
+
         for(size_t iVtx=0; 
 	    iVtx<vertexCollection.size() && iVtx < 100; ++iVtx) {
           PileupJetIdentifier jetMVAinputsExt = jetMVACalculator->computeIdVariables( thisjet, jecSetup, &vertexCollection[iVtx], vertexCollection);
@@ -4690,10 +4710,22 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
             PileupJetIdentifier id = ialgo->computeMva();
             tmp_MVAs.push_back(id.mva());
             tmp_WPs .push_back(id.idFlag());
-	    jetMVAsExt_[nJet_][imva][iVtx]  = id.mva() ;
-            jetWPLevelsExt_[nJet_][imva][iVtx] = id.idFlag();
+
+            tmp_MVAsExt[imva].push_back(id.mva());
+            tmp_WPsExt[imva].push_back(id.idFlag());
           }
         } // loop over vtxs
+
+        jetMVAsExt_simple_.push_back(tmp_MVAsExt[0]);
+        jetMVAsExt_full_.push_back(tmp_MVAsExt[1]);
+        jetMVAsExt_cutBased_.push_back(tmp_MVAsExt[2]);
+        jetMVAsExt_philv1_.push_back(tmp_MVAsExt[3]);
+
+        jetWPLevelsExt_simple_.push_back(tmp_WPsExt[0]);
+        jetWPLevelsExt_full_.push_back(tmp_WPsExt[1]);
+        jetWPLevelsExt_cutBased_.push_back(tmp_WPsExt[2]);
+        jetWPLevelsExt_philv1_.push_back(tmp_WPsExt[3]);
+
       }
       // Fill the algo jet containers
       jetDRMean_ .push_back(jetDRMean);

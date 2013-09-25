@@ -1188,8 +1188,15 @@ protected:
   // Jet ID MVA variables
   vector<vector<float> >  jetMVAs_;
   vector<vector<int> >    jetWPLevels_;
-  Float_t jetMVAsExt_[maxP][4][100];
-  Int_t   jetWPLevelsExt_[maxP][4][100];
+
+  vector<vector<float> > jetMVAsExt_simple_;
+  vector<vector<float> > jetMVAsExt_full_;
+  vector<vector<float> > jetMVAsExt_cutBased_;
+  vector<vector<float> > jetMVAsExt_philv1_;
+  vector<vector<int> > jetWPLevelsExt_simple_;
+  vector<vector<int> > jetWPLevelsExt_full_;
+  vector<vector<int> > jetWPLevelsExt_cutBased_;
+  vector<vector<int> > jetWPLevelsExt_philv1_;
 
   std::vector<PileupJetIdAlgo* > pujetIDalgos_;
   vector<float> jetDRMean_;
