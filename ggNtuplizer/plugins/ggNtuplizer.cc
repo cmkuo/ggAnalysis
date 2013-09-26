@@ -1176,6 +1176,9 @@ void ggNtuplizer::clearVectors() {
   vtxbs_z_.clear();
   vtxbsTkIndex_->clear();
   vtxbsTkWeight_->clear();
+  vtxbsPtMod_.clear();
+  vtxbsSumPt2_.clear();
+
   trkP_x_.clear();
   trkP_y_.clear();
   trkP_z_.clear();
@@ -1260,6 +1263,16 @@ void ggNtuplizer::clearVectors() {
   eleSigmaIEtaIEta_.clear();
   eleSigmaIEtaIPhi_.clear();
   eleSigmaIPhiIPhi_.clear();
+  eleE2ndMax_.clear();
+  eleE2x5Bottom_.clear();
+  eleE2x5Left_.clear();
+  eleE2x5Right_.clear();
+  eleE2x5Top_.clear();
+  eleEBottom_.clear();
+  eleELeft_.clear();
+  eleERight_.clear();
+  eleETop_.clear();
+  eleR9_.clear();
   eleEmax_.clear();
   eleE1x5_.clear();
   eleE3x3_.clear();
@@ -1270,6 +1283,9 @@ void ggNtuplizer::clearVectors() {
   elePhoRegrE_.clear();
   elePhoRegrEerr_.clear();
   eleSeedTime_.clear();
+  eleSeedE_.clear();
+  eleSeedEta_.clear();
+  eleSeedPhi_.clear();
   eleRecoFlag_.clear();
   elePos_.clear();
   eleGenIndex_.clear();
@@ -1317,7 +1333,11 @@ void ggNtuplizer::clearVectors() {
   elePFChIso04_.clear();
   elePFPhoIso04_.clear();
   elePFNeuIso04_.clear();
-  
+  eleCrysEta_.clear();
+  eleCrysIEta_.clear();
+  eleCrysIPhi_.clear();
+  eleCrysPhi_.clear();
+
   // photon vectors
   phoTrg_.clear();
   phoTrgFilter_.clear();
@@ -1368,6 +1388,16 @@ void ggNtuplizer::clearVectors() {
   phoSigmaIEtaIEta_.clear();
   phoSigmaIEtaIPhi_.clear();
   phoSigmaIPhiIPhi_.clear();
+  phoE2ndMax_.clear();
+  phoE2x5Bottom_.clear();
+  phoE2x5Left_.clear();
+  phoE2x5Right_.clear();
+  phoE2x5Top_.clear();
+  phoEBottom_.clear();
+  phoELeft_.clear();
+  phoERight_.clear();
+  phoETop_.clear();
+  phoNClus_.clear();
   phoEmax_.clear();
   phoE3x3_.clear();
   phoE5x5_.clear();
@@ -1446,6 +1476,9 @@ void ggNtuplizer::clearVectors() {
   
   phoSeedDetId1_.clear();
   phoSeedDetId2_.clear();
+  phoSeedE_.clear();
+  phoSeedEta_.clear();
+  phoSeedPhi_.clear();
   phoRecoFlag_.clear();
   phoPos_.clear();
   phoGenIndex_.clear();
@@ -1520,7 +1553,11 @@ void ggNtuplizer::clearVectors() {
   phoPFConvVtx_x_.clear();
   phoPFConvVtx_y_.clear();
   phoPFConvVtx_z_.clear();
-  
+  phoCrysEta_.clear();
+  phoCrysIEta_.clear();
+  phoCrysIPhi_.clear();
+  phoCrysPhi_.clear();
+
   //new PF Variables stored when Matched to Reco:
   PFRecoMatch_.clear();
   PFEleMatch_.clear();
@@ -1703,6 +1740,14 @@ void ggNtuplizer::clearVectors() {
   jetGenPhi_.clear();
   jetGenPartonMomID_.clear();
   //JetIDMVAvariable.clear();
+  jetMVAsExt_simple_.clear();
+  jetMVAsExt_full_.clear();
+  jetMVAsExt_cutBased_.clear();
+  jetMVAsExt_philv1_.clear();
+  jetWPLevelsExt_simple_.clear();
+  jetWPLevelsExt_full_.clear();
+  jetWPLevelsExt_cutBased_.clear();
+  jetWPLevelsExt_philv1_.clear();
   jetMVAs_.clear();
   jetWPLevels_.clear();
 
@@ -2716,10 +2761,10 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
          eleCrysIPhi_.push_back(biphi);
       }
        else{
-         phoCrysEta_.push_back(-99);
-         phoCrysPhi_.push_back(-99);
-         phoCrysIEta_.push_back(-9999);
-         phoCrysIPhi_.push_back(-9999);
+         eleCrysEta_.push_back(-99);
+         eleCrysPhi_.push_back(-99);
+         eleCrysIEta_.push_back(-9999);
+         eleCrysIPhi_.push_back(-9999);
       }
        
       // Energy Regression Correction
@@ -3313,13 +3358,12 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoE2x5Max_.push_back(iPho->e2x5());
       phoE2x5Top_.push_back(lazyTool->e2x5Top(*phoSeed));
       phoE2x5Bottom_.push_back(lazyTool->e2x5Bottom(*phoSeed));
-      phoE2x5Top_.push_back(lazyTool->e2x5Top(*phoSeed));
       phoE2x5Right_.push_back(lazyTool->e2x5Right(*phoSeed));
       phoE2x5Left_.push_back(lazyTool->e2x5Left(*phoSeed));
       phoE2x5Max_.push_back(lazyTool->e2x5Max(*phoSeed));
-       if(iPho->isEB()){
-      float betacry, bphicry, bthetatilt, bphitilt;
-      int bieta, biphi;
+      if(iPho->isEB()){
+	float betacry, bphicry, bthetatilt, bphitilt;
+	int bieta, biphi;
          _ecalLocal.localCoordsEB(*phoSeed,es,betacry,bphicry,bieta,biphi,bthetatilt,bphitilt);
          phoCrysEta_.push_back(betacry);
          phoCrysPhi_.push_back(bphicry);
@@ -4629,15 +4673,6 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       vector<float> jetBetaExt;
       vector<float> jetBetaStarCMGExt;
       vector<float> jetBetaStarClassicExt;
-
-      jetMVAsExt_simple_.clear();
-      jetMVAsExt_full_.clear();
-      jetMVAsExt_cutBased_.clear();
-      jetMVAsExt_philv1_.clear();
-      jetWPLevelsExt_simple_.clear();
-      jetWPLevelsExt_full_.clear();
-      jetWPLevelsExt_cutBased_.clear();
-      jetWPLevelsExt_philv1_.clear();
 
 //       for(unsigned int iVtx = 0; iVtx < 100; ++iVtx) {
 //         for(unsigned int imva = 0; imva < jetMVAAlgos_.size(); ++imva) {
