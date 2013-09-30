@@ -14,14 +14,14 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(10)
+        input = cms.untracked.int32(100)
             )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-    'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
+    #'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
     #'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
-    #'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
+    'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -101,25 +101,13 @@ process.ggNtuplizer.dumpTrks=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
-#Lvdp
-# gluontagger
-process.load('QuarkGluonTagger.EightTeV.QGTagger_RecoJets_cff')  
-process.QGTagger.srcJets = cms.InputTag("selectedPatJetsAK5PF")
-process.QGTagger.isPatJet  = cms.untracked.bool(True)
-#process.QGTagger.useCHS  = cms.untracked.bool(True)
-
-#jet substructure
-process.load("ExoDiBosonResonances.PATtupleProduction.PAT_ca8jets_cff")
-ca8Jets = cms.Sequence( process.PATCMGJetSequenceCA8CHS + process.PATCMGJetSequenceCA8CHSpruned + process.selectedPatJetsCA8CHSwithNsub)
-#end Lvdp
-
-
 # electron energy regression
 process.load("EgammaAnalysis.ElectronTools.electronRegressionEnergyProducer_cfi")
+process.eleRegressionEnergy.energyRegressionType = cms.uint32(2)
 
 process.load("Configuration.StandardSequences.Services_cff")
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                                                   calibratedPatElectrons = cms.PSet(
+                                                  calibratedPatElectrons = cms.PSet(
     initialSeed = cms.untracked.uint32(1),
     engineName = cms.untracked.string('TRandom3')
     ),
@@ -127,12 +115,12 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 
 process.load("EgammaAnalysis.ElectronTools.calibratedPatElectrons_cfi")
 process.calibratedPatElectrons.isMC = cms.bool(True)
-process.calibratedPatElectrons.inputDataset = cms.string("Summer12_DR53X_HCP2012")
-process.calibratedPatElectrons.updateEnergyError = cms.bool(True)
-process.calibratedPatElectrons.applyCorrections = cms.int32(10)
-process.calibratedPatElectrons.debug = cms.bool(False)
+process.calibratedPatElectrons.inputDataset = cms.string("Summer12_LegacyPaper")
+process.calibratedPatElectrons.correctionsType = cms.int32(2)
+process.calibratedPatElectrons.combinationType = cms.int32(3)
 
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
+process.load("ggAnalysis.ggNtuplizer.ggJets_cff")
 process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
 
 process.patElectrons.userIsolation.user = cms.VPSet(
@@ -163,7 +151,7 @@ process.p = cms.Path(
     process.produceType0MET*
     process.eleIsoSequence*
     process.phoIsoSequence*
-    ca8Jets* ###########
+    process.ca8Jets* ###########
     process.QuarkGluonTagger*
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*

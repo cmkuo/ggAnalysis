@@ -2,9 +2,9 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process("ggkIT")
 
-process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+#process.load("FWCore.MessageLogger.MessageLogger_cfi")
+#process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
+#process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
 
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
@@ -19,7 +19,9 @@ process.maxEvents = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-    'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
+    #'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
+    #'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
+    'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -36,6 +38,13 @@ process.patJetCorrFactors.useRho = cms.bool(True)
 
 process.ak5PFJets.doAreaFastjet = True
 process.patJets.addTagInfos = cms.bool(True)
+
+# Taus
+from PhysicsTools.PatAlgos.tools.tauTools import *
+process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
+process.cleanPatTaus.preselection = cms.string(' tauID("decayModeFinding") > 0.5 ')
+process.cleanPatTaus.finalCut     = cms.string(' pt > 15.0 & abs(eta) < 2.5 ')
+process.load("ggAnalysis.ggNtuplizer.ggTau_cff")
 
 #process.patJetCorrFactors.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 #process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets25','rho')
@@ -89,14 +98,16 @@ process.ggNtuplizer.triggerResults = cms.InputTag("TriggerResults::HLT")
 process.ggNtuplizer.getBlocks=cms.bool(False)
 process.ggNtuplizer.useAllPF=cms.bool(False)
 process.ggNtuplizer.dumpTrks=cms.bool(True)
+process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
 # electron energy regression
 process.load("EgammaAnalysis.ElectronTools.electronRegressionEnergyProducer_cfi")
+process.eleRegressionEnergy.energyRegressionType = cms.uint32(2)
 
 process.load("Configuration.StandardSequences.Services_cff")
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                                                   calibratedPatElectrons = cms.PSet(
+                                                  calibratedPatElectrons = cms.PSet(
     initialSeed = cms.untracked.uint32(1),
     engineName = cms.untracked.string('TRandom3')
     ),
@@ -104,12 +115,12 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 
 process.load("EgammaAnalysis.ElectronTools.calibratedPatElectrons_cfi")
 process.calibratedPatElectrons.isMC = cms.bool(True)
-process.calibratedPatElectrons.inputDataset = cms.string("Summer12_DR53X_HCP2012")
-process.calibratedPatElectrons.updateEnergyError = cms.bool(True)
-process.calibratedPatElectrons.applyCorrections = cms.int32(10)
-process.calibratedPatElectrons.debug = cms.bool(False)
+process.calibratedPatElectrons.inputDataset = cms.string("Summer12_LegacyPaper")
+process.calibratedPatElectrons.correctionsType = cms.int32(2)
+process.calibratedPatElectrons.combinationType = cms.int32(3)
 
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
+process.load("ggAnalysis.ggNtuplizer.ggJets_cff")
 process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
 
 process.patElectrons.userIsolation.user = cms.VPSet(
@@ -131,6 +142,7 @@ process.patElectrons.electronIDSources = cms.PSet(
 process.p = cms.Path(
     process.fjSequence*
     process.ak5PFJets*
+    process.pfNoPileUpSequence* ###########
     process.pfParticleSelectionSequence*
     process.ggBoostedEleModIsoSequence*
     process.eleMVAID*
@@ -139,9 +151,12 @@ process.p = cms.Path(
     process.produceType0MET*
     process.eleIsoSequence*
     process.phoIsoSequence*
+    process.ca8Jets* ###########
+    process.QuarkGluonTagger*
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
+    process.recoTauClassicHPSSequence*
     process.ggNtuplizer)
 
 #process.out_step = cms.EndPath(process.output)
