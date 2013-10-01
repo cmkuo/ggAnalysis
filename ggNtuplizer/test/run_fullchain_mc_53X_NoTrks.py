@@ -19,9 +19,9 @@ process.maxEvents = cms.untracked.PSet(
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-    #'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
+    'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
     #'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
-    'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
+#    'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -120,7 +120,7 @@ process.calibratedPatElectrons.correctionsType = cms.int32(2)
 process.calibratedPatElectrons.combinationType = cms.int32(3)
 
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
-process.load("ggAnalysis.ggNtuplizer.ggJets_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMergedJets_mc_cff")
 process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
 
 process.patElectrons.userIsolation.user = cms.VPSet(
