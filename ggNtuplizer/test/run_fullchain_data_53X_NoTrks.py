@@ -5,21 +5,21 @@ from RecoLocalCalo.Configuration.ecalLocalRecoSequence_cff import *
 process = cms.Process("ggKIT")
 
 process.load("FWCore.MessageLogger.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(1000)
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(True) )
+process.MessageLogger.cerr.FwkReport.reportEvery = cms.untracked.int32(10)
+process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
 process.load("Configuration.StandardSequences.GeometryDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.Reconstruction_cff')
-process.GlobalTag.globaltag = cms.string('GR_P_V41_AN1::All')
+process.GlobalTag.globaltag = cms.string('FT_53_V21_AN3::All')
         
 process.maxEvents = cms.untracked.PSet(
     input = cms.untracked.int32(100)
     )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-    'file:/data4/cmkuo/testfiles/DoublePhoton_2012C_PRv2_AOD.root' 
+'/store/data/Run2012D/DoubleElectron/AOD/22Jan2013-v1/10027/FA331ACE-0B90-E211-9FE3-00261894393E.root'
     ), 
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -98,6 +98,7 @@ process.ggNtuplizer.triggerResults = cms.InputTag("TriggerResults::HLT")
 process.ggNtuplizer.getBlocks=cms.bool(False)
 process.ggNtuplizer.useAllPF=cms.bool(False)
 process.ggNtuplizer.dumpTrks=cms.bool(False)
+process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 # electron energy regression
@@ -111,6 +112,11 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
     ),
                                                    )
 
+
+process.patElectrons.electronIDSources = cms.PSet(
+    mvaTrigV0 = cms.InputTag("mvaTrigV0"),
+    mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
+    )
 process.load("EgammaAnalysis.ElectronTools.calibratedPatElectrons_cfi")
 process.calibratedPatElectrons.isMC = cms.bool(False)
 process.calibratedPatElectrons.inputDataset = cms.string("22Jan2013ReReco")
@@ -119,6 +125,8 @@ process.calibratedPatElectrons.applyCorrections = cms.int32(10)
 process.calibratedPatElectrons.debug = cms.bool(False)
 
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMergedJets_data_cff")
+process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
 process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 process.load("ggAnalysis.ggNtuplizer.ggBoostedEleModIso_cff")
 
@@ -138,21 +146,28 @@ process.load('HLTrigger.HLTfilters.hltHighLevel_cfi')
 process.leptonHLTFilter = copy.deepcopy(process.hltHighLevel)
 process.leptonHLTFilter.throw = cms.bool(False)
 process.leptonHLTFilter.HLTPaths = ['HLT_Ele27_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_v*','HLT_Ele32_CaloIdVT_CaloIsoT_TrkIdT_TrkIsoT_v*','HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_Ele8_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*','HLT_Ele17_CaloIdT_CaloIsoVL_TrkIdVL_TrkIsoVL_v*','HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass50_v*','HLT_Ele20_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC4_Mass50_v*','HLT_Ele32_CaloIdT_CaloIsoT_TrkIdT_TrkIsoT_SC17_Mass50_v*','HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_Ele8_Mass30_v*','HLT_Ele17_CaloIdVT_CaloIsoVT_TrkIdT_TrkIsoVT_SC8_Mass30_v*','HLT_Ele32_CaloIdT_CaloIsoT_TrkIdT_TrkIsoT_SC17_v*','HLT_Ele17_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL_Ele8_CaloIdT_TrkIdVL_CaloIsoVL_TrkIsoVL_v*']
-    
+   
+ 
 process.p = cms.Path(
     process.leptonHLTFilter*
     process.fjSequence*
     process.ak5PFJets*
+    process.pfNoPileUpSequence* ###########
+    process.pfParticleSelectionSequence*
     process.ggBoostedEleModIsoSequence*
+    process.eleMVAID*
     process.type0PFMEtCorrection*
     process.patDefaultSequence*
     process.produceType0MET*
     process.eleIsoSequence*
     process.phoIsoSequence*
+    process.ca8Jets* ###########
+    process.QuarkGluonTagger*
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
     process.ggMETFiltersSequence*
+    process.recoTauClassicHPSSequence*
     process.ggNtuplizer)
 
 #process.out_step = cms.EndPath(process.output)
