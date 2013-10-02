@@ -4907,17 +4907,22 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
     }
     
     CA8prunedJetMass_.push_back( !CA8matched ? -999. : ijetCHSmatch->mass() );
-    CA8prunedJet_nSubJets_.push_back( !CA8matched ? 0 : ijetCHSmatch->numberOfDaughters() );
+//    CA8prunedJet_nSubJets_.push_back( !CA8matched ? 0 : ijetCHSmatch->numberOfDaughters() );
     std::vector<TLorentzVector> subJets;
+    int nsubjets=0;
     if( CA8matched ){
       for(unsigned int idaughter=0; idaughter!=ijetCHSmatch->numberOfDaughters(); idaughter++){
-	if( ijetCHSmatch->daughter(idaughter) != 0 && ijetCHSmatch->daughter(idaughter)->pt()>0.)
-	  subJets.push_back( TLorentzVector(ijetCHSmatch->daughter(idaughter)->px(),
-					    ijetCHSmatch->daughter(idaughter)->py(),
-					    ijetCHSmatch->daughter(idaughter)->pz(),
-					    ijetCHSmatch->daughter(idaughter)->energy())
-			     );
-      }
+        if( ijetCHSmatch->daughter(idaughter) != 0 && ijetCHSmatch->daughter(idaughter)->pt()>0.)
+         {
+          subJets.push_back( TLorentzVector(ijetCHSmatch->daughter(idaughter)->px(),
+                                            ijetCHSmatch->daughter(idaughter)->py(),
+                                            ijetCHSmatch->daughter(idaughter)->pz(),
+                                            ijetCHSmatch->daughter(idaughter)->energy())
+                             );
+          nsubjets++;
+         }
+       }
+    CA8prunedJet_nSubJets_.push_back(nsubjets);
       
       //Now sort the vector.
       std::sort(subJets.begin(),subJets.end(),compareMass);
