@@ -3436,19 +3436,19 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoSCBrem_    .push_back((*iPho).superCluster()->phiWidth()/(*iPho).superCluster()->etaWidth());
       
       // supercluster removal PF isolations
-      phoSCRChIso_ .push_back(scRemover03.PFIsolation("charged", (*iPho).superCluster(), firstGoodVtx));// not sure about vertex index
+      phoSCRChIso_ .push_back(scRemover03.PFIsolation("charged", (*iPho).superCluster(), 0));
       phoSCRPhoIso_.push_back(scRemover03.PFIsolation("photon",  (*iPho).superCluster()));
       phoSCRNeuIso_.push_back(scRemover03.PFIsolation("neutral", (*iPho).superCluster()));
       
-      phoSCRChIso04_ .push_back(scRemover04.PFIsolation("charged", (*iPho).superCluster(), firstGoodVtx));// not sure about vertex index
+      phoSCRChIso04_ .push_back(scRemover04.PFIsolation("charged", (*iPho).superCluster(), 0));
       phoSCRPhoIso04_.push_back(scRemover04.PFIsolation("photon",  (*iPho).superCluster()));
       phoSCRNeuIso04_.push_back(scRemover04.PFIsolation("neutral", (*iPho).superCluster()));
 
-      phoRandConeChIso_.push_back(scRemover03.RandomConeIsolation("charged", (*iPho).superCluster(), firstGoodVtx));// not sure about vertex index
+      phoRandConeChIso_.push_back(scRemover03.RandomConeIsolation("charged", (*iPho).superCluster(), 0));
       phoRandConePhoIso_.push_back(scRemover03.RandomConeIsolation("photon",  (*iPho).superCluster()));
       phoRandConeNeuIso_.push_back(scRemover03.RandomConeIsolation("neutral", (*iPho).superCluster()));
       
-      phoRandConeChIso04_.push_back(scRemover04.RandomConeIsolation("charged", (*iPho).superCluster(), firstGoodVtx));// not sure about vertex index
+      phoRandConeChIso04_.push_back(scRemover04.RandomConeIsolation("charged", (*iPho).superCluster(), 0));
       phoRandConePhoIso04_.push_back(scRemover04.RandomConeIsolation("photon",  (*iPho).superCluster()));
       phoRandConeNeuIso04_.push_back(scRemover04.RandomConeIsolation("neutral", (*iPho).superCluster()));
       
