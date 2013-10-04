@@ -1139,6 +1139,12 @@ protected:
   vector<float>  CA8Jet_tau1_;
   vector<float>  CA8Jet_tau2_;
   vector<float>  CA8Jet_tau3_;
+  vector<float>  CA8JetCHF_;
+  vector<float>  CA8JetNHF_;
+  vector<float>  CA8JetCEF_;
+  vector<float>  CA8JetNEF_;
+  vector<int>  CA8JetNCH_;
+  vector<int>  CA8Jetnconstituents_;
   vector<float>  CA8prunedJetMass_;
   vector<int>    CA8prunedJet_nSubJets_;
   vector<vector<float> >  CA8prunedJet_SubjetPt_;
