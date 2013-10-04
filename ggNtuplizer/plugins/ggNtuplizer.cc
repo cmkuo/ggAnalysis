@@ -978,6 +978,12 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
     tree_->Branch("CA8Jet_tau1", &CA8Jet_tau1_);
     tree_->Branch("CA8Jet_tau2", &CA8Jet_tau2_);
     tree_->Branch("CA8Jet_tau3", &CA8Jet_tau3_);
+    tree_->Branch("CA8JetCHF", &CA8JetCHF_);
+    tree_->Branch("CA8JetNHF",&CA8JetNHF_);
+    tree_->Branch("CA8JetCEF",&CA8JetCEF_);
+    tree_->Branch("CA8JetNEF",&CA8JetNEF_);
+    tree_->Branch("CA8JetNCH",&CA8JetNCH_);
+    tree_->Branch("CA8Jetnconstituents",&CA8Jetnconstituents_);
     tree_->Branch("CA8prunedJetMass", &CA8prunedJetMass_);
     tree_->Branch("CA8prunedJet_nSubJets", &CA8prunedJet_nSubJets_) ;
     tree_->Branch("CA8prunedJet_SubjetPt", &CA8prunedJet_SubjetPt_);
@@ -1695,6 +1701,12 @@ void ggNtuplizer::clearVectors() {
   CA8Jet_tau1_.clear();
   CA8Jet_tau2_.clear();
   CA8Jet_tau3_.clear();
+  CA8JetCHF_.clear();
+  CA8JetNHF_.clear();
+  CA8JetCEF_.clear();
+  CA8JetNEF_.clear();
+  CA8JetNCH_.clear();
+  CA8Jetnconstituents_.clear();
   CA8prunedJetMass_.clear();
   CA8prunedJet_nSubJets_.clear();
   CA8prunedJet_SubjetPt_.clear();
@@ -4884,7 +4896,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 
   // Loop over the "hard" jets
   for(ijetCHS = beginCHS; ijetCHS != endCHS; ++ijetCHS ){
-    if( ijetCHS->pt() < 50.0 ) continue;
+    if( ijetCHS->pt() < 30.0 ) continue;
     nCA8Jet_++;
     CA8JetPt_.push_back( ijetCHS->pt() );
     CA8JetEta_.push_back( ijetCHS->eta() );
@@ -4894,7 +4906,15 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
     CA8Jet_tau1_.push_back( ijetCHS->userFloat("tau1") );
     CA8Jet_tau2_.push_back( ijetCHS->userFloat("tau2") );
     CA8Jet_tau3_.push_back( ijetCHS->userFloat("tau3") );
-    
+
+    CA8JetCHF_.push_back( ijetCHS->chargedHadronEnergyFraction()); // 0.0
+    CA8JetNHF_.push_back( ( ijetCHS->neutralHadronEnergy() + ijetCHS->HFHadronEnergy() ) / ijetCHS->energy()); //0.99
+    CA8JetCEF_.push_back( ijetCHS->chargedEmEnergyFraction()); //0.99
+    CA8JetNEF_.push_back( ijetCHS->neutralEmEnergyFraction()); //0.99
+    CA8JetNCH_.push_back( ijetCHS->chargedMultiplicity()); //0
+    CA8Jetnconstituents_.push_back( ijetCHS->numberOfDaughters()); //1
+    //    cout<<"pruned: CHF : "<<ijetCHS->chargedHadronEnergyFraction()<<"  NHF : "<<ijetCHS->neutralEmEnergyFraction()<<"  NCH : "<<ijetCHS->chargedMultiplicity()<<endl;
+
     View<pat::Jet>::const_iterator ijetCHSmatch;
     bool CA8matched = false;
     // iterate over pruned jets, choose the mathed one
