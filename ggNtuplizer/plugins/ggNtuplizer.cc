@@ -525,7 +525,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("phoSeedPhi", &phoSeedPhi_);
   tree_->Branch("phoCrysEta", &phoCrysEta_);
   tree_->Branch("phoCrysPhi", &phoCrysPhi_);
-  tree_->Branch("phoCrysEta", &phoCrysEta_);
   tree_->Branch("phoCrysIEta", &phoCrysIEta_);
   tree_->Branch("phoCrysIPhi", &phoCrysIPhi_);
   tree_->Branch("phoPFChIso", &phoPFChIso_);
