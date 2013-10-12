@@ -13,13 +13,14 @@ process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 process.GlobalTag.globaltag = cms.string('FT_53_V21_AN3::All')
-        
+
 process.maxEvents = cms.untracked.PSet(
-    input = cms.untracked.int32(100)
+    input = cms.untracked.int32(-1)
     )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-'/store/data/Run2012D/DoubleElectron/AOD/22Jan2013-v1/10027/FA331ACE-0B90-E211-9FE3-00261894393E.root'
+    #'/store/data/Run2012D/DoubleElectron/AOD/22Jan2013-v1/10027/FA331ACE-0B90-E211-9FE3-00261894393E.root'
+    'file:/data4/cmkuo/testfiles/Photon_2012A_22Jan2013_AOD.root'
     ), 
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -41,6 +42,13 @@ process.patJetCorrFactors.useRho = cms.bool(True)
 
 process.ak5PFJets.doAreaFastjet = True
 process.patJets.addTagInfos = cms.bool(True)
+
+# Taus
+from PhysicsTools.PatAlgos.tools.tauTools import *
+process.load("RecoTauTag.Configuration.RecoPFTauTag_cff")
+process.cleanPatTaus.preselection = cms.string(' tauID("decayModeFinding") > 0.5 ')
+process.cleanPatTaus.finalCut     = cms.string(' pt > 15.0 & abs(eta) < 2.5 ')
+process.load("ggAnalysis.ggNtuplizer.ggTau_cff")
 
 #process.patJetCorrFactors.levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual']
 #process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets25','rho')
@@ -103,6 +111,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree
 
 # electron energy regression
 process.load("EgammaAnalysis.ElectronTools.electronRegressionEnergyProducer_cfi")
+process.eleRegressionEnergy.energyRegressionType = cms.uint32(2)
 
 process.load("Configuration.StandardSequences.Services_cff")
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
@@ -112,17 +121,16 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
     ),
                                                    )
 
-
 process.patElectrons.electronIDSources = cms.PSet(
     mvaTrigV0 = cms.InputTag("mvaTrigV0"),
     mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
     )
+
 process.load("EgammaAnalysis.ElectronTools.calibratedPatElectrons_cfi")
 process.calibratedPatElectrons.isMC = cms.bool(False)
 process.calibratedPatElectrons.inputDataset = cms.string("22Jan2013ReReco")
-process.calibratedPatElectrons.updateEnergyError = cms.bool(True)
-process.calibratedPatElectrons.applyCorrections = cms.int32(10)
-process.calibratedPatElectrons.debug = cms.bool(False)
+process.calibratedPatElectrons.correctionsType = cms.int32(2)
+process.calibratedPatElectrons.combinationType = cms.int32(3)
 
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
 process.load("ggAnalysis.ggNtuplizer.ggMergedJets_data_cff")
@@ -134,6 +142,11 @@ process.patElectrons.userIsolation.user = cms.VPSet(
     cms.PSet(src = cms.InputTag("modElectronIso","track")),
     cms.PSet(src = cms.InputTag("modElectronIso","ecal")),
     cms.PSet(src = cms.InputTag("modElectronIso","hcalDepth1"))
+    )
+
+process.patElectrons.electronIDSources = cms.PSet(
+    mvaTrigV0 = cms.InputTag("mvaTrigV0"),
+    mvaNonTrigV0 = cms.InputTag("mvaNonTrigV0")
     )
 
 # Output definition
