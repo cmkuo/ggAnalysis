@@ -3366,7 +3366,6 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       phoE3x1_.push_back(lazyTool->e3x1(*phoSeed));
       phoE1x3_.push_back(lazyTool->e1x3(*phoSeed));
       phoE2x2_.push_back(lazyTool->e2x2(*phoSeed));
-      phoE2x5Max_.push_back(iPho->e2x5());
       phoE2x5Top_.push_back(lazyTool->e2x5Top(*phoSeed));
       phoE2x5Bottom_.push_back(lazyTool->e2x5Bottom(*phoSeed));
       phoE2x5Right_.push_back(lazyTool->e2x5Right(*phoSeed));
