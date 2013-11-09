@@ -2440,6 +2440,10 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
     else if (hlNames[i].find("HLT_Photon150_v") != string::npos) HLTIndex_[45] = i; 
     else if (hlNames[i].find("HLT_Photon160_v") != string::npos) HLTIndex_[46] = i; 
     else if (hlNames[i].find("HLT_Mu22_Photon22_CaloIdL_v") != string::npos) HLTIndex_[47] = i; 
+    else if (hlNames[i].find("HLT_Photon36_CalId10_Iso50_Photon22_CaloId10_Iso50_v") != string::npos) HLTIndex_[48] = i; 
+    else if (hlNames[i].find("HLT_Photon36_CalId10_Iso50_Photon22_R9Id85_v") != string::npos) HLTIndex_[49] = i; 
+    else if (hlNames[i].find("HLT_Photon36_R9Id85_Photon22_CaloId10_Iso50_v") != string::npos) HLTIndex_[50] = i; 
+    else if (hlNames[i].find("HLT_Photon36_R9Id85_Photon22_R9Id85_v") != string::npos) HLTIndex_[51] = i; 
   }
 
   // Gen, pfMET
