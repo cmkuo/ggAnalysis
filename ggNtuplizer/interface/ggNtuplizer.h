@@ -422,6 +422,11 @@ protected:
   vector<float>  elePhoRegrE_;
   vector<float>  elePhoRegrEerr_;
   vector<float>  eleSeedTime_;
+  vector<vector<float> > eleGSFPt_;
+  vector<vector<float> > eleGSFEta_;
+  vector<vector<float> > eleGSFPhi_;
+  vector<vector<float> > eleGSFCharge_;
+  vector<vector<float> > eleGSFChi2NDF_;
   vector<int>    eleRecoFlag_;
   vector<int>    elePos_;
   vector<int>    eleGenIndex_;
