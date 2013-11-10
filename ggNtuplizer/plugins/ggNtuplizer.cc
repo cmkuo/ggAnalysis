@@ -347,6 +347,11 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("elePhoRegrE", &elePhoRegrE_);
   tree_->Branch("elePhoRegrEerr", &elePhoRegrEerr_);
   tree_->Branch("eleSeedTime", &eleSeedTime_);
+  tree_->Branch("eleGSFPt", &eleGSFPt_);
+  tree_->Branch("eleGSFEta", &eleGSFEta_);
+  tree_->Branch("eleGSFPhi", &eleGSFPhi_);
+  tree_->Branch("eleGSFCharge", &eleGSFCharge_);
+  tree_->Branch("eleGSFChi2NDF", &eleGSFChi2NDF_);
   // If Flag == 2, it means that rechit is out of time
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EcalFirstBeam09Anomalous#Spike_identification_in_collision
   tree_->Branch("eleRecoFlag", &eleRecoFlag_);
@@ -1288,6 +1293,11 @@ void ggNtuplizer::clearVectors() {
   elePhoRegrE_.clear();
   elePhoRegrEerr_.clear();
   eleSeedTime_.clear();
+  eleGSFPt_.clear();
+  eleGSFEta_.clear();
+  eleGSFPhi_.clear();
+  eleGSFCharge_.clear();
+  eleGSFChi2NDF_.clear();
   eleSeedE_.clear();
   eleSeedEta_.clear();
   eleSeedPhi_.clear();
@@ -2640,6 +2650,29 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleD0GV_ .push_back(iEle->gsfTrack()->dxy(gv));
       eleDzGV_ .push_back(iEle->gsfTrack()->dz(gv));
 
+      vector<float> eleGSFPt;
+      vector<float> eleGSFEta;
+      vector<float> eleGSFPhi;
+      vector<float> eleGSFCharge;
+      vector<float> eleGSFChi2NDF;
+      eleGSFPt      .push_back(iEle->gsfTrack()->pt());
+      eleGSFEta     .push_back(iEle->gsfTrack()->eta());
+      eleGSFPhi     .push_back(iEle->gsfTrack()->phi());
+      eleGSFCharge  .push_back(iEle->gsfTrack()->charge());
+      eleGSFChi2NDF .push_back(iEle->gsfTrack()->normalizedChi2());
+      for (GsfTrackRefVector::const_iterator igsf = recoElectron->ambiguousGsfTracksBegin(); igsf != recoElectron->ambiguousGsfTracksEnd(); ++igsf) {
+	eleGSFPt      .push_back((*igsf)->pt());
+        eleGSFEta     .push_back((*igsf)->eta());
+        eleGSFPhi     .push_back((*igsf)->phi());
+	eleGSFCharge  .push_back((*igsf)->charge());
+        eleGSFChi2NDF .push_back((*igsf)->normalizedChi2());
+      }
+      eleGSFPt_      .push_back(eleGSFPt);
+      eleGSFEta_     .push_back(eleGSFEta);
+      eleGSFPhi_     .push_back(eleGSFPhi); 
+      eleGSFCharge_  .push_back(eleGSFCharge); 
+      eleGSFChi2NDF_ .push_back(eleGSFChi2NDF);
+      
       eledEtaAtVtx_ .push_back(iEle->deltaEtaSuperClusterTrackAtVtx());
       eledPhiAtVtx_ .push_back(iEle->deltaPhiSuperClusterTrackAtVtx());
       
@@ -2755,16 +2788,16 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       eleEBottom_  .push_back(lazyTool->eBottom(*eleSeed));
       eleELeft_    .push_back(lazyTool->eLeft(*eleSeed));
       eleERight_   .push_back(lazyTool->eRight(*eleSeed));
-      eleSeedE_  .push_back(eleSeed->energy());
+      eleSeedE_    .push_back(eleSeed->energy());
       eleSeedEta_  .push_back(eleSeed->eta());
       eleSeedPhi_  .push_back(eleSeed->phi());
       eleE1x5_     .push_back(lazyTool->e1x5(*eleSeed));
       eleE3x3_     .push_back(lazyTool->e3x3(*eleSeed));
       eleE5x5_     .push_back(iEle->e5x5());
       eleE2x5Max_  .push_back(lazyTool->e2x5Max(*eleSeed));
-      eleE2x5Left_  .push_back(lazyTool->e2x5Left(*eleSeed));
-      eleE2x5Right_  .push_back(lazyTool->e2x5Right(*eleSeed));
-      eleE2x5Top_  .push_back(lazyTool->e2x5Top(*eleSeed));     
+      eleE2x5Left_ .push_back(lazyTool->e2x5Left(*eleSeed));
+      eleE2x5Right_   .push_back(lazyTool->e2x5Right(*eleSeed));
+      eleE2x5Top_     .push_back(lazyTool->e2x5Top(*eleSeed));     
       eleE2x5Bottom_  .push_back(lazyTool->e2x5Bottom(*eleSeed));   
       if (iEle->isEB()){
        float betacry, bphicry, bthetatilt, bphitilt;
