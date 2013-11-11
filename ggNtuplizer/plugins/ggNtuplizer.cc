@@ -2143,17 +2143,23 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       }
     }
   }
-  if (nGoodVtx_ > 0) IsVtxGood_ = firstGoodVtx;
 
-  // Set PV and first good vertex
-  math::XYZPoint pv(vtx_x_[0], vtx_y_[0], vtx_z_[0]);
-  if (firstGoodVtx < 0) firstGoodVtx = 0; 
-  math::XYZPoint gv(vtx_x_[firstGoodVtx], vtx_y_[firstGoodVtx], vtx_z_[firstGoodVtx]);
+  math::XYZPoint pv(0, 0, 0);
+  math::XYZPoint gv(0, 0, 0);
+
+  if (nGoodVtx_ > 0) {
+    IsVtxGood_ = firstGoodVtx;
+
+    // Set PV and first good vertex
+    pv.SetXYZ(vtx_x_[0], vtx_y_[0], vtx_z_[0]);
+    if (firstGoodVtx < 0) firstGoodVtx = 0;
+    gv.SetXYZ(vtx_x_[firstGoodVtx], vtx_y_[firstGoodVtx], vtx_z_[firstGoodVtx]);
+  }
 
   // vertex with beamspot
   vtxbsTkIndex_->clear();
   vtxbsTkWeight_->clear();
-
+  
   nVtxBS_ = 0;
   if (recVtxsBS_.isValid()) {
     for (size_t i=0; i<recVtxsBS_->size(); ++i) {
