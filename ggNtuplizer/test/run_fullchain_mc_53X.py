@@ -122,6 +122,7 @@ process.calibratedPatElectrons.combinationType = cms.int32(3)
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
 process.load("ggAnalysis.ggNtuplizer.ggMergedJets_mc_cff")
 process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 process.load("ggAnalysis.ggNtuplizer.ggBoostedEleModIso_cff")
 
 process.patElectrons.userIsolation.user = cms.VPSet(
@@ -157,6 +158,7 @@ process.p = cms.Path(
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
+    process.ggMETFiltersSequence*
     process.recoTauClassicHPSSequence*
     process.ggNtuplizer)
 

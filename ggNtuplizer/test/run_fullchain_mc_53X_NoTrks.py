@@ -14,14 +14,15 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.load('Configuration.StandardSequences.Reconstruction_cff')
 
 process.maxEvents = cms.untracked.PSet(
-        input = cms.untracked.int32(100)
+        input = cms.untracked.int32(-1)
             )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
     #'file:/uscms/home/makouski/nobackup/TTJets_SemiLeptMGDecays_8TeV-madgraph.root'
     #'file:/data4/cmkuo/testfiles/GluGluToHToGG_M-126_8TeV-powheg-pythia6_PU_RD1_START53_V7N-v1_02D0B20F-23D2-E211-8C14-0026189438A9.root'
-    'file:/data4/cmkuo/testfiles/hzg_jjg_VBFH_125.root'
+    'file:/data4/cmkuo/testfiles/Dalitz_Higgs_eeg_m125.root'
+    #'file:/data4/cmkuo/testfiles/DiPhotonJetsBox_M60_8TeV-sherpa.root'
     ),
                             noEventSort = cms.untracked.bool(True),
                             duplicateCheckMode = cms.untracked.string('noDuplicateCheck')
@@ -48,6 +49,22 @@ process.load("ggAnalysis.ggNtuplizer.ggTau_cff")
 
 #process.patJetCorrFactors.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 #process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets25','rho')
+
+process.patJets.discriminatorSources = cms.VInputTag(
+    cms.InputTag("combinedSecondaryVertexBJetTags"),
+    cms.InputTag("combinedSecondaryVertexMVABJetTags"),
+    cms.InputTag("jetBProbabilityBJetTags"),
+    cms.InputTag("jetProbabilityBJetTags"),
+    cms.InputTag("simpleSecondaryVertexHighEffBJetTags"),
+    cms.InputTag("simpleSecondaryVertexHighPurBJetTags"),
+    #cms.InputTag("softElectronByPtBJetTags"),
+    #cms.InputTag("softElectronByIP3dBJetTags"),
+    #cms.InputTag("softMuonBJetTags"),
+    #cms.InputTag("softMuonByPtBJetTags"),
+    #cms.InputTag("softMuonByIP3dBJetTags"),
+    cms.InputTag("trackCountingHighEffBJetTags"),
+    cms.InputTag("trackCountingHighPurBJetTags")
+    )
 
 from PhysicsTools.PatAlgos.tools.jetTools import *
 addJetCollection(process,
@@ -122,6 +139,7 @@ process.calibratedPatElectrons.combinationType = cms.int32(3)
 process.load("ggAnalysis.ggNtuplizer.ggRhoFastJet_cff")
 process.load("ggAnalysis.ggNtuplizer.ggMergedJets_mc_cff")
 process.load("ggAnalysis.ggNtuplizer.ggEleID_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 process.load("ggAnalysis.ggNtuplizer.ggBoostedEleModIso_cff")
 
 process.patElectrons.userIsolation.user = cms.VPSet(
@@ -157,6 +175,7 @@ process.p = cms.Path(
     process.eleRegressionEnergy*
     process.calibratedPatElectrons*
     process.ggTriggerSequence*
+    process.ggMETFiltersSequence*
     process.recoTauClassicHPSSequence*
     process.ggNtuplizer)
 

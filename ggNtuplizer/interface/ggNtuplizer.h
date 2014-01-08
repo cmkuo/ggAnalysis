@@ -257,10 +257,9 @@ protected:
   vector<Float_t> vtx_x_;
   vector<Float_t> vtx_y_;
   vector<Float_t> vtx_z_;
-
-  vector<int> vtxNTrk_;
-  vector<float> vtxNDF_;
-  vector<float> vtxD0_;
+  //vector<int> vtxNTrk_;
+  //vector<float> vtxNDF_;
+  //vector<float> vtxD0_;
   Int_t    IsVtxGood_;
   Int_t    nGoodVtx_;
   Int_t    nVtxBS_;
@@ -427,6 +426,8 @@ protected:
   vector<vector<float> > eleGSFPhi_;
   vector<vector<float> > eleGSFCharge_;
   vector<vector<float> > eleGSFChi2NDF_;
+  vector<vector<int> >   eleGSFMissHits_;
+  vector<vector<int> >   eleGSFConvVtxFit_;
   vector<int>    eleRecoFlag_;
   vector<int>    elePos_;
   vector<int>    eleGenIndex_;

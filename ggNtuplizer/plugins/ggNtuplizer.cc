@@ -352,6 +352,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) : verbosity_(0) {
   tree_->Branch("eleGSFPhi", &eleGSFPhi_);
   tree_->Branch("eleGSFCharge", &eleGSFCharge_);
   tree_->Branch("eleGSFChi2NDF", &eleGSFChi2NDF_);
+  tree_->Branch("eleGSFMissHits", &eleGSFMissHits_);
+  tree_->Branch("eleGSFConvVtxFit", &eleGSFConvVtxFit_);
   // If Flag == 2, it means that rechit is out of time
   // https://twiki.cern.ch/twiki/bin/viewauth/CMS/EcalFirstBeam09Anomalous#Spike_identification_in_collision
   tree_->Branch("eleRecoFlag", &eleRecoFlag_);
@@ -1298,6 +1300,8 @@ void ggNtuplizer::clearVectors() {
   eleGSFPhi_.clear();
   eleGSFCharge_.clear();
   eleGSFChi2NDF_.clear();
+  eleGSFMissHits_.clear();
+  eleGSFConvVtxFit_.clear();
   eleSeedE_.clear();
   eleSeedEta_.clear();
   eleSeedPhi_.clear();
@@ -2129,13 +2133,11 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 	vtx_x_.push_back((*recVtxs_)[i].x());
 	vtx_y_.push_back((*recVtxs_)[i].y());
 	vtx_z_.push_back((*recVtxs_)[i].z());
-	vtxNTrk_.push_back((*recVtxs_)[i].tracksSize());
-	vtxNDF_.push_back((*recVtxs_)[i].ndof());
-	vtxD0_.push_back((*recVtxs_)[i].position().rho());
+	//vtxNTrk_.push_back((*recVtxs_)[i].tracksSize());
+	//vtxNDF_.push_back((*recVtxs_)[i].ndof());
+	//vtxD0_.push_back((*recVtxs_)[i].position().rho());
 	
-	if ((*recVtxs_)[i].ndof() > 4 && 
-	    fabs((*recVtxs_)[i].z()) <= 24  && 
-	    fabs((*recVtxs_)[i].position().rho()) <= 2) {
+	if ((*recVtxs_)[i].ndof() >= 4 && fabs((*recVtxs_)[i].z()) <= 24  && fabs((*recVtxs_)[i].position().rho()) <= 2) {
 	  nGoodVtx_++;
 	  if (nGoodVtx_ == 1) firstGoodVtx = i;
 	}
@@ -2302,7 +2304,6 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       genIndex++;
 
       int status = ip->status() - 10*(ip->status()/10);
-      
       bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
       
       // keep all the photons with pT > 5.0 and all leptons;
@@ -2310,7 +2311,7 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
 	(status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0 ) ||
 	(status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ))  ||
 	(status < 10 && abs(ip->pdgId()) == 15 );
-      
+
       // select also Z, W, H, and top
       bool heavyParticle =  
 	(ip->pdgId() == 23 || abs(ip->pdgId()) == 24 || ip->pdgId() == 25 || 
@@ -2319,11 +2320,11 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       if ( stableFinalStateParticle || heavyParticle || photonOrLepton ) {
 	const Candidate *p = (const Candidate*)&(*ip);
 	if (!runOnParticleGun_ && !p->mother()) continue;
-	
+
 	reco::GenParticleRef partRef = reco::GenParticleRef(genParticlesHandle_,
 							    ip-genParticlesHandle_->begin());
 	genpartparentage::GenParticleParentage particleHistory(partRef);
-	
+
 	mcPID    .push_back(p->pdgId());
 	mcVtx_x  .push_back(p->vx());
 	mcVtx_y  .push_back(p->vy());
@@ -2661,23 +2662,31 @@ void ggNtuplizer::produce(edm::Event & e, const edm::EventSetup & es) {
       vector<float> eleGSFPhi;
       vector<float> eleGSFCharge;
       vector<float> eleGSFChi2NDF;
-      eleGSFPt      .push_back(iEle->gsfTrack()->pt());
-      eleGSFEta     .push_back(iEle->gsfTrack()->eta());
-      eleGSFPhi     .push_back(iEle->gsfTrack()->phi());
-      eleGSFCharge  .push_back(iEle->gsfTrack()->charge());
-      eleGSFChi2NDF .push_back(iEle->gsfTrack()->normalizedChi2());
+      vector<int>   eleGSFMissHits;
+      vector<int>   eleGSFConvVtxFit;
+      eleGSFPt        .push_back(iEle->gsfTrack()->pt());
+      eleGSFEta       .push_back(iEle->gsfTrack()->eta());
+      eleGSFPhi       .push_back(iEle->gsfTrack()->phi());
+      eleGSFCharge    .push_back(iEle->gsfTrack()->charge());
+      eleGSFChi2NDF   .push_back(iEle->gsfTrack()->normalizedChi2());
+      eleGSFMissHits  .push_back(iEle->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
+      eleGSFConvVtxFit.push_back((int) ConversionTools::hasMatchedConversion(iEle->gsfTrack(), convH_, beamSpotHandle_->position(), 2.0, 1e-6, 0));
       for (GsfTrackRefVector::const_iterator igsf = recoElectron->ambiguousGsfTracksBegin(); igsf != recoElectron->ambiguousGsfTracksEnd(); ++igsf) {
-	eleGSFPt      .push_back((*igsf)->pt());
-        eleGSFEta     .push_back((*igsf)->eta());
-        eleGSFPhi     .push_back((*igsf)->phi());
-	eleGSFCharge  .push_back((*igsf)->charge());
-        eleGSFChi2NDF .push_back((*igsf)->normalizedChi2());
+	eleGSFPt        .push_back((*igsf)->pt());
+        eleGSFEta       .push_back((*igsf)->eta());
+        eleGSFPhi       .push_back((*igsf)->phi());
+	eleGSFCharge    .push_back((*igsf)->charge());
+        eleGSFChi2NDF   .push_back((*igsf)->normalizedChi2());
+	eleGSFMissHits  .push_back((*igsf)->trackerExpectedHitsInner().numberOfHits());
+	eleGSFConvVtxFit.push_back((int) ConversionTools::hasMatchedConversion((*igsf), convH_, beamSpotHandle_->position(), 2.0, 1e-6, 0));
       }
-      eleGSFPt_      .push_back(eleGSFPt);
-      eleGSFEta_     .push_back(eleGSFEta);
-      eleGSFPhi_     .push_back(eleGSFPhi); 
-      eleGSFCharge_  .push_back(eleGSFCharge); 
-      eleGSFChi2NDF_ .push_back(eleGSFChi2NDF);
+      eleGSFPt_        .push_back(eleGSFPt);
+      eleGSFEta_       .push_back(eleGSFEta);
+      eleGSFPhi_       .push_back(eleGSFPhi); 
+      eleGSFCharge_    .push_back(eleGSFCharge); 
+      eleGSFChi2NDF_   .push_back(eleGSFChi2NDF);
+      eleGSFMissHits_  .push_back(eleGSFMissHits);
+      eleGSFConvVtxFit_.push_back(eleGSFConvVtxFit);
       
       eledEtaAtVtx_ .push_back(iEle->deltaEtaSuperClusterTrackAtVtx());
       eledPhiAtVtx_ .push_back(iEle->deltaPhiSuperClusterTrackAtVtx());
