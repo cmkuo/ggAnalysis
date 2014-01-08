@@ -50,22 +50,6 @@ process.load("ggAnalysis.ggNtuplizer.ggTau_cff")
 #process.patJetCorrFactors.levels = ['L1FastJet', 'L2Relative', 'L3Absolute']
 #process.patJetCorrFactors.rho = cms.InputTag('kt6PFJets25','rho')
 
-process.patJets.discriminatorSources = cms.VInputTag(
-    cms.InputTag("combinedSecondaryVertexBJetTags"),
-    cms.InputTag("combinedSecondaryVertexMVABJetTags"),
-    cms.InputTag("jetBProbabilityBJetTags"),
-    cms.InputTag("jetProbabilityBJetTags"),
-    cms.InputTag("simpleSecondaryVertexHighEffBJetTags"),
-    cms.InputTag("simpleSecondaryVertexHighPurBJetTags"),
-    #cms.InputTag("softElectronByPtBJetTags"),
-    #cms.InputTag("softElectronByIP3dBJetTags"),
-    #cms.InputTag("softMuonBJetTags"),
-    #cms.InputTag("softMuonByPtBJetTags"),
-    #cms.InputTag("softMuonByIP3dBJetTags"),
-    cms.InputTag("trackCountingHighEffBJetTags"),
-    cms.InputTag("trackCountingHighPurBJetTags")
-    )
-
 from PhysicsTools.PatAlgos.tools.jetTools import *
 addJetCollection(process,
                  cms.InputTag('ak5PFJets'),
