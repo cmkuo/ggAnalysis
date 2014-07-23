@@ -19,6 +19,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   pfMETlabel_                = ps.getParameter<InputTag>("pfMETLabel");
   electronCollection_        = ps.getParameter<InputTag>("electronSrc");
   photonCollection_          = ps.getParameter<InputTag>("photonSrc");
+  muonCollection_            = ps.getParameter<InputTag>("muonSrc");
   ebReducedRecHitCollection_ = ps.getParameter<InputTag>("ebReducedRecHitCollection");
   eeReducedRecHitCollection_ = ps.getParameter<InputTag>("eeReducedRecHitCollection");
   esReducedRecHitCollection_ = ps.getParameter<InputTag>("esReducedRecHitCollection");
