@@ -190,6 +190,31 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   tree_->Branch("phoBC1Eta",             &phoBC1Eta_);
   tree_->Branch("phoBC2E",               &phoBC2E_);
   tree_->Branch("phoBC2Eta",             &phoBC2Eta_);
+  // muon
+  tree_->Branch("nMu",                   &nMu_, "nMu/I");
+  tree_->Branch("muPt",                  &muPt_);
+  tree_->Branch("muEta",                 &muEta_);
+  tree_->Branch("muPhi",                 &muPhi_);
+  tree_->Branch("muCharge",              &muCharge_);
+  tree_->Branch("muType",                &muType_);
+  tree_->Branch("muIsGood",              &muIsGood_);
+  //tree_->Branch("muID",                  &muID_);
+  tree_->Branch("muD0",                  &muD0_);
+  tree_->Branch("muDz",                  &muDz_);
+  tree_->Branch("muChi2NDF",             &muChi2NDF_);
+  tree_->Branch("muInnerD0",             &muInnerD0_);
+  tree_->Branch("muInnerDz",             &muInnerDz_);
+  tree_->Branch("muTrkLayers",           &muTrkLayers_);
+  tree_->Branch("muPixelLayers",         &muPixelLayers_);
+  tree_->Branch("muPixelHits",           &muPixelHits_);
+  tree_->Branch("muMuonHits",            &muMuonHits_);
+  tree_->Branch("muStations",            &muStations_);
+  tree_->Branch("muTrkQuality",          &muTrkQuality_);
+  tree_->Branch("muIsoTrk",              &muIsoTrk_);
+  tree_->Branch("muPFChIso",             &muPFChIso_);
+  tree_->Branch("muPFPhoIso",            &muPFPhoIso_);
+  tree_->Branch("muPFNeuIso",            &muPFNeuIso_);
+  tree_->Branch("muPFPUIso",             &muPFPUIso_);
 
 }
 
@@ -205,6 +230,7 @@ void ggNtuplizer::getHandles(const edm::Event & event,
 			     edm::Handle<edm::View<pat::MET> >            & pfMETHandle,
 			     edm::Handle<edm::View<pat::Electron> >       & electronHandle,
 			     edm::Handle<edm::View<pat::Photon> >         & photonHandle,
+			     edm::Handle<edm::View<pat::Muon> >           & muonHandle,
 			     edm::Handle<EcalRecHitCollection>            & EBReducedRecHits,
 			     edm::Handle<EcalRecHitCollection>            & EEReducedRecHits,
 			     edm::Handle<EcalRecHitCollection>            & ESReducedRecHits,
@@ -220,6 +246,7 @@ void ggNtuplizer::getHandles(const edm::Event & event,
   event.getByLabel(pfMETlabel_,                pfMETHandle);
   event.getByLabel(electronCollection_,        electronHandle);
   event.getByLabel(photonCollection_,          photonHandle);
+  event.getByLabel(muonCollection_,            muonHandle);
   event.getByLabel(ebReducedRecHitCollection_, EBReducedRecHits);
   event.getByLabel(eeReducedRecHitCollection_, EEReducedRecHits);
   event.getByLabel(esReducedRecHitCollection_, ESReducedRecHits);
@@ -232,8 +259,8 @@ void ggNtuplizer::getHandles(const edm::Event & event,
 void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   this->getHandles(e, genParticlesHandle_, recVtxs_, recVtxsBS_, rhoHandle_, pfMETHandle_, electronHandle_, 
-		   photonHandle_, EBReducedRecHits_, EEReducedRecHits_, ESReducedRecHits_, recoPhotonHandle_,
-		   tracksHandle_, gsfElectronHandle_, pfAllCandidates_);
+		   photonHandle_, muonHandle_, EBReducedRecHits_, EEReducedRecHits_, ESReducedRecHits_, 
+		   recoPhotonHandle_, tracksHandle_, gsfElectronHandle_, pfAllCandidates_);
   
   clearVectors();
   hEvents_->Fill(0.5);
@@ -611,6 +638,61 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       nPho_++;
     }
   }
+
+  // muons
+  nMu_ = 0;
+  if ( muonHandle_.isValid() ) {
+    for (View<pat::Muon>::const_iterator iMu = muonHandle_->begin(); iMu != muonHandle_->end(); ++iMu) {
+
+      if (iMu->pt() < 5) continue;
+      if (! (iMu->isPFMuon() || iMu->isGlobalMuon() || iMu->isTrackerMuon())) continue; 
+
+      muPt_    .push_back(iMu->pt());
+      muEta_   .push_back(iMu->eta());
+      muPhi_   .push_back(iMu->phi());
+      muCharge_.push_back(iMu->charge());
+      muType_  .push_back(iMu->type());
+      muIsGood_.push_back((int) iMu->isGood("TMOneStationTight"));
+      muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
+      muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
+
+      const reco::TrackRef glbmu = iMu->globalTrack();
+      const reco::TrackRef innmu = iMu->innerTrack();
+
+      if (glbmu.isNull()) {
+	muChi2NDF_ .push_back(-99.);
+	muMuonHits_.push_back(-99);
+      } else {
+	muChi2NDF_.push_back(glbmu->normalizedChi2());
+        muMuonHits_.push_back(glbmu->hitPattern().numberOfValidMuonHits());
+      }
+
+      if (innmu.isNull()) {
+	muInnerD0_     .push_back(-99.);
+	muInnerDz_     .push_back(-99.);
+	muTrkLayers_   .push_back(-99);
+	muPixelLayers_ .push_back(-99);
+	muPixelHits_   .push_back(-99);
+	muTrkQuality_  .push_back(-99);
+      } else {
+	muInnerD0_     .push_back(innmu->dxy(pv));
+        muInnerDz_     .push_back(innmu->dz(pv));
+	muTrkLayers_   .push_back(innmu->hitPattern().trackerLayersWithMeasurement());
+	muPixelLayers_ .push_back(innmu->hitPattern().pixelLayersWithMeasurement());
+        muPixelHits_   .push_back(innmu->hitPattern().numberOfValidPixelHits());
+	muTrkQuality_  .push_back(innmu->quality(reco::TrackBase::highPurity));
+      }
+
+      muStations_  .push_back(iMu->numberOfMatchedStations());
+      muIsoTrk_    .push_back(iMu->trackIso());
+      muPFChIso_   .push_back(iMu->pfIsolationR04().sumChargedHadronPt);
+      muPFPhoIso_  .push_back(iMu->pfIsolationR04().sumPhotonEt);
+      muPFNeuIso_  .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
+      muPFPUIso_   .push_back(iMu->pfIsolationR04().sumPUPt);
+
+      nMu_++;
+    }
+  }
   
   hEvents_->Fill(1.5);
   tree_->Fill();
@@ -766,6 +848,30 @@ void ggNtuplizer::clearVectors() {
   phoBC1Eta_.clear();
   phoBC2E_.clear();
   phoBC2Eta_.clear();
+
+  muPt_.clear();
+  muEta_.clear();
+  muPhi_.clear();
+  muCharge_.clear();
+  muType_.clear();
+  muIsGood_.clear();
+  //muID_.clear();
+  muD0_.clear();
+  muDz_.clear();
+  muChi2NDF_.clear();
+  muInnerD0_.clear();
+  muInnerDz_.clear();
+  muTrkLayers_.clear();
+  muPixelLayers_.clear();
+  muPixelHits_.clear();
+  muMuonHits_.clear();
+  muStations_.clear();
+  muTrkQuality_.clear();
+  muIsoTrk_.clear();
+  muPFChIso_.clear();
+  muPFPhoIso_.clear();
+  muPFNeuIso_.clear();
+  muPFPUIso_.clear();
 
 }
 

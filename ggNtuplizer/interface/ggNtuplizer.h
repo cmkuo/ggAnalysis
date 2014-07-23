@@ -12,6 +12,7 @@
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
+#include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/PatCandidates/interface/Particle.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
@@ -57,6 +58,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 		  edm::Handle<View<pat::MET> >                 & pfMETHandle_,
 		  edm::Handle<edm::View<pat::Electron> >       & electronHandle,
 		  edm::Handle<edm::View<pat::Photon> >         & photonHandle,
+		  edm::Handle<edm::View<pat::Muon> >           & muonHandle,
 		  edm::Handle<EcalRecHitCollection>            & EBReducedRecHits,
 		  edm::Handle<EcalRecHitCollection>            & EEReducedRecHits,
 		  edm::Handle<EcalRecHitCollection>            & ESRecHits,
@@ -82,6 +84,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   InputTag pfMETlabel_;
   InputTag electronCollection_;
   InputTag photonCollection_;
+  InputTag muonCollection_;
   InputTag ebReducedRecHitCollection_;
   InputTag eeReducedRecHitCollection_;
   InputTag esReducedRecHitCollection_;
@@ -251,6 +254,31 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  phoBC1Eta_;
   vector<float>  phoBC2E_;
   vector<float>  phoBC2Eta_;
+  // muon
+  Int_t          nMu_;
+  vector<float>  muPt_;
+  vector<float>  muEta_;
+  vector<float>  muPhi_;
+  vector<int>    muCharge_;
+  vector<int>    muType_;
+  vector<int>    muIsGood_;
+  //vector<int>    muID_;
+  vector<float>  muD0_;
+  vector<float>  muDz_;
+  vector<float>  muChi2NDF_;
+  vector<float>  muInnerD0_;
+  vector<float>  muInnerDz_;
+  vector<int>    muTrkLayers_; 
+  vector<int>    muPixelLayers_;
+  vector<int>    muPixelHits_;
+  vector<int>    muMuonHits_;
+  vector<int>    muStations_;
+  vector<int>    muTrkQuality_;
+  vector<float>  muIsoTrk_;
+  vector<float>  muPFChIso_;
+  vector<float>  muPFPhoIso_;
+  vector<float>  muPFNeuIso_;
+  vector<float>  muPFPUIso_;
 
   // Physics objects handles
   Handle<std::vector<reco::GenParticle> > genParticlesHandle_;
@@ -260,6 +288,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Handle<View<pat::MET> >                 pfMETHandle_;
   Handle<View<pat::Electron> >            electronHandle_;
   Handle<View<pat::Photon> >              photonHandle_;
+  Handle<View<pat::Muon> >                muonHandle_;
   Handle<EcalRecHitCollection>            EBReducedRecHits_;
   Handle<EcalRecHitCollection>            EEReducedRecHits_;
   Handle<EcalRecHitCollection>            ESReducedRecHits_;
