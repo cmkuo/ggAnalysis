@@ -20,7 +20,8 @@
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "RecoEgamma/PhotonIdentification/interface/GEDPhoIDTools.h"
-
+#include "DataFormats/PatCandidates/interface/Jet.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "TTree.h"
 #include "TH1F.h"
 
@@ -59,13 +60,16 @@ class ggNtuplizer : public edm::EDAnalyzer {
 		  edm::Handle<edm::View<pat::Electron> >       & electronHandle,
 		  edm::Handle<edm::View<pat::Photon> >         & photonHandle,
 		  edm::Handle<edm::View<pat::Muon> >           & muonHandle,
+		  edm::Handle<vector<pat::Tau> >               & tauHandle,  //lvdp
 		  edm::Handle<EcalRecHitCollection>            & EBReducedRecHits,
 		  edm::Handle<EcalRecHitCollection>            & EEReducedRecHits,
 		  edm::Handle<EcalRecHitCollection>            & ESRecHits,
 		  edm::Handle<reco::PhotonCollection>          & recoPhotonHandle,
 		  edm::Handle<TrackCollection>                 & tracksHandle,
 		  edm::Handle<GsfElectronCollection>           & gsfElectronHandle,
-		  edm::Handle<PFCandidateCollection>           & pfAllCandidates
+		  edm::Handle<PFCandidateCollection>           & pfAllCandidates,
+                  edm::Handle<edm::View<pat::Jet> >            & jetHandle   //lvdp
+		  
 		  );
 
   float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenParticleCollection::const_iterator thisPho, 
@@ -85,6 +89,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   InputTag electronCollection_;
   InputTag photonCollection_;
   InputTag muonCollection_;
+  InputTag tauCollection_;
   InputTag ebReducedRecHitCollection_;
   InputTag eeReducedRecHitCollection_;
   InputTag esReducedRecHitCollection_;
@@ -92,6 +97,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   InputTag tracklabel_;
   InputTag gsfElectronlabel_;
   InputTag pfAllParticles_;
+  InputTag jetsCHSLabel_;
+  InputTag jetCollection_;
+
 
   TTree   *tree_;
   TH1F    *hEvents_; 
@@ -280,6 +288,141 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  muPFNeuIso_;
   vector<float>  muPFPUIso_;
 
+  //SubJet
+  Int_t nCA8Jet_;
+  vector<float>  CA8JetPt_;
+  vector<float>  CA8JetEta_;
+  vector<float>  CA8JetPhi_;
+  vector<float>  CA8JetMass_;
+  vector<float>  CA8JetArea_;
+  vector<float>  CA8Jet_tau1_;
+  vector<float>  CA8Jet_tau2_;
+  vector<float>  CA8Jet_tau3_;
+  vector<float>  CA8JetCHF_;
+  vector<float>  CA8JetNHF_;
+  vector<float>  CA8JetCEF_;
+  vector<float>  CA8JetNEF_;
+  vector<int>  CA8JetNCH_;
+  vector<int>  CA8Jetnconstituents_;
+  vector<float>  CA8prunedJetMass_;
+
+  //jets
+  Int_t    nJet_;
+  vector<float>  jetPt_;
+  vector<float>  jetEta_;
+  vector<float>  jetPhi_;
+  vector<float>  jetCHF_;
+  vector<float>  jetNHF_;
+  vector<float>  jetCEF_;
+  vector<float>  jetNEF_;
+  vector<int>    jetNCH_;
+  vector<float>  jetHFHAE_;
+  vector<float>  jetHFEME_;
+  vector<int>    jetNConstituents_;
+  vector<float>  jetCombinedSecondaryVtxBJetTags_; // recommended
+
+
+  //Taus:  Lvdp
+ 
+  Int_t nTau_;
+  // decay mode discriminators
+  std::vector<bool>   tauByLooseElectronRejection_;
+  std::vector<bool>   tauByMediumElectronRejection_;
+  std::vector<bool>   tauByTightElectronRejection_;
+  std::vector<bool>   tauByMVA5LooseElectronRejection_;
+  std::vector<bool>   tauByMVA5MediumElectronRejection_;
+  std::vector<bool>   tauByMVA5TightElectronRejection_;
+  std::vector<bool>   tauByMVA5VTightElectronRejection_;
+  std::vector<bool>   tauByLooseMuonRejection_;
+  std::vector<bool>   tauByMediumMuonRejection_;
+  std::vector<bool>   tauByTightMuonRejection_;
+  std::vector<bool>   tauByLooseMuonRejection3_;
+  std::vector<bool>   tauByTightMuonRejection3_;
+  std::vector<bool>   tauByMVALooseMuonRejection_;
+  std::vector<bool>   tauByMVAMediumMuonRejection_;
+  std::vector<bool>   tauByMVATightMuonRejection_;
+  std::vector<bool>   tauByMVArawMuonRejection_;
+  std::vector<bool>   pfTausDiscriminationByDecayModeFinding_;
+  std::vector<bool>   tauByVLooseIsolation_;
+  std::vector<bool>   tauByVLooseCombinedIsolationDBSumPtCorr_;
+  std::vector<bool>   tauByLooseCombinedIsolationDBSumPtCorr_;
+  std::vector<bool>   tauByMediumCombinedIsolationDBSumPtCorr_;
+  std::vector<bool>   tauByTightCombinedIsolationDBSumPtCorr_;
+  std::vector<bool>   tauByLooseCombinedIsolationDBSumPtCorr3Hits_;
+  std::vector<bool>   tauByMediumCombinedIsolationDBSumPtCorr3Hits_;
+  std::vector<bool>   tauByTightCombinedIsolationDBSumPtCorr3Hits_;
+  std::vector<bool>   tauByVLooseIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByLooseIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByMediumIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByTightIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByVTightIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByVVTightIsolationMVA3newDMwoLT_;
+  std::vector<bool>   tauByIsolationMVA3newDMwoLTraw_;
+  std::vector<bool>   tauByVLooseIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByLooseIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByMediumIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByTightIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByVTightIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByVVTightIsolationMVA3oldDMwLT_;
+  std::vector<bool>   tauByIsolationMVA3oldDMwLTraw_;
+  std::vector<bool>   tauByVLooseIsolationMVA3oldDMwoLT_;
+  std::vector<bool>   tauByLooseIsolationMVA3oldDMwoLT_;
+  std::vector<bool>   tauByTightIsolationMVA3oldDMwoLT_;
+  std::vector<bool>   tauByVTightIsolationMVA3oldDMwoLT_;
+  std::vector<bool>   tauByVVTightIsolationMVA3oldDMwoLT_;
+  std::vector<bool>   tauByIsolationMVA3oldDMwoLTraw_;
+  std::vector<bool>   tauByLooseIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByVLooseIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByMediumIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByTightIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByVTightIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByVVTightIsolationMVA3newDMwLT_;
+  std::vector<bool>   tauByIsolationMVA3newDMwLTraw_;
+
+
+
+
+
+
+    /**   
+	  FROM OLDER VERSIONS
+	  vector<bool> tauDecayModeFinding_;
+	  vector<bool> tauAgainstElectronLooseMVA3_;
+	  vector<bool> tauAgainstElectronMediumMVA3_;
+	  vector<bool> tauAgainstElectronTightMVA3_;
+	  vector<bool> tauAgainstElectronVTightMVA3_;
+	  vector<bool> tauAgainstElectronDeadECAL_;
+	  vector<bool> tauAgainstMuonLoose2_;
+	  vector<bool> tauAgainstMuonMedium2_;
+	  vector<bool> tauAgainstMuonTight2_;
+    */
+
+  // isolation
+  vector<bool> tauCombinedIsolationDeltaBetaCorrRaw3Hits_;
+  vector<bool> tauLooseCombinedIsolationDeltaBetaCorr3Hits_;
+  vector<bool> tauMediumCombinedIsolationDeltaBetaCorr3Hits_;
+  vector<bool> tauTightCombinedIsolationDeltaBetaCorr3Hits_;
+
+  // kinematics
+  vector<float> tauEta_;
+  vector<float> tauPhi_;
+  vector<float> tauPt_;
+  vector<float> tauEt_;
+  vector<float> tauCharge_;
+  vector<int>   tauDecayMode_;
+  vector<float> tauEMFraction_;
+  vector<float> tauHCAL3x3OverPLead_;
+  vector<float> tauHCALMaxOverPLead_;
+  vector<float> tauHCALTotOverPLead_;
+  vector<float> tauIsolationPFChargedHadrCandsPtSum_;
+  vector<float> tauIsolationPFGammaCandsEtSum_;
+  vector<float> tauLeadPFChargedHadrCandsignedSipt_;
+  vector<bool>  tauLeadChargedHadronExists_;
+  vector<float> tauLeadChargedHadronEta_;
+  vector<float> tauLeadChargedHadronPhi_;
+  vector<float> tauLeadChargedHadronPt_;
+
+
   // Physics objects handles
   Handle<std::vector<reco::GenParticle> > genParticlesHandle_;
   Handle<VertexCollection>                recVtxs_;
@@ -289,6 +432,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Handle<View<pat::Electron> >            electronHandle_;
   Handle<View<pat::Photon> >              photonHandle_;
   Handle<View<pat::Muon> >                muonHandle_;
+  Handle<vector<pat::Tau> >               tauHandle_;  //lvdp
   Handle<EcalRecHitCollection>            EBReducedRecHits_;
   Handle<EcalRecHitCollection>            EEReducedRecHits_;
   Handle<EcalRecHitCollection>            ESReducedRecHits_;
@@ -296,7 +440,10 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Handle<TrackCollection>                 tracksHandle_;
   Handle<GsfElectronCollection>           gsfElectronHandle_;
   Handle<PFCandidateCollection>           pfAllCandidates_; 
-
+  Handle<View<pat::Jet> >       jetHandle_;
+  Bool_t dumpSubJets_;
+  Bool_t dumpJets_;
+  Bool_t dumpTaus_;
 };
 
 #endif

@@ -21,5 +21,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              recoPhotonSrc             = cms.InputTag("gedPhotons"),
                              TrackLabel                = cms.InputTag("generalTracks"),
                              gsfElectronLabel          = cms.InputTag("gsfElectrons"),
-                             PFAllCandidates           = cms.InputTag("particleFlow")
+                             PFAllCandidates           = cms.InputTag("particleFlow"),
+                             jetSrc = cms.InputTag("selectedPatJetsAK4PFCHS"),
+			     tauSrc = cms.InputTag("cleanPatTaus")
 )
