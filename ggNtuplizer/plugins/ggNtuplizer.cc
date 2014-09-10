@@ -857,7 +857,9 @@ if(dumpJets_){
       jetSimpleSecondaryVertexHighPurBJetTags_.push_back(iJet->bDiscriminator("simpleSecondaryVertexHighPurBJetTags"));
 //parton id
       jetPartonID_.push_back(iJet->partonFlavour());
-
+//jet PF Loose ID
+      pat::strbitset retjet = pfLooseId_.getBitTemplate();
+      jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
       nJet_++;
 }
 }
