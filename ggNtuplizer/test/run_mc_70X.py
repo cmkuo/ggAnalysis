@@ -108,14 +108,11 @@ process.source = cms.Source("PoolSource",
         )
                             )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
-process.load("FWCore.MessageService.MessageLogger_cfi")
-process.MessageLogger.cerr.FwkReport.reportEvery = 1
-process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 #process.options = cms.untracked.PSet( wantSummary = cms.untracked.bool(False) )
 
 process.p = cms.Path(
-process.patDefaultSequence*
-    process.NjettinessCA8
+process.patDefaultSequence
+ *    process.NjettinessCA8
  *  process.ggNtuplizer
 )
 

@@ -1,5 +1,7 @@
 import FWCore.ParameterSet.Config as cms
 from HiggsAnalysis.HiggsTo2photons.hggPhotonIDCuts_cfi import *
+from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
+#from CMGTools.External.pujetidproducer_cfi import stdalgos, chsalgos
 
 ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              hggPhotonIDConfiguration = hggPhotonIDCuts,
@@ -23,5 +25,6 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              gsfElectronLabel          = cms.InputTag("gsfElectrons"),
                              PFAllCandidates           = cms.InputTag("particleFlow"),
                              jetSrc = cms.InputTag("selectedPatJetsAK4PFCHS"),
-			     tauSrc = cms.InputTag("cleanPatTaus")
+			     tauSrc = cms.InputTag("cleanPatTaus"),
+			     pfLooseId = pfJetIDSelector.clone(),
 )

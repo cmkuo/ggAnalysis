@@ -4,6 +4,8 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
+#include <PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h>
+#include <PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h>
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
@@ -32,6 +34,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpSubJets_       = ps.getParameter<bool>("dumpSubJets");
   dumpTaus_       = ps.getParameter<bool>("dumpTaus");
 //@@Lvdp
+ 
+  pfLooseId_ = ps.getParameter<edm::ParameterSet>("pfLooseId");
   tauCollection_ = ps.getParameter<InputTag>("tauSrc");
   cicPhotonId_ = new CiCPhotonID(ps);
 
@@ -241,7 +245,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     tree_->Branch("tauByMVAMediumMuonRejection", &tauByMVAMediumMuonRejection_);
     tree_->Branch("tauByMVATightMuonRejection", &tauByMVATightMuonRejection_);
     tree_->Branch("tauByMVArawMuonRejection", &tauByMVArawMuonRejection_);
-    tree_->Branch("pfTausDiscriminationByDecayModeFinding", &pfTausDiscriminationByDecayModeFinding_);
+    //    tree_->Branch("pfTausDiscriminationByDecayModeFinding", &pfTausDiscriminationByDecayModeFinding_);
     tree_->Branch("tauByVLooseIsolation", &tauByVLooseIsolation_);
     tree_->Branch("tauByVLooseCombinedIsolationDBSumPtCorr", &tauByVLooseCombinedIsolationDBSumPtCorr_);
     tree_->Branch("tauByLooseCombinedIsolationDBSumPtCorr", &tauByLooseCombinedIsolationDBSumPtCorr_);
@@ -278,24 +282,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     tree_->Branch("tauByVVTightIsolationMVA3newDMwLT", &tauByVVTightIsolationMVA3newDMwLT_);
     tree_->Branch("tauByIsolationMVA3newDMwLTraw", &tauByIsolationMVA3newDMwLTraw_);
 
-   /*
-    tree_->Branch("tauByLooseElectronRejection"  ,&tauByLooseElectronRejection_);
-    tree_->Branch("tauByMediumElectronRejection"  ,&tauByMediumElectronRejection_);
-    tree_->Branch("tauByTightElectronRejection"  ,&tauByTightElectronRejection_);
-    tree_->Branch("tauByMVA3VTightElectronRejection", &tauByMVA3VTightElectronRejection_);
-    tree_->Branch("tauByLooseMuonRejection"  ,&tauByLooseMuonRejection_);
-    tree_->Branch("tauByMediumMuonRejection"  ,&tauByMediumMuonRejection_);
-    tree_->Branch("tauByTightMuonRejection"  ,&tauByTightMuonRejection_);
-    tree_->Branch("tauByLooseMuonRejection3"  ,&tauByLooseMuonRejection3_);
-    tree_->Branch("tauByTightMuonRejection3 "  ,&tauByTightMuonRejection3_);
-    tree_->Branch("tauByMVArawMuonRejection"  ,&tauByMVArawMuonRejection_);
-    tree_->Branch("tauByDecayModeFinding"  ,&tauByDecayModeFinding_);
-    tree_->Branch("tauByVLooseIsolation"  ,&tauByVLooseIsolation_);
-    tree_->Branch("tauCombinedIsolationDeltaBetaCorrRaw3Hits"  ,&tauCombinedIsolationDeltaBetaCorrRaw3Hits_);
-    tree_->Branch("tauLooseCombinedIsolationDeltaBetaCorr3Hits"  ,&tauLooseCombinedIsolationDeltaBetaCorr3Hits_);
-    tree_->Branch("tauMediumCombinedIsolationDeltaBetaCorr3Hits"  ,&tauMediumCombinedIsolationDeltaBetaCorr3Hits_);
-    tree_->Branch("tauTightCombinedIsolationDeltaBetaCorr3Hits"  ,&tauTightCombinedIsolationDeltaBetaCorr3Hits_);
-    */
     tree_->Branch("tauEta"  ,&tauEta_);
     tree_->Branch("tauPhi"  ,&tauPhi_);
     tree_->Branch("tauPt"  ,&tauPt_);
@@ -331,7 +317,16 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     tree_->Branch("jetHFEME", &jetHFEME_);
     tree_->Branch("jetNConstituents", &jetNConstituents_);
     tree_->Branch("jetCombinedSecondaryVtxBJetTags", &jetCombinedSecondaryVtxBJetTags_);
-  }
+    tree_->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
+    tree_->Branch("jetJetBProbabilityBJetTags", &jetJetBProbabilityBJetTags_);
+    tree_->Branch("jetTrackCountingHighPurBJetTags", &jetTrackCountingHighPurBJetTags_);
+    tree_->Branch("jetTrackCountingHighEffBJetTags", &jetTrackCountingHighEffBJetTags_);
+    tree_->Branch("jetSimpleSecondaryVertexHighEffBJetTags", &jetSimpleSecondaryVertexHighEffBJetTags_);
+    tree_->Branch("jetSimpleSecondaryVertexHighPurBJetTags", &jetSimpleSecondaryVertexHighPurBJetTags_);
+if (doGenParticles_) tree_->Branch("jetPartonID", &jetPartonID_);
+    tree_->Branch("jetPFLooseId", &jetPFLooseId_);
+
+}
 
   // SubJet
   if (dumpSubJets_) {
@@ -854,6 +849,15 @@ if(dumpJets_){
       jetNConstituents_.push_back(iJet->getPFConstituents().size());
 //b-tagging
       jetCombinedSecondaryVtxBJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexBJetTags"));
+      jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("jetProbabilityBJetTags")); 
+      jetJetBProbabilityBJetTags_.push_back(iJet->bDiscriminator("jetBProbabilityBJetTags"));
+      jetTrackCountingHighPurBJetTags_.push_back(iJet->bDiscriminator("trackCountingHighPurBJetTags"));
+      jetTrackCountingHighEffBJetTags_.push_back(iJet->bDiscriminator("trackCountingHighEffBJetTags"));
+      jetSimpleSecondaryVertexHighEffBJetTags_.push_back(iJet->bDiscriminator("simpleSecondaryVertexHighEffBJetTags"));
+      jetSimpleSecondaryVertexHighPurBJetTags_.push_back(iJet->bDiscriminator("simpleSecondaryVertexHighPurBJetTags"));
+//parton id
+      jetPartonID_.push_back(iJet->partonFlavour());
+
       nJet_++;
 }
 }
@@ -912,7 +916,7 @@ for(vector<pat::Tau>::const_iterator itau = tauHandle_->begin(); itau != tauHand
   tauByMVAMediumMuonRejection_.push_back(itau->tauID("byMVAMediumMuonRejection"));
   tauByMVATightMuonRejection_.push_back(itau->tauID("byMVATightMuonRejection"));
   tauByMVArawMuonRejection_.push_back(itau->tauID("byMVArawMuonRejection"));
-  pfTausDiscriminationByDecayModeFinding_.push_back(itau->tauID("pfTausDiscriminationByDecayModeFinding"));
+  //  pfTausDiscriminationByDecayModeFinding_.push_back(itau->tauID("pfTausDiscriminationByDecayModeFinding"));
   tauByVLooseIsolation_.push_back(itau->tauID("byVLooseIsolation"));
   tauByVLooseCombinedIsolationDBSumPtCorr_.push_back(itau->tauID("byVLooseCombinedIsolationDBSumPtCorr"));
   tauByLooseCombinedIsolationDBSumPtCorr_.push_back(itau->tauID("byLooseCombinedIsolationDBSumPtCorr"));
@@ -1256,9 +1260,16 @@ void ggNtuplizer::clearVectors() {
   jetHFEME_.clear();
   jetNConstituents_.clear();
   jetCombinedSecondaryVtxBJetTags_.clear();
+  jetJetProbabilityBJetTags_.clear();
+  jetJetBProbabilityBJetTags_.clear();
+  jetTrackCountingHighPurBJetTags_.clear();
+  jetTrackCountingHighEffBJetTags_.clear();
+  jetSimpleSecondaryVertexHighEffBJetTags_.clear();
+  jetSimpleSecondaryVertexHighPurBJetTags_.clear();
+  jetPartonID_.clear();
+  jetPFLooseId_.clear();
 
-
-  // SubJet
+// SubJet
   CA8JetPt_.clear();
   CA8JetEta_.clear();
   CA8JetPhi_.clear();

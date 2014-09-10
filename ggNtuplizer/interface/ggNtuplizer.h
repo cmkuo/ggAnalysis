@@ -24,7 +24,7 @@
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "TTree.h"
 #include "TH1F.h"
-
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 #include <memory>
 #include <fstream>
 #include <map>
@@ -320,9 +320,17 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  jetHFEME_;
   vector<int>    jetNConstituents_;
   vector<float>  jetCombinedSecondaryVtxBJetTags_; // recommended
+  vector<float>  jetJetProbabilityBJetTags_;
+  vector<float>  jetJetBProbabilityBJetTags_;
+  vector<float>  jetTrackCountingHighPurBJetTags_;
+  vector<float>  jetTrackCountingHighEffBJetTags_;
+  vector<float>  jetSimpleSecondaryVertexHighEffBJetTags_;
+  vector<float>  jetSimpleSecondaryVertexHighPurBJetTags_;
+  vector<int> jetPartonID_;
+  vector<bool> jetPFLooseId_;
 
 
-  //Taus:  Lvdp
+//Taus:  Lvdp
  
   Int_t nTau_;
   // decay mode discriminators
@@ -381,22 +389,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
 
 
-
-
-
-    /**   
-	  FROM OLDER VERSIONS
-	  vector<bool> tauDecayModeFinding_;
-	  vector<bool> tauAgainstElectronLooseMVA3_;
-	  vector<bool> tauAgainstElectronMediumMVA3_;
-	  vector<bool> tauAgainstElectronTightMVA3_;
-	  vector<bool> tauAgainstElectronVTightMVA3_;
-	  vector<bool> tauAgainstElectronDeadECAL_;
-	  vector<bool> tauAgainstMuonLoose2_;
-	  vector<bool> tauAgainstMuonMedium2_;
-	  vector<bool> tauAgainstMuonTight2_;
-    */
-
   // isolation
   vector<bool> tauCombinedIsolationDeltaBetaCorrRaw3Hits_;
   vector<bool> tauLooseCombinedIsolationDeltaBetaCorr3Hits_;
@@ -444,6 +436,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Bool_t dumpSubJets_;
   Bool_t dumpJets_;
   Bool_t dumpTaus_;
+ PFJetIDSelectionFunctor pfLooseId_;
+
+
 };
 
 #endif
