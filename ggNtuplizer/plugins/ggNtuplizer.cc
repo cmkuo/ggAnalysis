@@ -273,7 +273,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     tree_->Branch("tauByTightIsolationMVA3oldDMwoLT", &tauByTightIsolationMVA3oldDMwoLT_);
     tree_->Branch("tauByVTightIsolationMVA3oldDMwoLT", &tauByVTightIsolationMVA3oldDMwoLT_);
     tree_->Branch("tauByVVTightIsolationMVA3oldDMwoLT", &tauByVVTightIsolationMVA3oldDMwoLT_);
-    tree_->Branch("tauByIsolationMVA3newDMwoLTraw", &tauByIsolationMVA3newDMwoLTraw_);
     tree_->Branch("tauByLooseIsolationMVA3newDMwLT", &tauByLooseIsolationMVA3newDMwLT_);
     tree_->Branch("tauByVLooseIsolationMVA3newDMwLT", &tauByVLooseIsolationMVA3newDMwLT_);
     tree_->Branch("tauByMediumIsolationMVA3newDMwLT", &tauByMediumIsolationMVA3newDMwLT_);
@@ -946,7 +945,6 @@ for(vector<pat::Tau>::const_iterator itau = tauHandle_->begin(); itau != tauHand
   tauByTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byTightIsolationMVA3oldDMwoLT"));
   tauByVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVTightIsolationMVA3oldDMwoLT"));
   tauByVVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVVTightIsolationMVA3oldDMwoLT"));
-  tauByIsolationMVA3newDMwoLTraw_.push_back(itau->tauID("byIsolationMVA3newDMwoLTraw"));
   tauByLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byLooseIsolationMVA3newDMwLT"));
   tauByVLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byVLooseIsolationMVA3newDMwLT"));
   tauByMediumIsolationMVA3newDMwLT_.push_back(itau->tauID("byMediumIsolationMVA3newDMwLT"));
@@ -1217,7 +1215,6 @@ void ggNtuplizer::clearVectors() {
   tauByTightIsolationMVA3oldDMwoLT_.clear();
   tauByVTightIsolationMVA3oldDMwoLT_.clear();
   tauByVVTightIsolationMVA3oldDMwoLT_.clear();
-  tauByIsolationMVA3newDMwoLTraw_.clear();
   tauByLooseIsolationMVA3newDMwLT_.clear();
   tauByVLooseIsolationMVA3newDMwLT_.clear();
   tauByMediumIsolationMVA3newDMwLT_.clear();
