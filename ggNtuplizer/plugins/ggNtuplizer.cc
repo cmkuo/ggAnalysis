@@ -4,8 +4,10 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterTools.h"
-#include <PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h>
-#include <PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h>
+#include "PhysicsTools/SelectorUtils/interface/JetIDSelectionFunctor.h"
+#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+
+#include <TMVA/Reader.h>
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
@@ -21,22 +23,21 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   electronCollection_        = ps.getParameter<InputTag>("electronSrc");
   photonCollection_          = ps.getParameter<InputTag>("photonSrc");
   muonCollection_            = ps.getParameter<InputTag>("muonSrc");
-  ebReducedRecHitCollection_ = ps.getParameter<InputTag>("ebReducedRecHitCollection");
-  eeReducedRecHitCollection_ = ps.getParameter<InputTag>("eeReducedRecHitCollection");
-  esReducedRecHitCollection_ = ps.getParameter<InputTag>("esReducedRecHitCollection");
+  ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>(ps.getParameter<InputTag>("ebReducedRecHitCollection"));
+  eeReducedRecHitCollection_ = consumes<EcalRecHitCollection>(ps.getParameter<InputTag>("eeReducedRecHitCollection"));
+  esReducedRecHitCollection_ = consumes<EcalRecHitCollection>(ps.getParameter<InputTag>("esReducedRecHitCollection"));
   recophotonCollection_      = ps.getParameter<InputTag>("recoPhotonSrc");
   tracklabel_                = ps.getParameter<InputTag>("TrackLabel");
   gsfElectronlabel_          = ps.getParameter<InputTag>("gsfElectronLabel");
   pfAllParticles_            = ps.getParameter<InputTag>("PFAllCandidates");
   jetsCHSLabel_              = edm::InputTag("selectedPatJetsCA8PFCHS");
   jetCollection_             = ps.getParameter<InputTag>("jetSrc");
-  dumpJets_          = ps.getParameter<bool>("dumpJets");
-  dumpSubJets_       = ps.getParameter<bool>("dumpSubJets");
-  dumpTaus_       = ps.getParameter<bool>("dumpTaus");
-//@@Lvdp
- 
-  pfLooseId_ = ps.getParameter<edm::ParameterSet>("pfLooseId");
-  tauCollection_ = ps.getParameter<InputTag>("tauSrc");
+  dumpJets_                  = ps.getParameter<bool>("dumpJets");
+  dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
+  dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
+  pfLooseId_                 = ps.getParameter<edm::ParameterSet>("pfLooseId");
+  tauCollection_             = ps.getParameter<InputTag>("tauSrc");
+
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
@@ -108,6 +109,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   tree_->Branch("eleDz",                 &eleDz_);
   tree_->Branch("elePt",                 &elePt_);
   tree_->Branch("eleEta",                &eleEta_);
+
+  tree_->Branch("eleTheta",                &eleTheta_);
+
   tree_->Branch("elePhi",                &elePhi_);
   tree_->Branch("eleSCEta",              &eleSCEta_);
   tree_->Branch("eleSCPhi",              &eleSCPhi_);
@@ -135,6 +139,29 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   tree_->Branch("eleBC1Eta",             &eleBC1Eta_);
   tree_->Branch("eleBC2E",               &eleBC2E_);
   tree_->Branch("eleBC2Eta",             &eleBC2Eta_);
+  tree_->Branch("eleIDMVA",              &eleIDMVA_);
+
+  tree_->Branch("eledEtaseedAtVtx",           &eledEtaseedAtVtx_);
+
+  tree_->Branch("eleE1x5",           &eleE1x5_);
+  tree_->Branch("eleE2x5",           &eleE2x5_);
+  tree_->Branch("eleE5x5",           &eleE5x5_);
+  tree_->Branch("eleRelIsoWithDBeta",            &eleRelIsoWithDBeta_);
+
+  tree_->Branch("eleE1x5_2012",           &eleE1x5_2012_);
+  tree_->Branch("eleE2x5_2012",           &eleE2x5_2012_);
+  tree_->Branch("eleE5x5_2012",           &eleE5x5_2012_);
+
+  tree_->Branch("eleEcalDrivenSeed",           &eleEcalDrivenSeed_);
+  tree_->Branch("eleDr03EcalRecHitSumEt",           &eleDr03EcalRecHitSumEt_);
+  tree_->Branch("eleDr03HcalDepth1TowerSumEt",           &eleDr03HcalDepth1TowerSumEt_);
+  tree_->Branch("eleDr03HcalDepth2TowerSumEt",           &eleDr03HcalDepth2TowerSumEt_);
+  tree_->Branch("eleDr03HcalTowerSumEt",           &eleDr03HcalTowerSumEt_);
+  tree_->Branch("eleDr03TkSumPt",           &eleDr03TkSumPt_);  
+  tree_->Branch("elecaloEnergy",           &elecaloEnergy_);
+
+  tree_->Branch("eleTrkdxy",           &eleTrkdxy_);
+ 
   // Photon
   tree_->Branch("nPho",                  &nPho_, "nPho/I");
   tree_->Branch("phoE",                  &phoE_);
@@ -200,6 +227,15 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   tree_->Branch("phoBC1Eta",             &phoBC1Eta_);
   tree_->Branch("phoBC2E",               &phoBC2E_);
   tree_->Branch("phoBC2Eta",             &phoBC2Eta_);
+
+  tree_->Branch("phoIDMVA",                  &phoIDMVA_);
+  tree_->Branch("phoEcalRecHitSumEtConeDR03",                  &phoEcalRecHitSumEtConeDR03_);
+  tree_->Branch("phohcalDepth1TowerSumEtConeDR03",                  &phohcalDepth1TowerSumEtConeDR03_);
+  tree_->Branch("phohcalDepth2TowerSumEtConeDR03",                  &phohcalDepth2TowerSumEtConeDR03_);
+  tree_->Branch("phohcalTowerSumEtConeDR03",                  &phohcalTowerSumEtConeDR03_);
+
+  tree_->Branch("photrkSumPtHollowConeDR03",                  &photrkSumPtHollowConeDR03_);
+
   // muon
   tree_->Branch("nMu",                   &nMu_, "nMu/I");
   tree_->Branch("muPt",                  &muPt_);
@@ -225,6 +261,14 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   tree_->Branch("muPFPhoIso",            &muPFPhoIso_);
   tree_->Branch("muPFNeuIso",            &muPFNeuIso_);
   tree_->Branch("muPFPUIso",             &muPFPUIso_);
+
+  ///SJ
+  tree_->Branch("muInnervalidFraction",         &muInnervalidFraction_);
+  tree_->Branch("musegmentCompatibility",                  &musegmentCompatibility_);
+  tree_->Branch("muchi2LocalPosition",                  &muchi2LocalPosition_);
+  tree_->Branch("mutrkKink",                  &mutrkKink_);
+  tree_->Branch("muBestTrkPtError",                  &muBestTrkPtError_);
+  tree_->Branch("muBestTrkPt",                  &muBestTrkPt_);
 
   //tau : Lvdp 
   if(dumpTaus_){
@@ -347,10 +391,90 @@ if (doGenParticles_) tree_->Branch("jetPartonID", &jetPartonID_);
     tree_->Branch("CA8Jetnconstituents",&CA8Jetnconstituents_);
     tree_->Branch("CA8prunedJetMass", &CA8prunedJetMass_);
   }
+
+
+  ////////////Prepare for photon ID MVA for Run II///////////
+  //
+  // Create and configure barrel MVA
+  //
+  tmvaReader_[0] = new TMVA::Reader( "!Color:!Silent:Error" );  
+  tmvaReader_[0]->SetVerbose(kFALSE);
+  // Add all the vars, we take the string with variable name from the weights file (the Expression field)
+  tmvaReader_[0]->AddVariable("recoPhi"   , &varPhi_);
+  tmvaReader_[0]->AddVariable("r9"        , &varR9_);
+  tmvaReader_[0]->AddVariable("sieie_2012", &varSieie_);
+  tmvaReader_[0]->AddVariable("sieip_2012", &varSieip_);
+  tmvaReader_[0]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
+  tmvaReader_[0]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
+  tmvaReader_[0]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
+  tmvaReader_[0]->AddVariable("recoSCEta" , &varSCEta_);
+  tmvaReader_[0]->AddVariable("rawE"      , &varRawE_);
+  tmvaReader_[0]->AddVariable("scEtaWidth", &varSCEtaWidth_);
+  tmvaReader_[0]->AddVariable("scPhiWidth", &varSCPhiWidth_);
+  tmvaReader_[0]->AddVariable("rho"       , &varRho_);
+  tmvaReader_[0]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
+  tmvaReader_[0]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
+  tmvaReader_[0]->AddVariable("chWorstRaw", &varWorstChRaw_);
+  // Add spectators
+  tmvaReader_[0]->AddSpectator("recoPt" , &varPt_);
+  tmvaReader_[0]->AddSpectator("recoEta", &varEta_);
+
+  //
+  // Create and configure endcap MVA
+  //
+  tmvaReader_[1] = new TMVA::Reader( "!Color:!Silent:Error" );  
+  tmvaReader_[1]->SetVerbose(kFALSE);
+  // Add all the vars, we take the string with variable name from the weights file (the Expression field)
+  tmvaReader_[1]->AddVariable("recoPhi"   , &varPhi_);
+  tmvaReader_[1]->AddVariable("r9"        , &varR9_);
+  tmvaReader_[1]->AddVariable("sieie_2012", &varSieie_);
+  tmvaReader_[1]->AddVariable("sieip_2012", &varSieip_);
+  tmvaReader_[1]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
+  tmvaReader_[1]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
+  tmvaReader_[1]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
+  tmvaReader_[1]->AddVariable("recoSCEta" , &varSCEta_);
+  tmvaReader_[1]->AddVariable("rawE"      , &varRawE_);
+  tmvaReader_[1]->AddVariable("scEtaWidth", &varSCEtaWidth_);
+  tmvaReader_[1]->AddVariable("scPhiWidth", &varSCPhiWidth_);
+  tmvaReader_[1]->AddVariable("esEn/rawE" , &varESEnOverRawE_);
+  tmvaReader_[1]->AddVariable("esRR"      , &varESEffSigmaRR_);
+  tmvaReader_[1]->AddVariable("rho"       , &varRho_);
+  tmvaReader_[1]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
+  tmvaReader_[1]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
+  tmvaReader_[1]->AddVariable("chWorstRaw", &varWorstChRaw_);
+  // Add spectators
+  tmvaReader_[1]->AddSpectator("recoPt" , &varPt_);
+  tmvaReader_[1]->AddSpectator("recoEta", &varEta_);
+
+  //
+  // Book the MVA method for each category
+  //
+  std::string cmssw_base_src = getenv("CMSSW_BASE");
+  cmssw_base_src += "/src/";
+  //
+  TString localFileName1 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EB_V1.weights.xml";
+  TString weightsFileName1 = TString(cmssw_base_src) + localFileName1;
+  //methodName_[0] = "BDT photons barrel";
+  methodName_[0] = "BDT";
+  tmvaReader_[0]->BookMVA(methodName_[0], weightsFileName1);
+  //
+  TString localFileName2 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EE_V1.weights.xml";
+  TString weightsFileName2 = TString(cmssw_base_src) + localFileName2;
+  //methodName_[1] = "BDT photons endcap";
+  methodName_[1] = "BDT";
+  tmvaReader_[1]->BookMVA(methodName_[1], weightsFileName2);
+
+
+
 }
 
 ggNtuplizer::~ggNtuplizer() {
   delete cicPhotonId_;
+
+  
+  delete tmvaReader_[0];
+  delete tmvaReader_[1];
+
 }
 
 void ggNtuplizer::getHandles(const edm::Event & event,
@@ -382,9 +506,9 @@ void ggNtuplizer::getHandles(const edm::Event & event,
   event.getByLabel(photonCollection_,          photonHandle);
   event.getByLabel(muonCollection_,            muonHandle);
   event.getByLabel(tauCollection_,             tauHandle);
-  event.getByLabel(ebReducedRecHitCollection_, EBReducedRecHits);
-  event.getByLabel(eeReducedRecHitCollection_, EEReducedRecHits);
-  event.getByLabel(esReducedRecHitCollection_, ESReducedRecHits);
+  event.getByToken(ebReducedRecHitCollection_, EBReducedRecHits);
+  event.getByToken(eeReducedRecHitCollection_, EEReducedRecHits);
+  event.getByToken(esReducedRecHitCollection_, ESReducedRecHits);
   event.getByLabel(recophotonCollection_,      recoPhotonHandle);
   event.getByLabel(tracklabel_,                tracksHandle);
   event.getByLabel(gsfElectronlabel_,          gsfElectronHandle);
@@ -606,6 +730,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       eleDz_              .push_back(iEle->gsfTrack()->dz(pv));
       elePt_              .push_back(iEle->pt());
       eleEta_             .push_back(iEle->eta());
+      eleTheta_             .push_back(iEle->theta());
+
       elePhi_             .push_back(iEle->phi());
       eleSCEn_            .push_back(iEle->superCluster()->energy());
       eleESEn_            .push_back(iEle->superCluster()->preshowerEnergy());
@@ -614,21 +740,37 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       eleSCRawEn_         .push_back(iEle->superCluster()->rawEnergy());
       eleSCEtaWidth_      .push_back(iEle->superCluster()->etaWidth());
       eleSCPhiWidth_      .push_back(iEle->superCluster()->phiWidth());
-      eleHoverE_          .push_back(iEle->hcalOverEcalBc());
+
+      ///SJ - 16th April
+      ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
+      //eleHoverE_          .push_back(iEle->hcalOverEcalBc());
+      eleHoverE_          .push_back(iEle->hcalOverEcal());
+
+      ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
       eleEoverP_          .push_back(iEle->eSuperClusterOverP());
       eleEoverPInv_       .push_back(fabs(1./iEle->ecalEnergy()-1./iEle->trackMomentumAtVtx().R()));
       eleBrem_            .push_back(iEle->fbrem());
       eledEtaAtVtx_       .push_back(iEle->deltaEtaSuperClusterTrackAtVtx());
       eledPhiAtVtx_       .push_back(iEle->deltaPhiSuperClusterTrackAtVtx());
-      eleSigmaIEtaIEta_   .push_back(iEle->sigmaIetaIeta());
+      eleSigmaIEtaIEta_   .push_back(iEle->sigmaIetaIeta()); ///new sigmaietaieta
       eleSigmaIEtaIPhi_   .push_back(iEle->sigmaIetaIphi());
       eleSigmaIPhiIPhi_   .push_back(iEle->sigmaIphiIphi());
       eleConvVeto_        .push_back((Int_t)iEle->passConversionVeto()); // ConvVtxFit || missHit == 0
-      eleMissHits_        .push_back(iEle->gsfTrack()->trackerExpectedHitsInner().numberOfHits());
+      eleMissHits_        .push_back(iEle->gsfTrack()->hitPattern().numberOfLostHits(reco::HitPattern::MISSING_INNER_HITS));
       eleESEffSigmaRR_    .push_back(lazyTool->eseffsirir(*((*iEle).superCluster())));
       //elePFChIso_         .push_back(iEle->chargedHadronIso());
       //elePFPhoIso_        .push_back(iEle->photonIso());
       //elePFNeuIso_        .push_back(iEle->neutralHadronIso());
+
+      ///HEEP ID
+      double eledEtaseedAtVtx = iEle->superCluster().isNonnull() && iEle->superCluster()->seed().isNonnull() ? 
+	iEle->deltaEtaSuperClusterTrackAtVtx() - iEle->superCluster()->eta() + iEle->superCluster()->seed()->eta() : std::numeric_limits<float>::max();
+      
+      eledEtaseedAtVtx_   .push_back(eledEtaseedAtVtx);
+      
+      eleE1x5_            .push_back(iEle->e1x5());
+      eleE2x5_            .push_back(iEle->e2x5Max());
+      eleE5x5_            .push_back(iEle->e5x5());
 
       GsfElectron::PflowIsolationVariables pfIso = iEle->pfIsolationVariables();
       elePFChIso_         .push_back(pfIso.sumChargedHadronPt);
@@ -636,11 +778,49 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       elePFNeuIso_        .push_back(pfIso.sumNeutralHadronEt);
       elePFPUIso_         .push_back(pfIso.sumPUPt);
 
+      elecaloEnergy_      .push_back(iEle->caloEnergy());
+      ///SJ - https://github.com/lgray/cmssw/blob/common_isolation_selection_70X/TestElectronID/ElectronIDAnalyzer/plugins/ElectronIDAnalyzer.cc
+      
+      float absiso = elePFChIso_[nEle_]
+	+ std::max(0.0 , elePFNeuIso_[nEle_] + elePFPhoIso_[nEle_] - 0.5 * elePFPUIso_[nEle_]);
+      eleRelIsoWithDBeta_ .push_back(absiso/elePt_[nEle_]);
+
+
+      /////quantities which were used for Run1 - these do not 
+      ///calculated through PF (meaning no energy is subtracted 
+      ///using PF)
+      ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d9/d44/ElectronIDValueMapProducer_8cc_source.html
+      ///line 120
+
       std::vector<float> vCovEle = lazyToolnoZS->localCovariances( *((*iEle).superCluster()->seed()) );
       const float seeEle = (isnan(vCovEle[0]) ? 0. : sqrt(vCovEle[0]));
 
-      eleSigmaIEtaIEta_2012_ .push_back(seeEle);
+      eleSigmaIEtaIEta_2012_ .push_back(seeEle); //sigmaietaieta of run1
+      
+      const reco::CaloClusterPtr seed = (*iEle).superCluster()->seed();
+      eleE1x5_2012_            .push_back(lazyToolnoZS->e1x5(*seed));
+      eleE2x5_2012_            .push_back(lazyToolnoZS->e2x5Max(*seed));
+      eleE5x5_2012_            .push_back(lazyToolnoZS->e5x5(*seed));
 
+      ///For HEEP ID
+      eleEcalDrivenSeed_                       .push_back(iEle->ecalDrivenSeed());
+      eleDr03EcalRecHitSumEt_                  .push_back(iEle->dr03EcalRecHitSumEt());
+      eleDr03HcalDepth1TowerSumEt_             .push_back(iEle->dr03HcalDepth1TowerSumEt());
+      eleDr03HcalDepth2TowerSumEt_             .push_back(iEle->dr03HcalDepth2TowerSumEt());
+      eleDr03HcalTowerSumEt_                   .push_back(iEle->dr03HcalTowerSumEt());
+      eleDr03TkSumPt_                          .push_back(iEle->dr03TkSumPt());
+
+
+      reco::GsfTrackRef trackref = iEle->gsfTrack();
+      if(iEle->gsfTrack().isNonnull())
+	{
+	  if(recVtxs_->size() > 0 ){
+	    eleTrkdxy_        .push_back(trackref->dxy(recVtxs_->front().position()));
+	  }//if(recVtxs->size() > 0 )
+	  
+	}//if(iEle->gsfTrack().isNonnull())
+      
+      
       eleBC1E_               .push_back((*iEle).superCluster()->seed()->energy());
       eleBC1Eta_             .push_back((*iEle).superCluster()->seed()->eta());
 
@@ -656,6 +836,11 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 	eleBC2E_  .push_back(-99.);
 	eleBC2Eta_.push_back(-99.);
       }
+      
+      ////////9th April, 2015 - SHILPI JAIN
+      ///MVA for electrons in PHYS14
+      
+      eleIDMVA_   .push_back(iEle->electronID("trigMVAid"));
 
       nEle_++;
     }
@@ -772,6 +957,44 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 	phoBC2Eta_.push_back(-99.);
       }
 
+      ///SJ - isolation variables
+      phoEcalRecHitSumEtConeDR03_                   .push_back(iPho->ecalRecHitSumEtConeDR03());
+      phohcalDepth1TowerSumEtConeDR03_              .push_back(iPho->hcalDepth1TowerSumEtConeDR03());
+      phohcalDepth2TowerSumEtConeDR03_              .push_back(iPho->hcalDepth2TowerSumEtConeDR03());
+      phohcalTowerSumEtConeDR03_                    .push_back(iPho->hcalTowerSumEtConeDR03());
+      photrkSumPtHollowConeDR03_                    .push_back(iPho->trkSumPtHollowConeDR03());
+    
+      ////////9th April, 2015 - SJ
+      ///MVA for photons in PHYS14
+      // set MVA variables
+      
+      varPhi_          = phoPhi_[nPho_];
+      varR9_           = phoR9_[nPho_];
+      varSieie_        = phoSigmaIEtaIEta_2012_[nPho_];
+      varSieip_        = phoSigmaIEtaIPhi_2012_[nPho_];
+      varE1x3overE5x5_ = phoE1x3_2012_[nPho_]/phoE5x5_2012_[nPho_];
+      varE2x2overE5x5_ = phoE2x2_2012_[nPho_]/phoE5x5_2012_[nPho_];
+      varSCEta_        = phoSCEta_[nPho_];
+      varRawE_         = phoSCRawE_[nPho_];
+      varSCEtaWidth_   = phoSCEtaWidth_[nPho_];
+      varSCPhiWidth_   = phoSCPhiWidth_[nPho_];
+      varESEnOverRawE_ = phoESEn_[nPho_]/phoSCRawE_[nPho_];
+      varESEffSigmaRR_ = phoESEffSigmaRR_[nPho_];
+      varRho_          = rho_;
+      varPhoIsoRaw_    = phoPFPhoIso_[nPho_];
+      varChIsoRaw_     = phoPFChIso_[nPho_];
+      varWorstChRaw_   = phoPFNeuIso_[nPho_];
+      // Declare spectator vars 
+      varPt_           = phoEt_[nPho_];
+      varEta_          = phoEta_[nPho_];
+
+      // 0=ECAL barrel or 1=ECAL endcaps
+      int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
+
+      phoIDMVA_                   .push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
+      
+
+
       nPho_++;
     }
   }
@@ -793,6 +1016,17 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
       muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
 
+      ///SJ
+      muBestTrkPtError_  .push_back(iMu->muonBestTrack()->ptError());
+      muBestTrkPt_       .push_back(iMu->muonBestTrack()->pt());
+
+      ///SJ
+      musegmentCompatibility_  .push_back(iMu->segmentCompatibility());
+      muchi2LocalPosition_     .push_back(iMu->combinedQuality().chi2LocalPosition);
+
+      mutrkKink_               .push_back(iMu->combinedQuality().trkKink);
+      
+      
       const reco::TrackRef glbmu = iMu->globalTrack();
       const reco::TrackRef innmu = iMu->innerTrack();
 
@@ -811,6 +1045,10 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 	muPixelLayers_ .push_back(-99);
 	muPixelHits_   .push_back(-99);
 	muTrkQuality_  .push_back(-99);
+
+	///SJ
+	muInnervalidFraction_ .push_back(-99);
+	
       } else {
 	muInnerD0_     .push_back(innmu->dxy(pv));
         muInnerDz_     .push_back(innmu->dz(pv));
@@ -818,6 +1056,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 	muPixelLayers_ .push_back(innmu->hitPattern().pixelLayersWithMeasurement());
         muPixelHits_   .push_back(innmu->hitPattern().numberOfValidPixelHits());
 	muTrkQuality_  .push_back(innmu->quality(reco::TrackBase::highPurity));
+
+	muInnervalidFraction_ .push_back(innmu->validFraction()); 
       }
 
       muStations_  .push_back(iMu->numberOfMatchedStations());
@@ -1055,6 +1295,7 @@ void ggNtuplizer::clearVectors() {
   eleDz_.clear();
   elePt_.clear();
   eleEta_.clear();
+  eleTheta_.clear();
   elePhi_.clear();
   eleSCEta_.clear();
   eleSCPhi_.clear();
@@ -1083,6 +1324,26 @@ void ggNtuplizer::clearVectors() {
   eleBC2E_.clear();
   eleBC2Eta_.clear();
 
+  eleIDMVA_.clear();
+  eledEtaseedAtVtx_.clear();
+  eleE1x5_.clear();
+  eleE2x5_.clear();
+  eleE5x5_.clear();
+  eleRelIsoWithDBeta_.clear();
+  eleEcalDrivenSeed_.clear();
+  eleDr03EcalRecHitSumEt_.clear();
+  eleDr03HcalDepth1TowerSumEt_.clear();
+  eleDr03HcalDepth2TowerSumEt_.clear();
+  eleDr03HcalTowerSumEt_.clear();
+  eleDr03TkSumPt_.clear();
+
+  eleE1x5_2012_.clear();
+  eleE2x5_2012_.clear();
+  eleE5x5_2012_.clear();
+
+  elecaloEnergy_.clear();
+  eleTrkdxy_.clear();
+  
   phoE_.clear();
   phoEt_.clear();
   phoEta_.clear();
@@ -1147,6 +1408,14 @@ void ggNtuplizer::clearVectors() {
   phoBC2E_.clear();
   phoBC2Eta_.clear();
 
+  phoIDMVA_.clear();
+
+  phoEcalRecHitSumEtConeDR03_.clear();
+  phohcalDepth1TowerSumEtConeDR03_.clear();
+  phohcalDepth2TowerSumEtConeDR03_.clear();
+  phohcalTowerSumEtConeDR03_.clear();
+  photrkSumPtHollowConeDR03_.clear();
+
   muPt_.clear();
   muEta_.clear();
   muPhi_.clear();
@@ -1170,6 +1439,13 @@ void ggNtuplizer::clearVectors() {
   muPFPhoIso_.clear();
   muPFNeuIso_.clear();
   muPFPUIso_.clear();
+  ///SJ
+  muInnervalidFraction_.clear();
+  musegmentCompatibility_.clear();
+  muchi2LocalPosition_.clear();
+  mutrkKink_.clear();
+  muBestTrkPtError_.clear();
+  muBestTrkPt_.clear();
 
   //Lovedeep
   //@Lovedeep: 09/14 (Updated TauId Info)
