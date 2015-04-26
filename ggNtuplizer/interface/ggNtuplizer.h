@@ -29,6 +29,10 @@
 #include <fstream>
 #include <map>
 
+#include "TMVA/Factory.h"
+#include "TMVA/Tools.h"
+#include "TMVA/Reader.h"
+
 using namespace std;
 using namespace edm;
 using namespace reco;
@@ -90,9 +94,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   InputTag photonCollection_;
   InputTag muonCollection_;
   InputTag tauCollection_;
-  InputTag ebReducedRecHitCollection_;
-  InputTag eeReducedRecHitCollection_;
-  InputTag esReducedRecHitCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection> ebReducedRecHitCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection> eeReducedRecHitCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection> esReducedRecHitCollection_;
   InputTag recophotonCollection_;
   InputTag tracklabel_;
   InputTag gsfElectronlabel_;
@@ -170,6 +174,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  eleDz_;
   vector<float>  elePt_;
   vector<float>  eleEta_;
+  vector<float>  eleTheta_;
   vector<float>  elePhi_;
   vector<float>  eleSCEta_;
   vector<float>  eleSCPhi_;
@@ -197,6 +202,27 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  eleBC1Eta_;
   vector<float>  eleBC2E_;
   vector<float>  eleBC2Eta_;
+  vector<float>  eleIDMVA_;
+
+  vector<float>    eledEtaseedAtVtx_;
+  vector<float>    eleE1x5_;
+  vector<float>    eleE2x5_;
+  vector<float>    eleE5x5_;
+
+  vector<float>    eleE1x5_2012_;
+  vector<float>    eleE2x5_2012_;
+  vector<float>    eleE5x5_2012_;
+  vector<float>    eleRelIsoWithDBeta_;
+
+  vector<int>      eleEcalDrivenSeed_;
+  vector<float>    eleDr03EcalRecHitSumEt_;
+  vector<float>    eleDr03HcalDepth1TowerSumEt_;
+  vector<float>    eleDr03HcalDepth2TowerSumEt_;
+  vector<float>    eleDr03HcalTowerSumEt_;
+  vector<float>    eleDr03TkSumPt_;
+ 
+  vector<float>    elecaloEnergy_;
+  vector<float>    eleTrkdxy_;
   // Photon
   Int_t          nPho_;      
   vector<float>  phoE_;
@@ -262,6 +288,15 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  phoBC1Eta_;
   vector<float>  phoBC2E_;
   vector<float>  phoBC2Eta_;
+
+  vector<float>  phoIDMVA_;
+
+  vector<float>  phoEcalRecHitSumEtConeDR03_;
+  vector<float>  phohcalDepth1TowerSumEtConeDR03_;
+  vector<float>  phohcalDepth2TowerSumEtConeDR03_;
+  vector<float>  phohcalTowerSumEtConeDR03_;
+  vector<float>  photrkSumPtHollowConeDR03_;
+  
   // muon
   Int_t          nMu_;
   vector<float>  muPt_;
@@ -287,6 +322,14 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<float>  muPFPhoIso_;
   vector<float>  muPFNeuIso_;
   vector<float>  muPFPUIso_;
+
+  ///SJ
+  vector<float>  muInnervalidFraction_;
+  vector<float>  musegmentCompatibility_;
+  vector<float>  muchi2LocalPosition_;
+  vector<float>  mutrkKink_;
+  vector<float>  muBestTrkPtError_;
+  vector<float>  muBestTrkPt_;
 
   //SubJet
   Int_t nCA8Jet_;
@@ -436,7 +479,35 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Bool_t dumpSubJets_;
   Bool_t dumpJets_;
   Bool_t dumpTaus_;
- PFJetIDSelectionFunctor pfLooseId_;
+  PFJetIDSelectionFunctor pfLooseId_;
+
+
+  // Variables that will be containers on which TMVA Reader works
+  // The variables
+  float varPhi_;
+  float varR9_; 
+  float varSieie_;
+  float varSieip_; 
+  float varE1x3overE5x5_; 
+  float varE2x2overE5x5_; 
+  float varE2x5overE5x5_; 
+  float varSCEta_; 
+  float varRawE_; 
+  float varSCEtaWidth_; 
+  float varSCPhiWidth_; 
+  float varRho_;
+  float varPhoIsoRaw_;
+  float varChIsoRaw_; 
+  float varWorstChRaw_;
+  float varESEnOverRawE_; // for endcap MVA only
+  float varESEffSigmaRR_; // for endcap MVA only
+  // The spectators
+  float varPt_; 
+  float varEta_;
+
+  // TMVA Reader for applying MVA
+  TMVA::Reader *tmvaReader_[2];
+  TString methodName_[2];
 
 
 };
