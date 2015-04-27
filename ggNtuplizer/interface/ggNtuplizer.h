@@ -53,10 +53,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   virtual void analyze(const edm::Event&, const edm::EventSetup&) override;
   virtual void endJob() override;
   
+  void makeBranchesGenParticles(TTree* tree);
+  void fillGenParticles(const edm::Event& e);
+
   void clearVectors();
   
   void getHandles(const edm::Event & event,
-		  edm::Handle<std::vector<reco::GenParticle> > & genParticles,
 		  edm::Handle<VertexCollection>                & recVtxs,
 		  edm::Handle<VertexCollection>                & recVtxsBS,
 		  edm::Handle<double>                          & rhoHandle,
@@ -76,10 +78,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
 		  
 		  );
 
-  float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenParticleCollection::const_iterator thisPho, 
-		     const Float_t dRMax=0.4, Bool_t removeMu=true, Bool_t removeNu=false);
-  float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenParticleCollection::const_iterator thisPho, const Float_t dRMax=0.4);
-  
   Bool_t   doGenParticles_;
   Bool_t   runOnParticleGun_;  
 
@@ -88,7 +86,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   InputTag rhoLabel_;
   InputTag generatorLabel_;
   InputTag puCollection_;
-  InputTag genParticlesCollection_;
+  edm::EDGetTokenT<vector<reco::GenParticle> > genParticlesCollection_;
   InputTag pfMETlabel_;
   InputTag electronCollection_;
   InputTag photonCollection_;
@@ -124,32 +122,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Int_t          nVtx_;
   Int_t          nTrks_;
   Float_t        rho_;
-  // genParticle
-  Int_t          nMC_;
-  vector<int>    mcPID;
-  vector<float>  mcVtx_x;
-  vector<float>  mcVtx_y;
-  vector<float>  mcVtx_z;
-  vector<float>  mcPt;
-  vector<float>  mcMass;
-  vector<float>  mcEta;
-  vector<float>  mcPhi;
-  vector<float>  mcE;
-  vector<float>  mcEt;
-  vector<int>    mcGMomPID;
-  vector<int>    mcMomPID;
-  vector<float>  mcMomPt;
-  vector<float>  mcMomMass;
-  vector<float>  mcMomEta;
-  vector<float>  mcMomPhi;
-  vector<int>    mcIndex;
-  vector<int>    mcDecayType;
-  vector<int>    mcParentage;
-  vector<int>    mcStatus;
-  vector<float>  mcCalIsoDR03;
-  vector<float>  mcTrkIsoDR03;
-  vector<float>  mcCalIsoDR04;
-  vector<float>  mcTrkIsoDR04;
+
   // PU
   Int_t          nPUInfo_;  
   vector<int>    nPU_;
@@ -459,7 +432,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
 
   // Physics objects handles
-  Handle<std::vector<reco::GenParticle> > genParticlesHandle_;
   Handle<VertexCollection>                recVtxs_;
   Handle<VertexCollection>                recVtxsBS_;
   Handle<double>                          rhoHandle_;
