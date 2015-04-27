@@ -74,12 +74,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
 		  edm::Handle<TrackCollection>                 & tracksHandle,
 		  edm::Handle<GsfElectronCollection>           & gsfElectronHandle,
 		  edm::Handle<PFCandidateCollection>           & pfAllCandidates,
-                  edm::Handle<edm::View<pat::Jet> >            & jetHandle   //lvdp
-		  
+                  edm::Handle<edm::View<pat::Jet> >            & jetHandle   //lvdp		  
 		  );
 
   Bool_t   doGenParticles_;
   Bool_t   runOnParticleGun_;  
+  vector<int> newparticles_;
 
   InputTag vtxLabel_;  
   InputTag vtxBSLabel_;

@@ -17,7 +17,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   rhoLabel_                  = ps.getParameter<InputTag>("rhoLabel");
   generatorLabel_            = ps.getParameter<InputTag>("generatorLabel");
   puCollection_              = ps.getParameter<InputTag>("pileupCollection");
-  genParticlesCollection_ = consumes<vector<reco::GenParticle> >   (ps.getParameter<edm::InputTag>("genParticleSrc"));
+  genParticlesCollection_    = consumes<vector<reco::GenParticle> >   (ps.getParameter<edm::InputTag>("genParticleSrc"));
   pfMETlabel_                = ps.getParameter<InputTag>("pfMETLabel");
   electronCollection_        = ps.getParameter<InputTag>("electronSrc");
   photonCollection_          = ps.getParameter<InputTag>("photonSrc");
@@ -36,6 +36,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   pfLooseId_                 = ps.getParameter<edm::ParameterSet>("pfLooseId");
   tauCollection_             = ps.getParameter<InputTag>("tauSrc");
+  newparticles_              = ps.getParameter< vector<int > >("newParticles");
 
   cicPhotonId_ = new CiCPhotonID(ps);
 

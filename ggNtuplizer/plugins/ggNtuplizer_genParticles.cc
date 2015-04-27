@@ -86,37 +86,37 @@ float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenPar
   return genTrkIsoSum;
 }
 
-void ggNtuplizer::makeBranchesGenParticles(TTree* tree_)
-{
-  tree_->Branch("nMC", &nMC_, "nMC/I");
-  tree_->Branch("mcPID", &mcPID);
-  tree_->Branch("mcVtx_x", &mcVtx_x);
-  tree_->Branch("mcVtx_y", &mcVtx_y);
-  tree_->Branch("mcVtx_z", &mcVtx_z);
-  tree_->Branch("mcPt", &mcPt);
-  tree_->Branch("mcMass", &mcMass);
-  tree_->Branch("mcEta", &mcEta);
-  tree_->Branch("mcPhi", &mcPhi);
-  tree_->Branch("mcE", &mcE);
-  tree_->Branch("mcEt", &mcEt);
-  tree_->Branch("mcGMomPID", &mcGMomPID);
-  tree_->Branch("mcMomPID", &mcMomPID);
-  tree_->Branch("mcMomPt", &mcMomPt);
-  tree_->Branch("mcMomMass", &mcMomMass);
-  tree_->Branch("mcMomEta", &mcMomEta);
-  tree_->Branch("mcMomPhi", &mcMomPhi);
-  tree_->Branch("mcIndex", &mcIndex);
-  tree_->Branch("mcDecayType", &mcDecayType); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
-  tree_->Branch("mcParentage", &mcParentage); // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
-  tree_->Branch("mcStatus", &mcStatus); // status of the particle
+void ggNtuplizer::makeBranchesGenParticles(TTree* tree_) {
+
+  tree_->Branch("nMC",          &nMC_, "nMC/I");
+  tree_->Branch("mcPID",        &mcPID);
+  tree_->Branch("mcVtx_x",      &mcVtx_x);
+  tree_->Branch("mcVtx_y",      &mcVtx_y);
+  tree_->Branch("mcVtx_z",      &mcVtx_z);
+  tree_->Branch("mcPt",         &mcPt);
+  tree_->Branch("mcMass",       &mcMass);
+  tree_->Branch("mcEta",        &mcEta);
+  tree_->Branch("mcPhi",        &mcPhi);
+  tree_->Branch("mcE",          &mcE);
+  tree_->Branch("mcEt",         &mcEt);
+  tree_->Branch("mcGMomPID",    &mcGMomPID);
+  tree_->Branch("mcMomPID",     &mcMomPID);
+  tree_->Branch("mcMomPt",      &mcMomPt);
+  tree_->Branch("mcMomMass",    &mcMomMass);
+  tree_->Branch("mcMomEta",     &mcMomEta);
+  tree_->Branch("mcMomPhi",     &mcMomPhi);
+  tree_->Branch("mcIndex",      &mcIndex);
+  tree_->Branch("mcDecayType",  &mcDecayType); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
+  tree_->Branch("mcParentage",  &mcParentage); // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
+  tree_->Branch("mcStatus",     &mcStatus);    // status of the particle
   tree_->Branch("mcCalIsoDR03", &mcCalIsoDR03);
   tree_->Branch("mcTrkIsoDR03", &mcTrkIsoDR03);
   tree_->Branch("mcCalIsoDR04", &mcCalIsoDR04);
   tree_->Branch("mcTrkIsoDR04", &mcTrkIsoDR04);
 }
 
-void ggNtuplizer::fillGenParticles(const edm::Event& e)
-{
+void ggNtuplizer::fillGenParticles(const edm::Event& e) {
+
   // Fills tree branches with generated particle info.
 
   // cleanup from previous execution
@@ -151,27 +151,34 @@ void ggNtuplizer::fillGenParticles(const edm::Event& e)
   e.getByToken(genParticlesCollection_, genParticlesHandle);
 
   if (!genParticlesHandle.isValid()) {
-    // FIXME: print some warning message here?
+    cout<<"Warning : genParticle handle is wrong !"<<endl;
     return;
   }
 
   for (vector<GenParticle>::const_iterator ip = genParticlesHandle->begin(); ip != genParticlesHandle->end(); ++ip) {
+
     genIndex++;
 
-    int status = ip->status() - 10*(ip->status()/10);
-    bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
+    int status = ip->status();
+    //bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
 
-    // keep all the photons with pT > 5.0 and all leptons;
+    // keep all the photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
-      (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0 ) ||
-      (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ))  ||
-      (status < 10 && abs(ip->pdgId()) == 15 );
+      (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0) ||
+      (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
+      (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
+
     // select also Z, W, H, and top
     bool heavyParticle =
       (ip->pdgId() == 23 || abs(ip->pdgId()) == 24 || ip->pdgId() == 25 ||
         abs(ip->pdgId()) == 6 || abs(ip->pdgId()) == 5);
 
-    if ( stableFinalStateParticle || heavyParticle || photonOrLepton ) {
+    bool newParticle = false;
+    for (size_t inp = 0; inp < newparticles_.size(); ++inp) {
+      if (abs(ip->pdgId()) == newparticles_[inp]) newParticle = true;
+    }
+
+    if ( heavyParticle || photonOrLepton || newParticle ) {
       const Candidate *p = (const Candidate*)&(*ip);
       if (!runOnParticleGun_ && !p->mother()) continue;
 
@@ -243,6 +250,8 @@ void ggNtuplizer::fillGenParticles(const edm::Event& e)
       mcMomPhi.push_back(mcMomPhi_);
 
       mcIndex.push_back(genIndex-1);
+
+      //cout<<genIndex-1<<" "<<p->pdgId()<<" "<<p->status()<<" "<<p->et()<<" "<<mcMomPID_<<" "<<mcGMomPID_<<endl;
 
       mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
             mcTrkIsoDR03.push_back( getGenTrkIso(genParticlesHandle, ip, 0.3) );
