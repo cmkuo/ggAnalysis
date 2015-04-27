@@ -19,7 +19,7 @@
 #include "DataFormats/VertexReco/interface/VertexFwd.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "RecoEgamma/PhotonIdentification/interface/GEDPhoIDTools.h"
+#include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "TTree.h"
