@@ -1,12 +1,7 @@
-# ggAnalysis
-ggAnalysis
+To work with CMSSW_7_2_0, you do:
 
-Added information about photons and electrons.
+git cms-merge-topic ikrav:egm_id_phys14 # for photon ID recipe
+git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron ID recipe
+git clone https://github.com/cmkuo/HiggsAnalysis.git 
+git clone https://github.com/cmkuo/ggAnalysis.git
 
-------Tags to be checked out:
-
-(1) For photons: git cms-merge-topic ikrav:egm_id_phys14
-
-(2) For elecrons: git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720
-
-------
