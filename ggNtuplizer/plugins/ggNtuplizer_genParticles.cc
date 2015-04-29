@@ -1,9 +1,20 @@
+#include "TH1F.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 #include "ggAnalysis/ggNtuplizer/interface/GenParticleParentage.h"
 
 using namespace std;
 
 // (local) variables associated with tree branches
+vector<float>  pdf_;
+float          pthat_;
+float          processID_;
+
+Int_t          nPUInfo_;
+vector<int>    nPU_;
+vector<int>    puBX_;
+vector<float>  puTrue_;
+
 Int_t          nMC_;
 vector<int>    mcPID;
 vector<float>  mcVtx_x;
@@ -30,132 +41,216 @@ vector<float>  mcTrkIsoDR03;
 vector<float>  mcCalIsoDR04;
 vector<float>  mcTrkIsoDR04;
 
-float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenParticleCollection::const_iterator thisPho, const Float_t dRMax, bool removeMu, bool removeNu) {
+TH1*           hPU_;
+TH1*           hPUTrue_;
 
-  const Float_t etMin = 0.0;
-  Float_t genCalIsoSum = 0.0;
-  if (!handle.isValid()) return genCalIsoSum;
+float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
+                   reco::GenParticleCollection::const_iterator thisPart,
+                   float dRMax, bool removeMu, bool removeNu)
+{
+  // Returns Et sum.
 
-  for (reco::GenParticleCollection::const_iterator it_gen=handle->begin(); it_gen!=handle->end(); ++it_gen) {
+  float etSum = 0;
 
-    if (it_gen == thisPho) continue;        // can't be the original photon
-    if (it_gen->status() != 1) continue;    // need to be a stable particle
-    if (thisPho->collisionId() != it_gen->collisionId()) continue; // has to come from the same collision
+  for (reco::GenParticleCollection::const_iterator p = handle->begin(); p != handle->end(); ++p) {
+    if (p == thisPart) continue;
+    if (p->status() != 1) continue;
 
-    Int_t pdgCode = abs(it_gen->pdgId());
-    // we should not count neutrinos, muons
-    if (removeMu && pdgCode == 13 ) continue;
+    // has to come from the same collision
+    if (thisPart->collisionId() != p->collisionId())
+        continue;
+
+    int pdgCode = abs(p->pdgId());
+
+    // skip muons/neutrinos, if requested
+    if (removeMu && pdgCode == 13) continue;
     if (removeNu && (pdgCode == 12 || pdgCode == 14 || pdgCode == 16)) continue;
 
-    Float_t et = it_gen->et();
-    if (et < etMin) continue; // pass a minimum et threshold, default 0
+//     // pass a minimum Et threshold
+//     if (p->et() < 0) continue;
 
-    Float_t dR = reco::deltaR(thisPho->momentum(), it_gen->momentum());
-    if (dR > dRMax) continue; // within deltaR cone
+    // must be within deltaR cone
+    float dR = reco::deltaR(thisPart->momentum(), p->momentum());
+    if (dR > dRMax) continue;
 
-    genCalIsoSum += et;
-
+    etSum += p->et();
   }
 
-  return genCalIsoSum;
+  return etSum;
 }
 
-float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle, reco::GenParticleCollection::const_iterator thisPho, const Float_t dRMax) {
-
-  const Float_t ptMin = 0.0;
-  Float_t genTrkIsoSum = 0.0;
-  if (!handle.isValid()) return genTrkIsoSum;
-
-  for (reco::GenParticleCollection::const_iterator it_gen=handle->begin(); it_gen!=handle->end(); ++it_gen){
-
-    if (it_gen == thisPho) continue;        // can't be the original photon
-    if (it_gen->status() != 1) continue;    // need to be a stable particle
-    if (thisPho->collisionId() != it_gen->collisionId()) continue; // has to come from the same collision
-
-    if (it_gen->charge() == 0) continue;    // we should not count neutral particles
-
-    Float_t pt = it_gen->pt();
-    if (pt < ptMin) continue; // pass a minimum pt threshold, default 0
-
-    Float_t dR = reco::deltaR(thisPho->momentum(), it_gen->momentum());
-    if (dR > dRMax) continue; // within deltaR cone
-    genTrkIsoSum += pt;
-
-  }// end of loop over gen particles
-
-  return genTrkIsoSum;
-}
-
-void ggNtuplizer::makeBranchesGenParticles(TTree* tree_)
+float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle,
+                   reco::GenParticleCollection::const_iterator thisPart, float dRMax)
 {
-  tree_->Branch("nMC", &nMC_, "nMC/I");
-  tree_->Branch("mcPID", &mcPID);
-  tree_->Branch("mcVtx_x", &mcVtx_x);
-  tree_->Branch("mcVtx_y", &mcVtx_y);
-  tree_->Branch("mcVtx_z", &mcVtx_z);
-  tree_->Branch("mcPt", &mcPt);
-  tree_->Branch("mcMass", &mcMass);
-  tree_->Branch("mcEta", &mcEta);
-  tree_->Branch("mcPhi", &mcPhi);
-  tree_->Branch("mcE", &mcE);
-  tree_->Branch("mcEt", &mcEt);
-  tree_->Branch("mcGMomPID", &mcGMomPID);
-  tree_->Branch("mcMomPID", &mcMomPID);
-  tree_->Branch("mcMomPt", &mcMomPt);
-  tree_->Branch("mcMomMass", &mcMomMass);
-  tree_->Branch("mcMomEta", &mcMomEta);
-  tree_->Branch("mcMomPhi", &mcMomPhi);
-  tree_->Branch("mcIndex", &mcIndex);
-  tree_->Branch("mcDecayType", &mcDecayType); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
-  tree_->Branch("mcParentage", &mcParentage); // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
-  tree_->Branch("mcStatus", &mcStatus); // status of the particle
-  tree_->Branch("mcCalIsoDR03", &mcCalIsoDR03);
-  tree_->Branch("mcTrkIsoDR03", &mcTrkIsoDR03);
-  tree_->Branch("mcCalIsoDR04", &mcCalIsoDR04);
-  tree_->Branch("mcTrkIsoDR04", &mcTrkIsoDR04);
+   // Returns pT sum without counting neutral particles.
+
+   float ptSum = 0;
+
+   for (reco::GenParticleCollection::const_iterator p = handle->begin(); p != handle->end(); ++p) {
+      if (p == thisPart) continue;
+      if (p->status() != 1) continue;
+      if (p->charge() == 0) continue;  // do not count neutral particles
+
+      // has to come from the same collision
+      if (thisPart->collisionId() != p->collisionId())
+         continue;
+
+//       // pass a minimum pt threshold
+//       if (p->pt() < 0) continue;
+
+      // must be within deltaR cone
+      float dR = reco::deltaR(thisPart->momentum(), p->momentum());
+      if (dR > dRMax) continue;
+
+      ptSum += p->pt();
+   }
+
+   return ptSum;
 }
 
-void ggNtuplizer::fillGenParticles(const edm::Event& e)
+void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs)
+{
+  tree->Branch("pdf",          &pdf_);
+  tree->Branch("pthat",        &pthat_);
+  tree->Branch("processID",    &processID_);
+
+  tree->Branch("nPUInfo",      &nPUInfo_);
+  tree->Branch("nPU",          &nPU_);
+  tree->Branch("puBX",         &puBX_);
+  tree->Branch("puTrue",       &puTrue_);
+
+  hPU_     = fs->make<TH1F>("hPU",     "number of pileup",      200,  0, 200);
+  hPUTrue_ = fs->make<TH1F>("hPUTrue", "number of true pilepu", 1000, 0, 200);
+}
+
+void ggNtuplizer::branchesGenPart(TTree* tree)
+{
+  tree->Branch("nMC",          &nMC_);
+  tree->Branch("mcPID",        &mcPID);
+  tree->Branch("mcVtx_x",      &mcVtx_x);
+  tree->Branch("mcVtx_y",      &mcVtx_y);
+  tree->Branch("mcVtx_z",      &mcVtx_z);
+  tree->Branch("mcPt",         &mcPt);
+  tree->Branch("mcMass",       &mcMass);
+  tree->Branch("mcEta",        &mcEta);
+  tree->Branch("mcPhi",        &mcPhi);
+  tree->Branch("mcE",          &mcE);
+  tree->Branch("mcEt",         &mcEt);
+  tree->Branch("mcGMomPID",    &mcGMomPID);
+  tree->Branch("mcMomPID",     &mcMomPID);
+  tree->Branch("mcMomPt",      &mcMomPt);
+  tree->Branch("mcMomMass",    &mcMomMass);
+  tree->Branch("mcMomEta",     &mcMomEta);
+  tree->Branch("mcMomPhi",     &mcMomPhi);
+  tree->Branch("mcIndex",      &mcIndex);
+  tree->Branch("mcDecayType",  &mcDecayType); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
+  tree->Branch("mcParentage",  &mcParentage); // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
+  tree->Branch("mcStatus",     &mcStatus); // status of the particle
+  tree->Branch("mcCalIsoDR03", &mcCalIsoDR03);
+  tree->Branch("mcTrkIsoDR03", &mcTrkIsoDR03);
+  tree->Branch("mcCalIsoDR04", &mcCalIsoDR04);
+  tree->Branch("mcTrkIsoDR04", &mcTrkIsoDR04);
+}
+
+void ggNtuplizer::fillGenInfo(const edm::Event& e)
+{
+
+  // cleanup from previous execution
+  pthat_ = -99;
+  processID_ = -99;
+  pdf_.clear();
+
+  nPUInfo_ = 0;
+  nPU_   .clear();
+  puBX_  .clear();
+  puTrue_.clear();
+
+  edm::Handle<GenEventInfoProduct> genEventInfoHandle;
+  e.getByToken(generatorLabel_, genEventInfoHandle);
+
+  if (genEventInfoHandle.isValid()) {
+    if (genEventInfoHandle->pdf()) {
+      pdf_.push_back(genEventInfoHandle->pdf()->id.first);    // PDG ID of incoming parton #1
+      pdf_.push_back(genEventInfoHandle->pdf()->id.second);   // PDG ID of incoming parton #2
+      pdf_.push_back(genEventInfoHandle->pdf()->x.first);     // x value of parton #1
+      pdf_.push_back(genEventInfoHandle->pdf()->x.second);    // x value of parton #2
+      pdf_.push_back(genEventInfoHandle->pdf()->xPDF.first);  // PDF weight for parton #1
+      pdf_.push_back(genEventInfoHandle->pdf()->xPDF.second); // PDF weight for parton #2
+      pdf_.push_back(genEventInfoHandle->pdf()->scalePDF);    // scale of the hard interaction
+    }
+
+    if (genEventInfoHandle->hasBinningValues())
+      pthat_ = genEventInfoHandle->binningValues()[0];
+    processID_ = genEventInfoHandle->signalProcessID();
+
+  } else
+    edm::LogWarning("ggNtuplizer") << "no GenEventInfoProduct in event";
+
+  edm::Handle<vector<PileupSummaryInfo> > genPileupHandle;
+  e.getByToken(puCollection_, genPileupHandle);
+
+  if (genPileupHandle.isValid()) {
+    for (vector<PileupSummaryInfo>::const_iterator pu = genPileupHandle->begin(); pu != genPileupHandle->end(); ++pu) {
+      if (pu->getBunchCrossing() == 0) {
+        hPU_->Fill(pu->getPU_NumInteractions());
+        hPUTrue_->Fill(pu->getTrueNumInteractions());
+      }
+
+      nPU_   .push_back(pu->getPU_NumInteractions());
+      puTrue_.push_back(pu->getTrueNumInteractions());
+      puBX_  .push_back(pu->getBunchCrossing());
+
+      nPUInfo_++;
+    }
+  }
+  else
+    edm::LogWarning("ggNtuplizer") << "no PileupSummaryInfo in event";
+
+}
+
+void ggNtuplizer::fillGenPart(const edm::Event& e)
 {
   // Fills tree branches with generated particle info.
 
   // cleanup from previous execution
-  nMC_ = 0;
-  int genIndex = 0;
-  mcPID.clear();
-  mcVtx_x.clear();
-  mcVtx_y.clear();
-  mcVtx_z.clear();
-  mcPt.clear();
-  mcMass.clear();
-  mcEta.clear();
-  mcPhi.clear();
-  mcE.clear();
-  mcEt.clear();
-  mcGMomPID.clear();
-  mcMomPID.clear();
-  mcMomPt.clear();
-  mcMomMass.clear();
-  mcMomEta.clear();
-  mcMomPhi.clear();
-  mcIndex.clear();
-  mcDecayType.clear();
-  mcParentage.clear();
-  mcStatus.clear();
+  mcPID       .clear();
+  mcVtx_x     .clear();
+  mcVtx_y     .clear();
+  mcVtx_z     .clear();
+  mcPt        .clear();
+  mcMass      .clear();
+  mcEta       .clear();
+  mcPhi       .clear();
+  mcE         .clear();
+  mcEt        .clear();
+  mcGMomPID   .clear();
+  mcMomPID    .clear();
+  mcMomPt     .clear();
+  mcMomMass   .clear();
+  mcMomEta    .clear();
+  mcMomPhi    .clear();
+  mcIndex     .clear();
+  mcDecayType .clear();
+  mcParentage .clear();
+  mcStatus    .clear();
   mcCalIsoDR03.clear();
   mcTrkIsoDR03.clear();
   mcCalIsoDR04.clear();
   mcTrkIsoDR04.clear();
 
+  nMC_ = 0;
+
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   e.getByToken(genParticlesCollection_, genParticlesHandle);
 
   if (!genParticlesHandle.isValid()) {
-    // FIXME: print some warning message here?
+    edm::LogWarning("ggNtuplizer") << "no reco::GenParticles in event";
     return;
   }
 
-  for (vector<GenParticle>::const_iterator ip = genParticlesHandle->begin(); ip != genParticlesHandle->end(); ++ip) {
+  int genIndex = 0;
+
+  for (vector<reco::GenParticle>::const_iterator ip = genParticlesHandle->begin(); ip != genParticlesHandle->end(); ++ip) {
     genIndex++;
 
     int status = ip->status() - 10*(ip->status()/10);
@@ -172,7 +267,7 @@ void ggNtuplizer::fillGenParticles(const edm::Event& e)
         abs(ip->pdgId()) == 6 || abs(ip->pdgId()) == 5);
 
     if ( stableFinalStateParticle || heavyParticle || photonOrLepton ) {
-      const Candidate *p = (const Candidate*)&(*ip);
+      const reco::Candidate *p = (const reco::Candidate*)&(*ip);
       if (!runOnParticleGun_ && !p->mother()) continue;
 
       reco::GenParticleRef partRef = reco::GenParticleRef(genParticlesHandle,
@@ -200,7 +295,7 @@ void ggNtuplizer::fillGenParticles(const edm::Event& e)
       // if genParticle is W or Z, check its decay type
       if ( ip->pdgId() == 23 || abs(ip->pdgId()) == 24 ) {
         for (size_t k=0; k < p->numberOfDaughters(); ++k) {
-          const Candidate *dp = p->daughter(k);
+          const reco::Candidate *dp = p->daughter(k);
           if (abs(dp->pdgId())<=6)
             mcDecayType_ = 1;
           else if (abs(dp->pdgId())==11 || abs(dp->pdgId())==12)
