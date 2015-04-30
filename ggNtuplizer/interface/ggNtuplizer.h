@@ -63,6 +63,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Bool_t dumpJets_;
   Bool_t dumpSubJets_;
 
+  vector<int> newparticles_;
+
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
   edm::EDGetTokenT<double>                      rhoLabel_;
@@ -76,7 +78,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<pat::Tau> >           tauCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>        ebReducedRecHitCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>        eeReducedRecHitCollection_;
-//   edm::EDGetTokenT<EcalRecHitCollection> esReducedRecHitCollection_; // FIXME: not used anymore
+  //edm::EDGetTokenT<EcalRecHitCollection> esReducedRecHitCollection_; // FIXME: not used anymore
   edm::EDGetTokenT<reco::PhotonCollection>      recophotonCollection_;
   edm::EDGetTokenT<reco::TrackCollection>       tracklabel_;
   edm::EDGetTokenT<reco::GsfElectronCollection> gsfElectronlabel_;

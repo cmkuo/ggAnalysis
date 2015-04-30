@@ -208,8 +208,8 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e)
 
 }
 
-void ggNtuplizer::fillGenPart(const edm::Event& e)
-{
+void ggNtuplizer::fillGenPart(const edm::Event& e) {
+
   // Fills tree branches with generated particle info.
 
   // cleanup from previous execution
@@ -253,20 +253,27 @@ void ggNtuplizer::fillGenPart(const edm::Event& e)
   for (vector<reco::GenParticle>::const_iterator ip = genParticlesHandle->begin(); ip != genParticlesHandle->end(); ++ip) {
     genIndex++;
 
-    int status = ip->status() - 10*(ip->status()/10);
-    bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
-
-    // keep all the photons with pT > 5.0 and all leptons;
+    int status = ip->status();
+    //bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
+    
+    // keep all the photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
-      (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0 ) ||
-      (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ))  ||
-      (status < 10 && abs(ip->pdgId()) == 15 );
+      (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0) ||
+      (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
+      (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
+    
     // select also Z, W, H, and top
     bool heavyParticle =
       (ip->pdgId() == 23 || abs(ip->pdgId()) == 24 || ip->pdgId() == 25 ||
-        abs(ip->pdgId()) == 6 || abs(ip->pdgId()) == 5);
-
-    if ( stableFinalStateParticle || heavyParticle || photonOrLepton ) {
+       abs(ip->pdgId()) == 6 || abs(ip->pdgId()) == 5);
+    
+    bool newParticle = false;
+    for (size_t inp = 0; inp < newparticles_.size(); ++inp) {
+      if (abs(ip->pdgId()) == newparticles_[inp]) newParticle = true;
+    }
+    
+    if ( heavyParticle || photonOrLepton || newParticle ) {
+      
       const reco::Candidate *p = (const reco::Candidate*)&(*ip);
       if (!runOnParticleGun_ && !p->mother()) continue;
 

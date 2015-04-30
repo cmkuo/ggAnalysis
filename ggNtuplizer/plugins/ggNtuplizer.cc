@@ -32,6 +32,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps)
   pfAllParticles_            = consumes<reco::PFCandidateCollection>(ps.getParameter<InputTag>("PFAllCandidates"));
   jetCollection_             = consumes<View<pat::Jet> >            (ps.getParameter<InputTag>("jetSrc"));
   jetsCHSLabel_              = consumes<View<pat::Jet> >            (ps.getParameter<InputTag>("selectedPatJetsCA8PFCHS"));
+  newparticles_              = ps.getParameter< vector<int > >("newParticles");
+
 
   pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
