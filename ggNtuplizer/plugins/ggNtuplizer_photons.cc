@@ -3,7 +3,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
-
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
@@ -345,8 +344,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   edm::Handle<reco::PhotonCollection> recoPhotonHandle;
   e.getByToken(recophotonCollection_, recoPhotonHandle);
 
-  EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_);
-  noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_);
+  EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
+  noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
 
   GEDPhoIDTools GEDIdTool(e);
 

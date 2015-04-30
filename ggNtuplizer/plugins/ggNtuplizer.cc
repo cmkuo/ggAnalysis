@@ -23,7 +23,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   muonCollection_            = consumes<View<pat::Muon> >           (ps.getParameter<InputTag>("muonSrc"));
   ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>       (ps.getParameter<InputTag>("ebReducedRecHitCollection"));
   eeReducedRecHitCollection_ = consumes<EcalRecHitCollection>       (ps.getParameter<InputTag>("eeReducedRecHitCollection"));
-//   esReducedRecHitCollection_ = consumes<EcalRecHitCollection>   (ps.getParameter<InputTag>("esReducedRecHitCollection")); // FIXME: not used anymore
+  esReducedRecHitCollection_ = consumes<EcalRecHitCollection>       (ps.getParameter<InputTag>("esReducedRecHitCollection")); 
   recophotonCollection_      = consumes<reco::PhotonCollection>     (ps.getParameter<InputTag>("recoPhotonSrc"));
   tracklabel_                = consumes<reco::TrackCollection>      (ps.getParameter<InputTag>("TrackLabel"));
   gsfElectronlabel_          = consumes<reco::GsfElectronCollection>(ps.getParameter<InputTag>("gsfElectronLabel"));
