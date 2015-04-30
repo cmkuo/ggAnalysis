@@ -17,7 +17,6 @@ vector<float>  eleD0_;
 vector<float>  eleDz_;
 vector<float>  elePt_;
 vector<float>  eleEta_;
-vector<float>  eleTheta_;
 vector<float>  elePhi_;
 vector<float>  eleSCEta_;
 vector<float>  eleSCPhi_;
@@ -41,34 +40,26 @@ vector<float>  elePFChIso_;
 vector<float>  elePFPhoIso_;
 vector<float>  elePFNeuIso_;
 vector<float>  elePFPUIso_;
-vector<float>  eleBC1E_;
-vector<float>  eleBC1Eta_;
-vector<float>  eleBC2E_;
-vector<float>  eleBC2Eta_;
-vector<float>  eleIDMVA_;
-
+vector<float>  eleIDMVATrg_;
 vector<float>  eledEtaseedAtVtx_;
 vector<float>  eleE1x5_;
 vector<float>  eleE2x5_;
 vector<float>  eleE5x5_;
-
 vector<float>  eleE1x5_2012_;
 vector<float>  eleE2x5_2012_;
 vector<float>  eleE5x5_2012_;
 vector<float>  eleRelIsoWithDBeta_;
-
 vector<int>    eleEcalDrivenSeed_;
 vector<float>  eleDr03EcalRecHitSumEt_;
 vector<float>  eleDr03HcalDepth1TowerSumEt_;
 vector<float>  eleDr03HcalDepth2TowerSumEt_;
 vector<float>  eleDr03HcalTowerSumEt_;
 vector<float>  eleDr03TkSumPt_;
-
 vector<float>  elecaloEnergy_;
 vector<float>  eleTrkdxy_;
 
-void ggNtuplizer::branchesElectrons(TTree* tree)
-{
+void ggNtuplizer::branchesElectrons(TTree* tree) {
+
   tree->Branch("nEle",                  &nEle_);
   tree->Branch("eleCharge",             &eleCharge_);
   tree->Branch("eleChargeConsistent",   &eleChargeConsistent_);
@@ -79,9 +70,6 @@ void ggNtuplizer::branchesElectrons(TTree* tree)
   tree->Branch("eleDz",                 &eleDz_);
   tree->Branch("elePt",                 &elePt_);
   tree->Branch("eleEta",                &eleEta_);
-
-  tree->Branch("eleTheta",              &eleTheta_);
-
   tree->Branch("elePhi",                &elePhi_);
   tree->Branch("eleSCEta",              &eleSCEta_);
   tree->Branch("eleSCPhi",              &eleSCPhi_);
@@ -105,23 +93,15 @@ void ggNtuplizer::branchesElectrons(TTree* tree)
   tree->Branch("elePFPhoIso",           &elePFPhoIso_);
   tree->Branch("elePFNeuIso",           &elePFNeuIso_);
   tree->Branch("elePFPUIso",            &elePFPUIso_);
-  tree->Branch("eleBC1E",               &eleBC1E_);
-  tree->Branch("eleBC1Eta",             &eleBC1Eta_);
-  tree->Branch("eleBC2E",               &eleBC2E_);
-  tree->Branch("eleBC2Eta",             &eleBC2Eta_);
-  tree->Branch("eleIDMVA",              &eleIDMVA_);
-
+  tree->Branch("eleIDMVATrg",           &eleIDMVATrg_);
   tree->Branch("eledEtaseedAtVtx",      &eledEtaseedAtVtx_);
-
   tree->Branch("eleE1x5",               &eleE1x5_);
   tree->Branch("eleE2x5",               &eleE2x5_);
   tree->Branch("eleE5x5",               &eleE5x5_);
   tree->Branch("eleRelIsoWithDBeta",    &eleRelIsoWithDBeta_);
-
   tree->Branch("eleE1x5_2012",          &eleE1x5_2012_);
   tree->Branch("eleE2x5_2012",          &eleE2x5_2012_);
   tree->Branch("eleE5x5_2012",          &eleE5x5_2012_);
-
   tree->Branch("eleEcalDrivenSeed",           &eleEcalDrivenSeed_);
   tree->Branch("eleDr03EcalRecHitSumEt",      &eleDr03EcalRecHitSumEt_);
   tree->Branch("eleDr03HcalDepth1TowerSumEt", &eleDr03HcalDepth1TowerSumEt_);
@@ -129,12 +109,10 @@ void ggNtuplizer::branchesElectrons(TTree* tree)
   tree->Branch("eleDr03HcalTowerSumEt",       &eleDr03HcalTowerSumEt_);
   tree->Branch("eleDr03TkSumPt",              &eleDr03TkSumPt_);
   tree->Branch("elecaloEnergy",               &elecaloEnergy_);
-
   tree->Branch("eleTrkdxy",                   &eleTrkdxy_);
 }
 
-void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, math::XYZPoint &pv)
-{
+void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, math::XYZPoint &pv) {
 
   // cleanup from previous execution
   eleCharge_                  .clear();
@@ -146,7 +124,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleDz_                      .clear();
   elePt_                      .clear();
   eleEta_                     .clear();
-  eleTheta_                   .clear();
   elePhi_                     .clear();
   eleSCEta_                   .clear();
   eleSCPhi_                   .clear();
@@ -170,12 +147,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFPhoIso_                .clear();
   elePFNeuIso_                .clear();
   elePFPUIso_                 .clear();
-  eleBC1E_                    .clear();
-  eleBC1Eta_                  .clear();
-  eleBC2E_                    .clear();
-  eleBC2Eta_                  .clear();
-
-  eleIDMVA_                   .clear();
+  eleIDMVATrg_                .clear();
   eledEtaseedAtVtx_           .clear();
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
@@ -187,11 +159,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleDr03HcalDepth2TowerSumEt_.clear();
   eleDr03HcalTowerSumEt_      .clear();
   eleDr03TkSumPt_             .clear();
-
   eleE1x5_2012_               .clear();
   eleE2x5_2012_               .clear();
   eleE5x5_2012_               .clear();
-
   elecaloEnergy_              .clear();
   eleTrkdxy_                  .clear();
 
@@ -220,8 +190,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleDz_              .push_back(iEle->gsfTrack()->dz(pv));
     elePt_              .push_back(iEle->pt());
     eleEta_             .push_back(iEle->eta());
-    eleTheta_           .push_back(iEle->theta());
-
     elePhi_             .push_back(iEle->phi());
     eleSCEn_            .push_back(iEle->superCluster()->energy());
     eleESEn_            .push_back(iEle->superCluster()->preshowerEnergy());
@@ -306,26 +274,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
         eleTrkdxy_        .push_back(trackref->dxy(recVtxs->front().position()));
     }
 
-    eleBC1E_               .push_back((*iEle).superCluster()->seed()->energy());
-    eleBC1Eta_             .push_back((*iEle).superCluster()->seed()->eta());
-
-    Int_t nBCEle = 0;
-    for (reco::CaloCluster_iterator itbc = iEle->superCluster()->clustersBegin(); itbc != iEle->superCluster()->clustersEnd(); ++itbc) {
-      if (nBCEle == 1) {
-        eleBC2E_  .push_back((*itbc)->energy());
-        eleBC2Eta_.push_back((*itbc)->eta());
-      }
-      nBCEle++;
-    }
-    if (nBCEle == 1) {
-      eleBC2E_  .push_back(-99.);
-      eleBC2Eta_.push_back(-99.);
-    }
-
     ////////9th April, 2015 - SHILPI JAIN
     ///MVA for electrons in PHYS14
 
-    eleIDMVA_   .push_back(iEle->electronID("trigMVAid"));
+    eleIDMVATrg_.push_back(iEle->electronID("trigMVAid"));
 
     nEle_++;
   }

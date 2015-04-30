@@ -3,8 +3,7 @@
 using namespace std;
 using namespace edm;
 
-ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps)
-{
+ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
@@ -34,7 +33,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps)
   jetsCHSLabel_              = consumes<View<pat::Jet> >            (ps.getParameter<InputTag>("selectedPatJetsCA8PFCHS"));
   newparticles_              = ps.getParameter< vector<int > >("newParticles");
 
-
   pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   cicPhotonId_ = new CiCPhotonID(ps);
@@ -54,21 +52,16 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps)
   branchesElectrons(tree_);
   branchesMuons(tree_);
 
-  if(dumpTaus_)
-    branchesTaus(tree_);
-
-  if (dumpJets_) // and subjets
-    branchesJets(tree_);
+  if (dumpTaus_) branchesTaus(tree_);
+  if (dumpJets_) branchesJets(tree_);
 }
 
-ggNtuplizer::~ggNtuplizer()
-{
+ggNtuplizer::~ggNtuplizer() {
   cleanupPhotons();
   delete cicPhotonId_;
 }
 
-void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es)
-{
+void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   hEvents_->Fill(0.5);
 
@@ -95,11 +88,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es)
   fillElectrons(e, es, pv);
   fillMuons(e, pv);
 
-  if (dumpTaus_)
-    fillTaus(e);
-
-  if(dumpJets_)
-    fillJets(e);
+  if (dumpTaus_) fillTaus(e);
+  if (dumpJets_) fillJets(e);
 
   hEvents_->Fill(1.5);
   tree_->Fill();
