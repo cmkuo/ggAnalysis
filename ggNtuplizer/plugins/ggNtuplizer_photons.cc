@@ -141,40 +141,47 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
   tree->Branch("phoE2x2_2012",          &phoE2x2_2012_);
   tree->Branch("phoE2x5Max_2012",       &phoE2x5Max_2012_);
   tree->Branch("phoE5x5_2012",          &phoE5x5_2012_);
-  tree->Branch("phoPFChIso",            &phoPFChIso_);
-  tree->Branch("phoPFPhoIso",           &phoPFPhoIso_);
-  tree->Branch("phoPFNeuIso",           &phoPFNeuIso_);
-  tree->Branch("phoPFChWorstIso",       &phoPFChWorstIso_);
-  tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
-  tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
-  tree->Branch("phoPFChIsoFrix3",       &phoPFChIsoFrix3_);
-  tree->Branch("phoPFChIsoFrix4",       &phoPFChIsoFrix4_);
-  tree->Branch("phoPFChIsoFrix5",       &phoPFChIsoFrix5_);
-  tree->Branch("phoPFChIsoFrix6",       &phoPFChIsoFrix6_);
-  tree->Branch("phoPFChIsoFrix7",       &phoPFChIsoFrix7_);
-  tree->Branch("phoPFChIsoFrix8",       &phoPFChIsoFrix8_);
-  tree->Branch("phoPFPhoIsoFrix1",      &phoPFPhoIsoFrix1_);
-  tree->Branch("phoPFPhoIsoFrix2",      &phoPFPhoIsoFrix2_);
-  tree->Branch("phoPFPhoIsoFrix3",      &phoPFPhoIsoFrix3_);
-  tree->Branch("phoPFPhoIsoFrix4",      &phoPFPhoIsoFrix4_);
-  tree->Branch("phoPFPhoIsoFrix5",      &phoPFPhoIsoFrix5_);
-  tree->Branch("phoPFPhoIsoFrix6",      &phoPFPhoIsoFrix6_);
-  tree->Branch("phoPFPhoIsoFrix7",      &phoPFPhoIsoFrix7_);
-  tree->Branch("phoPFPhoIsoFrix8",      &phoPFPhoIsoFrix8_);
-  tree->Branch("phoPFNeuIsoFrix1",      &phoPFNeuIsoFrix1_);
-  tree->Branch("phoPFNeuIsoFrix2",      &phoPFNeuIsoFrix2_);
-  tree->Branch("phoPFNeuIsoFrix3",      &phoPFNeuIsoFrix3_);
-  tree->Branch("phoPFNeuIsoFrix4",      &phoPFNeuIsoFrix4_);
-  tree->Branch("phoPFNeuIsoFrix5",      &phoPFNeuIsoFrix5_);
-  tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
-  tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
-  tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
-  tree->Branch("phoBC1E",               &phoBC1E_);
-  tree->Branch("phoBC1Eta",             &phoBC1Eta_);
-  tree->Branch("phoBC2E",               &phoBC2E_);
-  tree->Branch("phoBC2Eta",             &phoBC2Eta_);
 
-  tree->Branch("phoIDMVA",                        &phoIDMVA_);
+  if (isAOD_) {
+    tree->Branch("phoPFChIso",            &phoPFChIso_);
+    tree->Branch("phoPFPhoIso",           &phoPFPhoIso_);
+    tree->Branch("phoPFNeuIso",           &phoPFNeuIso_);
+    tree->Branch("phoPFChWorstIso",       &phoPFChWorstIso_);
+    tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
+    tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
+    tree->Branch("phoPFChIsoFrix3",       &phoPFChIsoFrix3_);
+    tree->Branch("phoPFChIsoFrix4",       &phoPFChIsoFrix4_);
+    tree->Branch("phoPFChIsoFrix5",       &phoPFChIsoFrix5_);
+    tree->Branch("phoPFChIsoFrix6",       &phoPFChIsoFrix6_);
+    tree->Branch("phoPFChIsoFrix7",       &phoPFChIsoFrix7_);
+    tree->Branch("phoPFChIsoFrix8",       &phoPFChIsoFrix8_);
+    tree->Branch("phoPFPhoIsoFrix1",      &phoPFPhoIsoFrix1_);
+    tree->Branch("phoPFPhoIsoFrix2",      &phoPFPhoIsoFrix2_);
+    tree->Branch("phoPFPhoIsoFrix3",      &phoPFPhoIsoFrix3_);
+    tree->Branch("phoPFPhoIsoFrix4",      &phoPFPhoIsoFrix4_);
+    tree->Branch("phoPFPhoIsoFrix5",      &phoPFPhoIsoFrix5_);
+    tree->Branch("phoPFPhoIsoFrix6",      &phoPFPhoIsoFrix6_);
+    tree->Branch("phoPFPhoIsoFrix7",      &phoPFPhoIsoFrix7_);
+    tree->Branch("phoPFPhoIsoFrix8",      &phoPFPhoIsoFrix8_);
+    tree->Branch("phoPFNeuIsoFrix1",      &phoPFNeuIsoFrix1_);
+    tree->Branch("phoPFNeuIsoFrix2",      &phoPFNeuIsoFrix2_);
+    tree->Branch("phoPFNeuIsoFrix3",      &phoPFNeuIsoFrix3_);
+    tree->Branch("phoPFNeuIsoFrix4",      &phoPFNeuIsoFrix4_);
+    tree->Branch("phoPFNeuIsoFrix5",      &phoPFNeuIsoFrix5_);
+    tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
+    tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
+    tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
+  }
+
+  tree->Branch("phoBC1E",                 &phoBC1E_);
+  tree->Branch("phoBC1Eta",               &phoBC1Eta_);
+
+  if (isAOD_) {
+    tree->Branch("phoBC2E",               &phoBC2E_);
+    tree->Branch("phoBC2Eta",             &phoBC2Eta_);
+    tree->Branch("phoIDMVA",              &phoIDMVA_);
+  }
+
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
@@ -182,76 +189,78 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
 
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
 
-  ////////////Prepare for photon ID MVA for Run II///////////
-  //
-  // Create and configure barrel MVA
-  //
-  tmvaReader_[0] = new TMVA::Reader( "!Color:!Silent:Error" );
-  tmvaReader_[0]->SetVerbose(kFALSE);
-  // Add all the vars, we take the string with variable name from the weights file (the Expression field)
-  tmvaReader_[0]->AddVariable("recoPhi"   , &varPhi_);
-  tmvaReader_[0]->AddVariable("r9"        , &varR9_);
-  tmvaReader_[0]->AddVariable("sieie_2012", &varSieie_);
-  tmvaReader_[0]->AddVariable("sieip_2012", &varSieip_);
-  tmvaReader_[0]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
-  tmvaReader_[0]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
-  tmvaReader_[0]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
-  tmvaReader_[0]->AddVariable("recoSCEta" , &varSCEta_);
-  tmvaReader_[0]->AddVariable("rawE"      , &varRawE_);
-  tmvaReader_[0]->AddVariable("scEtaWidth", &varSCEtaWidth_);
-  tmvaReader_[0]->AddVariable("scPhiWidth", &varSCPhiWidth_);
-  tmvaReader_[0]->AddVariable("rho"       , &varRho_);
-  tmvaReader_[0]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
-  tmvaReader_[0]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
-  tmvaReader_[0]->AddVariable("chWorstRaw", &varWorstChRaw_);
-  // Add spectators
-  tmvaReader_[0]->AddSpectator("recoPt" , &varPt_);
-  tmvaReader_[0]->AddSpectator("recoEta", &varEta_);
+  if (isAOD_) {
+    ////////////Prepare for photon ID MVA for Run II///////////
+    //
+    // Create and configure barrel MVA
+    //
+    tmvaReader_[0] = new TMVA::Reader( "!Color:!Silent:Error" );
+    tmvaReader_[0]->SetVerbose(kFALSE);
+    // Add all the vars, we take the string with variable name from the weights file (the Expression field)
+    tmvaReader_[0]->AddVariable("recoPhi"   , &varPhi_);
+    tmvaReader_[0]->AddVariable("r9"        , &varR9_);
+    tmvaReader_[0]->AddVariable("sieie_2012", &varSieie_);
+    tmvaReader_[0]->AddVariable("sieip_2012", &varSieip_);
+    tmvaReader_[0]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
+    tmvaReader_[0]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
+    tmvaReader_[0]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
+    tmvaReader_[0]->AddVariable("recoSCEta" , &varSCEta_);
+    tmvaReader_[0]->AddVariable("rawE"      , &varRawE_);
+    tmvaReader_[0]->AddVariable("scEtaWidth", &varSCEtaWidth_);
+    tmvaReader_[0]->AddVariable("scPhiWidth", &varSCPhiWidth_);
+    tmvaReader_[0]->AddVariable("rho"       , &varRho_);
+    tmvaReader_[0]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
+    tmvaReader_[0]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
+    tmvaReader_[0]->AddVariable("chWorstRaw", &varWorstChRaw_);
+    // Add spectators
+    tmvaReader_[0]->AddSpectator("recoPt" , &varPt_);
+    tmvaReader_[0]->AddSpectator("recoEta", &varEta_);
 
-  //
-  // Create and configure endcap MVA
-  //
-  tmvaReader_[1] = new TMVA::Reader( "!Color:!Silent:Error" );
-  tmvaReader_[1]->SetVerbose(kFALSE);
-  // Add all the vars, we take the string with variable name from the weights file (the Expression field)
-  tmvaReader_[1]->AddVariable("recoPhi"   , &varPhi_);
-  tmvaReader_[1]->AddVariable("r9"        , &varR9_);
-  tmvaReader_[1]->AddVariable("sieie_2012", &varSieie_);
-  tmvaReader_[1]->AddVariable("sieip_2012", &varSieip_);
-  tmvaReader_[1]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
-  tmvaReader_[1]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
-  tmvaReader_[1]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
-  tmvaReader_[1]->AddVariable("recoSCEta" , &varSCEta_);
-  tmvaReader_[1]->AddVariable("rawE"      , &varRawE_);
-  tmvaReader_[1]->AddVariable("scEtaWidth", &varSCEtaWidth_);
-  tmvaReader_[1]->AddVariable("scPhiWidth", &varSCPhiWidth_);
-  tmvaReader_[1]->AddVariable("esEn/rawE" , &varESEnOverRawE_);
-  tmvaReader_[1]->AddVariable("esRR"      , &varESEffSigmaRR_);
-  tmvaReader_[1]->AddVariable("rho"       , &varRho_);
-  tmvaReader_[1]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
-  tmvaReader_[1]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
-  tmvaReader_[1]->AddVariable("chWorstRaw", &varWorstChRaw_);
-  // Add spectators
-  tmvaReader_[1]->AddSpectator("recoPt" , &varPt_);
-  tmvaReader_[1]->AddSpectator("recoEta", &varEta_);
+    //
+    // Create and configure endcap MVA
+    //
+    tmvaReader_[1] = new TMVA::Reader( "!Color:!Silent:Error" );
+    tmvaReader_[1]->SetVerbose(kFALSE);
+    // Add all the vars, we take the string with variable name from the weights file (the Expression field)
+    tmvaReader_[1]->AddVariable("recoPhi"   , &varPhi_);
+    tmvaReader_[1]->AddVariable("r9"        , &varR9_);
+    tmvaReader_[1]->AddVariable("sieie_2012", &varSieie_);
+    tmvaReader_[1]->AddVariable("sieip_2012", &varSieip_);
+    tmvaReader_[1]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
+    tmvaReader_[1]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
+    tmvaReader_[1]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
+    tmvaReader_[1]->AddVariable("recoSCEta" , &varSCEta_);
+    tmvaReader_[1]->AddVariable("rawE"      , &varRawE_);
+    tmvaReader_[1]->AddVariable("scEtaWidth", &varSCEtaWidth_);
+    tmvaReader_[1]->AddVariable("scPhiWidth", &varSCPhiWidth_);
+    tmvaReader_[1]->AddVariable("esEn/rawE" , &varESEnOverRawE_);
+    tmvaReader_[1]->AddVariable("esRR"      , &varESEffSigmaRR_);
+    tmvaReader_[1]->AddVariable("rho"       , &varRho_);
+    tmvaReader_[1]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
+    tmvaReader_[1]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
+    tmvaReader_[1]->AddVariable("chWorstRaw", &varWorstChRaw_);
+    // Add spectators
+    tmvaReader_[1]->AddSpectator("recoPt" , &varPt_);
+    tmvaReader_[1]->AddSpectator("recoEta", &varEta_);
 
-  //
-  // Book the MVA method for each category
-  //
-  std::string cmssw_base_src = getenv("CMSSW_BASE");
-  cmssw_base_src += "/src/";
-  //
-  TString localFileName1 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EB_V1.weights.xml";
-  TString weightsFileName1 = TString(cmssw_base_src) + localFileName1;
-  //methodName_[0] = "BDT photons barrel";
-  methodName_[0] = "BDT";
-  tmvaReader_[0]->BookMVA(methodName_[0], weightsFileName1);
-  //
-  TString localFileName2 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EE_V1.weights.xml";
-  TString weightsFileName2 = TString(cmssw_base_src) + localFileName2;
-  //methodName_[1] = "BDT photons endcap";
-  methodName_[1] = "BDT";
-  tmvaReader_[1]->BookMVA(methodName_[1], weightsFileName2);
+    //
+    // Book the MVA method for each category
+    //
+    std::string cmssw_base_src = getenv("CMSSW_BASE");
+    cmssw_base_src += "/src/";
+    //
+    TString localFileName1 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EB_V1.weights.xml";
+    TString weightsFileName1 = TString(cmssw_base_src) + localFileName1;
+    //methodName_[0] = "BDT photons barrel";
+    methodName_[0] = "BDT";
+    tmvaReader_[0]->BookMVA(methodName_[0], weightsFileName1);
+    //
+    TString localFileName2 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EE_V1.weights.xml";
+    TString weightsFileName2 = TString(cmssw_base_src) + localFileName2;
+    //methodName_[1] = "BDT photons endcap";
+    methodName_[1] = "BDT";
+    tmvaReader_[1]->BookMVA(methodName_[1], weightsFileName2);
+  }
 
 }
 
@@ -417,7 +426,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     phoE2x5Max_2012_       .push_back(lazyToolnoZS.e2x5Max(*((*iPho).superCluster()->seed())));
     phoE5x5_2012_          .push_back(lazyToolnoZS.e5x5(*((*iPho).superCluster()->seed())));
 
-    // NOTE: for miniAOD, tree branches below will be empty!
     if (isAOD_) {
       size_t rightRecoPho = -1;
       for (size_t iv = 0; iv < recoPhotonHandle->size(); ++iv) {
@@ -473,7 +481,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     phoBC1E_          .push_back((*iPho).superCluster()->seed()->energy());
     phoBC1Eta_        .push_back((*iPho).superCluster()->seed()->eta());
 
-    // NOTE: for miniAOD, tree branches below will be empty!
     if (isAOD_) {
       Int_t nBCPho = 0;
       for (CaloCluster_iterator itbc = iPho->superCluster()->clustersBegin(); itbc != iPho->superCluster()->clustersEnd(); ++itbc) {
@@ -500,38 +507,33 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     ///MVA for photons in PHYS14
     // set MVA variables
 
-    varPhi_          = phoPhi_[nPho_];
-    varR9_           = phoR9_[nPho_];
-    varSieie_        = phoSigmaIEtaIEta_2012_[nPho_];
-    varSieip_        = phoSigmaIEtaIPhi_2012_[nPho_];
-    varE1x3overE5x5_ = phoE1x3_2012_[nPho_]/phoE5x5_2012_[nPho_];
-    varE2x2overE5x5_ = phoE2x2_2012_[nPho_]/phoE5x5_2012_[nPho_];
-    varSCEta_        = phoSCEta_[nPho_];
-    varRawE_         = phoSCRawE_[nPho_];
-    varSCEtaWidth_   = phoSCEtaWidth_[nPho_];
-    varSCPhiWidth_   = phoSCPhiWidth_[nPho_];
-    varESEnOverRawE_ = phoESEn_[nPho_]/phoSCRawE_[nPho_];
-    varESEffSigmaRR_ = phoESEffSigmaRR_[nPho_];
-    varRho_          = rho;
-
     if (isAOD_) {
+      varPhi_          = phoPhi_[nPho_];
+      varR9_           = phoR9_[nPho_];
+      varSieie_        = phoSigmaIEtaIEta_2012_[nPho_];
+      varSieip_        = phoSigmaIEtaIPhi_2012_[nPho_];
+      varE1x3overE5x5_ = phoE1x3_2012_[nPho_]/phoE5x5_2012_[nPho_];
+      varE2x2overE5x5_ = phoE2x2_2012_[nPho_]/phoE5x5_2012_[nPho_];
+      varSCEta_        = phoSCEta_[nPho_];
+      varRawE_         = phoSCRawE_[nPho_];
+      varSCEtaWidth_   = phoSCEtaWidth_[nPho_];
+      varSCPhiWidth_   = phoSCPhiWidth_[nPho_];
+      varESEnOverRawE_ = phoESEn_[nPho_]/phoSCRawE_[nPho_];
+      varESEffSigmaRR_ = phoESEffSigmaRR_[nPho_];
+      varRho_          = rho;
       varPhoIsoRaw_    = phoPFPhoIso_[nPho_];
       varChIsoRaw_     = phoPFChIso_[nPho_];
       varWorstChRaw_   = phoPFNeuIso_[nPho_];
-    } else { // TODO: this will not produce correct results in miniAOD!
-      varPhoIsoRaw_    = 0;
-      varChIsoRaw_     = 0;
-      varWorstChRaw_   = 0;
+
+      // spectator vars
+      varPt_           = phoEt_[nPho_];
+      varEta_          = phoEta_[nPho_];
+
+      // 0=ECAL barrel or 1=ECAL endcaps
+      int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
+
+      phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
     }
-
-    // Declare spectator vars
-    varPt_           = phoEt_[nPho_];
-    varEta_          = phoEta_[nPho_];
-
-    // 0=ECAL barrel or 1=ECAL endcaps
-    int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
-
-    phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
 
     nPho_++;
   }
@@ -541,6 +543,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 
 void ggNtuplizer::cleanupPhotons()
 {
-  delete tmvaReader_[0];
-  delete tmvaReader_[1];
+  if (isAOD_) {
+    delete tmvaReader_[0];
+    delete tmvaReader_[1];
+  }
 }

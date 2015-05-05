@@ -10,9 +10,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpJets_                  = ps.getParameter<bool>("dumpJets");
   dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
-
-  // TODO: get rid of this parameter from the python configuration;
-  // is it possible to set this variable by just checking event contents?
   isAOD_                     = ps.getParameter<bool>("isAOD");
 
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));

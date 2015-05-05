@@ -93,7 +93,10 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFPhoIso",           &elePFPhoIso_);
   tree->Branch("elePFNeuIso",           &elePFNeuIso_);
   tree->Branch("elePFPUIso",            &elePFPUIso_);
-  tree->Branch("eleIDMVATrg",           &eleIDMVATrg_);
+
+  if (isAOD_)
+    tree->Branch("eleIDMVATrg",           &eleIDMVATrg_);
+
   tree->Branch("eledEtaseedAtVtx",      &eledEtaseedAtVtx_);
   tree->Branch("eleE1x5",               &eleE1x5_);
   tree->Branch("eleE2x5",               &eleE2x5_);
@@ -279,8 +282,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
     if (isAOD_)
       eleIDMVATrg_.push_back(iEle->electronID("trigMVAid"));
-    else
-      eleIDMVATrg_.push_back(-999);
 
     nEle_++;
   }
