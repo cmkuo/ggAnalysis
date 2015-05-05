@@ -57,11 +57,13 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   void cleanupPhotons();
   
-  Bool_t doGenParticles_;
-  Bool_t runOnParticleGun_;
-  Bool_t dumpTaus_;
-  Bool_t dumpJets_;
-  Bool_t dumpSubJets_;
+  bool doGenParticles_;
+  bool runOnParticleGun_;
+  bool dumpTaus_;
+  bool dumpJets_;
+  bool dumpSubJets_;
+
+  bool isAOD_;
 
   vector<int> newparticles_;
 

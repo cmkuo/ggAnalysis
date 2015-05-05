@@ -347,7 +347,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
 
-  GEDPhoIDTools GEDIdTool(e);
+  GEDPhoIDTools* GEDIdTool = NULL;
+  if (isAOD_)
+    GEDIdTool = new GEDPhoIDTools(e);
 
   edm::Handle<reco::VertexCollection> recVtxs;
   e.getByToken(vtxLabel_, recVtxs);
@@ -361,14 +363,16 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   edm::Handle<reco::GsfElectronCollection> gsfElectronHandle;
   e.getByToken(gsfElectronlabel_, gsfElectronHandle);
 
-  edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
-  e.getByToken(pfAllParticles_, pfAllCandidates);
-
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
   double rho    = *(rhoHandle.product());
 
-  cicPhotonId_->configure(recVtxsBS, tracksHandle, gsfElectronHandle, pfAllCandidates, rho);
+  if (isAOD_) {
+    edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
+    e.getByToken(pfAllParticles_, pfAllCandidates);
+
+    cicPhotonId_->configure(recVtxsBS, tracksHandle, gsfElectronHandle, pfAllCandidates, rho);
+  }
 
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
 
@@ -413,69 +417,76 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     phoE2x5Max_2012_       .push_back(lazyToolnoZS.e2x5Max(*((*iPho).superCluster()->seed())));
     phoE5x5_2012_          .push_back(lazyToolnoZS.e5x5(*((*iPho).superCluster()->seed())));
 
-    size_t rightRecoPho = -1;
-    for (size_t iv = 0; iv < recoPhotonHandle->size(); ++iv) {
-      reco::PhotonRef recophoRef2(recoPhotonHandle, iv);
-      if (deltaR(iPho->eta(), iPho->phi(), recophoRef2->eta(), recophoRef2->phi()) < 0.01) rightRecoPho = iv;
+    // NOTE: for miniAOD, tree branches below will be empty!
+    if (isAOD_) {
+      size_t rightRecoPho = -1;
+      for (size_t iv = 0; iv < recoPhotonHandle->size(); ++iv) {
+        reco::PhotonRef recophoRef2(recoPhotonHandle, iv);
+        if (deltaR(iPho->eta(), iPho->phi(), recophoRef2->eta(), recophoRef2->phi()) < 0.01) rightRecoPho = iv;
+      }
+
+      reco::PhotonRef recophoRef(recoPhotonHandle, rightRecoPho);
+      reco::Vertex pv = recVtxs->at(0);
+      GEDIdTool->setPhotonP4(recophoRef, pv);
+
+      phoPFChIso_       .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h));
+      phoPFPhoIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::gamma));
+      phoPFNeuIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h0));
+
+      std::vector<double> IsoRings;
+      GEDIdTool->FrixioneIso(0.1, 8, reco::PFCandidate::h, IsoRings);
+      phoPFChIsoFrix1_.push_back(IsoRings[0]);
+      phoPFChIsoFrix2_.push_back(IsoRings[1]);
+      phoPFChIsoFrix3_.push_back(IsoRings[2]);
+      phoPFChIsoFrix4_.push_back(IsoRings[3]);
+      phoPFChIsoFrix5_.push_back(IsoRings[4]);
+      phoPFChIsoFrix6_.push_back(IsoRings[5]);
+      phoPFChIsoFrix7_.push_back(IsoRings[6]);
+      phoPFChIsoFrix8_.push_back(IsoRings[7]);
+      IsoRings.resize(0);
+
+      GEDIdTool->FrixioneIso(0.1, 8, reco::PFCandidate::gamma, IsoRings);
+      phoPFPhoIsoFrix1_.push_back(IsoRings[0]);
+      phoPFPhoIsoFrix2_.push_back(IsoRings[1]);
+      phoPFPhoIsoFrix3_.push_back(IsoRings[2]);
+      phoPFPhoIsoFrix4_.push_back(IsoRings[3]);
+      phoPFPhoIsoFrix5_.push_back(IsoRings[4]);
+      phoPFPhoIsoFrix6_.push_back(IsoRings[5]);
+      phoPFPhoIsoFrix7_.push_back(IsoRings[6]);
+      phoPFPhoIsoFrix8_.push_back(IsoRings[7]);
+      IsoRings.resize(0);
+
+      GEDIdTool->FrixioneIso(0.1, 8, reco::PFCandidate::h0, IsoRings);
+      phoPFNeuIsoFrix1_.push_back(IsoRings[0]);
+      phoPFNeuIsoFrix2_.push_back(IsoRings[1]);
+      phoPFNeuIsoFrix3_.push_back(IsoRings[2]);
+      phoPFNeuIsoFrix4_.push_back(IsoRings[3]);
+      phoPFNeuIsoFrix5_.push_back(IsoRings[4]);
+      phoPFNeuIsoFrix6_.push_back(IsoRings[5]);
+      phoPFNeuIsoFrix7_.push_back(IsoRings[6]);
+      phoPFNeuIsoFrix8_.push_back(IsoRings[7]);
+
+      std::vector<float> vtxIsolations03 = cicPhotonId_->pfTkIsoWithVertex(recophoRef, 0.3, 0.0, 0.0, 0.0, 0.2, 0.1, reco::PFCandidate::h);
+      phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
     }
-    reco::PhotonRef recophoRef(recoPhotonHandle, rightRecoPho);
-    reco::Vertex pv = recVtxs->at(0);
-    GEDIdTool.setPhotonP4(recophoRef, pv);
-
-    phoPFChIso_       .push_back(GEDIdTool.SolidConeIso(0.3, reco::PFCandidate::h));
-    phoPFPhoIso_      .push_back(GEDIdTool.SolidConeIso(0.3, reco::PFCandidate::gamma));
-    phoPFNeuIso_      .push_back(GEDIdTool.SolidConeIso(0.3, reco::PFCandidate::h0));
-
-    std::vector<double> IsoRings;
-    GEDIdTool.FrixioneIso(0.1, 8, reco::PFCandidate::h, IsoRings);
-    phoPFChIsoFrix1_.push_back(IsoRings[0]);
-    phoPFChIsoFrix2_.push_back(IsoRings[1]);
-    phoPFChIsoFrix3_.push_back(IsoRings[2]);
-    phoPFChIsoFrix4_.push_back(IsoRings[3]);
-    phoPFChIsoFrix5_.push_back(IsoRings[4]);
-    phoPFChIsoFrix6_.push_back(IsoRings[5]);
-    phoPFChIsoFrix7_.push_back(IsoRings[6]);
-    phoPFChIsoFrix8_.push_back(IsoRings[7]);
-    IsoRings.resize(0);
-
-    GEDIdTool.FrixioneIso(0.1, 8, reco::PFCandidate::gamma, IsoRings);
-    phoPFPhoIsoFrix1_.push_back(IsoRings[0]);
-    phoPFPhoIsoFrix2_.push_back(IsoRings[1]);
-    phoPFPhoIsoFrix3_.push_back(IsoRings[2]);
-    phoPFPhoIsoFrix4_.push_back(IsoRings[3]);
-    phoPFPhoIsoFrix5_.push_back(IsoRings[4]);
-    phoPFPhoIsoFrix6_.push_back(IsoRings[5]);
-    phoPFPhoIsoFrix7_.push_back(IsoRings[6]);
-    phoPFPhoIsoFrix8_.push_back(IsoRings[7]);
-    IsoRings.resize(0);
-
-    GEDIdTool.FrixioneIso(0.1, 8, reco::PFCandidate::h0, IsoRings);
-    phoPFNeuIsoFrix1_.push_back(IsoRings[0]);
-    phoPFNeuIsoFrix2_.push_back(IsoRings[1]);
-    phoPFNeuIsoFrix3_.push_back(IsoRings[2]);
-    phoPFNeuIsoFrix4_.push_back(IsoRings[3]);
-    phoPFNeuIsoFrix5_.push_back(IsoRings[4]);
-    phoPFNeuIsoFrix6_.push_back(IsoRings[5]);
-    phoPFNeuIsoFrix7_.push_back(IsoRings[6]);
-    phoPFNeuIsoFrix8_.push_back(IsoRings[7]);
-
-    std::vector<float> vtxIsolations03 = cicPhotonId_->pfTkIsoWithVertex(recophoRef, 0.3, 0.0, 0.0, 0.0, 0.2, 0.1, reco::PFCandidate::h);
-    phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
 
     phoBC1E_          .push_back((*iPho).superCluster()->seed()->energy());
     phoBC1Eta_        .push_back((*iPho).superCluster()->seed()->eta());
 
-    Int_t nBCPho = 0;
-    for (CaloCluster_iterator itbc = iPho->superCluster()->clustersBegin(); itbc != iPho->superCluster()->clustersEnd(); ++itbc) {
-      if (nBCPho == 1) {
-        phoBC2E_  .push_back((*itbc)->energy());
-        phoBC2Eta_.push_back((*itbc)->eta());
+    // NOTE: for miniAOD, tree branches below will be empty!
+    if (isAOD_) {
+      Int_t nBCPho = 0;
+      for (CaloCluster_iterator itbc = iPho->superCluster()->clustersBegin(); itbc != iPho->superCluster()->clustersEnd(); ++itbc) {
+        if (nBCPho == 1) {
+          phoBC2E_  .push_back((*itbc)->energy());
+          phoBC2Eta_.push_back((*itbc)->eta());
+        }
+        nBCPho++;
       }
-      nBCPho++;
-    }
-    if (nBCPho == 1) {
-      phoBC2E_  .push_back(-99.);
-      phoBC2Eta_.push_back(-99.);
+      if (nBCPho == 1) {
+        phoBC2E_  .push_back(-99.);
+        phoBC2Eta_.push_back(-99.);
+      }
     }
 
     ///SJ - isolation variables
@@ -502,9 +513,17 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     varESEnOverRawE_ = phoESEn_[nPho_]/phoSCRawE_[nPho_];
     varESEffSigmaRR_ = phoESEffSigmaRR_[nPho_];
     varRho_          = rho;
-    varPhoIsoRaw_    = phoPFPhoIso_[nPho_];
-    varChIsoRaw_     = phoPFChIso_[nPho_];
-    varWorstChRaw_   = phoPFNeuIso_[nPho_];
+
+    if (isAOD_) {
+      varPhoIsoRaw_    = phoPFPhoIso_[nPho_];
+      varChIsoRaw_     = phoPFChIso_[nPho_];
+      varWorstChRaw_   = phoPFNeuIso_[nPho_];
+    } else { // TODO: this will not produce correct results in miniAOD!
+      varPhoIsoRaw_    = 0;
+      varChIsoRaw_     = 0;
+      varWorstChRaw_   = 0;
+    }
+
     // Declare spectator vars
     varPt_           = phoEt_[nPho_];
     varEta_          = phoEta_[nPho_];
@@ -517,6 +536,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     nPho_++;
   }
 
+  if (GEDIdTool) delete GEDIdTool;
 }
 
 void ggNtuplizer::cleanupPhotons()

@@ -11,6 +11,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
 
+  // TODO: get rid of this parameter from the python configuration;
+  // is it possible to set this variable by just checking event contents?
+  isAOD_                     = ps.getParameter<bool>("isAOD");
+
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                     (ps.getParameter<InputTag>("rhoLabel"));
@@ -78,11 +82,16 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   // best-known primary vertex coordinates
   math::XYZPoint pv(0, 0, 0);
-  for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v)
-    if (!v->isFake()) {
-        pv.SetXYZ(v->x(), v->y(), v->z());
-        break;
+  for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
+    // replace isFake() for miniAOD since it requires tracks while miniAOD vertices don't have tracks:
+    // Vertex.h: bool isFake() const {return (chi2_==0 && ndof_==0 && tracks_.empty());}
+    bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
+
+    if (!isFake) {
+      pv.SetXYZ(v->x(), v->y(), v->z());
+      break;
     }
+  }
 
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);

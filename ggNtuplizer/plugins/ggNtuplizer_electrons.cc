@@ -277,7 +277,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     ////////9th April, 2015 - SHILPI JAIN
     ///MVA for electrons in PHYS14
 
-    eleIDMVATrg_.push_back(iEle->electronID("trigMVAid"));
+    if (isAOD_)
+      eleIDMVATrg_.push_back(iEle->electronID("trigMVAid"));
+    else
+      eleIDMVATrg_.push_back(-999);
 
     nEle_++;
   }
