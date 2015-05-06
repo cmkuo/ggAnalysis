@@ -33,13 +33,13 @@ vector<float>  phoE2x2_;
 vector<float>  phoE2x5Max_;
 vector<float>  phoE5x5_;
 vector<float>  phoESEffSigmaRR_;
-vector<float>  phoSigmaIEtaIEta_2012_;
-vector<float>  phoSigmaIEtaIPhi_2012_;
-vector<float>  phoSigmaIPhiIPhi_2012_;
-vector<float>  phoE1x3_2012_;
-vector<float>  phoE2x2_2012_;
-vector<float>  phoE2x5Max_2012_;
-vector<float>  phoE5x5_2012_;
+vector<float>  phoSigmaIEtaIEtaFull5x5_;
+vector<float>  phoSigmaIEtaIPhiFull5x5_;
+vector<float>  phoSigmaIPhiIPhiFull5x5_;
+vector<float>  phoE1x3Full5x5_;
+vector<float>  phoE2x2Full5x5_;
+vector<float>  phoE2x5MaxFull5x5_;
+vector<float>  phoE5x5Full5x5_;
 vector<float>  phoPFChIso_;
 vector<float>  phoPFPhoIso_;
 vector<float>  phoPFNeuIso_;
@@ -134,13 +134,13 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
   tree->Branch("phoE2x5Max",            &phoE2x5Max_);
   tree->Branch("phoE5x5",               &phoE5x5_);
   tree->Branch("phoESEffSigmaRR",       &phoESEffSigmaRR_);
-  tree->Branch("phoSigmaIEtaIEta_2012", &phoSigmaIEtaIEta_2012_);
-  tree->Branch("phoSigmaIEtaIPhi_2012", &phoSigmaIEtaIPhi_2012_);
-  tree->Branch("phoSigmaIPhiIPhi_2012", &phoSigmaIPhiIPhi_2012_);
-  tree->Branch("phoE1x3_2012",          &phoE1x3_2012_);
-  tree->Branch("phoE2x2_2012",          &phoE2x2_2012_);
-  tree->Branch("phoE2x5Max_2012",       &phoE2x5Max_2012_);
-  tree->Branch("phoE5x5_2012",          &phoE5x5_2012_);
+  tree->Branch("phoSigmaIEtaIEtaFull5x5", &phoSigmaIEtaIEtaFull5x5_);
+  tree->Branch("phoSigmaIEtaIPhiFull5x5", &phoSigmaIEtaIPhiFull5x5_);
+  tree->Branch("phoSigmaIPhiIPhiFull5x5", &phoSigmaIPhiIPhiFull5x5_);
+  tree->Branch("phoE1x3Full5x5",          &phoE1x3Full5x5_);
+  tree->Branch("phoE2x2Full5x5",          &phoE2x2Full5x5_);
+  tree->Branch("phoE2x5MaxFull5x5",       &phoE2x5MaxFull5x5_);
+  tree->Branch("phoE5x5Full5x5",          &phoE5x5Full5x5_);
 
   if (isAOD_) {
     tree->Branch("phoPFChIso",            &phoPFChIso_);
@@ -199,8 +199,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
     // Add all the vars, we take the string with variable name from the weights file (the Expression field)
     tmvaReader_[0]->AddVariable("recoPhi"   , &varPhi_);
     tmvaReader_[0]->AddVariable("r9"        , &varR9_);
-    tmvaReader_[0]->AddVariable("sieie_2012", &varSieie_);
-    tmvaReader_[0]->AddVariable("sieip_2012", &varSieip_);
+    tmvaReader_[0]->AddVariable("sieieFull5x5", &varSieie_);
+    tmvaReader_[0]->AddVariable("sieipFull5x5", &varSieip_);
     tmvaReader_[0]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
     tmvaReader_[0]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
     tmvaReader_[0]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
@@ -292,13 +292,13 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   phoE2x5Max_           .clear();
   phoE5x5_              .clear();
   phoESEffSigmaRR_      .clear();
-  phoSigmaIEtaIEta_2012_.clear();
-  phoSigmaIEtaIPhi_2012_.clear();
-  phoSigmaIPhiIPhi_2012_.clear();
-  phoE1x3_2012_         .clear();
-  phoE2x2_2012_         .clear();
-  phoE2x5Max_2012_      .clear();
-  phoE5x5_2012_         .clear();
+  phoSigmaIEtaIEtaFull5x5_.clear();
+  phoSigmaIEtaIPhiFull5x5_.clear();
+  phoSigmaIPhiIPhiFull5x5_.clear();
+  phoE1x3Full5x5_       .clear();
+  phoE2x2Full5x5_       .clear();
+  phoE2x5MaxFull5x5_    .clear();
+  phoE5x5Full5x5_       .clear();
   phoPFChIso_           .clear();
   phoPFPhoIso_          .clear();
   phoPFNeuIso_          .clear();
@@ -418,13 +418,13 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     const float spp = (isnan(vCov[2]) ? 0. : sqrt(vCov[2]));
     const float sep = vCov[1];
 
-    phoSigmaIEtaIEta_2012_ .push_back(see);
-    phoSigmaIEtaIPhi_2012_ .push_back(sep);
-    phoSigmaIPhiIPhi_2012_ .push_back(spp);
-    phoE1x3_2012_          .push_back(lazyToolnoZS.e1x3(*((*iPho).superCluster()->seed())));
-    phoE2x2_2012_          .push_back(lazyToolnoZS.e2x2(*((*iPho).superCluster()->seed())));
-    phoE2x5Max_2012_       .push_back(lazyToolnoZS.e2x5Max(*((*iPho).superCluster()->seed())));
-    phoE5x5_2012_          .push_back(lazyToolnoZS.e5x5(*((*iPho).superCluster()->seed())));
+    phoSigmaIEtaIEtaFull5x5_ .push_back(see);
+    phoSigmaIEtaIPhiFull5x5_ .push_back(sep);
+    phoSigmaIPhiIPhiFull5x5_ .push_back(spp);
+    phoE1x3Full5x5_          .push_back(lazyToolnoZS.e1x3(*((*iPho).superCluster()->seed())));
+    phoE2x2Full5x5_          .push_back(lazyToolnoZS.e2x2(*((*iPho).superCluster()->seed())));
+    phoE2x5MaxFull5x5_       .push_back(lazyToolnoZS.e2x5Max(*((*iPho).superCluster()->seed())));
+    phoE5x5Full5x5_          .push_back(lazyToolnoZS.e5x5(*((*iPho).superCluster()->seed())));
 
     if (isAOD_) {
       size_t rightRecoPho = -1;
@@ -510,10 +510,10 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     if (isAOD_) {
       varPhi_          = phoPhi_[nPho_];
       varR9_           = phoR9_[nPho_];
-      varSieie_        = phoSigmaIEtaIEta_2012_[nPho_];
-      varSieip_        = phoSigmaIEtaIPhi_2012_[nPho_];
-      varE1x3overE5x5_ = phoE1x3_2012_[nPho_]/phoE5x5_2012_[nPho_];
-      varE2x2overE5x5_ = phoE2x2_2012_[nPho_]/phoE5x5_2012_[nPho_];
+      varSieie_        = phoSigmaIEtaIEtaFull5x5_[nPho_];
+      varSieip_        = phoSigmaIEtaIPhiFull5x5_[nPho_];
+      varE1x3overE5x5_ = phoE1x3Full5x5_[nPho_]/phoE5x5Full5x5_[nPho_];
+      varE2x2overE5x5_ = phoE2x2Full5x5_[nPho_]/phoE5x5Full5x5_[nPho_];
       varSCEta_        = phoSCEta_[nPho_];
       varRawE_         = phoSCRawE_[nPho_];
       varSCEtaWidth_   = phoSCEtaWidth_[nPho_];
