@@ -66,14 +66,6 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   hEvents_->Fill(0.5);
 
-  fillGlobalEvent(e);
-
-  if (!e.isRealData()) {
-    fillGenInfo(e);
-    if (doGenParticles_)
-      fillGenPart(e);
-  }
-
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
 
@@ -88,6 +80,14 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       pv.SetXYZ(v->x(), v->y(), v->z());
       break;
     }
+  }
+
+  fillGlobalEvent(e);
+
+  if (!e.isRealData()) {
+    fillGenInfo(e);
+    if (doGenParticles_)
+      fillGenPart(e);
   }
 
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)

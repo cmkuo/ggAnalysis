@@ -9,27 +9,26 @@ Long64_t event_;
 Int_t    lumis_;
 Bool_t   isData_;
 Int_t    nVtx_;
-Int_t    nTrks_;
+Int_t    nTrksPV_;
 float    rho_;
 
-float  genMET_;
-float  genMETPhi_;
-float  pfMET_;
-float  pfMETPhi_;
-float  pfMETsumEt_;
-float  pfMETmEtSig_;
-float  pfMETSig_;
+float    genMET_;
+float    genMETPhi_;
+float    pfMET_;
+float    pfMETPhi_;
+float    pfMETsumEt_;
+float    pfMETmEtSig_;
+float    pfMETSig_;
 
-void ggNtuplizer::branchesGlobalEvent(TTree* tree)
-{
+void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
-  tree->Branch("run",    &run_);
-  tree->Branch("event",  &event_);
-  tree->Branch("lumis",  &lumis_);
-  tree->Branch("isData", &isData_);
-  tree->Branch("nVtx",   &nVtx_);
-  tree->Branch("nTrks",  &nTrks_);
-  tree->Branch("rho",    &rho_);
+  tree->Branch("run",     &run_);
+  tree->Branch("event",   &event_);
+  tree->Branch("lumis",   &lumis_);
+  tree->Branch("isData",  &isData_);
+  tree->Branch("nVtx",    &nVtx_);
+  tree->Branch("nTrksPV", &nTrksPV_);
+  tree->Branch("rho",     &rho_);
 
   tree->Branch("genMET",      &genMET_);
   tree->Branch("genMETPhi",   &genMETPhi_);
@@ -40,8 +39,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree)
   tree->Branch("pfMETSig",    &pfMETSig_);
 }
 
-void ggNtuplizer::fillGlobalEvent(const edm::Event& e)
-{
+void ggNtuplizer::fillGlobalEvent(const edm::Event& e) {
 
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
@@ -54,14 +52,17 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e)
 
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
-
+  
   nVtx_ = -1;
   if (vtxHandle.isValid()) {
     nVtx_ = 0;
-
+    
     for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
-      if (!v->isFake())
-        nVtx_++;
+      bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
+      if (!isFake) {
+	if (nVtx_ == 0) nTrksPV_ = v->nTracks();
+	nVtx_++;
+      }
     }
   } else
     edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
