@@ -1,3 +1,4 @@
+
 #include <TString.h>
 #include <TMVA/Reader.h>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -6,6 +7,7 @@
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
+
 
 // (local) variables associated with tree branches
 Int_t          nPho_;
@@ -81,6 +83,8 @@ vector<float>  phohcalDepth2TowerSumEtConeDR03_;
 vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
 
+vector<ULong64_t> phoIDbit_;
+
 // variables that will be containers on which TMVA Reader works
 float varPhi_;
 float varR9_;
@@ -109,6 +113,8 @@ TString methodName_[2];
 
 void ggNtuplizer::branchesPhotons(TTree* tree)
 {
+
+  
   tree->Branch("nPho",                  &nPho_);
   tree->Branch("phoE",                  &phoE_);
   tree->Branch("phoEt",                 &phoEt_);
@@ -179,7 +185,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
   if (isAOD_) {
     tree->Branch("phoBC2E",               &phoBC2E_);
     tree->Branch("phoBC2Eta",             &phoBC2Eta_);
-    tree->Branch("phoIDMVA",              &phoIDMVA_);
+    if(runphoMVAID_) tree->Branch("phoIDMVA",              &phoIDMVA_);
   }
 
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
@@ -189,7 +195,10 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
 
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
 
-  if (isAOD_) {
+  if(runphoIDVID_)
+    tree->Branch("phoIDbit",                   &phoIDbit_);
+
+  if (isAOD_ && runphoMVAID_) {
     ////////////Prepare for photon ID MVA for Run II///////////
     //
     // Create and configure barrel MVA
@@ -260,13 +269,15 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
     //methodName_[1] = "BDT photons endcap";
     methodName_[1] = "BDT";
     tmvaReader_[1]->BookMVA(methodName_[1], weightsFileName2);
-  }
+    
+  }//  if (isAOD_ && runphoMVAID_) 
 
 }
 
 void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 {
 
+  
   // cleanup from previous execution
   phoE_                 .clear();
   phoEt_                .clear();
@@ -340,6 +351,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   phohcalTowerSumEtConeDR03_      .clear();
   photrkSumPtHollowConeDR03_      .clear();
 
+
+  phoIDbit_                       .clear();
+  
   nPho_ = 0;
 
   edm::Handle<edm::View<pat::Photon> > photonHandle;
@@ -352,6 +366,19 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 
   edm::Handle<reco::PhotonCollection> recoPhotonHandle;
   e.getByToken(recophotonCollection_, recoPhotonHandle);
+
+  ///Photon ID in VID framwork - 11th may, 2015
+  // Get the photon ID data from the event stream.
+  // Note: this implies that the VID ID modules have been run upstream.
+  // If you need more info, check with the EGM group.
+  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
+  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
+  edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+  if(runphoIDVID_){
+    e.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
+    e.getByToken(phoMediumIdMapToken_,medium_id_decisions);
+    e.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+  }
 
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
@@ -384,6 +411,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   }
 
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
+
+    
 
     phoE_             .push_back(iPho->energy());
     phoEt_            .push_back(iPho->et());
@@ -506,8 +535,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     ////////9th April, 2015 - SJ
     ///MVA for photons in PHYS14
     // set MVA variables
-
-    if (isAOD_) {
+  
+    if (isAOD_ && runphoMVAID_ ) {
       varPhi_          = phoPhi_[nPho_];
       varR9_           = phoR9_[nPho_];
       varSieie_        = phoSigmaIEtaIEtaFull5x5_[nPho_];
@@ -528,11 +557,37 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
       // spectator vars
       varPt_           = phoEt_[nPho_];
       varEta_          = phoEta_[nPho_];
-
+      
       // 0=ECAL barrel or 1=ECAL endcaps
       int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
 
       phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
+    }//if (isAOD_ && runphoMVAID_ )
+
+    if(runphoIDVID_){
+      //Photon ID in VID framwork - 11th may, 2015
+      // Look up and save the ID decisions
+      // 
+      const auto pho = photonHandle->ptrAt(nPho_);
+      
+      ULong64_t tmpphoIDbit = 0;
+      
+      //cout<<"Photons "<<endl;
+      bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
+      if(isPassLoose) setbit(tmpphoIDbit, 0);
+      //cout<<"isPassLoose "<<isPassLoose<<endl;
+      
+      bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
+      if(isPassMedium) setbit(tmpphoIDbit, 1);
+      //cout<<"isPassMedium "<<isPassMedium<<endl;
+
+      bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
+      if(isPassTight) setbit(tmpphoIDbit, 2);
+      //cout<<"isPassTight "<<isPassTight<<endl;
+
+      phoIDbit_.push_back(tmpphoIDbit);
+      
+      //cout<<"tmppho : phoIDbit: "<<tmpphoIDbit<<":"<<phoIDbit_[nPho_]<<endl;
     }
 
     nPho_++;
@@ -543,7 +598,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 
 void ggNtuplizer::cleanupPhotons()
 {
-  if (isAOD_) {
+  if (isAOD_ && runphoMVAID_) {
     delete tmvaReader_[0];
     delete tmvaReader_[1];
   }
