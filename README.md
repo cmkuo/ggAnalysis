@@ -5,3 +5,8 @@ git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron 
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone https://github.com/cmkuo/ggAnalysis.git <br>
 
+####FOR VID Framework this is needed
+cd CMSSW_7_4_X/src
+cmsenv
+git cms-merge-topic ikrav:egm_id_74X_v0
+scram b -j 10
