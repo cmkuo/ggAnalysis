@@ -23,6 +23,8 @@
 
 using namespace std;
 
+void setbit(ULong64_t& x, ULong64_t bit);
+
 class ggNtuplizer : public edm::EDAnalyzer {
  public:
 
@@ -65,6 +67,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   bool isAOD_;
 
+  bool runphoIDVID_;
+  bool runeleIDVID_;
+
+  bool runeleMVAID_;
+  bool runphoMVAID_;
+  
   vector<int> newparticles_;
 
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
@@ -87,6 +95,24 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetCollection_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetsCHSLabel_;
+
+  ///Photon ID in VID framework - 11th May, 2015
+  // ID decision objects
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
+
+
+  // elecontr ID decisions objects
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
+
+
+  //check
+  edm::EDGetToken gsfEle_;
 
   TTree   *tree_;
   TH1F    *hEvents_;
