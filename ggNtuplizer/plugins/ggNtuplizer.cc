@@ -3,6 +3,13 @@
 using namespace std;
 using namespace edm;
 
+void setbit(ULong64_t& x, ULong64_t bit) {
+  ULong64_t a = 1;
+  x |= (a << bit);
+}
+
+
+
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
@@ -12,6 +19,11 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   isAOD_                     = ps.getParameter<bool>("isAOD");
 
+  runphoIDVID_            = ps.getParameter<bool>("runphoIDVID");
+  runeleIDVID_            = ps.getParameter<bool>("runeleIDVID");
+  runeleMVAID_            = ps.getParameter<bool>("runeleMVAID");
+  runphoMVAID_            = ps.getParameter<bool>("runphoMVAID");
+
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                     (ps.getParameter<InputTag>("rhoLabel"));
@@ -20,6 +32,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   genParticlesCollection_    = consumes<vector<reco::GenParticle> > (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >            (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >       (ps.getParameter<InputTag>("electronSrc"));
+
+  gsfEle_        = mayConsume<edm::View<reco::GsfElectron> > (ps.getParameter<edm::InputTag> ("electrons"));
+
+  
   photonCollection_          = consumes<View<pat::Photon> >         (ps.getParameter<InputTag>("photonSrc"));
   muonCollection_            = consumes<View<pat::Muon> >           (ps.getParameter<InputTag>("muonSrc"));
   ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>       (ps.getParameter<InputTag>("ebReducedRecHitCollection"));
@@ -38,6 +54,26 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   cicPhotonId_ = new CiCPhotonID(ps);
 
+
+  ///Photon ID in VID framwork - 11th may, 2015
+  phoLooseIdMapToken_        = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoLooseIdMap"));
+  
+  phoMediumIdMapToken_       = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoMediumIdMap"));
+  
+  phoTightIdMapToken_        = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoTightIdMap"));
+
+  
+  //electron ID - 11th may 2015
+  eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleVetoIdMap"));
+  
+  eleLooseIdMapToken_      = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleLooseIdMap"));
+  
+  eleMediumIdMapToken_     = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleMediumIdMap"));
+  
+  eleTightIdMapToken_      = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleTightIdMap"));
+  
+  eleHEEPIdMapToken_       = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleHEEPIdMap"));
+  
   Service<TFileService> fs;
   tree_    = fs->make<TTree>("EventTree", "Event data");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
@@ -55,6 +91,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
+
 }
 
 ggNtuplizer::~ggNtuplizer() {
@@ -90,6 +127,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       fillGenPart(e);
   }
 
+
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
   fillMuons(e, pv);
@@ -99,6 +137,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   hEvents_->Fill(1.5);
   tree_->Fill();
+
 }
 
 
