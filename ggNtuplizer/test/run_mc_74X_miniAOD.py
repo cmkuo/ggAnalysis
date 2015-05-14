@@ -21,21 +21,8 @@ process.source = cms.Source("PoolSource",
         #'file:/tmp/cmkuo/GJet_Pt40_doubleEMEnriched_TuneZ2star_13TeV-pythia6_Phys14.root'
         #'file:/data4/cmkuo/testfiles/GJet_Pt40_doubleEMEnriched_TuneZ2star_13TeV-pythia6_Phys14.root'
         #'root://cmsxrootd.fnal.gov///store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00CC714A-F86B-E411-B99A-0025904B5FB8.root'
-        "/store/relval/CMSSW_7_4_0_pre9_ROOT6/DoubleElectron/RECO/GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/00000/C04717C4-48D9-E411-9E88-002618943901.root"
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/1EB73E6B-0AF4-E411-8AAB-02163E012276.root'
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/229CC9FA-0BF4-E411-852D-02163E0137FA.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/22ECB7D5-06F4-E411-831D-02163E0139C6.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/328F8702-0CF4-E411-A80D-02163E0135BE.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/36B7140D-0CF4-E411-BA17-02163E01354B.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/36C8B0E6-07F4-E411-9B0C-02163E012332.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/3AEBD3A8-0AF4-E411-A403-02163E0129ED.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/4AA07411-05F4-E411-AD92-02163E01370E.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/4C6A1AEA-05F4-E411-8EEA-02163E012324.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/5685DD77-0DF4-E411-B0B9-02163E01354B.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/98B718CC-09F4-E411-A471-02163E013780.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/BE2329D7-06F4-E411-8590-02163E012847.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/C67F2E22-0CF4-E411-A6EB-02163E012AE4.root',
-#'/store/express/Commissioning2015/ExpressPhysics/FEVT/Express-v1/000/243/639/00000/E2FCCA72-0DF4-E411-B071-02163E0137FA.root'
+'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root'
+#        "/store/relval/CMSSW_7_4_0_pre9_ROOT6/DoubleElectron/RECO/GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/00000/C04717C4-48D9-E411-9E88-002618943901.root"
 )
                             )
 
@@ -51,13 +38,13 @@ runOnData( process, outputModules = [] )
 
 
 
-process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
-process.ggNtuplizer.doGenParticles=cms.bool(False)
-process.ggNtuplizer.dumpSubJets=cms.bool(False)
-process.ggNtuplizer.dumpJets=cms.bool(False)
+process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+process.ggNtuplizer.doGenParticles=cms.bool(True)
+process.ggNtuplizer.dumpSubJets=cms.bool(True)
+process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
+process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
 ###9th April, 2015 SHILPI JAIN
 ###ADDING ELECTRON ID MVA IN THE PATH: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
@@ -66,7 +53,7 @@ process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree
 
 #setattr(process.patElectrons.electronIDSources, "trigMVAid",cms.InputTag("mvaTrigV050nsCSA14"))
 
-useAOD = True
+useAOD = False
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be

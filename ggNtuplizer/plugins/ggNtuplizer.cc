@@ -46,8 +46,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   gsfElectronlabel_          = consumes<reco::GsfElectronCollection>(ps.getParameter<InputTag>("gsfElectronLabel"));
   tauCollection_             = consumes<vector<pat::Tau> >          (ps.getParameter<InputTag>("tauSrc"));
   pfAllParticles_            = consumes<reco::PFCandidateCollection>(ps.getParameter<InputTag>("PFAllCandidates"));
-  jetCollection_             = consumes<View<pat::Jet> >            (ps.getParameter<InputTag>("jetSrc"));
-  jetsCHSLabel_              = consumes<View<pat::Jet> >            (ps.getParameter<InputTag>("selectedPatJetsCA8PFCHS"));
+  jetsAK4Label_ = consumes<View<pat::Jet> > (ps.getParameter<InputTag>("ak4JetSrc"));
+  jetsAK8Label_ = consumes<View<pat::Jet> > (ps.getParameter<InputTag>("ak8JetSrc"));
   newparticles_              = ps.getParameter< vector<int > >("newParticles");
 
   pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");

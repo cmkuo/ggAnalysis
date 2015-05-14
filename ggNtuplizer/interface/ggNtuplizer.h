@@ -93,8 +93,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::TrackCollection>       tracklabel_;
   edm::EDGetTokenT<reco::GsfElectronCollection> gsfElectronlabel_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
-  edm::EDGetTokenT<edm::View<pat::Jet> >        jetCollection_;
-  edm::EDGetTokenT<edm::View<pat::Jet> >        jetsCHSLabel_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > jetsAK4Label_;
+  edm::EDGetTokenT<edm::View<pat::Jet> > jetsAK8Label_;
 
   ///Photon ID in VID framework - 11th May, 2015
   // ID decision objects
