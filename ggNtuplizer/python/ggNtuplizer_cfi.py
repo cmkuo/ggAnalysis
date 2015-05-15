@@ -42,7 +42,6 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              tauSrc                    = cms.InputTag("slimmedTaus"),
                              pfLooseId                 = pfJetIDSelector.clone(),
                              
-                             electrons    = cms.InputTag("gedGsfElectrons"), 
                              phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
                              phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
                              phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
