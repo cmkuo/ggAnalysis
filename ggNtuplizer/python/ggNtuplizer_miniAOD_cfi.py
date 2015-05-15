@@ -11,8 +11,8 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpSubJets      = cms.bool(False),
                              dumpTaus         = cms.bool(False),
                              isAOD            = cms.bool(False), #### actually configured through run_data_74x.py
-                             runphoIDVID   = cms.bool(False),
-                             runeleIDVID   = cms.bool(False),
+                             runphoIDVID   = cms.bool(True),
+                             runeleIDVID   = cms.bool(True),
                              runphoMVAID   = cms.bool(False),
                              runeleMVAID   = cms.bool(False),
 
@@ -39,7 +39,6 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              tauSrc                    = cms.InputTag("slimmedTaus"),
                              pfLooseId                 = pfJetIDSelector.clone(),
 
-                             electrons    = cms.InputTag("gedGsfElectrons"),
                              phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-loose"),
                              phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-medium"),
                              phoTightIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-PHYS14-PU20bx25-V2-standalone-tight"),
