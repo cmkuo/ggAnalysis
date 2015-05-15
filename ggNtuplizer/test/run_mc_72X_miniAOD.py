@@ -59,9 +59,41 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 ###9th April, 2015 SHILPI JAIN
 ###ADDING ELECTRON ID MVA IN THE PATH: https://twiki.cern.ch/twiki/bin/view/CMS/MultivariateElectronIdentificationRun2
 
-process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
+#process.load("EgammaAnalysis.ElectronTools.electronIdMVAProducer_CSA14_cfi")
 
 #setattr(process.patElectrons.electronIDSources, "trigMVAid",cms.InputTag("mvaTrigV050nsCSA14"))
+
+
+useAOD = False
+#####VID framework####################
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+# turn on VID producer, indicate data format  to be
+# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
+if useAOD == True :
+    dataFormat = DataFormat.AOD
+else :
+    dataFormat = DataFormat.MiniAOD
+
+process.ggNtuplizer.isAOD=cms.bool(useAOD)
+
+switchOnVIDElectronIdProducer(process, dataFormat)
+switchOnVIDPhotonIdProducer(process, dataFormat)
+
+# define which IDs we want to produce
+my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
+
+#add them to the VID producer
+for idmod in my_id_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
+    
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
+
+#add them to the VID producer
+for idmod in my_phoid_modules:
+    setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+
 
 process.p = cms.Path(
 #process.egmGsfElectronIDSequence
@@ -72,7 +104,9 @@ process.p = cms.Path(
  #+ process.mvaNonTrigV025nsPHYS14
  #+ process.patDefaultSequence
  #* process.NjettinessCA8
-  process.ggNtuplizer
+    process.egmGsfElectronIDSequence 
+    * process.egmPhotonIDSequence 
+    * process.ggNtuplizer
 )
 
 #process.p = cms.Path(
