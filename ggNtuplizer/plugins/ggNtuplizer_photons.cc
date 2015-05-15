@@ -571,19 +571,37 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
       const auto pho = photonHandle->ptrAt(nPho_);
       
       ULong64_t tmpphoIDbit = 0;
-      
-      //cout<<"Photons "<<endl;
-      bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
-      if(isPassLoose) setbit(tmpphoIDbit, 0);
-      //cout<<"isPassLoose "<<isPassLoose<<endl;
-      
-      bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
-      if(isPassMedium) setbit(tmpphoIDbit, 1);
-      //cout<<"isPassMedium "<<isPassMedium<<endl;
+    
+      if(isAOD_){
+	//cout<<"Photons "<<endl;
+	bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
+	if(isPassLoose) setbit(tmpphoIDbit, 0);
+	//cout<<"isPassLoose "<<isPassLoose<<endl;
+	
+	bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
+	if(isPassMedium) setbit(tmpphoIDbit, 1);
+	//cout<<"isPassMedium "<<isPassMedium<<endl;
+	
+	bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
+	if(isPassTight) setbit(tmpphoIDbit, 2);
+	//cout<<"isPassTight "<<isPassTight<<endl;
+      }
 
-      bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
-      if(isPassTight) setbit(tmpphoIDbit, 2);
-      //cout<<"isPassTight "<<isPassTight<<endl;
+      if(!isAOD_){
+	//cout<<"Photons "<<endl;
+	bool isPassLoose  = (*loose_id_decisions)[pho];
+	if(isPassLoose) setbit(tmpphoIDbit, 0);
+	//cout<<"isPassLoose "<<isPassLoose<<endl;
+	
+	bool isPassMedium = (*medium_id_decisions)[pho];
+	if(isPassMedium) setbit(tmpphoIDbit, 1);
+	//cout<<"isPassMedium "<<isPassMedium<<endl;
+	
+	bool isPassTight  = (*tight_id_decisions)[pho];
+	if(isPassTight) setbit(tmpphoIDbit, 2);
+	//cout<<"isPassTight "<<isPassTight<<endl;
+      }
+
 
       phoIDbit_.push_back(tmpphoIDbit);
       
