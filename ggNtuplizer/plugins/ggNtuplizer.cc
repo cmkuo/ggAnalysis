@@ -33,9 +33,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   pfMETlabel_                = consumes<View<pat::MET> >            (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >       (ps.getParameter<InputTag>("electronSrc"));
 
-  gsfEle_        = mayConsume<edm::View<reco::GsfElectron> > (ps.getParameter<edm::InputTag> ("electrons"));
-
-  
   photonCollection_          = consumes<View<pat::Photon> >         (ps.getParameter<InputTag>("photonSrc"));
   muonCollection_            = consumes<View<pat::Muon> >           (ps.getParameter<InputTag>("muonSrc"));
   ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>       (ps.getParameter<InputTag>("ebReducedRecHitCollection"));
