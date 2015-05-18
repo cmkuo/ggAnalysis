@@ -1,4 +1,4 @@
-### To work with CMSSW_7_4_1, you do:
+##### To work with CMSSW_7_4_1, you do:
 
 cd CMSSW_7_4_1/src <br>
 cmsenv <br>
@@ -27,7 +27,7 @@ To access the decision for <br>
 (b) Medium: phoIDbit[]>>1&1<br>
 (c) Tight: phoIDbit[]>>2&1<br>
 
-### To work with CMSSW_7_2_0 or 7_2_3, you do:
+##### To work with CMSSW_7_2_0 or 7_2_3, you do:
 
 git cms-merge-topic ikrav:egm_id_phys14 # for photon ID recipe <br>
 git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron ID recipe <br>
