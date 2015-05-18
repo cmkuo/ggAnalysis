@@ -1,14 +1,10 @@
-To work with CMSSW_7_2_0 or 7_2_3, you do:
+##### To work with CMSSW_7_4_1, you do:
 
-git cms-merge-topic ikrav:egm_id_phys14 # for photon ID recipe <br>
-git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron ID recipe <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
-
-####FOR VID Framework this is needed
-cd CMSSW_7_4_X/src <br>
+cd CMSSW_7_4_1/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v0 <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
@@ -31,5 +27,11 @@ To access the decision for <br>
 (b) Medium: phoIDbit[]>>1&1<br>
 (c) Tight: phoIDbit[]>>2&1<br>
 
+##### To work with CMSSW_7_2_0 or 7_2_3, you do:
+
+git cms-merge-topic ikrav:egm_id_phys14 # for photon ID recipe <br>
+git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron ID recipe <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone -b V07-02-03-00 https://github.com/cmkuo/ggAnalysis.git <br>
 
 
