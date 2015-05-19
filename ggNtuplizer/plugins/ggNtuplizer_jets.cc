@@ -32,7 +32,6 @@ vector<float>  AK8JetPt_;
 vector<float>  AK8JetEta_;
 vector<float>  AK8JetPhi_;
 vector<float>  AK8JetMass_;
-vector<float>  AK8JetArea_;
 vector<float>  AK8Jet_tau1_;
 vector<float>  AK8Jet_tau2_;
 vector<float>  AK8Jet_tau3_;
@@ -75,7 +74,6 @@ void ggNtuplizer::branchesJets(TTree* tree)
     tree->Branch("AK8JetEta",           &AK8JetEta_);
     tree->Branch("AK8JetPhi",           &AK8JetPhi_);
     tree->Branch("AK8JetMass",          &AK8JetMass_);
-    tree->Branch("AK8JetArea",          &AK8JetArea_);
     tree->Branch("AK8Jet_tau1",         &AK8Jet_tau1_);
     tree->Branch("AK8Jet_tau2",         &AK8Jet_tau2_);
     tree->Branch("AK8Jet_tau3",         &AK8Jet_tau3_);
@@ -120,7 +118,6 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   AK8JetEta_          .clear();
   AK8JetPhi_          .clear();
   AK8JetMass_         .clear();
-  AK8JetArea_         .clear();
   AK8Jet_tau1_        .clear();
   AK8Jet_tau2_        .clear();
   AK8Jet_tau3_        .clear();
@@ -198,17 +195,24 @@ void ggNtuplizer::fillJets(const edm::Event& e)
       AK8JetEta_.push_back( ijetAK8->eta() );
       AK8JetPhi_.push_back( ijetAK8->phi() );
       AK8JetMass_.push_back( ijetAK8->mass() );
-      AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8:tau1") );
-      AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8:tau2") );
-      AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8:tau3") );
-
+      if (isAOD_ )
+       {    AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau1") );
+            AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau2") );
+            AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau3") );
+       }
+      else 
+       {    AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8:tau1") );
+            AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8:tau2") );
+            AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8:tau3") );
+       }
       AK8JetCHF_.push_back( ijetAK8->chargedHadronEnergyFraction()); // 0.0
       AK8JetNHF_.push_back( ( ijetAK8->neutralHadronEnergy() + ijetAK8->HFHadronEnergy() ) / ijetAK8->energy()); //0.99
       AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
       AK8JetNEF_.push_back( ijetAK8->neutralEmEnergyFraction()); //0.99
       AK8JetNCH_.push_back( ijetAK8->chargedMultiplicity()); //0
       AK8Jetnconstituents_.push_back( ijetAK8->numberOfDaughters()); //1  
-      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass"));
+      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
+//      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
 
     }
   }
