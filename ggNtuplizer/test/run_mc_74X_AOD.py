@@ -137,6 +137,6 @@ process.p = cms.Path(
 #)
 
 process.outpath = cms.EndPath(process.out)
-#process.outpath.remove(process.out)
+process.outpath.remove(process.out)
 
 #print process.dumpPython()
