@@ -2,11 +2,23 @@ import FWCore.ParameterSet.Config as cms
 
 process = cms.Process('ggNtuplizer')
 
-process.load("Configuration.Geometry.GeometryIdeal_cff")
+#process.load("Configuration.Geometry.GeometryIdeal_cff")
+
+process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_cff")
 from Configuration.AlCa.GlobalTag import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
 process.load("Configuration.StandardSequences.MagneticField_cff")
+
+
+from PhysicsTools.PatAlgos.patTemplate_cfg import *
+
+process.load("PhysicsTools.PatAlgos.patSequences_cff")
+process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
+process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
+#from PhysicsTools.PatAlgos.tools.coreTools import *
+#runOnData( process, outputModules = [] )
+
 
 process.out = cms.OutputModule("PoolOutputModule",
                                fileName = cms.untracked.string('outTuple.root'),
@@ -20,13 +32,22 @@ process.ca8PFJetsCHSPrunedLinks = cms.EDProducer("RecoJetDeltaRValueMapProducer"
                         )
 
 
+
+process.patJets.discriminatorSources = cms.VInputTag(cms.InputTag("jetBProbabilityBJetTags")) 
+
+
+
+
+
+
+
 process.NjettinessCA8 = cms.EDProducer("NjettinessAdder",
                               src=cms.InputTag("ca8PFJetsCHS"),
                               cone=cms.double(0.8),
                               Njets=cms.vuint32(1,2,3)
                               )
 
-#process.out.outputCommands += ['keep *_NjettinessCA8_*_*'] // FIXME: uncomment?
+#process.out.outputCommands += ['keep *_NjettinessCA8_*_*'] #// FIXME: uncomment?
 
 
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
@@ -102,10 +123,10 @@ process.p = cms.Path(
  #+ process.mvaNonTrigV050nsCSA14
  #+ process.mvaNonTrigV025nsCSA14
  #+ process.mvaNonTrigV025nsPHYS14
- #+ process.patDefaultSequence
  #* process.NjettinessCA8
-    process.egmGsfElectronIDSequence 
-    * process.egmPhotonIDSequence 
+     process.egmGsfElectronIDSequence 
+     * process.egmPhotonIDSequence 
+     * process.patDefaultSequence
     * process.ggNtuplizer
 )
 
@@ -116,5 +137,6 @@ process.p = cms.Path(
 #)
 
 process.outpath = cms.EndPath(process.out)
-process.outpath.remove(process.out)
+#process.outpath.remove(process.out)
 
+#print process.dumpPython()
