@@ -5,6 +5,7 @@ cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v0 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox -b jetToolbox_74X <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
