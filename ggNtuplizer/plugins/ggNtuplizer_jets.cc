@@ -6,6 +6,7 @@ using namespace std;
 // (local) variables associated with tree branches
 Int_t          nJet_;
 vector<float>  jetPt_;
+vector<float>  jetEn_;
 vector<float>  jetEta_;
 vector<float>  jetPhi_;
 vector<float>  jetCHF_;
@@ -29,6 +30,7 @@ vector<bool>   jetPFLooseId_;
 //SubJet
 Int_t          nAK8Jet_;
 vector<float>  AK8JetPt_;
+vector<float>  AK8JetEn_;
 vector<float>  AK8JetEta_;
 vector<float>  AK8JetPhi_;
 vector<float>  AK8JetMass_;
@@ -47,6 +49,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
 {
   tree->Branch("nJet",   &nJet_);
   tree->Branch("jetPt",  &jetPt_);
+  tree->Branch("jetEn",  &jetEn_);
   tree->Branch("jetEta", &jetEta_);
   tree->Branch("jetPhi", &jetPhi_);
   tree->Branch("jetCHF", &jetCHF_);
@@ -71,6 +74,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
   if (dumpSubJets_) {
     tree->Branch("nAK8Jet",             &nAK8Jet_);
     tree->Branch("AK8JetPt",            &AK8JetPt_);
+    tree->Branch("AK8JetEn",            &AK8JetEn_);
     tree->Branch("AK8JetEta",           &AK8JetEta_);
     tree->Branch("AK8JetPhi",           &AK8JetPhi_);
     tree->Branch("AK8JetMass",          &AK8JetMass_);
@@ -93,6 +97,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
 
   // cleanup from previous execution
   jetPt_                                  .clear();
+  jetEn_                                  .clear();
   jetEta_                                 .clear();
   jetPhi_                                 .clear();
   jetCHF_                                 .clear();
@@ -115,6 +120,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
 
   // SubJet
   AK8JetPt_           .clear();
+  AK8JetEn_           .clear();
   AK8JetEta_          .clear();
   AK8JetPhi_          .clear();
   AK8JetMass_         .clear();
@@ -143,6 +149,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
     //    cout<<iJet->pt() <<endl;
     jetPt_.push_back(    iJet->pt());
+    jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
     jetPhi_.push_back(   iJet->phi());
     jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
@@ -192,6 +199,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
 
       nAK8Jet_++;
       AK8JetPt_.push_back( ijetAK8->pt() );
+      AK8JetEn_.push_back( ijetAK8->energy() );
       AK8JetEta_.push_back( ijetAK8->eta() );
       AK8JetPhi_.push_back( ijetAK8->phi() );
       AK8JetMass_.push_back( ijetAK8->mass() );
