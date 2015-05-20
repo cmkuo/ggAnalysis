@@ -49,7 +49,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
 {
   tree->Branch("nJet",   &nJet_);
   tree->Branch("jetPt",  &jetPt_);
-  tree->Branch("jetEn",  &jetEn_);
+  //tree->Branch("jetEn",  &jetEn_);
   tree->Branch("jetEta", &jetEta_);
   tree->Branch("jetPhi", &jetPhi_);
   tree->Branch("jetCHF", &jetCHF_);
@@ -74,7 +74,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
   if (dumpSubJets_) {
     tree->Branch("nAK8Jet",             &nAK8Jet_);
     tree->Branch("AK8JetPt",            &AK8JetPt_);
-    tree->Branch("AK8JetEn",            &AK8JetEn_);
+    //tree->Branch("AK8JetEn",            &AK8JetEn_);
     tree->Branch("AK8JetEta",           &AK8JetEta_);
     tree->Branch("AK8JetPhi",           &AK8JetPhi_);
     tree->Branch("AK8JetMass",          &AK8JetMass_);
