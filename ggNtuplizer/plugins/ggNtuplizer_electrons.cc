@@ -6,7 +6,6 @@
 
 using namespace std;
 
-
 // (local) variables associated with tree branches
 Int_t          nEle_;
 vector<int>    eleCharge_;
@@ -50,6 +49,7 @@ vector<float>  eleE5x5_;
 vector<float>  eleE1x5Full5x5_;
 vector<float>  eleE2x5Full5x5_;
 vector<float>  eleE5x5Full5x5_;
+vector<float>  eleR9Full5x5_;
 vector<float>  eleRelIsoWithDBeta_;
 vector<int>    eleEcalDrivenSeed_;
 vector<float>  eleDr03EcalRecHitSumEt_;
@@ -108,6 +108,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleE1x5Full5x5",          &eleE1x5Full5x5_);
   tree->Branch("eleE2x5Full5x5",          &eleE2x5Full5x5_);
   tree->Branch("eleE5x5Full5x5",          &eleE5x5Full5x5_);
+  tree->Branch("eleR9Full5x5",                &eleR9Full5x5_);
   tree->Branch("eleEcalDrivenSeed",           &eleEcalDrivenSeed_);
   tree->Branch("eleDr03EcalRecHitSumEt",      &eleDr03EcalRecHitSumEt_);
   tree->Branch("eleDr03HcalDepth1TowerSumEt", &eleDr03HcalDepth1TowerSumEt_);
@@ -174,11 +175,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleE1x5Full5x5_             .clear();
   eleE2x5Full5x5_             .clear();
   eleE5x5Full5x5_             .clear();
+  eleR9Full5x5_               .clear();
   elecaloEnergy_              .clear();
   eleTrkdxy_                  .clear();
-
   eleIDbit_                   .clear();
-  
 
   nEle_ = 0;
 
@@ -295,6 +295,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleE1x5Full5x5_             .push_back(iEle->full5x5_e1x5());
     eleE2x5Full5x5_             .push_back(iEle->full5x5_e2x5Max());
     eleE5x5Full5x5_             .push_back(iEle->full5x5_e5x5());
+    eleR9Full5x5_               .push_back(iEle->full5x5_r9());
 
     ///For HEEP ID
     eleEcalDrivenSeed_          .push_back(iEle->ecalDrivenSeed());

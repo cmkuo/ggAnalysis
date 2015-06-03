@@ -1,4 +1,3 @@
-
 #include <TString.h>
 #include <TMVA/Reader.h>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
@@ -8,8 +7,6 @@
 
 using namespace std;
 
-
-// (local) variables associated with tree branches
 Int_t          nPho_;
 vector<float>  phoE_;
 vector<float>  phoEt_;
@@ -42,6 +39,7 @@ vector<float>  phoE1x3Full5x5_;
 vector<float>  phoE2x2Full5x5_;
 vector<float>  phoE2x5MaxFull5x5_;
 vector<float>  phoE5x5Full5x5_;
+vector<float>  phoR9Full5x5_;
 vector<float>  phoPFChIso_;
 vector<float>  phoPFPhoIso_;
 vector<float>  phoPFNeuIso_;
@@ -111,35 +109,33 @@ float varEta_;
 TMVA::Reader *tmvaReader_[2];
 TString methodName_[2];
 
-void ggNtuplizer::branchesPhotons(TTree* tree)
-{
-
+void ggNtuplizer::branchesPhotons(TTree* tree) {
   
-  tree->Branch("nPho",                  &nPho_);
-  tree->Branch("phoE",                  &phoE_);
-  tree->Branch("phoEt",                 &phoEt_);
-  tree->Branch("phoEta",                &phoEta_);
-  tree->Branch("phoPhi",                &phoPhi_);
-  tree->Branch("phoSCE",                &phoSCE_);
-  tree->Branch("phoSCRawE",             &phoSCRawE_);
-  tree->Branch("phoESEn",               &phoESEn_);
-  tree->Branch("phoSCEta",              &phoSCEta_);
-  tree->Branch("phoSCPhi",              &phoSCPhi_);
-  tree->Branch("phoSCEtaWidth",         &phoSCEtaWidth_);
-  tree->Branch("phoSCPhiWidth",         &phoSCPhiWidth_);
-  tree->Branch("phoSCBrem",             &phoSCBrem_);
-  tree->Branch("phohasPixelSeed",       &phohasPixelSeed_);
-  tree->Branch("phoEleVeto",            &phoEleVeto_);
-  tree->Branch("phoR9",                 &phoR9_);
-  tree->Branch("phoHoverE",             &phoHoverE_);
-  tree->Branch("phoSigmaIEtaIEta",      &phoSigmaIEtaIEta_);
-  tree->Branch("phoSigmaIEtaIPhi",      &phoSigmaIEtaIPhi_);
-  tree->Branch("phoSigmaIPhiIPhi",      &phoSigmaIPhiIPhi_);
-  tree->Branch("phoE1x3",               &phoE1x3_);
-  tree->Branch("phoE2x2",               &phoE2x2_);
-  tree->Branch("phoE2x5Max",            &phoE2x5Max_);
-  tree->Branch("phoE5x5",               &phoE5x5_);
-  tree->Branch("phoESEffSigmaRR",       &phoESEffSigmaRR_);
+  tree->Branch("nPho",                    &nPho_);
+  tree->Branch("phoE",                    &phoE_);
+  tree->Branch("phoEt",                   &phoEt_);
+  tree->Branch("phoEta",                  &phoEta_);
+  tree->Branch("phoPhi",                  &phoPhi_);
+  tree->Branch("phoSCE",                  &phoSCE_);
+  tree->Branch("phoSCRawE",               &phoSCRawE_);
+  tree->Branch("phoESEn",                 &phoESEn_);
+  tree->Branch("phoSCEta",                &phoSCEta_);
+  tree->Branch("phoSCPhi",                &phoSCPhi_);
+  tree->Branch("phoSCEtaWidth",           &phoSCEtaWidth_);
+  tree->Branch("phoSCPhiWidth",           &phoSCPhiWidth_);
+  tree->Branch("phoSCBrem",               &phoSCBrem_);
+  tree->Branch("phohasPixelSeed",         &phohasPixelSeed_);
+  tree->Branch("phoEleVeto",              &phoEleVeto_);
+  tree->Branch("phoR9",                   &phoR9_);
+  tree->Branch("phoHoverE",               &phoHoverE_);
+  tree->Branch("phoSigmaIEtaIEta",        &phoSigmaIEtaIEta_);
+  tree->Branch("phoSigmaIEtaIPhi",        &phoSigmaIEtaIPhi_);
+  tree->Branch("phoSigmaIPhiIPhi",        &phoSigmaIPhiIPhi_);
+  tree->Branch("phoE1x3",                 &phoE1x3_);
+  tree->Branch("phoE2x2",                 &phoE2x2_);
+  tree->Branch("phoE2x5Max",              &phoE2x5Max_);
+  tree->Branch("phoE5x5",                 &phoE5x5_);
+  tree->Branch("phoESEffSigmaRR",         &phoESEffSigmaRR_);
   tree->Branch("phoSigmaIEtaIEtaFull5x5", &phoSigmaIEtaIEtaFull5x5_);
   tree->Branch("phoSigmaIEtaIPhiFull5x5", &phoSigmaIEtaIPhiFull5x5_);
   tree->Branch("phoSigmaIPhiIPhiFull5x5", &phoSigmaIPhiIPhiFull5x5_);
@@ -147,6 +143,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
   tree->Branch("phoE2x2Full5x5",          &phoE2x2Full5x5_);
   tree->Branch("phoE2x5MaxFull5x5",       &phoE2x5MaxFull5x5_);
   tree->Branch("phoE5x5Full5x5",          &phoE5x5Full5x5_);
+  tree->Branch("phoR9Full5x5",            &phoR9Full5x5_);
 
   if (isAOD_) {
     tree->Branch("phoPFChIso",            &phoPFChIso_);
@@ -192,7 +189,6 @@ void ggNtuplizer::branchesPhotons(TTree* tree)
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
   tree->Branch("phohcalTowerSumEtConeDR03",       &phohcalTowerSumEtConeDR03_);
-
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
 
   if(runphoIDVID_)
@@ -310,6 +306,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   phoE2x2Full5x5_       .clear();
   phoE2x5MaxFull5x5_    .clear();
   phoE5x5Full5x5_       .clear();
+  phoR9Full5x5_         .clear();
   phoPFChIso_           .clear();
   phoPFPhoIso_          .clear();
   phoPFNeuIso_          .clear();
@@ -443,17 +440,18 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
 
     std::vector<float> vCov = lazyToolnoZS.localCovariances( *((*iPho).superCluster()->seed()) );
-    const float see = (isnan(vCov[0]) ? 0. : sqrt(vCov[0]));
+    //const float see = (isnan(vCov[0]) ? 0. : sqrt(vCov[0]));
     const float spp = (isnan(vCov[2]) ? 0. : sqrt(vCov[2]));
     const float sep = vCov[1];
 
-    phoSigmaIEtaIEtaFull5x5_ .push_back(see);
+    phoSigmaIEtaIEtaFull5x5_ .push_back(iPho->full5x5_sigmaIetaIeta());
     phoSigmaIEtaIPhiFull5x5_ .push_back(sep);
     phoSigmaIPhiIPhiFull5x5_ .push_back(spp);
     phoE1x3Full5x5_          .push_back(lazyToolnoZS.e1x3(*((*iPho).superCluster()->seed())));
     phoE2x2Full5x5_          .push_back(lazyToolnoZS.e2x2(*((*iPho).superCluster()->seed())));
-    phoE2x5MaxFull5x5_       .push_back(lazyToolnoZS.e2x5Max(*((*iPho).superCluster()->seed())));
-    phoE5x5Full5x5_          .push_back(lazyToolnoZS.e5x5(*((*iPho).superCluster()->seed())));
+    phoE2x5MaxFull5x5_       .push_back(iPho->full5x5_e2x5());
+    phoE5x5Full5x5_          .push_back(iPho->full5x5_e5x5());
+    phoR9Full5x5_            .push_back(iPho->full5x5_r9());
 
     if (isAOD_) {
       size_t rightRecoPho = -1;
