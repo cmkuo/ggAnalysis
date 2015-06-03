@@ -1,3 +1,5 @@
+### Current production tag : V07-04-02-00
+
 ##### To work with CMSSW_7_4_2, you do:
 
 cd CMSSW_7_4_2/src <br>
