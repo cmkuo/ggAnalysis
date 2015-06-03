@@ -1,6 +1,6 @@
-##### To work with CMSSW_7_4_1, you do:
+##### To work with CMSSW_7_4_2, you do:
 
-cd CMSSW_7_4_1/src <br>
+cd CMSSW_7_4_2/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v0 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
