@@ -18,7 +18,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              runphoMVAID   = cms.bool(False),
                              runeleMVAID   = cms.bool(False),
                              
-
+                             triggerResults   = cms.InputTag("TriggerResults", "", "HLT"),
                              genParticleSrc   = cms.InputTag("genParticles"),
                              generatorLabel   = cms.InputTag("generator"),
                              newParticles     = cms.vint32(4000011, 4000013, 1000006, 1000022, 1000024, 1000025),

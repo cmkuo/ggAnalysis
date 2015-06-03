@@ -27,6 +27,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                     (ps.getParameter<InputTag>("rhoLabel"));
+  trgResultsLabel_           = consumes<edm::TriggerResults>        (ps.getParameter<InputTag>("triggerResults"));
+  trgResultsProcess_         =                                       ps.getParameter<InputTag>("triggerResults").process();
   generatorLabel_            = consumes<GenEventInfoProduct>        (ps.getParameter<InputTag>("generatorLabel"));
   puCollection_              = consumes<vector<PileupSummaryInfo> > (ps.getParameter<InputTag>("pileupCollection"));
   genParticlesCollection_    = consumes<vector<reco::GenParticle> > (ps.getParameter<InputTag>("genParticleSrc"));
@@ -116,7 +118,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
     }
   }
 
-  fillGlobalEvent(e);
+  fillGlobalEvent(e, es);
 
   if (!e.isRealData()) {
     fillGenInfo(e);

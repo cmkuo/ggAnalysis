@@ -11,6 +11,7 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
@@ -48,7 +49,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesTaus       (TTree*);
   void branchesJets       (TTree*);
 
-  void fillGlobalEvent(const edm::Event&);
+  void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
   void fillGenPart    (const edm::Event&);
   void fillPhotons    (const edm::Event&, const edm::EventSetup&);
@@ -78,6 +79,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
   edm::EDGetTokenT<double>                      rhoLabel_;
+  edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
+  string                                        trgResultsProcess_;
   edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;
   edm::EDGetTokenT<vector<PileupSummaryInfo> >  puCollection_;
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
