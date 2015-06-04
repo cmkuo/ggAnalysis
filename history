@@ -1,5 +1,5 @@
-* V07-04-02-01
-   * add HLT paths of Run2 startup
+* V07-04-02-02
+   * add HLT paths of Run2 startup and remove genMET variables from data ntuple
 
 * V07-04-02-00
    * first tag for Run2 stable beam

@@ -1,5 +1,5 @@
 #### Current production tag : V07-04-02-00
-#### Newest tag for testing : V07-04-02-01 
+#### Newest tag for testing : V07-04-02-02 
 
 ##### To work with CMSSW_7_4_2, you do:
 
