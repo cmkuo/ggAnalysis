@@ -35,10 +35,8 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("HLT",     &HLT_);
   tree->Branch("HLTIsPrescaled", &HLTIsPrescaled_);
 
-  if (!isData_) {
-    tree->Branch("genMET",      &genMET_);
-    tree->Branch("genMETPhi",   &genMETPhi_);
-  }
+  tree->Branch("genMET",      &genMET_);
+  tree->Branch("genMETPhi",   &genMETPhi_);
   tree->Branch("pfMET",       &pfMET_);
   tree->Branch("pfMETPhi",    &pfMETPhi_);
   tree->Branch("pfMETsumEt",  &pfMETsumEt_);
