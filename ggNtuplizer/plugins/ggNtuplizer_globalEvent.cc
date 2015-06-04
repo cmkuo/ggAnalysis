@@ -14,6 +14,7 @@ Int_t     nVtx_;
 Int_t     nTrksPV_;
 float     rho_;
 ULong64_t HLT_;
+ULong64_t HLTIsPrescaled_;
 float     genMET_;
 float     genMETPhi_;
 float     pfMET_;
@@ -32,6 +33,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("nTrksPV", &nTrksPV_);
   tree->Branch("rho",     &rho_);
   tree->Branch("HLT",     &HLT_);
+  tree->Branch("HLTIsPrescaled", &HLTIsPrescaled_);
 
   if (!isData_) {
     tree->Branch("genMET",      &genMET_);
@@ -87,24 +89,31 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   for (size_t i = 0; i < trgNames.size(); ++i) {
     const string &name = trgNames.triggerName(i);
 
-    // indicates whether trigger was fired or not
-    ULong64_t bit = (trgResultsHandle->accept(i) && hltCfg.prescaleValue(e, es, name) != 0) ? 1 : 0;
-
     // HLT name => bit correspondence
-    if      (!name.compare("HLT_Physics_v")                              ) HLT_ |= (bit<<  0);  // bit 0 (lowest)
-    else if (!name.compare("HLT_L1SingleMu3p5_WideWindow_v" )            ) HLT_ |= (bit<<  1);  // bit 1
-    else if (!name.compare("HLT_L1SingleMu3p5_v" )                       ) HLT_ |= (bit<<  2);  
-    else if (!name.compare("HLT_L1SingleMuOpen_WideWindow_v" )           ) HLT_ |= (bit<<  3);  
-    else if (!name.compare("HLT_L1SingleMuOpen_v" )                      ) HLT_ |= (bit<<  4);  
-    else if (!name.compare("HLT_L1SingleEG5_WideWindow_v")               ) HLT_ |= (bit<<  5); 
-    else if (!name.compare("HLT_L1SingleEG5_v")                          ) HLT_ |= (bit<<  6);  
-    else if (!name.compare("HLT_L1SingleEG20_WideWindow_v")              ) HLT_ |= (bit<<  7);  
-    else if (!name.compare("HLT_L1SingleEG20_v")                         ) HLT_ |= (bit<<  8);  
-    else if (!name.compare("HLT_L1SingleJet36_WideWindow_v")             ) HLT_ |= (bit<<  9);
-    else if (!name.compare("HLT_L1SingleJet36_v")                        ) HLT_ |= (bit<< 10);
-    else if (!name.compare("HLT_L1SingleJet68_WideWindow_v")             ) HLT_ |= (bit<< 11);
-    else if (!name.compare("HLT_L1SingleJet68_v")                        ) HLT_ |= (bit<< 12);
-    else if (!name.compare("HLT_ZeroBias_")                              ) HLT_ |= (bit<< 13);
+    int bit = -1;
+    if      (!name.compare("HLT_Physics_v")                              ) bit = 0;  // bit 0 (lowest)
+    else if (!name.compare("HLT_L1SingleMu3p5_WideWindow_v" )            ) bit = 1;  // bit 1
+    else if (!name.compare("HLT_L1SingleMu3p5_v" )                       ) bit = 2;
+    else if (!name.compare("HLT_L1SingleMuOpen_WideWindow_v" )           ) bit = 3;
+    else if (!name.compare("HLT_L1SingleMuOpen_v" )                      ) bit = 4;
+    else if (!name.compare("HLT_L1SingleEG5_WideWindow_v")               ) bit = 5;
+    else if (!name.compare("HLT_L1SingleEG5_v")                          ) bit = 6;
+    else if (!name.compare("HLT_L1SingleEG20_WideWindow_v")              ) bit = 7;
+    else if (!name.compare("HLT_L1SingleEG20_v")                         ) bit = 8;
+    else if (!name.compare("HLT_L1SingleJet36_WideWindow_v")             ) bit = 9;
+    else if (!name.compare("HLT_L1SingleJet36_v")                        ) bit = 10;
+    else if (!name.compare("HLT_L1SingleJet68_WideWindow_v")             ) bit = 11;
+    else if (!name.compare("HLT_L1SingleJet68_v")                        ) bit = 12;
+    else if (!name.compare("HLT_ZeroBias_")                              ) bit = 13;
+
+    // indicates prescaling and whether trigger was fired or not
+    ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name) > 0 ? 1 : 0);
+    ULong64_t isFired = (trgResultsHandle->accept(i) && isPrescaled) ? 1 : 0;
+
+    if (bit >= 0) {
+      HLT_            |= (isFired << bit);
+      HLTIsPrescaled_ |= (isPrescaled << bit);
+    }
   }
 
   edm::Handle<edm::View<pat::MET> > pfMETHandle;
