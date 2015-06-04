@@ -91,20 +91,20 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
     // HLT name => bit correspondence
     int bit = -1;
-    if      (!name.compare("HLT_Physics_v")                              ) bit = 0;  // bit 0 (lowest)
-    else if (!name.compare("HLT_L1SingleMu3p5_WideWindow_v" )            ) bit = 1;  // bit 1
-    else if (!name.compare("HLT_L1SingleMu3p5_v" )                       ) bit = 2;
-    else if (!name.compare("HLT_L1SingleMuOpen_WideWindow_v" )           ) bit = 3;
-    else if (!name.compare("HLT_L1SingleMuOpen_v" )                      ) bit = 4;
-    else if (!name.compare("HLT_L1SingleEG5_WideWindow_v")               ) bit = 5;
-    else if (!name.compare("HLT_L1SingleEG5_v")                          ) bit = 6;
-    else if (!name.compare("HLT_L1SingleEG20_WideWindow_v")              ) bit = 7;
-    else if (!name.compare("HLT_L1SingleEG20_v")                         ) bit = 8;
-    else if (!name.compare("HLT_L1SingleJet36_WideWindow_v")             ) bit = 9;
-    else if (!name.compare("HLT_L1SingleJet36_v")                        ) bit = 10;
-    else if (!name.compare("HLT_L1SingleJet68_WideWindow_v")             ) bit = 11;
-    else if (!name.compare("HLT_L1SingleJet68_v")                        ) bit = 12;
-    else if (!name.compare("HLT_ZeroBias_")                              ) bit = 13;
+    if      (name.find("HLT_Physics_v")                    != string::npos) bit = 0;  // bit 0 (lowest)
+    else if (name.find("HLT_L1SingleMu3p5_WideWindow_v" )  != string::npos) bit = 1;  // bit 1
+    else if (name.find("HLT_L1SingleMu3p5_v" )             != string::npos) bit = 2;
+    else if (name.find("HLT_L1SingleMuOpen_WideWindow_v" ) != string::npos) bit = 3;
+    else if (name.find("HLT_L1SingleMuOpen_v" )            != string::npos) bit = 4;
+    else if (name.find("HLT_L1SingleEG5_WideWindow_v")     != string::npos) bit = 5;
+    else if (name.find("HLT_L1SingleEG5_v")                != string::npos) bit = 6;
+    else if (name.find("HLT_L1SingleEG20_WideWindow_v")    != string::npos) bit = 7;
+    else if (name.find("HLT_L1SingleEG20_v")               != string::npos) bit = 8;
+    else if (name.find("HLT_L1SingleJet36_WideWindow_v")   != string::npos) bit = 9;
+    else if (name.find("HLT_L1SingleJet36_v")              != string::npos) bit = 10;
+    else if (name.find("HLT_L1SingleJet68_WideWindow_v")   != string::npos) bit = 11;
+    else if (name.find("HLT_L1SingleJet68_v")              != string::npos) bit = 12;
+    else if (name.find("HLT_ZeroBias_")                    != string::npos) bit = 13;
 
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name) > 0 ? 1 : 0);
