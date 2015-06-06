@@ -3,8 +3,8 @@
 using namespace std;
 using namespace edm;
 
-void setbit(ULong64_t& x, ULong64_t bit) {
-  ULong64_t a = 1;
+void setbit(ULong_t& x, ULong_t bit) {
+  ULong_t a = 1;
   x |= (a << bit);
 }
 
