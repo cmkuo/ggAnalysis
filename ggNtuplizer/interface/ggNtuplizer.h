@@ -24,7 +24,7 @@
 
 using namespace std;
 
-void setbit(ULong64_t& x, ULong64_t bit);
+void setbit(ULong_t& x, ULong_t bit);
 
 class ggNtuplizer : public edm::EDAnalyzer {
  public:
