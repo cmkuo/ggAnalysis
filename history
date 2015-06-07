@@ -1,3 +1,6 @@
+* V07-04-02-03
+   * change electron and photon ID from 64-bit to 8-bit 
+
 * V07-04-02-02
    * add HLT paths of Run2 startup and remove genMET variables from data ntuple
 
