@@ -48,7 +48,9 @@ if useAOD == True :
     dataFormat = DataFormat.AOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+
 
 else :
     dataFormat = DataFormat.MiniAOD
