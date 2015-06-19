@@ -119,7 +119,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     
     ///muon triggers
     Long64_t bit50ns = -1;
-    if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
+    else if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
     else if (name.find("HLT_Mu45_eta2p1_v" )  != string::npos) bit50ns = 1; 
     else if (name.find("HLT_IsoMu20_v" )  != string::npos) bit50ns = 2; 
     else if (name.find("HLT_IsoMu17_eta2p1_v" )  != string::npos) bit50ns = 3; 
