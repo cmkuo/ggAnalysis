@@ -17,9 +17,9 @@ vector<float>   puTrue_;
 
 Int_t           nMC_;
 vector<int>     mcPID;
-vector<float>   mcVtx_x;
-vector<float>   mcVtx_y;
-vector<float>   mcVtx_z;
+vector<float>   mcVtx;
+vector<float>   mcVty;
+vector<float>   mcVtz;
 vector<float>   mcPt;
 vector<float>   mcMass;
 vector<float>   mcEta;
@@ -127,9 +127,9 @@ void ggNtuplizer::branchesGenPart(TTree* tree) {
 
   tree->Branch("nMC",          &nMC_);
   tree->Branch("mcPID",        &mcPID);
-  tree->Branch("mcVtx_x",      &mcVtx_x);
-  tree->Branch("mcVtx_y",      &mcVtx_y);
-  tree->Branch("mcVtx_z",      &mcVtx_z);
+  tree->Branch("mcVtx",        &mcVtx);
+  tree->Branch("mcVty",        &mcVty);
+  tree->Branch("mcVtz",        &mcVtz);
   tree->Branch("mcPt",         &mcPt);
   tree->Branch("mcMass",       &mcMass);
   tree->Branch("mcEta",        &mcEta);
@@ -213,9 +213,9 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
 
   // cleanup from previous execution
   mcPID       .clear();
-  mcVtx_x     .clear();
-  mcVtx_y     .clear();
-  mcVtx_z     .clear();
+  mcVtx       .clear();
+  mcVty       .clear();
+  mcVtz       .clear();
   mcPt        .clear();
   mcMass      .clear();
   mcEta       .clear();
@@ -255,16 +255,14 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
     int status = ip->status();
     //bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
 
-    cout<<"mc : "<<status<<" "<<ip->pdgId()<<" "<<ip->pt()<<" "<<ip->numberOfMothers()<<" "<<ip->fromHardProcessFinalState()<<" "<<ip->isPromptFinalState()<<" "<<ip->fromHardProcessBeforeFSR()<<" "<<ip->fromHardProcessDecayed()<<endl;
-
-    // keep all the photons with pT > 5.0 and all leptons with pT > 3.0;
+    // keep non-FSR photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
       (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0) ||
       (status == 1 && ip->pdgId() == 22 && ip->isPromptFinalState()) ||
       (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
       (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
     
-    // select also Z, W, H, and top
+    // select also Z, W, H, top and b 
     bool heavyParticle =
       ((    ip->pdgId()  == 23 && ip->fromHardProcessBeforeFSR()) || 
        (abs(ip->pdgId()) == 24 && ip->fromHardProcessBeforeFSR()) || 
@@ -287,9 +285,9 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       genpartparentage::GenParticleParentage particleHistory(partRef);
 
       mcPID    .push_back(p->pdgId());
-      mcVtx_x  .push_back(p->vx());
-      mcVtx_y  .push_back(p->vy());
-      mcVtx_z  .push_back(p->vz());
+      mcVtx    .push_back(p->vx());
+      mcVty    .push_back(p->vy());
+      mcVtz    .push_back(p->vz());
       mcPt     .push_back(p->pt());
       mcMass   .push_back(p->mass());
       mcEta    .push_back(p->eta());

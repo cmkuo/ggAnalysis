@@ -12,14 +12,14 @@ Int_t     lumis_;
 Bool_t    isData_;
 Int_t     nVtx_;
 Int_t     nTrksPV_;
+float     vtx_;
+float     vty_;
+float     vtz_;
 float     rho_;
 ULong64_t HLT_;
 ULong64_t HLTIsPrescaled_;
-
 ULong64_t HLT50ns_;
 ULong64_t HLTIsPrescaled50ns_;
-
-
 float     genMET_;
 float     genMETPhi_;
 float     pfMET_;
@@ -36,6 +36,9 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("isData",  &isData_);
   tree->Branch("nVtx",    &nVtx_);
   tree->Branch("nTrksPV", &nTrksPV_);
+  tree->Branch("vtx",     &vtx_); 
+  tree->Branch("vty",     &vty_); 
+  tree->Branch("vtz",     &vtz_); 
   tree->Branch("rho",     &rho_);
   tree->Branch("HLT",     &HLT_);
   tree->Branch("HLTIsPrescaled", &HLTIsPrescaled_);
@@ -73,7 +76,12 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
       bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
       if (!isFake) {
-        if (nVtx_ == 0) nTrksPV_ = v->nTracks();
+        if (nVtx_ == 0) {
+	  nTrksPV_ = v->nTracks();
+	  vtx_     = v->x();
+	  vty_     = v->y();
+	  vtz_     = v->z();
+	}
         nVtx_++;
       }
     }
