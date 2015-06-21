@@ -347,7 +347,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       mcMomMass.push_back(mcMomMass_);
       mcMomEta.push_back(mcMomEta_);
       mcMomPhi.push_back(mcMomPhi_);
-      cout<<"mother : "<<mcMomPID_<<" "<<mcGMomPID_<<endl;
+
       mcIndex.push_back(genIndex-1);
 
       mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
