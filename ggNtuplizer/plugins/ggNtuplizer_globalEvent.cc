@@ -39,11 +39,8 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("rho",     &rho_);
   tree->Branch("HLT",     &HLT_);
   tree->Branch("HLTIsPrescaled", &HLTIsPrescaled_);
-
   tree->Branch("HLT50ns",     &HLT50ns_);
   tree->Branch("HLTIsPrescaled50ns", &HLTIsPrescaled50ns_);
-
-
   if (doGenParticles_) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
@@ -119,7 +116,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     
     ///muon triggers
     Long64_t bit50ns = -1;
-    else if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
+    if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
     else if (name.find("HLT_Mu45_eta2p1_v" )  != string::npos) bit50ns = 1; 
     else if (name.find("HLT_IsoMu20_v" )  != string::npos) bit50ns = 2; 
     else if (name.find("HLT_IsoMu17_eta2p1_v" )  != string::npos) bit50ns = 3; 
@@ -131,7 +128,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_DoubleIsoMu17_eta2p1_v" )  != string::npos) bit50ns = 9; 
     else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v" )  != string::npos) bit50ns = 10; 
     else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v" )  != string::npos) bit50ns = 11; 
-
     
     ///electron triggers
     else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 12; 
@@ -146,23 +142,17 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
     ///photon triggers
     else if (name.find("HLT_Photon175_v")                    != string::npos) bit50ns = 21;  
-    
     else if (name.find("HLT_Photon250_NoHE_v" )  != string::npos) bit50ns = 22; 
-    
     else if (name.find("HLT_Photon165_HE10_v" )  != string::npos) bit50ns = 23; 
     else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v" )  != string::npos) bit50ns = 24; 
     else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v" )  != string::npos) bit50ns = 25; 
     else if (name.find("HLT_DoublePhoton85_v" )  != string::npos) bit50ns = 26; 
     else if (name.find("HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v" )  != string::npos) bit50ns = 27; 
-    
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v" )  != string::npos) bit50ns = 28; 
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v" )  != string::npos) bit50ns = 29; 
     else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 30; 
     else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 31; 
     else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v" )  != string::npos) bit50ns = 32; 
-
-    
-
 
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name) > 0 ? 1 : 0);
