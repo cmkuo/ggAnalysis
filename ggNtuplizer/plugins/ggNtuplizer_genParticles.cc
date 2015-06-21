@@ -350,10 +350,17 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
 
       mcIndex.push_back(genIndex-1);
 
-      mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
-            mcTrkIsoDR03.push_back( getGenTrkIso(genParticlesHandle, ip, 0.3) );
-            mcCalIsoDR04.push_back( getGenCalIso(genParticlesHandle, ip, 0.4, false, false) );
-      mcTrkIsoDR04.push_back( getGenTrkIso(genParticlesHandle, ip, 0.4) );
+      if (photonOrLepton) {
+	mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
+	mcTrkIsoDR03.push_back( getGenTrkIso(genParticlesHandle, ip, 0.3) );
+	mcCalIsoDR04.push_back( getGenCalIso(genParticlesHandle, ip, 0.4, false, false) );
+	mcTrkIsoDR04.push_back( getGenTrkIso(genParticlesHandle, ip, 0.4) );
+      } else {
+	mcCalIsoDR03.push_back( -999. );
+	mcTrkIsoDR03.push_back( -999. );
+	mcCalIsoDR04.push_back( -999. );
+	mcTrkIsoDR04.push_back( -999. );
+      }
 
       nMC_++;
     } // save info on particles of interest
