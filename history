@@ -7,6 +7,8 @@
    * store FSR photons (radiated off leptons) without any pt cut
    * only store W/Z/H with fromHardProcessBeforeFSR == true
    * fix prompt photons with momther PID = -999 always
+   * add vertex of primary vertex
+   * rename mcVtx_x, mcVtx_y and mcVtx_z to mcVtx, mcVty and mcVtz
 
 * V07-04-02-03
    * change electron and photon ID from 64-bit to 8-bit 
