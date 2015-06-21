@@ -62,6 +62,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   
   bool doGenParticles_;
   bool runOnParticleGun_;
+  bool dumpPhotons_;
   bool dumpTaus_;
   bool dumpJets_;
   bool dumpSubJets_;

@@ -14,15 +14,16 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
+  dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");
   dumpJets_                  = ps.getParameter<bool>("dumpJets");
   dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   isAOD_                     = ps.getParameter<bool>("isAOD");
 
-  runphoIDVID_            = ps.getParameter<bool>("runphoIDVID");
-  runeleIDVID_            = ps.getParameter<bool>("runeleIDVID");
-  runeleMVAID_            = ps.getParameter<bool>("runeleMVAID");
-  runphoMVAID_            = ps.getParameter<bool>("runphoMVAID");
+  runphoIDVID_               = ps.getParameter<bool>("runphoIDVID");
+  runeleIDVID_               = ps.getParameter<bool>("runeleIDVID");
+  runeleMVAID_               = ps.getParameter<bool>("runeleMVAID");
+  runphoMVAID_               = ps.getParameter<bool>("runphoMVAID");
 
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
@@ -84,13 +85,11 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     branchesGenPart(tree_);
   }
 
-  branchesPhotons(tree_);
+  if (dumpPhotons_) branchesPhotons(tree_);
   branchesElectrons(tree_);
   branchesMuons(tree_);
-
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
-
 }
 
 ggNtuplizer::~ggNtuplizer() {

@@ -6,40 +6,40 @@
 using namespace std;
 
 // (local) variables associated with tree branches
-vector<float>  pdf_;
-float          pthat_;
-float          processID_;
+vector<float>   pdf_;
+float           pthat_;
+float           processID_;
 
-Int_t          nPUInfo_;
-vector<int>    nPU_;
-vector<int>    puBX_;
-vector<float>  puTrue_;
+Int_t           nPUInfo_;
+vector<int>     nPU_;
+vector<int>     puBX_;
+vector<float>   puTrue_;
 
-Int_t          nMC_;
-vector<int>    mcPID;
-vector<float>  mcVtx_x;
-vector<float>  mcVtx_y;
-vector<float>  mcVtx_z;
-vector<float>  mcPt;
-vector<float>  mcMass;
-vector<float>  mcEta;
-vector<float>  mcPhi;
-vector<float>  mcE;
-vector<float>  mcEt;
-vector<int>    mcGMomPID;
-vector<int>    mcMomPID;
-vector<float>  mcMomPt;
-vector<float>  mcMomMass;
-vector<float>  mcMomEta;
-vector<float>  mcMomPhi;
-vector<int>    mcIndex;
-vector<int>    mcDecayType;
-vector<int>    mcParentage;
-vector<int>    mcStatus;
-vector<float>  mcCalIsoDR03;
-vector<float>  mcTrkIsoDR03;
-vector<float>  mcCalIsoDR04;
-vector<float>  mcTrkIsoDR04;
+Int_t           nMC_;
+vector<int>     mcPID;
+vector<float>   mcVtx_x;
+vector<float>   mcVtx_y;
+vector<float>   mcVtx_z;
+vector<float>   mcPt;
+vector<float>   mcMass;
+vector<float>   mcEta;
+vector<float>   mcPhi;
+vector<float>   mcE;
+vector<float>   mcEt;
+vector<int>     mcGMomPID;
+vector<int>     mcMomPID;
+vector<float>   mcMomPt;
+vector<float>   mcMomMass;
+vector<float>   mcMomEta;
+vector<float>   mcMomPhi;
+vector<int>     mcIndex;
+vector<ULong_t> mcStatusFlag;
+vector<int>     mcParentage;
+vector<int>     mcStatus;
+vector<float>   mcCalIsoDR03;
+vector<float>   mcTrkIsoDR03;
+vector<float>   mcCalIsoDR04;
+vector<float>   mcTrkIsoDR04;
 
 TH1*           hPU_;
 TH1*           hPUTrue_;
@@ -108,8 +108,8 @@ float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle,
    return ptSum;
 }
 
-void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs)
-{
+void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
+
   tree->Branch("pdf",          &pdf_);
   tree->Branch("pthat",        &pthat_);
   tree->Branch("processID",    &processID_);
@@ -123,8 +123,8 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs)
   hPUTrue_ = fs->make<TH1F>("hPUTrue", "number of true pilepu", 1000, 0, 200);
 }
 
-void ggNtuplizer::branchesGenPart(TTree* tree)
-{
+void ggNtuplizer::branchesGenPart(TTree* tree) {
+
   tree->Branch("nMC",          &nMC_);
   tree->Branch("mcPID",        &mcPID);
   tree->Branch("mcVtx_x",      &mcVtx_x);
@@ -143,17 +143,16 @@ void ggNtuplizer::branchesGenPart(TTree* tree)
   tree->Branch("mcMomEta",     &mcMomEta);
   tree->Branch("mcMomPhi",     &mcMomPhi);
   tree->Branch("mcIndex",      &mcIndex);
-  tree->Branch("mcDecayType",  &mcDecayType); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
-  tree->Branch("mcParentage",  &mcParentage); // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
-  tree->Branch("mcStatus",     &mcStatus); // status of the particle
+  tree->Branch("mcStatusFlag", &mcStatusFlag); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
+  tree->Branch("mcParentage",  &mcParentage);  // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
+  tree->Branch("mcStatus",     &mcStatus);     // status of the particle
   tree->Branch("mcCalIsoDR03", &mcCalIsoDR03);
   tree->Branch("mcTrkIsoDR03", &mcTrkIsoDR03);
   tree->Branch("mcCalIsoDR04", &mcCalIsoDR04);
   tree->Branch("mcTrkIsoDR04", &mcTrkIsoDR04);
 }
 
-void ggNtuplizer::fillGenInfo(const edm::Event& e)
-{
+void ggNtuplizer::fillGenInfo(const edm::Event& e) {
 
   // cleanup from previous execution
   pthat_ = -99;
@@ -230,7 +229,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
   mcMomEta    .clear();
   mcMomPhi    .clear();
   mcIndex     .clear();
-  mcDecayType .clear();
+  mcStatusFlag.clear();
   mcParentage .clear();
   mcStatus    .clear();
   mcCalIsoDR03.clear();
@@ -255,17 +254,23 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
 
     int status = ip->status();
     //bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
-    
+
+    cout<<"mc : "<<status<<" "<<ip->pdgId()<<" "<<ip->pt()<<" "<<ip->numberOfMothers()<<" "<<ip->fromHardProcessFinalState()<<" "<<ip->isPromptFinalState()<<" "<<ip->fromHardProcessBeforeFSR()<<" "<<ip->fromHardProcessDecayed()<<endl;
+
     // keep all the photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
       (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0) ||
+      (status == 1 && ip->pdgId() == 22 && ip->isPromptFinalState()) ||
       (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
       (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
     
     // select also Z, W, H, and top
     bool heavyParticle =
-      (ip->pdgId() == 23 || abs(ip->pdgId()) == 24 || ip->pdgId() == 25 ||
-       abs(ip->pdgId()) == 6 || abs(ip->pdgId()) == 5);
+      ((    ip->pdgId()  == 23 && ip->fromHardProcessBeforeFSR()) || 
+       (abs(ip->pdgId()) == 24 && ip->fromHardProcessBeforeFSR()) || 
+       (    ip->pdgId()  == 25 && ip->fromHardProcessBeforeFSR()) ||
+       abs(ip->pdgId())  ==  6                                    || 
+       (abs(ip->pdgId()) ==  5 && ip->pt() > 0.));
     
     bool newParticle = false;
     for (size_t inp = 0; inp < newparticles_.size(); ++inp) {
@@ -297,23 +302,24 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       particleHistory.hasQCDParent()*2       +
       particleHistory.hasExoticParent());
       mcStatus.push_back(p->status());
+      
+      ULong_t tmpStatusFlag = 0;
+      if (ip->fromHardProcessFinalState()) setbit(tmpStatusFlag, 0);
+      if (ip->isPromptFinalState())        setbit(tmpStatusFlag, 1);
+      if (ip->fromHardProcessBeforeFSR())  setbit(tmpStatusFlag, 2);
 
-      int mcDecayType_ = -999;
       // if genParticle is W or Z, check its decay type
       if ( ip->pdgId() == 23 || abs(ip->pdgId()) == 24 ) {
         for (size_t k=0; k < p->numberOfDaughters(); ++k) {
           const reco::Candidate *dp = p->daughter(k);
-          if (abs(dp->pdgId())<=6)
-            mcDecayType_ = 1;
-          else if (abs(dp->pdgId())==11 || abs(dp->pdgId())==12)
-            mcDecayType_ = 2;
-          else if (abs(dp->pdgId())==13 || abs(dp->pdgId())==14)
-            mcDecayType_ = 3;
-          else if (abs(dp->pdgId())==15 || abs(dp->pdgId())==16)
-            mcDecayType_ = 4;
+          if (abs(dp->pdgId())<=6)                               setbit(tmpStatusFlag, 4);
+          else if (abs(dp->pdgId())==11 || abs(dp->pdgId())==12) setbit(tmpStatusFlag, 5);
+          else if (abs(dp->pdgId())==13 || abs(dp->pdgId())==14) setbit(tmpStatusFlag, 6);
+          else if (abs(dp->pdgId())==15 || abs(dp->pdgId())==16) setbit(tmpStatusFlag, 7);
         }
       }
-      mcDecayType.push_back(mcDecayType_);
+      mcStatusFlag.push_back(tmpStatusFlag);
+
       int mcGMomPID_ = -999;
       int mcMomPID_  = -999;
       float mcMomPt_    = -999.;
@@ -343,7 +349,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       mcMomMass.push_back(mcMomMass_);
       mcMomEta.push_back(mcMomEta_);
       mcMomPhi.push_back(mcMomPhi_);
-
+      cout<<"mother : "<<mcMomPID_<<" "<<mcGMomPID_<<endl;
       mcIndex.push_back(genIndex-1);
 
       mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
