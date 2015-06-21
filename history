@@ -1,3 +1,13 @@
+* V07-04-02-04
+   * using seletedPatJetsAK4PFCHS instead of just selectedPatJets
+   * add 50ns HLT information
+   * add a flag to determine whether users want to dump photons or not (default : dump photons)
+   * merge 74X MC status flag and decay type to the same variable (mcStatusFlag)
+   * add 74X MC status flags (fromHardProcessFinalState, isPromptDecayed, fromHardProcessBeforeFSR)
+   * store FSR photons (radiated off leptons) without any pt cut
+   * only store W/Z/H with fromHardProcessBeforeFSR == true
+   * fix prompt photons with momther PID = -999 always
+
 * V07-04-02-03
    * change electron and photon ID from 64-bit to 8-bit 
 

@@ -1,5 +1,5 @@
-#### Current production tag : V07-04-02-02
-#### Newest tag for testing : V07-04-02-03 
+#### Current production tag : V07-04-02-03
+#### Newest tag for testing : V07-04-02-04 
 
 ##### To work with CMSSW_7_4_2, you do:
 
@@ -7,7 +7,7 @@ cd CMSSW_7_4_2/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v0 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git -b V07-04-02-03 clone https://github.com/cmkuo/ggAnalysis.git <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox -b jetToolbox_74X <br>
 scram b -j 10 <br>
 
@@ -30,6 +30,11 @@ To access the decision for <br>
 (a) Loose: phoIDbit[]>>0&1 ---> gives 0 or 1. if 0--> this phoID is failed. if 1--> this phoID is passed<br>
 (b) Medium: phoIDbit[]>>1&1<br>
 (c) Tight: phoIDbit[]>>2&1<br>
+
+to access the MC status flag with GEN particles <br>
+(a) fromHardProcessFinalState : mcStatusFlag[]>>0&1 ---> gives 0 (no) or 1 (yes). 
+(b) isPromptFinalState        : mcStatusFlag[]>>1&1 ---> gives 0 (no) or 1 (yes). 
+(c) fromHardProcessBeforeFSR  : mcStatusFlag[]>>2&1 ---> gives 0 (no) or 1 (yes). 
 
 ##### To work with CMSSW_7_2_0 or 7_2_3, you do:
 
