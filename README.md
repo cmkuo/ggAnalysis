@@ -1,6 +1,15 @@
 #### Current production tag : V07-04-02-03
 #### Newest tag for testing :  
-#### Note that the current head version need to be run with CMSSW_7_4_5 and git cms-merge-topic ikrav:egm_id_74X_v2
+#### Note that the current head version need to be run with CMSSW_7_4_5
+
+##### To work with CMSSW_7_4_5, you do:
+cd CMSSW_7_4_5/src <br>
+cmsenv <br>
+git cms-merge-topic ikrav:egm_id_74X_v2 <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox -b jetToolbox_74X <br>
+scram b -j 10 <br>
 
 ##### To work with CMSSW_7_4_2, you do:
 
