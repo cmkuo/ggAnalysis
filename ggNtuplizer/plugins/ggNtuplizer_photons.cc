@@ -72,9 +72,7 @@ vector<float>  phoBC1E_;
 vector<float>  phoBC1Eta_;
 vector<float>  phoBC2E_;
 vector<float>  phoBC2Eta_;
-
 vector<float>  phoIDMVA_;
-
 vector<float>  phoEcalRecHitSumEtConeDR03_;
 vector<float>  phohcalDepth1TowerSumEtConeDR03_;
 vector<float>  phohcalDepth2TowerSumEtConeDR03_;
@@ -182,7 +180,6 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   if (isAOD_) {
     tree->Branch("phoBC2E",               &phoBC2E_);
     tree->Branch("phoBC2Eta",             &phoBC2Eta_);
-    if(runphoMVAID_) tree->Branch("phoIDMVA",              &phoIDMVA_);
   }
 
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
@@ -191,8 +188,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phohcalTowerSumEtConeDR03",       &phohcalTowerSumEtConeDR03_);
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
 
-  if(runphoIDVID_)
-    tree->Branch("phoIDbit",                   &phoIDbit_);
+  if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
+  tree->Branch("phoIDMVA", &phoIDMVA_);
 
   if (isAOD_ && runphoMVAID_) {
     ////////////Prepare for photon ID MVA for Run II///////////
@@ -270,9 +267,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
 
 }
 
-void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
-{
-
+void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   
   // cleanup from previous execution
   phoE_                 .clear();
@@ -368,13 +363,24 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
   // Get the photon ID data from the event stream.
   // Note: this implies that the VID ID modules have been run upstream.
   // If you need more info, check with the EGM group.
-  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  tight_id_decisions;
+  edm::Handle<edm::ValueMap<float> > mvaValues;
+  edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap;
+  edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
+  edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
+  edm::Handle<edm::ValueMap<float> > phoWorstChargedIsolationMap;
   if(runphoIDVID_){
-    e.getByToken(phoLooseIdMapToken_ ,loose_id_decisions);
-    e.getByToken(phoMediumIdMapToken_,medium_id_decisions);
-    e.getByToken(phoTightIdMapToken_ ,tight_id_decisions);
+    e.getByToken(phoLooseIdMapToken_ ,  loose_id_decisions);
+    e.getByToken(phoMediumIdMapToken_,  medium_id_decisions);
+    e.getByToken(phoTightIdMapToken_ ,  tight_id_decisions);
+    e.getByToken(phoMVAValuesMapToken_, mvaValues);
+
+    e.getByToken(phoChargedIsolationToken_,       phoChargedIsolationMap);
+    e.getByToken(phoNeutralHadronIsolationToken_, phoNeutralHadronIsolationMap);
+    e.getByToken(phoPhotonIsolationToken_,        phoPhotonIsolationMap);
+    e.getByToken(phoWorstChargedIsolationToken_,  phoWorstChargedIsolationMap);
   }
 
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
@@ -404,12 +410,11 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
     edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
     e.getByToken(pfAllParticles_, pfAllCandidates);
 
-    cicPhotonId_->configure(recVtxsBS, tracksHandle, gsfElectronHandle, pfAllCandidates, rho);
+    //cicPhotonId_->configure(recVtxsBS, tracksHandle, gsfElectronHandle, pfAllCandidates, rho);
+    cicPhotonId_->configure(recVtxs, tracksHandle, gsfElectronHandle, pfAllCandidates, rho);
   }
 
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
-
-    
 
     phoE_             .push_back(iPho->energy());
     phoEt_            .push_back(iPho->et());
@@ -464,9 +469,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
       reco::Vertex pv = recVtxs->at(0);
       GEDIdTool->setPhotonP4(recophoRef, pv);
 
-      phoPFChIso_       .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h));
-      phoPFPhoIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::gamma));
-      phoPFNeuIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h0));
+      //phoPFChIso_       .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h));
+      //phoPFPhoIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::gamma));
+      //phoPFNeuIso_      .push_back(GEDIdTool->SolidConeIso(0.3, reco::PFCandidate::h0));
 
       std::vector<double> IsoRings;
       GEDIdTool->FrixioneIso(0.1, 8, reco::PFCandidate::h, IsoRings);
@@ -557,12 +562,12 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
       varEta_          = phoEta_[nPho_];
       
       // 0=ECAL barrel or 1=ECAL endcaps
-      int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
+      //int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
 
-      phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
+      //phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
     }//if (isAOD_ && runphoMVAID_ )
 
-    if(runphoIDVID_){
+    if (runphoIDVID_) {
       //Photon ID in VID framwork - 11th may, 2015
       // Look up and save the ID decisions
       // 
@@ -570,7 +575,11 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
       
       ULong_t tmpphoIDbit = 0;
     
-      if(isAOD_){
+      if (isAOD_) {
+	phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
+	phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
+	phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
+
 	//cout<<"Photons "<<endl;
 	bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
 	if(isPassLoose) setbit(tmpphoIDbit, 0);
@@ -583,9 +592,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 	bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
 	if(isPassTight) setbit(tmpphoIDbit, 2);
 	//cout<<"isPassTight "<<isPassTight<<endl;
+
+	phoIDMVA_.push_back((*mvaValues)[pho->originalObjectRef()]);
       }
 
-      if(!isAOD_){
+      if (!isAOD_) {
+	phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
+	phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
+	phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho]);
+
 	//cout<<"Photons "<<endl;
 	bool isPassLoose  = (*loose_id_decisions)[pho];
 	if(isPassLoose) setbit(tmpphoIDbit, 0);
@@ -598,11 +613,11 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es)
 	bool isPassTight  = (*tight_id_decisions)[pho];
 	if(isPassTight) setbit(tmpphoIDbit, 2);
 	//cout<<"isPassTight "<<isPassTight<<endl;
+
+	phoIDMVA_.push_back((*mvaValues)[pho]);
       }
 
-
-      phoIDbit_.push_back(tmpphoIDbit);
-      
+      phoIDbit_.push_back(tmpphoIDbit);      
       //cout<<"tmppho : phoIDbit: "<<tmpphoIDbit<<":"<<phoIDbit_[nPho_]<<endl;
     }
 

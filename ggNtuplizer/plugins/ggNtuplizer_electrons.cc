@@ -41,7 +41,7 @@ vector<float>  elePFChIso_;
 vector<float>  elePFPhoIso_;
 vector<float>  elePFNeuIso_;
 vector<float>  elePFPUIso_;
-vector<float>  eleIDMVATrg_;
+vector<float>  eleIDMVANonTrg_;
 vector<float>  eledEtaseedAtVtx_;
 vector<float>  eleE1x5_;
 vector<float>  eleE2x5_;
@@ -100,7 +100,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFPhoIso",             &elePFPhoIso_);
   tree->Branch("elePFNeuIso",             &elePFNeuIso_);
   tree->Branch("elePFPUIso",              &elePFPUIso_);
-  if (isAOD_ && runeleMVAID_) tree->Branch("eleIDMVATrg", &eleIDMVATrg_);
+  tree->Branch("eleIDMVANonTrg",          &eleIDMVANonTrg_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
   tree->Branch("eleE1x5",                 &eleE1x5_);
   tree->Branch("eleE2x5",                 &eleE2x5_);
@@ -161,7 +161,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFPhoIso_                .clear();
   elePFNeuIso_                .clear();
   elePFPUIso_                 .clear();
-  eleIDMVATrg_                .clear();
+  eleIDMVANonTrg_             .clear();
   eledEtaseedAtVtx_           .clear();
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
@@ -191,31 +191,20 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     return;
   }
 
+  edm::Handle<edm::ValueMap<bool> >  veto_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
+  edm::Handle<edm::ValueMap<bool> >  tight_id_decisions; 
+  edm::Handle<edm::ValueMap<bool> >  heep_id_decisions;
+  edm::Handle<edm::ValueMap<float> > eleMVAValues;
 
-
-
-  // Get the electron ID data from the event stream.
-  // Note: this implies that the VID ID modules have been run upstream.
-  // If you need more info, check with the EGM group.
-  /*edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions; 
-  edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
-  */
-
-  edm::Handle<edm::ValueMap<bool> > veto_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > loose_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > medium_id_decisions;
-  edm::Handle<edm::ValueMap<bool> > tight_id_decisions; 
-  edm::Handle<edm::ValueMap<bool> > heep_id_decisions;
-
-  if(runeleIDVID_){
-    e.getByToken(eleVetoIdMapToken_ ,veto_id_decisions);
-    e.getByToken(eleLooseIdMapToken_ ,loose_id_decisions);
-    e.getByToken(eleMediumIdMapToken_,medium_id_decisions);
-    e.getByToken(eleTightIdMapToken_,tight_id_decisions);
-    e.getByToken(eleHEEPIdMapToken_ ,heep_id_decisions);
+  if (runeleIDVID_) {
+    e.getByToken(eleVetoIdMapToken_ ,   veto_id_decisions);
+    e.getByToken(eleLooseIdMapToken_ ,  loose_id_decisions);
+    e.getByToken(eleMediumIdMapToken_,  medium_id_decisions);
+    e.getByToken(eleTightIdMapToken_,   tight_id_decisions);
+    e.getByToken(eleHEEPIdMapToken_ ,   heep_id_decisions);
+    e.getByToken(eleMVAValuesMapToken_, eleMVAValues);
   }
 
   edm::Handle<reco::VertexCollection> recVtxs;
@@ -311,19 +300,12 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       if (recVtxs->size() > 0)
         eleTrkdxy_        .push_back(trackref->dxy(recVtxs->front().position()));
     }
-
-    ////////9th April, 2015 - SHILPI JAIN
-    ///MVA for electrons in PHYS14
-
-    if (isAOD_ && runeleMVAID_)
-      eleIDMVATrg_.push_back(iEle->electronID("trigMVAid"));
-    
     
     //
     // Look up and save the ID decisions
     // 
     
-    if(runeleIDVID_){
+    if (runeleIDVID_) {
       
       //edm::Ptr<reco::GsfElectron> recoEl(iEle);
       
@@ -332,7 +314,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       
       ULong_t tmpeleIDbit = 0;
 
-      if(isAOD_){
+      if (isAOD_) {
 	///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
 	bool isPassVeto  = (*veto_id_decisions)[el->originalObjectRef()];
 	if(isPassVeto) setbit(tmpeleIDbit, 0);
@@ -348,16 +330,16 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	
 	bool isPassTight  = (*tight_id_decisions)[el->originalObjectRef()];
 	if(isPassTight) setbit(tmpeleIDbit, 3);
-	//cout<<"isTight: "<<isPassTight<<endl;
-      
+	//cout<<"isTight: "<<isPassTight<<endl;      
 
 	bool isPassHEEP = (*heep_id_decisions)[el->originalObjectRef()];
 	if(isPassHEEP) setbit(tmpeleIDbit, 4);
 	//cout<<"isHeep: "<<isPassHEEP<<endl;
+
+	eleIDMVANonTrg_.push_back((*eleMVAValues)[el->originalObjectRef()]);
       }
 
-
-      if(!isAOD_){
+      if (!isAOD_) {
 	///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
 	bool isPassVeto  = (*veto_id_decisions)[el];
 	if(isPassVeto) setbit(tmpeleIDbit, 0);
@@ -375,14 +357,14 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	if(isPassTight) setbit(tmpeleIDbit, 3);
 	//cout<<"isTight: "<<isPassTight<<endl;
       
-
 	bool isPassHEEP = (*heep_id_decisions)[el];
 	if(isPassHEEP) setbit(tmpeleIDbit, 4);
 	//cout<<"isHeep: "<<isPassHEEP<<endl;
+
+	eleIDMVANonTrg_.push_back((*eleMVAValues)[el]);
       }
 
-
-	eleIDbit_.push_back(tmpeleIDbit);
+      eleIDbit_.push_back(tmpeleIDbit);
       
       //cout<<"tmpele : eleIDbit: "<<tmpeleIDbit<<":"<<eleIDbit_[nEle_]<<endl;
     }//if(runeleIDVID_)

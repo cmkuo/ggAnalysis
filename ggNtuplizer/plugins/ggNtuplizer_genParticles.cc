@@ -65,9 +65,9 @@ float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
     // skip muons/neutrinos, if requested
     if (removeMu && pdgCode == 13) continue;
     if (removeNu && (pdgCode == 12 || pdgCode == 14 || pdgCode == 16)) continue;
-
-//     // pass a minimum Et threshold
-//     if (p->et() < 0) continue;
+    
+    // pass a minimum Et threshold
+    // if (p->et() < 0) continue;
 
     // must be within deltaR cone
     float dR = reco::deltaR(thisPart->momentum(), p->momentum());
@@ -95,8 +95,8 @@ float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle,
       if (thisPart->collisionId() != p->collisionId())
          continue;
 
-//       // pass a minimum pt threshold
-//       if (p->pt() < 0) continue;
+      // pass a minimum pt threshold
+      // if (p->pt() < 0) continue;
 
       // must be within deltaR cone
       float dR = reco::deltaR(thisPart->momentum(), p->momentum());
@@ -267,8 +267,8 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       ((    ip->pdgId()  == 23 && ip->fromHardProcessBeforeFSR()) || 
        (abs(ip->pdgId()) == 24 && ip->fromHardProcessBeforeFSR()) || 
        (    ip->pdgId()  == 25 && ip->fromHardProcessBeforeFSR()) ||
-       abs(ip->pdgId())  ==  6                                    || 
-       (abs(ip->pdgId()) ==  5 && ip->pt() > 0.));
+       (abs(ip->pdgId()) ==  6 && ip->fromHardProcessBeforeFSR()) || 
+       (abs(ip->pdgId()) ==  5 && ip->fromHardProcessBeforeFSR()));
     
     bool newParticle = false;
     for (size_t inp = 0; inp < newparticles_.size(); ++inp) {

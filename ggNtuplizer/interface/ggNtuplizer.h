@@ -97,24 +97,27 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::TrackCollection>       tracklabel_;
   edm::EDGetTokenT<reco::GsfElectronCollection> gsfElectronlabel_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > jetsAK4Label_;
-  edm::EDGetTokenT<edm::View<pat::Jet> > jetsAK8Label_;
+  edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK4Label_;
+  edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK8Label_;
 
   ///Photon ID in VID framework - 11th May, 2015
-  // ID decision objects
-  edm::EDGetTokenT<edm::ValueMap<bool> > phoLooseIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > phoMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > phoTightIdMapToken_;
-
+  // photon ID decision objects and isolations
+  edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  phoMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  phoTightIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoMVAValuesMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_; 
+  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_; 
+  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_; 
+  edm::EDGetTokenT<edm::ValueMap<float> > phoWorstChargedIsolationToken_; 
 
   // elecontr ID decisions objects
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleVetoIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleLooseIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> > eleHEEPIdMapToken_;
-
-
+  edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  eleLooseIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  eleMediumIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > eleMVAValuesMapToken_;
   //check
   edm::EDGetToken gsfEle_;
 
