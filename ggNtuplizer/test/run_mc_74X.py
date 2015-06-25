@@ -13,16 +13,20 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-#'/store/mc/Phys14DR/DYJetsToLL_M-50_13TeV-madgraph-pythia8/AODSIM/PU20bx25_PHYS14_25_V1-v1/00000/00CC714A-F86B-E411-B99A-0025904B5FB8.root'
-#'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root'
-#'/store/relval/CMSSW_7_4_0_pre9_ROOT6/DoubleElectron/RECO/GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/00000/C04717C4-48D9-E411-9E88-002618943901.root'
-'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/GEN-SIM-RECO/MCRUN2_74_V7-v1/00000/5CDE4954-D8D1-E411-9AD0-002618FDA287.root'
-)
-                            )
+        'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
+        #'file:/data4/cmkuo/testfiles/TTJets_amcatnloFXFX-pythia813TeV_Asympt25ns_MCRUN2_74_V9-v1.root'
+        #'file:/data4/cmkuo/testfiles/WZ_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
+        #'/store/mc/RunIISpring15DR74/WminusH_HToZZTo4L_M125_13TeV_powheg-minlo-HWJ_JHUgen_pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/04AFB8D8-900C-E511-8FA1-3417EBE6471A.root'
+        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root'
+        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/DoubleElectron/RECO/GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/00000/C04717C4-48D9-E411-9E88-002618943901.root'
+        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/GEN-SIM-RECO/MCRUN2_74_V7-v1/00000/5CDE4954-D8D1-E411-9AD0-002618FDA287.root'
+        ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
@@ -35,7 +39,6 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 #removeMCMatching(process, names=['All'], outputModules=[])
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
-
 
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
@@ -67,19 +70,19 @@ switchOnVIDPhotonIdProducer(process, dataFormat)
 
 # define which IDs we want to produce
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_PHYS14_PU20bx25_V2_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff']
+                 'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV51_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_PHYS14_PU20bx25_nonTrig_V1_cff']
 
 #add them to the VID producer
 for idmod in my_id_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDElectronSelection)
     
-my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff']
+my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_PHYS14_PU20bx25_V2_cff',
+                    'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring15_50ns_nonTrig_V0_cff']
 
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-
-
 
 process.p = cms.Path(
     ###process.egmGsfElectronIDSequence
