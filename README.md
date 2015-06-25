@@ -1,5 +1,6 @@
 #### Current production tag : V07-04-02-03
-#### Newest tag for testing : V07-04-02-04 
+#### Newest tag for testing :  
+#### Note that the current head version need to be run with CMSSW_7_4_5 and git cms-merge-topic ikrav:egm_id_74X_v2
 
 ##### To work with CMSSW_7_4_2, you do:
 
