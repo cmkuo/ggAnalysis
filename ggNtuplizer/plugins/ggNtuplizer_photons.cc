@@ -79,7 +79,7 @@ vector<float>  phohcalDepth2TowerSumEtConeDR03_;
 vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
 
-vector<ULong_t> phoIDbit_;
+vector<UShort_t> phoIDbit_;
 
 // variables that will be containers on which TMVA Reader works
 float varPhi_;
@@ -573,7 +573,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       // 
       const auto pho = photonHandle->ptrAt(nPho_);
       
-      ULong_t tmpphoIDbit = 0;
+      UShort_t tmpphoIDbit = 0;
     
       if (isAOD_) {
 	phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
