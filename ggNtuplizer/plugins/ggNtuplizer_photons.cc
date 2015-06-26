@@ -68,10 +68,8 @@ vector<float>  phoPFNeuIsoFrix5_;
 vector<float>  phoPFNeuIsoFrix6_;
 vector<float>  phoPFNeuIsoFrix7_;
 vector<float>  phoPFNeuIsoFrix8_;
-vector<float>  phoBC1E_;
-vector<float>  phoBC1Eta_;
-vector<float>  phoBC2E_;
-vector<float>  phoBC2Eta_;
+vector<float>  phoSeedBCE_;
+vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
 vector<float>  phoEcalRecHitSumEtConeDR03_;
 vector<float>  phohcalDepth1TowerSumEtConeDR03_;
@@ -142,6 +140,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoE2x5MaxFull5x5",       &phoE2x5MaxFull5x5_);
   tree->Branch("phoE5x5Full5x5",          &phoE5x5Full5x5_);
   tree->Branch("phoR9Full5x5",            &phoR9Full5x5_);
+  tree->Branch("phoSeedBCE",              &phoSeedBCE_);
+  tree->Branch("phoSeedBCEta",            &phoSeedBCEta_);
 
   if (isAOD_) {
     tree->Branch("phoPFChIso",            &phoPFChIso_);
@@ -172,14 +172,6 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
     tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
     tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
     tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
-  }
-
-  tree->Branch("phoBC1E",                 &phoBC1E_);
-  tree->Branch("phoBC1Eta",               &phoBC1Eta_);
-
-  if (isAOD_) {
-    tree->Branch("phoBC2E",               &phoBC2E_);
-    tree->Branch("phoBC2Eta",             &phoBC2Eta_);
   }
 
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
@@ -330,11 +322,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPFNeuIsoFrix6_     .clear();
   phoPFNeuIsoFrix7_     .clear();
   phoPFNeuIsoFrix8_     .clear();
-  phoBC1E_              .clear();
-  phoBC1Eta_            .clear();
-  phoBC2E_              .clear();
-  phoBC2Eta_            .clear();
-
+  phoSeedBCE_           .clear();
+  phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
@@ -342,7 +331,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phohcalDepth2TowerSumEtConeDR03_.clear();
   phohcalTowerSumEtConeDR03_      .clear();
   photrkSumPtHollowConeDR03_      .clear();
-
 
   phoIDbit_                       .clear();
   
@@ -510,23 +498,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
     }
 
-    phoBC1E_          .push_back((*iPho).superCluster()->seed()->energy());
-    phoBC1Eta_        .push_back((*iPho).superCluster()->seed()->eta());
-
-    if (isAOD_) {
-      Int_t nBCPho = 0;
-      for (CaloCluster_iterator itbc = iPho->superCluster()->clustersBegin(); itbc != iPho->superCluster()->clustersEnd(); ++itbc) {
-        if (nBCPho == 1) {
-          phoBC2E_  .push_back((*itbc)->energy());
-          phoBC2Eta_.push_back((*itbc)->eta());
-        }
-        nBCPho++;
-      }
-      if (nBCPho == 1) {
-        phoBC2E_  .push_back(-99.);
-        phoBC2Eta_.push_back(-99.);
-      }
-    }
+    phoSeedBCE_          .push_back((*iPho).superCluster()->seed()->energy());
+    phoSeedBCEta_        .push_back((*iPho).superCluster()->seed()->eta());
 
     ///SJ - isolation variables
     phoEcalRecHitSumEtConeDR03_                   .push_back(iPho->ecalRecHitSumEtConeDR03());
