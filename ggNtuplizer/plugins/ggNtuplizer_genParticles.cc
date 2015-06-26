@@ -33,7 +33,7 @@ vector<float>   mcMomMass;
 vector<float>   mcMomEta;
 vector<float>   mcMomPhi;
 vector<int>     mcIndex;
-vector<ULong_t> mcStatusFlag;
+vector<UShort_t> mcStatusFlag;
 vector<int>     mcParentage;
 vector<int>     mcStatus;
 vector<float>   mcCalIsoDR03;
@@ -301,7 +301,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       particleHistory.hasExoticParent());
       mcStatus.push_back(p->status());
       
-      ULong_t tmpStatusFlag = 0;
+      UShort_t tmpStatusFlag = 0;
       if (ip->fromHardProcessFinalState()) setbit(tmpStatusFlag, 0);
       if (ip->isPromptFinalState())        setbit(tmpStatusFlag, 1);
       if (ip->fromHardProcessBeforeFSR())  setbit(tmpStatusFlag, 2);
