@@ -61,7 +61,7 @@ vector<float>  elecaloEnergy_;
 vector<float>  eleTrkdxy_;
 
 //vector<ULong64_t> eleIDbit_;
-vector<ULong_t> eleIDbit_;
+vector<UShort_t> eleIDbit_;
 
 void ggNtuplizer::branchesElectrons(TTree* tree) {
 
@@ -312,7 +312,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       //const auto el = electrons->ptrAt(nEle_);
       const auto el = electronHandle->ptrAt(nEle_);
       
-      ULong_t tmpeleIDbit = 0;
+      UShort_t tmpeleIDbit = 0;
 
       if (isAOD_) {
 	///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
