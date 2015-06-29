@@ -190,6 +190,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleR9Full5x5_               .clear();
   elecaloEnergy_              .clear();
   eleTrkdxy_                  .clear();
+  eleKFHits_                  .clear();
+  eleKFChi2_                  .clear();
+  eleGSFChi2_                 .clear();
   eleIDbit_                   .clear();
 
   nEle_ = 0;
