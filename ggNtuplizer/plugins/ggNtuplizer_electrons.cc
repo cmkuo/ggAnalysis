@@ -26,10 +26,12 @@ vector<float>  eleSCEtaWidth_;
 vector<float>  eleSCPhiWidth_;
 vector<float>  eleHoverE_;
 vector<float>  eleEoverP_;
+vector<float>  eleEoverPout_;
 vector<float>  eleEoverPInv_;
 vector<float>  eleBrem_;
 vector<float>  eledEtaAtVtx_;
 vector<float>  eledPhiAtVtx_;
+vector<float>  eledEtaAtCalo_;
 vector<float>  eleSigmaIEtaIEta_;
 vector<float>  eleSigmaIEtaIPhi_;
 vector<float>  eleSigmaIPhiIPhi_;
@@ -60,12 +62,13 @@ vector<float>  eleDr03HcalTowerSumEt_;
 vector<float>  eleDr03TkSumPt_;
 vector<float>  elecaloEnergy_;
 vector<float>  eleTrkdxy_;
+vector<float>  eleKFHits_;
+vector<float>  eleKFChi2_;
+vector<float>  eleGSFChi2_;
 
-//vector<ULong64_t> eleIDbit_;
 vector<UShort_t> eleIDbit_;
 
 void ggNtuplizer::branchesElectrons(TTree* tree) {
-
 
   tree->Branch("nEle",                    &nEle_);
   tree->Branch("eleCharge",               &eleCharge_);
@@ -86,10 +89,12 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleSCPhiWidth",           &eleSCPhiWidth_);
   tree->Branch("eleHoverE",               &eleHoverE_);
   tree->Branch("eleEoverP",               &eleEoverP_);
+  tree->Branch("eleEoverPout",            &eleEoverPout_);
   tree->Branch("eleEoverPInv",            &eleEoverPInv_);
   tree->Branch("eleBrem",                 &eleBrem_);
   tree->Branch("eledEtaAtVtx",            &eledEtaAtVtx_);
   tree->Branch("eledPhiAtVtx",            &eledPhiAtVtx_);
+  tree->Branch("eledEtaAtCalo",           &eledEtaAtCalo_);
   tree->Branch("eleSigmaIEtaIEta",        &eleSigmaIEtaIEta_);
   tree->Branch("eleSigmaIEtaIPhi",        &eleSigmaIEtaIPhi_);
   tree->Branch("eleSigmaIPhiIPhi",        &eleSigmaIPhiIPhi_);
@@ -120,14 +125,15 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleDr03TkSumPt",              &eleDr03TkSumPt_);
   tree->Branch("elecaloEnergy",               &elecaloEnergy_);
   tree->Branch("eleTrkdxy",                   &eleTrkdxy_);
+  tree->Branch("eleKFHits",                   &eleKFHits_);
+  tree->Branch("eleKFChi2",                   &eleKFChi2_);
+  tree->Branch("eleGSFChi2",                  &eleGSFChi2_);
 
-  if(runeleIDVID_)
-    tree->Branch("eleIDbit",                   &eleIDbit_);
+  if (runeleIDVID_)  tree->Branch("eleIDbit", &eleIDbit_);
   
 }
 
 void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, math::XYZPoint &pv) {
-
     
   // cleanup from previous execution
   eleCharge_                  .clear();
@@ -148,10 +154,12 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleSCPhiWidth_              .clear();
   eleHoverE_                  .clear();
   eleEoverP_                  .clear();
+  eleEoverPout_               .clear();
   eleEoverPInv_               .clear();
   eleBrem_                    .clear();
   eledEtaAtVtx_               .clear();
   eledPhiAtVtx_               .clear();
+  eledEtaAtCalo_              .clear();
   eleSigmaIEtaIEta_           .clear();
   eleSigmaIEtaIPhi_           .clear();
   eleSigmaIPhiIPhi_           .clear();
@@ -238,9 +246,11 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
     ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
     eleEoverP_          .push_back(iEle->eSuperClusterOverP());
+    eleEoverPout_       .push_back(iEle->eEleClusterOverPout());
     eleBrem_            .push_back(iEle->fbrem());
     eledEtaAtVtx_       .push_back(iEle->deltaEtaSuperClusterTrackAtVtx());
     eledPhiAtVtx_       .push_back(iEle->deltaPhiSuperClusterTrackAtVtx());
+    eledEtaAtCalo_      .push_back(iEle->deltaEtaSeedClusterTrackAtCalo());
     eleSigmaIEtaIEta_   .push_back(iEle->sigmaIetaIeta()); ///new sigmaietaieta
     eleSigmaIEtaIPhi_   .push_back(iEle->sigmaIetaIphi());
     eleSigmaIPhiIPhi_   .push_back(iEle->sigmaIphiIphi());
@@ -299,12 +309,27 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleDr03HcalTowerSumEt_      .push_back(iEle->dr03HcalTowerSumEt());
     eleDr03TkSumPt_             .push_back(iEle->dr03TkSumPt());
 
-    reco::GsfTrackRef trackref = iEle->gsfTrack();
+    reco::GsfTrackRef gsfTrackRef = iEle->gsfTrack();
     if (iEle->gsfTrack().isNonnull()) {
+      eleGSFChi2_.push_back(gsfTrackRef->normalizedChi2());
       if (recVtxs->size() > 0)
-        eleTrkdxy_        .push_back(trackref->dxy(recVtxs->front().position()));
+        eleTrkdxy_.push_back(gsfTrackRef->dxy(recVtxs->front().position()));
+      else
+	eleTrkdxy_.push_back(-999);
+    } else {
+      eleGSFChi2_.push_back(0.);
+      eleTrkdxy_.push_back(-999);
     }
     
+    reco::TrackRef kfTrackRef = iEle->closestCtfTrackRef();
+    if (kfTrackRef.isAvailable() && kfTrackRef.isNonnull()) {
+      eleKFHits_.push_back(kfTrackRef->hitPattern().trackerLayersWithMeasurement());
+      eleKFChi2_.push_back(kfTrackRef->normalizedChi2());
+    } else {
+      eleKFHits_.push_back(-1.);
+      eleKFChi2_.push_back(0.);
+    }
+
     //
     // Look up and save the ID decisions
     // 
