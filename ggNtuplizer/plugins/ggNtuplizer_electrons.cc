@@ -34,6 +34,7 @@ vector<float>  eleSigmaIEtaIEta_;
 vector<float>  eleSigmaIEtaIPhi_;
 vector<float>  eleSigmaIPhiIPhi_;
 vector<float>  eleSigmaIEtaIEtaFull5x5_;
+vector<float>  eleSigmaIPhiIPhiFull5x5_;
 vector<int>    eleConvVeto_;
 vector<int>    eleMissHits_;
 vector<float>  eleESEffSigmaRR_;
@@ -93,6 +94,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleSigmaIEtaIPhi",        &eleSigmaIEtaIPhi_);
   tree->Branch("eleSigmaIPhiIPhi",        &eleSigmaIPhiIPhi_);
   tree->Branch("eleSigmaIEtaIEtaFull5x5", &eleSigmaIEtaIEtaFull5x5_);
+  tree->Branch("eleSigmaIPhiIPhiFull5x5", &eleSigmaIPhiIPhiFull5x5_);
   tree->Branch("eleConvVeto",             &eleConvVeto_);
   tree->Branch("eleMissHits",             &eleMissHits_);
   tree->Branch("eleESEffSigmaRR",         &eleESEffSigmaRR_);
@@ -154,6 +156,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleSigmaIEtaIPhi_           .clear();
   eleSigmaIPhiIPhi_           .clear();
   eleSigmaIEtaIEtaFull5x5_    .clear();
+  eleSigmaIPhiIPhiFull5x5_    .clear();
   eleConvVeto_                .clear();
   eleMissHits_                .clear();
   eleESEffSigmaRR_            .clear();
@@ -250,7 +253,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     } else if (!std::isfinite(iEle->ecalEnergy())) {
       eleEoverPInv_.push_back(1e30);
     } else {
-      eleEoverPInv_.push_back(fabs(1./iEle->ecalEnergy() - iEle->eSuperClusterOverP()/iEle->ecalEnergy()));
+      eleEoverPInv_.push_back(1./iEle->ecalEnergy() - 1./iEle->p());
     }
 
     ///HEEP ID
@@ -282,6 +285,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     ///line 120
 
     eleSigmaIEtaIEtaFull5x5_    .push_back(iEle->full5x5_sigmaIetaIeta());
+    eleSigmaIPhiIPhiFull5x5_    .push_back(iEle->full5x5_sigmaIphiIphi());
     eleE1x5Full5x5_             .push_back(iEle->full5x5_e1x5());
     eleE2x5Full5x5_             .push_back(iEle->full5x5_e2x5Max());
     eleE5x5Full5x5_             .push_back(iEle->full5x5_e5x5());
