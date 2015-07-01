@@ -11,6 +11,7 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
+#include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -39,6 +40,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
 //   virtual void beginJob() {};
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
 //   virtual void endJob() {};
+
+  void initTriggerFilters(const edm::Event&);
+  Int_t matchElectronTriggerFilters(double pt, double eta);
+  Int_t matchPhotonTriggerFilters(double pt, double eta);
+  Int_t matchMuonTriggerFilters(double pt, double eta);
 
   void branchesGlobalEvent(TTree*);
   void branchesGenInfo    (TTree*, edm::Service<TFileService>&);
@@ -77,9 +83,13 @@ class ggNtuplizer : public edm::EDAnalyzer {
   
   vector<int> newparticles_;
 
+  double trgFilterDeltaPtCut_;
+  double trgFilterDeltaEtaCut_;
+
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
   edm::EDGetTokenT<double>                      rhoLabel_;
+  edm::EDGetTokenT<trigger::TriggerEvent>       trgEventLabel_;
   edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
   string                                        trgResultsProcess_;
   edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;

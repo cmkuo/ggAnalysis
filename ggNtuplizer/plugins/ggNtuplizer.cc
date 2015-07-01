@@ -25,9 +25,13 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   runeleMVAID_               = ps.getParameter<bool>("runeleMVAID");
   runphoMVAID_               = ps.getParameter<bool>("runphoMVAID");
 
+  trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
+  trgFilterDeltaEtaCut_      = ps.getParameter<double>("trgFilterDeltaEtaCut");
+
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                     (ps.getParameter<InputTag>("rhoLabel"));
+  trgEventLabel_             = consumes<trigger::TriggerEvent>      (ps.getParameter<InputTag>("triggerEvent"));
   trgResultsLabel_           = consumes<edm::TriggerResults>        (ps.getParameter<InputTag>("triggerResults"));
   trgResultsProcess_         =                                       ps.getParameter<InputTag>("triggerResults").process();
   generatorLabel_            = consumes<GenEventInfoProduct>        (ps.getParameter<InputTag>("generatorLabel"));
@@ -114,6 +118,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
       break;
     }
   }
+
+  initTriggerFilters(e);
 
   fillGlobalEvent(e, es);
 

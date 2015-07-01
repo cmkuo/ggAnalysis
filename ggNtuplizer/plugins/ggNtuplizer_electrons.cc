@@ -65,6 +65,7 @@ vector<float>  eleTrkdxy_;
 vector<float>  eleKFHits_;
 vector<float>  eleKFChi2_;
 vector<float>  eleGSFChi2_;
+vector<int>    eleFiredTrgs_;
 
 vector<UShort_t> eleIDbit_;
 
@@ -128,6 +129,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleKFHits",                   &eleKFHits_);
   tree->Branch("eleKFChi2",                   &eleKFChi2_);
   tree->Branch("eleGSFChi2",                  &eleGSFChi2_);
+  tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
 
   if (runeleIDVID_)  tree->Branch("eleIDbit", &eleIDbit_);
   
@@ -193,6 +195,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleKFHits_                  .clear();
   eleKFChi2_                  .clear();
   eleGSFChi2_                 .clear();
+  eleFiredTrgs_               .clear();
   eleIDbit_                   .clear();
 
   nEle_ = 0;
@@ -246,6 +249,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleSCEtaWidth_      .push_back(iEle->superCluster()->etaWidth());
     eleSCPhiWidth_      .push_back(iEle->superCluster()->phiWidth());
     eleHoverE_          .push_back(iEle->hcalOverEcal());
+
+    eleFiredTrgs_       .push_back(matchElectronTriggerFilters(iEle->pt(), iEle->eta()));
 
     ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
     eleEoverP_          .push_back(iEle->eSuperClusterOverP());
@@ -347,53 +352,53 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       UShort_t tmpeleIDbit = 0;
 
       if (isAOD_) {
-	///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
-	bool isPassVeto  = (*veto_id_decisions)[el->originalObjectRef()];
-	if(isPassVeto) setbit(tmpeleIDbit, 0);
-	//cout<<"isVeto: "<<isPassVeto<<endl;
-	
-	bool isPassLoose  = (*loose_id_decisions)[el->originalObjectRef()];
-	if(isPassLoose) setbit(tmpeleIDbit, 1);
-	//cout<<"isLoose: "<<isPassLoose<<endl;
-	
-	bool isPassMedium = (*medium_id_decisions)[el->originalObjectRef()];
-	if(isPassMedium) setbit(tmpeleIDbit, 2);
-	//cout<<"isMedium: "<<isPassMedium<<endl;
-	
-	bool isPassTight  = (*tight_id_decisions)[el->originalObjectRef()];
-	if(isPassTight) setbit(tmpeleIDbit, 3);
-	//cout<<"isTight: "<<isPassTight<<endl;      
+        ///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
+        bool isPassVeto  = (*veto_id_decisions)[el->originalObjectRef()];
+        if(isPassVeto) setbit(tmpeleIDbit, 0);
+        //cout<<"isVeto: "<<isPassVeto<<endl;
 
-	bool isPassHEEP = (*heep_id_decisions)[el->originalObjectRef()];
-	if(isPassHEEP) setbit(tmpeleIDbit, 4);
-	//cout<<"isHeep: "<<isPassHEEP<<endl;
+        bool isPassLoose  = (*loose_id_decisions)[el->originalObjectRef()];
+        if(isPassLoose) setbit(tmpeleIDbit, 1);
+        //cout<<"isLoose: "<<isPassLoose<<endl;
 
-	eleIDMVANonTrg_.push_back((*eleMVAValues)[el->originalObjectRef()]);
+        bool isPassMedium = (*medium_id_decisions)[el->originalObjectRef()];
+        if(isPassMedium) setbit(tmpeleIDbit, 2);
+        //cout<<"isMedium: "<<isPassMedium<<endl;
+
+        bool isPassTight  = (*tight_id_decisions)[el->originalObjectRef()];
+        if(isPassTight) setbit(tmpeleIDbit, 3);
+        //cout<<"isTight: "<<isPassTight<<endl;
+
+        bool isPassHEEP = (*heep_id_decisions)[el->originalObjectRef()];
+        if(isPassHEEP) setbit(tmpeleIDbit, 4);
+        //cout<<"isHeep: "<<isPassHEEP<<endl;
+
+        eleIDMVANonTrg_.push_back((*eleMVAValues)[el->originalObjectRef()]);
       }
 
       if (!isAOD_) {
-	///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
-	bool isPassVeto  = (*veto_id_decisions)[el];
-	if(isPassVeto) setbit(tmpeleIDbit, 0);
-	//cout<<"isVeto: "<<isPassVeto<<endl;
-	
-	bool isPassLoose  = (*loose_id_decisions)[el];
-	if(isPassLoose) setbit(tmpeleIDbit, 1);
-	//cout<<"isLoose: "<<isPassLoose<<endl;
-	
-	bool isPassMedium = (*medium_id_decisions)[el];
-	if(isPassMedium) setbit(tmpeleIDbit, 2);
-	//cout<<"isMedium: "<<isPassMedium<<endl;
-	
-	bool isPassTight  = (*tight_id_decisions)[el];
-	if(isPassTight) setbit(tmpeleIDbit, 3);
-	//cout<<"isTight: "<<isPassTight<<endl;
-      
-	bool isPassHEEP = (*heep_id_decisions)[el];
-	if(isPassHEEP) setbit(tmpeleIDbit, 4);
-	//cout<<"isHeep: "<<isPassHEEP<<endl;
+        ///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
+        bool isPassVeto  = (*veto_id_decisions)[el];
+        if(isPassVeto) setbit(tmpeleIDbit, 0);
+        //cout<<"isVeto: "<<isPassVeto<<endl;
 
-	eleIDMVANonTrg_.push_back((*eleMVAValues)[el]);
+        bool isPassLoose  = (*loose_id_decisions)[el];
+        if(isPassLoose) setbit(tmpeleIDbit, 1);
+        //cout<<"isLoose: "<<isPassLoose<<endl;
+
+        bool isPassMedium = (*medium_id_decisions)[el];
+        if(isPassMedium) setbit(tmpeleIDbit, 2);
+        //cout<<"isMedium: "<<isPassMedium<<endl;
+
+        bool isPassTight  = (*tight_id_decisions)[el];
+        if(isPassTight) setbit(tmpeleIDbit, 3);
+        //cout<<"isTight: "<<isPassTight<<endl;
+      
+        bool isPassHEEP = (*heep_id_decisions)[el];
+        if(isPassHEEP) setbit(tmpeleIDbit, 4);
+        //cout<<"isHeep: "<<isPassHEEP<<endl;
+
+        eleIDMVANonTrg_.push_back((*eleMVAValues)[el]);
       }
 
       eleIDbit_.push_back(tmpeleIDbit);

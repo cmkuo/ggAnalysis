@@ -71,6 +71,7 @@ vector<float>  phoPFNeuIsoFrix8_;
 vector<float>  phoSeedBCE_;
 vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
+vector<int>    phoFiredTrgs_;
 vector<float>  phoEcalRecHitSumEtConeDR03_;
 vector<float>  phohcalDepth1TowerSumEtConeDR03_;
 vector<float>  phohcalDepth2TowerSumEtConeDR03_;
@@ -182,6 +183,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
 
   if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
   tree->Branch("phoIDMVA", &phoIDMVA_);
+
+  tree->Branch("phoFiredTrgs",                    &phoFiredTrgs_);
 
   if (isAOD_ && runphoMVAID_) {
     ////////////Prepare for photon ID MVA for Run II///////////
@@ -325,6 +328,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoSeedBCE_           .clear();
   phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
+  phoFiredTrgs_         .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
@@ -431,6 +435,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //phoPFChIso_       .push_back(iPho->chargedHadronIso());
     //phoPFPhoIso_      .push_back(iPho->photonIso());
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
+
+    phoFiredTrgs_     .push_back(matchPhotonTriggerFilters(iPho->et(), iPho->eta()));
 
     std::vector<float> vCov = lazyToolnoZS.localCovariances( *((*iPho).superCluster()->seed()) );
     //const float see = (isnan(vCov[0]) ? 0. : sqrt(vCov[0]));

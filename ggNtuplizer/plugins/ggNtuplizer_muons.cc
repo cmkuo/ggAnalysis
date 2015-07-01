@@ -28,6 +28,7 @@ vector<float>  muPFChIso_;
 vector<float>  muPFPhoIso_;
 vector<float>  muPFNeuIso_;
 vector<float>  muPFPUIso_;
+vector<int>    muFiredTrgs_;
 
 ///SJ
 vector<float>  muInnervalidFraction_;
@@ -63,6 +64,7 @@ void ggNtuplizer::branchesMuons(TTree* tree)
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
   tree->Branch("muPFPUIso",     &muPFPUIso_);
+  tree->Branch("muFiredTrgs",   &muFiredTrgs_);
 
   ///SJ
   tree->Branch("muInnervalidFraction",   &muInnervalidFraction_);
@@ -100,6 +102,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv)
   muPFPhoIso_   .clear();
   muPFNeuIso_   .clear();
   muPFPUIso_    .clear();
+  muFiredTrgs_  .clear();
 
   ///SJ
   muInnervalidFraction_  .clear();
@@ -132,6 +135,8 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv)
     muIsGood_.push_back((int) iMu->isGood("TMOneStationTight"));
     muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
     muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
+
+    muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta()));
 
     ///SJ
     muBestTrkPtError_  .push_back(iMu->muonBestTrack()->ptError());
