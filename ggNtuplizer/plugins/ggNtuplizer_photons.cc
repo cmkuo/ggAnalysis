@@ -555,45 +555,45 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       UShort_t tmpphoIDbit = 0;
     
       if (isAOD_) {
-	phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
-	phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
-	phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
+        phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
+        phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
+        phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
 
-	//cout<<"Photons "<<endl;
-	bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
-	if(isPassLoose) setbit(tmpphoIDbit, 0);
-	//cout<<"isPassLoose "<<isPassLoose<<endl;
-	
-	bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
-	if(isPassMedium) setbit(tmpphoIDbit, 1);
-	//cout<<"isPassMedium "<<isPassMedium<<endl;
-	
-	bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
-	if(isPassTight) setbit(tmpphoIDbit, 2);
-	//cout<<"isPassTight "<<isPassTight<<endl;
+        //cout<<"Photons "<<endl;
+        bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
+        if(isPassLoose) setbit(tmpphoIDbit, 0);
+        //cout<<"isPassLoose "<<isPassLoose<<endl;
 
-	phoIDMVA_.push_back((*mvaValues)[pho->originalObjectRef()]);
+        bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
+        if(isPassMedium) setbit(tmpphoIDbit, 1);
+        //cout<<"isPassMedium "<<isPassMedium<<endl;
+
+        bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
+        if(isPassTight) setbit(tmpphoIDbit, 2);
+        //cout<<"isPassTight "<<isPassTight<<endl;
+
+        phoIDMVA_.push_back((*mvaValues)[pho->originalObjectRef()]);
       }
 
       if (!isAOD_) {
-	phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
-	phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
-	phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho]);
+        phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
+        phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
+        phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho]);
 
-	//cout<<"Photons "<<endl;
-	bool isPassLoose  = (*loose_id_decisions)[pho];
-	if(isPassLoose) setbit(tmpphoIDbit, 0);
-	//cout<<"isPassLoose "<<isPassLoose<<endl;
-	
-	bool isPassMedium = (*medium_id_decisions)[pho];
-	if(isPassMedium) setbit(tmpphoIDbit, 1);
-	//cout<<"isPassMedium "<<isPassMedium<<endl;
-	
-	bool isPassTight  = (*tight_id_decisions)[pho];
-	if(isPassTight) setbit(tmpphoIDbit, 2);
-	//cout<<"isPassTight "<<isPassTight<<endl;
+        //cout<<"Photons "<<endl;
+        bool isPassLoose  = (*loose_id_decisions)[pho];
+        if(isPassLoose) setbit(tmpphoIDbit, 0);
+        //cout<<"isPassLoose "<<isPassLoose<<endl;
 
-	phoIDMVA_.push_back((*mvaValues)[pho]);
+        bool isPassMedium = (*medium_id_decisions)[pho];
+        if(isPassMedium) setbit(tmpphoIDbit, 1);
+        //cout<<"isPassMedium "<<isPassMedium<<endl;
+
+        bool isPassTight  = (*tight_id_decisions)[pho];
+        if(isPassTight) setbit(tmpphoIDbit, 2);
+        //cout<<"isPassTight "<<isPassTight<<endl;
+
+        phoIDMVA_.push_back((*mvaValues)[pho]);
       }
 
       phoIDbit_.push_back(tmpphoIDbit);      
