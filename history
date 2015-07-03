@@ -11,6 +11,8 @@
    * rename mcVtx_x, mcVtx_y and mcVtx_z to mcVtx, mcVty and mcVtz
    * only compute generator level isolations for photons and leptons to save CPU time
    * remove useless 2nd BC variables 
+   * move to HEEP ID V60
+   * add preliminary trigger matching (still in development)
 
 * V07-04-02-03
    * change electron and photon ID from 64-bit to 8-bit 
