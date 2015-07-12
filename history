@@ -1,3 +1,7 @@
+* V07-04-05-01
+   * add new 50ns triggers
+   * remove duplicated variables in taus
+
 * V07-04-05-00
    * using seletedPatJetsAK4PFCHS instead of just selectedPatJets
    * add 50ns HLT information
