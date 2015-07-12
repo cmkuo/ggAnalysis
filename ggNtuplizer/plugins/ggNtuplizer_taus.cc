@@ -108,7 +108,7 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     
     //Tau Id & Isolation
     tree->Branch("pfTausDiscriminationByDecayModeFinding", &pfTausDiscriminationByDecayModeFinding_);
-    tree->Branch("pfTausDiscriminationByDecayModeFinding", &pfTausDiscriminationByDecayModeFindingNewDMs_);
+    tree->Branch("pfTausDiscriminationByDecayModeFindingNewDMs", &pfTausDiscriminationByDecayModeFindingNewDMs_);
     tree->Branch("tauByLooseElectronRejection", &tauByLooseElectronRejection_);
     tree->Branch("tauByMediumElectronRejection", &tauByMediumElectronRejection_);
     tree->Branch("tauByTightElectronRejection", &tauByTightElectronRejection_);
@@ -144,7 +144,7 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     tree->Branch("tauByTightIsolationMVA3oldDMwoLT", &tauByTightIsolationMVA3oldDMwoLT_);
     tree->Branch("tauByVTightIsolationMVA3oldDMwoLT", &tauByVTightIsolationMVA3oldDMwoLT_);
     tree->Branch("tauByVVTightIsolationMVA3oldDMwoLT", &tauByVVTightIsolationMVA3oldDMwoLT_);
-    tree->Branch("tauByIsolationMVA3newDMwoLTraw", &tauByIsolationMVA3newDMwoLTraw_);
+    tree->Branch("tauByIsolationMVA3oldDMwoLTraw", &tauByIsolationMVA3oldDMwoLTraw_);
     tree->Branch("tauByLooseIsolationMVA3newDMwLT", &tauByLooseIsolationMVA3newDMwLT_);
     tree->Branch("tauByVLooseIsolationMVA3newDMwLT", &tauByVLooseIsolationMVA3newDMwLT_);
     tree->Branch("tauByMediumIsolationMVA3newDMwLT", &tauByMediumIsolationMVA3newDMwLT_);
@@ -245,7 +245,7 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
     tauByTightIsolationMVA3oldDMwoLT_.clear();
     tauByVTightIsolationMVA3oldDMwoLT_.clear();
     tauByVVTightIsolationMVA3oldDMwoLT_.clear();
-    tauByIsolationMVA3newDMwoLTraw_.clear();
+    tauByIsolationMVA3oldDMwoLTraw_.clear();
     tauByLooseIsolationMVA3newDMwLT_.clear();
     tauByVLooseIsolationMVA3newDMwLT_.clear();
     tauByMediumIsolationMVA3newDMwLT_.clear();
@@ -349,7 +349,7 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
         tauByTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byTightIsolationMVA3oldDMwoLT"));
         tauByVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVTightIsolationMVA3oldDMwoLT"));
         tauByVVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVVTightIsolationMVA3oldDMwoLT"));
-        tauByIsolationMVA3newDMwoLTraw_.push_back(itau->tauID("byIsolationMVA3newDMwoLTraw"));
+        tauByIsolationMVA3oldDMwoLTraw_.push_back(itau->tauID("byIsolationMVA3oldDMwoLTraw"));
         tauByLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byLooseIsolationMVA3newDMwLT"));
         tauByVLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byVLooseIsolationMVA3newDMwLT"));
         tauByMediumIsolationMVA3newDMwLT_.push_back(itau->tauID("byMediumIsolationMVA3newDMwLT"));
