@@ -160,7 +160,19 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v" )  != string::npos) bit50ns = 29; 
     else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 30; 
     else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 31; 
-    else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v" )  != string::npos) bit50ns = 32; 
+    else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v" )  != string::npos) bit50ns = 32;
+    // tau triggers
+    else if (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v" )  != string::npos) bit50ns = 33; 
+    else if (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v")  != string::npos) bit50ns = 34;
+    // Tri-muon triggers
+    else if (name.find("HLT_TripleMu_12_10_5_v" )  != string::npos) bit50ns = 35; 
+    // cross triggers
+    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 36; 
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 37; 
+    else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 38;
+    else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 39;
+    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 40;
+    else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 41;
 
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name) > 0 ? 1 : 0);
