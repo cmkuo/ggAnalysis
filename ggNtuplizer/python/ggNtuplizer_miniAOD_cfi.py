@@ -20,7 +20,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              trgFilterDeltaPtCut  = cms.double(0.05),
                              trgFilterDeltaEtaCut = cms.double(0.05),
 
-                             triggerEvent     = cms.InputTag("hltTriggerSummaryAOD", "", "HLT"),
+                             triggerEvent     = cms.InputTag("selectedPatTrigger", "", "PAT"),
                              triggerResults   = cms.InputTag("TriggerResults", "", "HLT"),
                              genParticleSrc   = cms.InputTag("prunedGenParticles"),
                              generatorLabel   = cms.InputTag("generator"),

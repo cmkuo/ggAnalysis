@@ -12,6 +12,7 @@
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
@@ -90,6 +91,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
   edm::EDGetTokenT<double>                      rhoLabel_;
   edm::EDGetTokenT<trigger::TriggerEvent>       trgEventLabel_;
+  edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsLabel_;
   edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
   string                                        trgResultsProcess_;
   edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;

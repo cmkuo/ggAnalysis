@@ -32,6 +32,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                     (ps.getParameter<InputTag>("rhoLabel"));
   trgEventLabel_             = consumes<trigger::TriggerEvent>      (ps.getParameter<InputTag>("triggerEvent"));
+  triggerObjectsLabel_       = consumes<pat::TriggerObjectStandAloneCollection>(ps.getParameter<edm::InputTag>("triggerEvent"));
   trgResultsLabel_           = consumes<edm::TriggerResults>        (ps.getParameter<InputTag>("triggerResults"));
   trgResultsProcess_         =                                       ps.getParameter<InputTag>("triggerResults").process();
   generatorLabel_            = consumes<GenEventInfoProduct>        (ps.getParameter<InputTag>("generatorLabel"));
