@@ -19,6 +19,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         '/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
+#'/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/244/00000/6A0A8868-4B27-E511-B3F8-02163E011BD1.root'
 )
                             )
 
@@ -32,12 +33,6 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 runOnData( process, outputModules = [] )
 #removeMCMatching(process, names=['All'], outputModules=[])
 
-process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
-process.ggNtuplizer.doGenParticles=cms.bool(False)
-process.ggNtuplizer.dumpSubJets=cms.bool(True)
-process.ggNtuplizer.dumpJets=cms.bool(True)
-process.ggNtuplizer.dumpTaus=cms.bool(True)
-
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 useAOD = True
@@ -47,10 +42,19 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 if useAOD == True :
     dataFormat = DataFormat.AOD
+    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
+    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+    jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
 else :
     dataFormat = DataFormat.MiniAOD
+    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
+process.ggNtuplizer.doGenParticles=cms.bool(False)
+process.ggNtuplizer.dumpSubJets=cms.bool(True)
+process.ggNtuplizer.dumpJets=cms.bool(True)
+process.ggNtuplizer.dumpTaus=cms.bool(True)
 
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
