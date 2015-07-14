@@ -1,5 +1,5 @@
 #### Current production tag : V07-04-05-00
-#### Newest tag for testing : V07-04-05-01
+#### Newest tag for testing : V07-04-05-02
 #### Note that the current head version need to be run with CMSSW_7_4_5
 
 ##### To work with CMSSW_7_4_5, you do:

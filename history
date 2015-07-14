@@ -1,3 +1,8 @@
+* V07-04-05-02
+   * fix problem with trigger objects when running on miniAOD
+   * make py file to run on both AOD and miniAOD for data
+   * remove obsolete py files to avoid confusion
+
 * V07-04-05-01
    * add new 50ns triggers
    * remove duplicated variables in taus
