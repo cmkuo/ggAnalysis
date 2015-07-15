@@ -1,3 +1,7 @@
+* V07-04-05-03
+   * fix missing photon isolations when running on miniAOD
+   * add event weight 
+
 * V07-04-05-02
    * fix problem with trigger objects when running on miniAOD
    * make py file to run on both AOD and miniAOD for data
