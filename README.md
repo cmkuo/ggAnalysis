@@ -7,7 +7,7 @@ cd CMSSW_7_4_5/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v2 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git -b V07-04-05-00 clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V07-04-05-00 https://github.com/cmkuo/ggAnalysis.git <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 scram b -j 10 <br>
 
@@ -17,7 +17,7 @@ cd CMSSW_7_4_2/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_74X_v0 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git -b V07-04-02-03 clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V07-04-02-03 https://github.com/cmkuo/ggAnalysis.git <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox -b jetToolbox_74X <br>
 scram b -j 10 <br>
 
