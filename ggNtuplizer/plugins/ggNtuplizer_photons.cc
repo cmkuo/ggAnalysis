@@ -143,11 +143,10 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoR9Full5x5",            &phoR9Full5x5_);
   tree->Branch("phoSeedBCE",              &phoSeedBCE_);
   tree->Branch("phoSeedBCEta",            &phoSeedBCEta_);
-
+  tree->Branch("phoPFChIso",              &phoPFChIso_);
+  tree->Branch("phoPFPhoIso",             &phoPFPhoIso_);
+  tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
   if (isAOD_) {
-    tree->Branch("phoPFChIso",            &phoPFChIso_);
-    tree->Branch("phoPFPhoIso",           &phoPFPhoIso_);
-    tree->Branch("phoPFNeuIso",           &phoPFNeuIso_);
     tree->Branch("phoPFChWorstIso",       &phoPFChWorstIso_);
     tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
     tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
@@ -553,7 +552,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       const auto pho = photonHandle->ptrAt(nPho_);
       
       UShort_t tmpphoIDbit = 0;
-    
+
       if (isAOD_) {
         phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
         phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
