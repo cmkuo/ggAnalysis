@@ -17,15 +17,13 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        #'file:/data4/cmkuo/testfiles/8CEEB179-5527-E511-BFA8-02163E01420D.root' # miniAOD
+        #'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
-        #'file:/data4/cmkuo/testfiles/TTJets_amcatnloFXFX-pythia813TeV_Asympt25ns_MCRUN2_74_V9-v1.root'
+        'file:/data4/cmkuo/testfiles/TTJets_amcatnloFXFX-pythia813TeV_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'file:/data4/cmkuo/testfiles/WZ_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'/store/mc/RunIISpring15DR74/WminusH_HToZZTo4L_M125_13TeV_powheg-minlo-HWJ_JHUgen_pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/04AFB8D8-900C-E511-8FA1-3417EBE6471A.root'
-        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/MINIAODSIM/MCRUN2_74_V7-v1/00000/4A75C5D1-DCD1-E411-BE48-002618943951.root'
-        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/DoubleElectron/RECO/GR_R_74_V8_1Apr_RelVal_zEl2012D-v1/00000/C04717C4-48D9-E411-9E88-002618943901.root'
-        #'/store/relval/CMSSW_7_4_0_pre9_ROOT6/RelValWpToENu_M-2000_13TeV/GEN-SIM-RECO/MCRUN2_74_V7-v1/00000/5CDE4954-D8D1-E411-9AD0-002618FDA287.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
