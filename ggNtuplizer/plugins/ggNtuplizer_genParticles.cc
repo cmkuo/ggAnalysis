@@ -6,50 +6,50 @@
 using namespace std;
 
 // (local) variables associated with tree branches
-vector<float>   pdf_;
-float           pthat_;
-float           processID_;
+vector<float>    pdf_;
+float            pthat_;
+float            processID_;
+float            genWeight_;
 
-Int_t           nPUInfo_;
-vector<int>     nPU_;
-vector<int>     puBX_;
-vector<float>   puTrue_;
+Int_t            nPUInfo_;
+vector<int>      nPU_;
+vector<int>      puBX_;
+vector<float>    puTrue_;
 
-Int_t           nMC_;
-vector<int>     mcPID;
-vector<float>   mcVtx;
-vector<float>   mcVty;
-vector<float>   mcVtz;
-vector<float>   mcPt;
-vector<float>   mcMass;
-vector<float>   mcEta;
-vector<float>   mcPhi;
-vector<float>   mcE;
-vector<float>   mcEt;
-vector<int>     mcGMomPID;
-vector<int>     mcMomPID;
-vector<float>   mcMomPt;
-vector<float>   mcMomMass;
-vector<float>   mcMomEta;
-vector<float>   mcMomPhi;
-vector<int>     mcIndex;
+Int_t            nMC_;
+vector<int>      mcPID;
+vector<float>    mcVtx;
+vector<float>    mcVty;
+vector<float>    mcVtz;
+vector<float>    mcPt;
+vector<float>    mcMass;
+vector<float>    mcEta;
+vector<float>    mcPhi;
+vector<float>    mcE;
+vector<float>    mcEt;
+vector<int>      mcGMomPID;
+vector<int>      mcMomPID;
+vector<float>    mcMomPt;
+vector<float>    mcMomMass;
+vector<float>    mcMomEta;
+vector<float>    mcMomPhi;
+vector<int>      mcIndex;
 vector<UShort_t> mcStatusFlag;
-vector<int>     mcParentage;
-vector<int>     mcStatus;
-vector<float>   mcCalIsoDR03;
-vector<float>   mcTrkIsoDR03;
-vector<float>   mcCalIsoDR04;
-vector<float>   mcTrkIsoDR04;
+vector<int>      mcParentage;
+vector<int>      mcStatus;
+vector<float>    mcCalIsoDR03;
+vector<float>    mcTrkIsoDR03;
+vector<float>    mcCalIsoDR04;
+vector<float>    mcTrkIsoDR04;
 
-TH1*           hPU_;
-TH1*           hPUTrue_;
+TH1*             hPU_;
+TH1*             hPUTrue_;
 
 float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
                    reco::GenParticleCollection::const_iterator thisPart,
-                   float dRMax, bool removeMu, bool removeNu)
-{
-  // Returns Et sum.
+                   float dRMax, bool removeMu, bool removeNu) {
 
+  // Returns Et sum.
   float etSum = 0;
 
   for (reco::GenParticleCollection::const_iterator p = handle->begin(); p != handle->end(); ++p) {
@@ -80,10 +80,9 @@ float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
 }
 
 float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle,
-                   reco::GenParticleCollection::const_iterator thisPart, float dRMax)
-{
-   // Returns pT sum without counting neutral particles.
+                   reco::GenParticleCollection::const_iterator thisPart, float dRMax) {
 
+   // Returns pT sum without counting neutral particles.
    float ptSum = 0;
 
    for (reco::GenParticleCollection::const_iterator p = handle->begin(); p != handle->end(); ++p) {
@@ -113,6 +112,7 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
   tree->Branch("pdf",          &pdf_);
   tree->Branch("pthat",        &pthat_);
   tree->Branch("processID",    &processID_);
+  tree->Branch("genWeight",    &genWeight_);
 
   tree->Branch("nPUInfo",      &nPUInfo_);
   tree->Branch("nPU",          &nPU_);
@@ -155,8 +155,9 @@ void ggNtuplizer::branchesGenPart(TTree* tree) {
 void ggNtuplizer::fillGenInfo(const edm::Event& e) {
 
   // cleanup from previous execution
-  pthat_ = -99;
+  pthat_     = -99;
   processID_ = -99;
+  genWeight_ = -99;
   pdf_.clear();
 
   nPUInfo_ = 0;
@@ -168,6 +169,7 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   e.getByToken(generatorLabel_, genEventInfoHandle);
 
   if (genEventInfoHandle.isValid()) {
+
     if (genEventInfoHandle->pdf()) {
       pdf_.push_back(genEventInfoHandle->pdf()->id.first);    // PDG ID of incoming parton #1
       pdf_.push_back(genEventInfoHandle->pdf()->id.second);   // PDG ID of incoming parton #2
@@ -181,6 +183,7 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
     if (genEventInfoHandle->hasBinningValues())
       pthat_ = genEventInfoHandle->binningValues()[0];
     processID_ = genEventInfoHandle->signalProcessID();
+    genWeight_ = genEventInfoHandle->weight();
 
   } else
     edm::LogWarning("ggNtuplizer") << "no GenEventInfoProduct in event";
