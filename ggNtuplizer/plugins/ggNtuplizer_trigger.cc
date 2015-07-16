@@ -1,4 +1,5 @@
 #include "map"
+#include "FWCore/Common/interface/TriggerNames.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
@@ -22,26 +23,25 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgMuEta [i].clear();
   }
 
-  // AOD vs miniAOD
-  edm::Handle<trigger::TriggerEvent> triggerHandle;
-  edm::Handle<pat::TriggerObjectStandAloneCollection> triggerHandleMiniAOD;
-  if (isAOD_)
-    e.getByToken(trgEventLabel_, triggerHandle);
-  else
-    e.getByToken(triggerObjectsLabel_, triggerHandleMiniAOD);
-
   // filter => index (in trg*[] arrays) mappings
-  std::map<string,size_t> eleFilters;
-  std::map<string,size_t> phoFilters;
-  std::map<string,size_t> muFilters;
+  static std::map<string,size_t> eleFilters;
+  static std::map<string,size_t> phoFilters;
+  static std::map<string,size_t> muFilters;
 
-  // FIXME: define actual filters
-  // FIXME: using only the latest filter in a HLT is not sufficient
-  eleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] = 0;
-  eleFilters["hltL1sL1SingleEG20ORL1SingleEG15"] = 1;
-  eleFilters["hltEle25WP60SC4HcalIsoFilter"] = 2;
+  // one-time initialization
+  if (eleFilters.size() == 0) {
+    // FIXME: define actual filters
+    // FIXME: using only the latest filter in a HLT is not sufficient
+    eleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] = 0;
+    eleFilters["hltL1sL1SingleEG20ORL1SingleEG15"] = 1;
+    eleFilters["hltEle25WP60SC4HcalIsoFilter"] = 2;
+  }
 
+  // AOD vs miniAOD
   if (isAOD_) {
+    edm::Handle<trigger::TriggerEvent> triggerHandle;
+    e.getByToken(trgEventLabel_, triggerHandle);
+
     const trigger::TriggerObjectCollection& trgObjects = triggerHandle->getObjects();
 
     // loop over particular filters (and not over full HLTs)
@@ -91,8 +91,52 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     return;
   } // if AOD
 
-  // miniAOD
-  // TODO
+  //
+  // miniAOD treatment
+  //
+
+  edm::Handle<pat::TriggerObjectStandAloneCollection> triggerHandleMiniAOD;
+  e.getByToken(triggerObjectsLabel_, triggerHandleMiniAOD);
+
+  edm::Handle<edm::TriggerResults> trgResultsHandle;
+  e.getByToken(trgResultsLabel_, trgResultsHandle);
+
+  const edm::TriggerNames &names = e.triggerNames(*trgResultsHandle);
+
+  for (pat::TriggerObjectStandAlone obj : *triggerHandleMiniAOD) {
+    obj.unpackPathNames(names);
+
+    // loop over filters
+    for (size_t iF = 0; iF < obj.filterLabels().size(); ++iF) {
+      string label = obj.filterLabels()[iF];
+
+      std::map<string,size_t>::iterator idxEle = eleFilters.find(label);
+      std::map<string,size_t>::iterator idxPho = phoFilters.find(label);
+      std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
+
+      // electron filters
+      if (idxEle != eleFilters.end()) {
+        size_t idx = idxEle->second;
+        trgElePt [idx].push_back(obj.pt());
+        trgEleEta[idx].push_back(obj.eta());
+      }
+
+      // photon filters
+      if (idxPho != phoFilters.end()) {
+        size_t idx = idxPho->second;
+        trgPhoPt [idx].push_back(obj.pt());
+        trgPhoEta[idx].push_back(obj.eta());
+      }
+
+      // muon filters
+      if (idxMu != muFilters.end()) {
+        size_t idx = idxMu->second;
+        trgMuPt [idx].push_back(obj.pt());
+        trgMuEta[idx].push_back(obj.eta());
+      }
+    }
+  }
+
 }
 
 Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta) {
