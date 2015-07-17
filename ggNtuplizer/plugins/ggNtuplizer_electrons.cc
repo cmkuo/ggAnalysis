@@ -13,6 +13,8 @@ vector<int>    eleChargeConsistent_;
 vector<float>  eleEn_;
 vector<float>  eleSCEn_;
 vector<float>  eleESEn_;
+vector<float>  eleESEnP1_;
+vector<float>  eleESEnP2_;
 vector<float>  eleD0_;
 vector<float>  eleDz_;
 vector<float>  elePt_;
@@ -77,6 +79,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleEn",                   &eleEn_);
   tree->Branch("eleSCEn",                 &eleSCEn_);
   tree->Branch("eleESEn",                 &eleESEn_);
+  tree->Branch("eleESEnP1",               &eleESEnP1_);
+  tree->Branch("eleESEnP2",               &eleESEnP2_);
   tree->Branch("eleD0",                   &eleD0_);
   tree->Branch("eleDz",                   &eleDz_);
   tree->Branch("elePt",                   &elePt_);
@@ -143,6 +147,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleEn_                      .clear();
   eleSCEn_                    .clear();
   eleESEn_                    .clear();
+  eleESEnP1_                  .clear();
+  eleESEnP2_                  .clear();
   eleD0_                      .clear();
   eleDz_                      .clear();
   elePt_                      .clear();
@@ -243,6 +249,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleR9_              .push_back(iEle->r9());
     eleSCEn_            .push_back(iEle->superCluster()->energy());
     eleESEn_            .push_back(iEle->superCluster()->preshowerEnergy());
+    eleESEnP1_          .push_back(iEle->superCluster()->preshowerEnergyPlane1());
+    eleESEnP2_          .push_back(iEle->superCluster()->preshowerEnergyPlane2());
     eleSCEta_           .push_back(iEle->superCluster()->eta());
     eleSCPhi_           .push_back(iEle->superCluster()->phi());
     eleSCRawEn_         .push_back(iEle->superCluster()->rawEnergy());
