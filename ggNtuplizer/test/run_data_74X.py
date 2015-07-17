@@ -14,11 +14,12 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
+        '/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
+        #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
         #'/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/244/00000/6A0A8868-4B27-E511-B3F8-02163E011BD1.root'
 )
                             )

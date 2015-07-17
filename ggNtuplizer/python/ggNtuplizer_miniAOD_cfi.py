@@ -17,8 +17,8 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              runphoMVAID      = cms.bool(False),
                              runeleMVAID      = cms.bool(False),
 
-                             trgFilterDeltaPtCut  = cms.double(0.05),
-                             trgFilterDeltaEtaCut = cms.double(0.05),
+                             trgFilterDeltaPtCut = cms.double(0.5),
+                             trgFilterDeltaRCut  = cms.double(0.3),
 
                              triggerEvent     = cms.InputTag("selectedPatTrigger", "", "PAT"),
                              triggerResults   = cms.InputTag("TriggerResults", "", "HLT"),

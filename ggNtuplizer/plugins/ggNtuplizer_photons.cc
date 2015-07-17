@@ -443,7 +443,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //phoPFPhoIso_      .push_back(iPho->photonIso());
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
 
-    phoFiredTrgs_     .push_back(matchPhotonTriggerFilters(iPho->et(), iPho->eta()));
+    phoFiredTrgs_     .push_back(matchPhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
 
     std::vector<float> vCov = lazyToolnoZS.localCovariances( *((*iPho).superCluster()->seed()) );
     //const float see = (isnan(vCov[0]) ? 0. : sqrt(vCov[0]));

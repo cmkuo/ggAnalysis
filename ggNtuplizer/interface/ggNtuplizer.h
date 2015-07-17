@@ -43,9 +43,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
 //   virtual void endJob() {};
 
   void initTriggerFilters(const edm::Event&);
-  Int_t matchElectronTriggerFilters(double pt, double eta);
-  Int_t matchPhotonTriggerFilters(double pt, double eta);
-  Int_t matchMuonTriggerFilters(double pt, double eta);
+  Int_t matchElectronTriggerFilters(double pt, double eta, double phi);
+  Int_t matchPhotonTriggerFilters(double pt, double eta, double phi);
+  Int_t matchMuonTriggerFilters(double pt, double eta, double phi);
+  Double_t deltaPhi(Double_t phi1, Double_t phi2);
+  Double_t deltaEta(Double_t eta1, Double_t eta2);
+  Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2);
 
   void branchesGlobalEvent(TTree*);
   void branchesGenInfo    (TTree*, edm::Service<TFileService>&);
@@ -85,7 +88,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   vector<int> newparticles_;
 
   double trgFilterDeltaPtCut_;
-  double trgFilterDeltaEtaCut_;
+  double trgFilterDeltaRCut_;
 
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;

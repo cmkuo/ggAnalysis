@@ -26,7 +26,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   runphoMVAID_               = ps.getParameter<bool>("runphoMVAID");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
-  trgFilterDeltaEtaCut_      = ps.getParameter<double>("trgFilterDeltaEtaCut");
+  trgFilterDeltaRCut_        = ps.getParameter<double>("trgFilterDeltaRCut");
 
   vtxLabel_                  = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>     (ps.getParameter<InputTag>("VtxBSLabel"));

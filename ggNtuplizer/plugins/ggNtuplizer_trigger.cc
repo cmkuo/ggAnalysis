@@ -6,9 +6,9 @@ using namespace std;
 
 // local variables: per-filter per-electron/muon/photon arrays of matched trigger objects
 // NOTE: number of elements in the arrays equals sizeof(Int_t)
-vector<float> trgElePt[32], trgEleEta[32];
-vector<float> trgPhoPt[32], trgPhoEta[32];
-vector<float> trgMuPt[32],  trgMuEta[32];
+vector<float> trgElePt[32], trgEleEta[32], trgElePhi[32];
+vector<float> trgPhoPt[32], trgPhoEta[32], trgPhoPhi[32];
+vector<float> trgMuPt[32],  trgMuEta[32],  trgMuPhi[32];
 
 void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   // Fills the arrays above.
@@ -17,10 +17,13 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   for (size_t i = 0; i < 32; i++) {
     trgElePt [i].clear();
     trgEleEta[i].clear();
+    trgElePhi[i].clear();
     trgPhoPt [i].clear();
     trgPhoEta[i].clear();
+    trgPhoPhi[i].clear();
     trgMuPt  [i].clear();
     trgMuEta [i].clear();
+    trgMuPhi [i].clear();
   }
 
   // filter => index (in trg*[] arrays) mappings
@@ -35,6 +38,10 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] = 0;
     eleFilters["hltL1sL1SingleEG20ORL1SingleEG15"] = 1;
     eleFilters["hltEle25WP60SC4HcalIsoFilter"] = 2;
+  }
+
+  if (phoFilters.size() == 0) {
+    phoFilters["hltEG165HE10Filter"] = 0;
   }
 
   // AOD vs miniAOD
@@ -62,6 +69,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
           const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
           trgElePt [idx].push_back(trgV.pt());
           trgEleEta[idx].push_back(trgV.eta());
+          trgElePhi[idx].push_back(trgV.phi());
         }
       }
 
@@ -73,6 +81,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
           const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
           trgPhoPt [idx].push_back(trgV.pt());
           trgPhoEta[idx].push_back(trgV.eta());
+          trgPhoPhi[idx].push_back(trgV.phi());
         }
       }
 
@@ -84,6 +93,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
           const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
           trgMuPt [idx].push_back(trgV.pt());
           trgMuEta[idx].push_back(trgV.eta());
+          trgMuPhi[idx].push_back(trgV.phi());
         }
       }
     } // HLT filter loop
@@ -119,6 +129,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         size_t idx = idxEle->second;
         trgElePt [idx].push_back(obj.pt());
         trgEleEta[idx].push_back(obj.eta());
+        trgElePhi[idx].push_back(obj.phi());
       }
 
       // photon filters
@@ -126,6 +137,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         size_t idx = idxPho->second;
         trgPhoPt [idx].push_back(obj.pt());
         trgPhoEta[idx].push_back(obj.eta());
+        trgPhoPhi[idx].push_back(obj.phi());
       }
 
       // muon filters
@@ -133,13 +145,14 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         size_t idx = idxMu->second;
         trgMuPt [idx].push_back(obj.pt());
         trgMuEta[idx].push_back(obj.eta());
+        trgMuPhi[idx].push_back(obj.phi());
       }
     }
   }
 
 }
 
-Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta) {
+Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above
   Int_t result = 0;
@@ -147,7 +160,7 @@ Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta) {
   for (size_t f = 0; f < 32; ++f)
     for (size_t v = 0; v < trgElePt[f].size(); ++v)
       if (fabs(pt - trgElePt[f][v])/trgElePt[f][v] < trgFilterDeltaPtCut_ &&
-          fabs(trgEleEta[f][v] - eta) < trgFilterDeltaEtaCut_) {
+          deltaR(eta, phi, trgEleEta[f][v], trgElePhi[f][v]) < trgFilterDeltaRCut_) {
         result |= (1<<f);
         break;
       }
@@ -155,7 +168,7 @@ Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta) {
   return result;
 }
 
-Int_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta) {
+Int_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above
   Int_t result = 0;
@@ -163,7 +176,7 @@ Int_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta) {
   for (size_t f = 0; f < 32; ++f)
     for (size_t v = 0; v < trgPhoPt[f].size(); ++v)
       if (fabs(pt - trgPhoPt[f][v])/trgPhoPt[f][v] < trgFilterDeltaPtCut_ &&
-          fabs(trgPhoEta[f][v] - eta) < trgFilterDeltaEtaCut_) {
+          deltaR(eta, phi, trgPhoEta[f][v], trgPhoPhi[f][v]) < trgFilterDeltaRCut_) {
         result |= (1<<f);
         break;
       }
@@ -171,7 +184,7 @@ Int_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta) {
   return result;
 }
 
-Int_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta) {
+Int_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above
   Int_t result = 0;
@@ -179,10 +192,32 @@ Int_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta) {
   for (size_t f = 0; f < 32; ++f)
     for (size_t v = 0; v < trgMuPt[f].size(); ++v)
       if (fabs(pt - trgMuPt[f][v])/trgMuPt[f][v] < trgFilterDeltaPtCut_ &&
-          fabs(trgMuEta[f][v] - eta) < trgFilterDeltaEtaCut_) {
+          deltaR(eta, phi, trgMuEta[f][v], trgMuPhi[f][v]) < trgFilterDeltaRCut_) {
         result |= (1<<f);
         break;
       }
 
   return result;
+}
+
+Double_t ggNtuplizer::deltaPhi(Double_t phi1, Double_t phi2) {
+
+  Double_t dPhi = phi1 - phi2;
+  if (dPhi > TMath::Pi()) dPhi -= 2.*TMath::Pi();
+  if (dPhi < -TMath::Pi()) dPhi += 2.*TMath::Pi();
+
+  return dPhi;
+}
+
+Double_t ggNtuplizer::deltaEta(Double_t eta1, Double_t eta2) {
+  return eta1 - eta2;
+}
+
+Double_t ggNtuplizer::deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
+
+  Double_t dEta, dPhi ;
+  dEta = eta1 - eta2;
+  dPhi = deltaPhi(phi1, phi2);
+
+  return sqrt(dEta*dEta+dPhi*dPhi);
 }

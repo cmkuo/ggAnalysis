@@ -136,7 +136,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv)
     muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
     muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
 
-    muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta()));
+    muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
 
     ///SJ
     muBestTrkPtError_  .push_back(iMu->muonBestTrack()->ptError());

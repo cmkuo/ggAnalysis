@@ -41,8 +41,8 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vtz",     &vtz_); 
   tree->Branch("rho",     &rho_);
   tree->Branch("HLT",     &HLT_);
-  tree->Branch("HLTIsPrescaled", &HLTIsPrescaled_);
-  tree->Branch("HLT50ns",     &HLT50ns_);
+  tree->Branch("HLTIsPrescaled",     &HLTIsPrescaled_);
+  tree->Branch("HLT50ns",            &HLT50ns_);
   tree->Branch("HLTIsPrescaled50ns", &HLTIsPrescaled50ns_);
   if (doGenParticles_) {
     tree->Branch("genMET",      &genMET_);
@@ -90,6 +90,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
   // HLT treatment
   HLT_ = 0;
+  HLTIsPrescaled_ = 0;
+  HLT50ns_ = 0;
+  HLTIsPrescaled50ns_ = 0;
 
   edm::Handle<edm::TriggerResults> trgResultsHandle;
   e.getByToken(trgResultsLabel_, trgResultsHandle);
@@ -151,7 +154,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     ///photon triggers
     else if (name.find("HLT_Photon175_v")                    != string::npos) bit50ns = 21;  
     else if (name.find("HLT_Photon250_NoHE_v" )  != string::npos) bit50ns = 22; 
-    else if (name.find("HLT_Photon165_HE10_v" )  != string::npos) bit50ns = 23; 
+    else if (name.find("HLT_Photon165_HE10_v" )  != string::npos) bit50ns = 23;
     else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v" )  != string::npos) bit50ns = 24; 
     else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v" )  != string::npos) bit50ns = 25; 
     else if (name.find("HLT_DoublePhoton85_v" )  != string::npos) bit50ns = 26; 
@@ -175,8 +178,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 41;
 
     // indicates prescaling and whether trigger was fired or not
-    ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name) > 0 ? 1 : 0);
-    ULong64_t isFired = (trgResultsHandle->accept(i) && isPrescaled) ? 1 : 0;
+    ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name)!=1) ? 1 : 0;
+    ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
 
     if (bit >= 0) {
       HLT_            |= (isFired << bit);

@@ -258,7 +258,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleSCPhiWidth_      .push_back(iEle->superCluster()->phiWidth());
     eleHoverE_          .push_back(iEle->hcalOverEcal());
 
-    eleFiredTrgs_       .push_back(matchElectronTriggerFilters(iEle->pt(), iEle->eta()));
+    eleFiredTrgs_       .push_back(matchElectronTriggerFilters(iEle->pt(), iEle->eta(), iEle->phi()));
 
     ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
     eleEoverP_          .push_back(iEle->eSuperClusterOverP());
