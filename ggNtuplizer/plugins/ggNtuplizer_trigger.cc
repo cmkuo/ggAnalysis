@@ -6,9 +6,9 @@ using namespace std;
 
 // local variables: per-filter per-electron/muon/photon arrays of matched trigger objects
 // NOTE: number of elements in the arrays equals sizeof(Int_t)
-vector<double> trgElePt[32], trgEleEta[32];
-vector<double> trgPhoPt[32], trgPhoEta[32];
-vector<double> trgMuPt[32],  trgMuEta[32];
+vector<float> trgElePt[32], trgEleEta[32];
+vector<float> trgPhoPt[32], trgPhoEta[32];
+vector<float> trgMuPt[32],  trgMuEta[32];
 
 void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   // Fills the arrays above.
