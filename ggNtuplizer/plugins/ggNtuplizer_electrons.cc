@@ -1,10 +1,12 @@
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
+#include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
+using namespace reco;
 
 // (local) variables associated with tree branches
 Int_t          nEle_;
@@ -55,7 +57,6 @@ vector<float>  eleE1x5Full5x5_;
 vector<float>  eleE2x5Full5x5_;
 vector<float>  eleE5x5Full5x5_;
 vector<float>  eleR9Full5x5_;
-vector<float>  eleRelIsoWithDBeta_;
 vector<int>    eleEcalDrivenSeed_;
 vector<float>  eleDr03EcalRecHitSumEt_;
 vector<float>  eleDr03HcalDepth1TowerSumEt_;
@@ -70,6 +71,12 @@ vector<float>  eleGSFChi2_;
 vector<int>    eleFiredTrgs_;
 
 vector<UShort_t> eleIDbit_;
+
+vector<vector<float> > eleGSFPt_;
+vector<vector<float> > eleGSFEta_;
+vector<vector<float> > eleGSFPhi_;
+vector<vector<float> > eleGSFCharge_;
+vector<vector<int> >   eleGSFMissHits_;
 
 void ggNtuplizer::branchesElectrons(TTree* tree) {
 
@@ -117,7 +124,6 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleE1x5",                 &eleE1x5_);
   tree->Branch("eleE2x5",                 &eleE2x5_);
   tree->Branch("eleE5x5",                 &eleE5x5_);
-  tree->Branch("eleRelIsoWithDBeta",      &eleRelIsoWithDBeta_);
   tree->Branch("eleE1x5Full5x5",          &eleE1x5Full5x5_);
   tree->Branch("eleE2x5Full5x5",          &eleE2x5Full5x5_);
   tree->Branch("eleE5x5Full5x5",          &eleE5x5Full5x5_);
@@ -132,7 +138,12 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleTrkdxy",                   &eleTrkdxy_);
   tree->Branch("eleKFHits",                   &eleKFHits_);
   tree->Branch("eleKFChi2",                   &eleKFChi2_);
-  tree->Branch("eleGSFChi2",                  &eleGSFChi2_);
+  tree->Branch("eleGSFPt",                    &eleGSFPt_);
+  tree->Branch("eleGSFEta",                   &eleGSFEta_);
+  tree->Branch("eleGSFPhi",                   &eleGSFPhi_);
+  tree->Branch("eleGSFCharge",                &eleGSFCharge_);
+  tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
+
   tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
 
   if (runeleIDVID_)  tree->Branch("eleIDbit", &eleIDbit_);
@@ -185,7 +196,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
   eleE5x5_                    .clear();
-  eleRelIsoWithDBeta_         .clear();
   eleEcalDrivenSeed_          .clear();
   eleDr03EcalRecHitSumEt_     .clear();
   eleDr03HcalDepth1TowerSumEt_.clear();
@@ -201,6 +211,11 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleKFHits_                  .clear();
   eleKFChi2_                  .clear();
   eleGSFChi2_                 .clear();
+  eleGSFPt_                   .clear();
+  eleGSFEta_                  .clear();
+  eleGSFPhi_                  .clear();
+  eleGSFCharge_               .clear();
+  eleGSFMissHits_             .clear();
   eleFiredTrgs_               .clear();
   eleIDbit_                   .clear();
 
@@ -235,7 +250,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
-  
+
   for (edm::View<pat::Electron>::const_iterator iEle = electronHandle->begin(); iEle != electronHandle->end(); ++iEle) {
 
     eleCharge_          .push_back(iEle->charge());
@@ -297,12 +312,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     elePFPhoIso_        .push_back(pfIso.sumPhotonEt);
     elePFNeuIso_        .push_back(pfIso.sumNeutralHadronEt);
     elePFPUIso_         .push_back(pfIso.sumPUPt);
-
     elecaloEnergy_      .push_back(iEle->caloEnergy());
-    ///SJ - https://github.com/lgray/cmssw/blob/common_isolation_selection_70X/TestElectronID/ElectronIDAnalyzer/plugins/ElectronIDAnalyzer.cc
-
-    float absiso = elePFChIso_[nEle_] + std::max(0.0 , elePFNeuIso_[nEle_] + elePFPhoIso_[nEle_] - 0.5 * elePFPUIso_[nEle_]);
-    eleRelIsoWithDBeta_ .push_back(absiso/elePt_[nEle_]);
 
     /////quantities which were used for Run1 - these do not
     ///calculated through PF (meaning no energy is subtracted
@@ -344,6 +354,35 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     } else {
       eleKFHits_.push_back(-1.);
       eleKFChi2_.push_back(0.);
+    }
+
+    if (isAOD_) {
+      // Close-by GSF tracks
+      vector<float> eleGSFPt;
+      vector<float> eleGSFEta;
+      vector<float> eleGSFPhi;
+      vector<float> eleGSFCharge;
+      //vector<float> eleGSFChi2NDF;                                                                                  
+      vector<int>   eleGSFMissHits;
+      vector<int>   eleGSFConvVtxFit;
+      eleGSFPt        .push_back(iEle->gsfTrack()->pt());
+      eleGSFEta       .push_back(iEle->gsfTrack()->eta());
+      eleGSFPhi       .push_back(iEle->gsfTrack()->phi());
+      eleGSFCharge    .push_back(iEle->gsfTrack()->charge());
+      eleGSFMissHits  .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+      
+      for (GsfTrackRefVector::const_iterator igsf = iEle->ambiguousGsfTracksBegin(); igsf != iEle->ambiguousGsfTracksEnd(); ++igsf) {
+	eleGSFPt        .push_back((*igsf)->pt());
+	eleGSFEta       .push_back((*igsf)->eta());
+	eleGSFPhi       .push_back((*igsf)->phi());
+	eleGSFCharge    .push_back((*igsf)->charge());
+	eleGSFMissHits  .push_back((*igsf)->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+      }
+      eleGSFPt_        .push_back(eleGSFPt);
+      eleGSFEta_       .push_back(eleGSFEta);
+      eleGSFPhi_       .push_back(eleGSFPhi);
+      eleGSFCharge_    .push_back(eleGSFCharge);
+      eleGSFMissHits_  .push_back(eleGSFMissHits);
     }
 
     //

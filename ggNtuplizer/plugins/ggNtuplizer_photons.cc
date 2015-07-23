@@ -563,8 +563,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 
       if (isAOD_) {
         phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
-        phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
-        phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
+        phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
+        phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
 
         //cout<<"Photons "<<endl;
         bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
@@ -584,8 +584,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 
       if (!isAOD_) {
         phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
-        phoPFPhoIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
-        phoPFNeuIso_             .push_back((*phoPhotonIsolationMap)[pho]);
+        phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho]);
+        phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
 
         //cout<<"Photons "<<endl;
         bool isPassLoose  = (*loose_id_decisions)[pho];
