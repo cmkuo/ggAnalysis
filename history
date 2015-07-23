@@ -1,3 +1,8 @@
+* V07-04-05-05
+   * fix the problem of PF photon and NH isolation for photons
+   * add low pt electrons and muons decaying from W/Z at generator level
+   * add GSF tracks associated with the SC
+
 * V07-04-05-04
    * add energy of two preshower planes for energy regression
    * add single photon 165 GeV trigger matching
