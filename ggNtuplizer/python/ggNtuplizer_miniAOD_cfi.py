@@ -16,6 +16,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              runeleIDVID      = cms.bool(True),
                              runphoMVAID      = cms.bool(False),
                              runeleMVAID      = cms.bool(False),
+                             addFilterInfo    = cms.bool(False),
 
                              trgFilterDeltaPtCut = cms.double(0.5),
                              trgFilterDeltaRCut  = cms.double(0.3),

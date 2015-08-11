@@ -10,6 +10,10 @@ Int_t     run_;
 Long64_t  event_;
 Int_t     lumis_;
 Bool_t    isData_;
+Bool_t    HBHENoiseResult_;
+Bool_t    CSCHaloResult_;
+Bool_t    EEBadSCResult_;
+Bool_t    EcalDeadCellTFResult_;
 Int_t     nVtx_;
 Int_t     nTrksPV_;
 float     vtx_;
@@ -34,6 +38,13 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("event",   &event_);
   tree->Branch("lumis",   &lumis_);
   tree->Branch("isData",  &isData_);
+  if(addFilterInfo_){
+    tree->Branch("HBHENoiseResult", &HBHENoiseResult_);
+    tree->Branch("CSCHaloResult", &CSCHaloResult_);
+    tree->Branch("EEBadSCResult", &EEBadSCResult_);
+    tree->Branch("EcalDeadCellTFResult", &EcalDeadCellTFResult_);
+  }
+
   tree->Branch("nVtx",    &nVtx_);
   tree->Branch("nTrksPV", &nTrksPV_);
   tree->Branch("vtx",     &vtx_); 
@@ -87,6 +98,25 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
   } else
     edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
+
+  if (addFilterInfo_){
+    
+    edm::Handle<bool> hcalNoiseHandle;
+    e.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResultRun1", hcalNoiseHandle);
+    HBHENoiseResult_ = *hcalNoiseHandle;
+    
+    edm::Handle<bool> cSCHandle;
+    e.getByLabel("CSCTightHaloFilter","", cSCHandle);
+    CSCHaloResult_ = *cSCHandle;
+    
+    edm::Handle<bool> eCALTPHandle;
+    e.getByLabel("EcalDeadCellTriggerPrimitiveFilter","",eCALTPHandle);
+    EcalDeadCellTFResult_ = *eCALTPHandle;
+
+    edm::Handle<bool> bADSCHandle;
+    e.getByLabel("eeBadScFilter","", bADSCHandle);
+    EEBadSCResult_ = *bADSCHandle;
+  }
 
   // HLT treatment
   HLT_ = 0;

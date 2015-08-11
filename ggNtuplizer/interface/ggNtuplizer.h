@@ -69,7 +69,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&);
 
   void cleanupPhotons();
-  
+
+  bool addFilterInfo_;  
   bool doGenParticles_;
   bool runOnParticleGun_;
   bool dumpPhotons_;

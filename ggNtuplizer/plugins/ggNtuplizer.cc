@@ -12,6 +12,7 @@ void setbit(UShort_t& x, UShort_t bit) {
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
+  addFilterInfo_             = ps.getParameter<bool>("addFilterInfo");
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
   dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");

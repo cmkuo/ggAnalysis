@@ -18,9 +18,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
+        '/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
         #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
-        '/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/562/00000/CCEFEFB1-402A-E511-BF33-02163E0136E2.root'
+        #'/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/562/00000/CCEFEFB1-402A-E511-BF33-02163E0136E2.root'
 )
                             )
 
@@ -36,7 +36,7 @@ runOnData( process, outputModules = [] )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
-useAOD = False
+useAOD = True
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
@@ -44,6 +44,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 if useAOD == True :
     dataFormat = DataFormat.AOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
+    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
+    process.ggNtuplizer.addFilterInfo=cms.bool(True)
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
@@ -84,9 +86,10 @@ process.p = cms.Path(
     # + process.mvaNonTrigV025nsCSA14
     # + process.mvaNonTrigV025nsPHYS14 
 #    process.patDefaultSequence *
-    process.egmGsfElectronIDSequence 
-    * process.egmPhotonIDSequence 
-    * process.ggNtuplizer
+    process.egmGsfElectronIDSequence*
+    process.egmPhotonIDSequence*
+    process.ggMETFiltersSequence* 
+    process.ggNtuplizer
     )
 
 
