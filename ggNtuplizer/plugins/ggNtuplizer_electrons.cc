@@ -76,6 +76,7 @@ vector<vector<float> > eleGSFPt_;
 vector<vector<float> > eleGSFEta_;
 vector<vector<float> > eleGSFPhi_;
 vector<vector<float> > eleGSFCharge_;
+vector<vector<int> >   eleGSFHits_;
 vector<vector<int> >   eleGSFMissHits_;
 
 void ggNtuplizer::branchesElectrons(TTree* tree) {
@@ -142,6 +143,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleGSFEta",                   &eleGSFEta_);
   tree->Branch("eleGSFPhi",                   &eleGSFPhi_);
   tree->Branch("eleGSFCharge",                &eleGSFCharge_);
+  tree->Branch("eleGSFHits",                  &eleGSFHits_);
   tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
 
   tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
@@ -215,6 +217,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleGSFEta_                  .clear();
   eleGSFPhi_                  .clear();
   eleGSFCharge_               .clear();
+  eleGSFHits_                 .clear();
   eleGSFMissHits_             .clear();
   eleFiredTrgs_               .clear();
   eleIDbit_                   .clear();
@@ -362,26 +365,29 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       vector<float> eleGSFEta;
       vector<float> eleGSFPhi;
       vector<float> eleGSFCharge;
-      //vector<float> eleGSFChi2NDF;                                                                                  
+      vector<int>   eleGSFHits;  
       vector<int>   eleGSFMissHits;
       vector<int>   eleGSFConvVtxFit;
       eleGSFPt        .push_back(iEle->gsfTrack()->pt());
       eleGSFEta       .push_back(iEle->gsfTrack()->eta());
       eleGSFPhi       .push_back(iEle->gsfTrack()->phi());
       eleGSFCharge    .push_back(iEle->gsfTrack()->charge());
+      eleGSFHits      .push_back(iEle->gsfTrack()->hitPattern().trackerLayersWithMeasurement());
       eleGSFMissHits  .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
-      
+
       for (GsfTrackRefVector::const_iterator igsf = iEle->ambiguousGsfTracksBegin(); igsf != iEle->ambiguousGsfTracksEnd(); ++igsf) {
 	eleGSFPt        .push_back((*igsf)->pt());
 	eleGSFEta       .push_back((*igsf)->eta());
 	eleGSFPhi       .push_back((*igsf)->phi());
 	eleGSFCharge    .push_back((*igsf)->charge());
+	eleGSFHits      .push_back((*igsf)->hitPattern().trackerLayersWithMeasurement());
 	eleGSFMissHits  .push_back((*igsf)->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
       }
       eleGSFPt_        .push_back(eleGSFPt);
       eleGSFEta_       .push_back(eleGSFEta);
       eleGSFPhi_       .push_back(eleGSFPhi);
       eleGSFCharge_    .push_back(eleGSFCharge);
+      eleGSFHits_      .push_back(eleGSFHits);
       eleGSFMissHits_  .push_back(eleGSFMissHits);
     }
 
