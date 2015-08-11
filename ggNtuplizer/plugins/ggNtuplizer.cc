@@ -12,7 +12,8 @@ void setbit(UShort_t& x, UShort_t bit) {
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
-  addFilterInfo_             = ps.getParameter<bool>("addFilterInfo");
+  addFilterInfoAOD_          = ps.getParameter<bool>("addFilterInfoAOD");
+  addFilterInfoMINIAOD_      = ps.getParameter<bool>("addFilterInfoMINIAOD");
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
   dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");
@@ -35,6 +36,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   trgEventLabel_             = consumes<trigger::TriggerEvent>      (ps.getParameter<InputTag>("triggerEvent"));
   triggerObjectsLabel_       = consumes<pat::TriggerObjectStandAloneCollection>(ps.getParameter<edm::InputTag>("triggerEvent"));
   trgResultsLabel_           = consumes<edm::TriggerResults>        (ps.getParameter<InputTag>("triggerResults"));
+  patTrgResultsLabel_        = consumes<edm::TriggerResults>        (ps.getParameter<InputTag>("patTriggerResults"));
   trgResultsProcess_         =                                       ps.getParameter<InputTag>("triggerResults").process();
   generatorLabel_            = consumes<GenEventInfoProduct>        (ps.getParameter<InputTag>("generatorLabel"));
   puCollection_              = consumes<vector<PileupSummaryInfo> > (ps.getParameter<InputTag>("pileupCollection"));

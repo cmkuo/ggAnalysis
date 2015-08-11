@@ -70,7 +70,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   void cleanupPhotons();
 
-  bool addFilterInfo_;  
+  bool addFilterInfoAOD_;  
+  bool addFilterInfoMINIAOD_;  
   bool doGenParticles_;
   bool runOnParticleGun_;
   bool dumpPhotons_;
@@ -98,6 +99,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsLabel_;
   edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
   string                                        trgResultsProcess_;
+  edm::EDGetTokenT<edm::TriggerResults>         patTrgResultsLabel_;
   edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;
   edm::EDGetTokenT<vector<PileupSummaryInfo> >  puCollection_;
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;

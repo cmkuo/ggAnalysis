@@ -14,11 +14,13 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(2000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
+        '/store/data/Run2015B/SinglePhoton/MINIAOD/17Jul2015-v1/30000/9AA235B1-C12E-E511-91BB-002618943902.root'
+        #'file:DoubleEG_Run2015B_251562_miniAOD.root'
+        #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
         #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
         #'/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/562/00000/CCEFEFB1-402A-E511-BF33-02163E0136E2.root'
 )
@@ -27,6 +29,7 @@ process.source = cms.Source("PoolSource",
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
+process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
@@ -36,7 +39,7 @@ runOnData( process, outputModules = [] )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
-useAOD = True
+useAOD = False
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
@@ -78,19 +81,34 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-process.p = cms.Path(
-    ###process.egmGsfElectronIDSequence
-    # process.mvaTrigV050nsCSA14
-    # + process.mvaTrigV025nsCSA14
-    # + process.mvaNonTrigV050nsCSA14
-    # + process.mvaNonTrigV025nsCSA14
-    # + process.mvaNonTrigV025nsPHYS14 
-#    process.patDefaultSequence *
-    process.egmGsfElectronIDSequence*
-    process.egmPhotonIDSequence*
-    process.ggMETFiltersSequence* 
-    process.ggNtuplizer
-    )
 
+if useAOD == True:
+    process.p = cms.Path(
+        ###process.egmGsfElectronIDSequence
+        # process.mvaTrigV050nsCSA14
+        # + process.mvaTrigV025nsCSA14
+        # + process.mvaNonTrigV050nsCSA14
+        # + process.mvaNonTrigV025nsCSA14
+        # + process.mvaNonTrigV025nsPHYS14 
+        #    process.patDefaultSequence *
+        process.egmGsfElectronIDSequence*
+        process.egmPhotonIDSequence*
+        process.ggMETFiltersSequence* 
+        process.ggNtuplizer
+        )
+else:
+    process.p = cms.Path(
+        ###process.egmGsfElectronIDSequence
+        # process.mvaTrigV050nsCSA14
+        # + process.mvaTrigV025nsCSA14
+        # + process.mvaNonTrigV050nsCSA14
+        # + process.mvaNonTrigV025nsCSA14
+        # + process.mvaNonTrigV025nsPHYS14 
+        #    process.patDefaultSequence *
+        process.egmGsfElectronIDSequence*
+        process.egmPhotonIDSequence*
+        process.ggNtuplizer
+        )
+    
 
 #print process.dumpPython()
