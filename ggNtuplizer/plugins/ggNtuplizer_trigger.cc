@@ -41,7 +41,19 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   }
 
   if (phoFilters.size() == 0) {
-    phoFilters["hltEG165HE10Filter"] = 0;
+    phoFilters["hltEG22HEFilter"]    = 0;
+    phoFilters["hltEG30HEFilter"]    = 1;
+    phoFilters["hltEG36HEFilter"]    = 2;
+    phoFilters["hltEG50HEFilter"]    = 3;
+    phoFilters["hltEG75HEFilter"]    = 4;
+    phoFilters["hltEG90HEFilter"]    = 5;
+    phoFilters["hltEG120HEFilter"]   = 6;
+    phoFilters["hltEG165HE10Filter"] = 7;
+    phoFilters["hltEG175HEFilter"]   = 8;
+    phoFilters["hltEG250erEtFilter"] = 9;
+    phoFilters["hltEG300erEtFilter"] = 10;
+    phoFilters["hltEG500HEFilter"]   = 11;
+    phoFilters["hltEG600HEFilter"]   = 12;
   }
 
   // AOD vs miniAOD
