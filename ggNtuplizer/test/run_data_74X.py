@@ -55,6 +55,13 @@ if useAOD == True :
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+    process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
+    process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
+    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter("BooleanFlagFilter",
+                                                        inputLabel = cms.InputTag("HBHENoiseFilterResultProducer",
+                                                                                  "HBHENoiseFilterResult"),
+                                                        reverseDecision = cms.bool(False)
+                                                       )
 
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
@@ -105,6 +112,8 @@ else:
         # + process.mvaNonTrigV025nsCSA14
         # + process.mvaNonTrigV025nsPHYS14 
         #    process.patDefaultSequence *
+        process.HBHENoiseFilterResultProducer* # produces HBHE bools
+        process.ApplyBaselineHBHENoiseFilter*  # reject events 
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
         process.ggNtuplizer
