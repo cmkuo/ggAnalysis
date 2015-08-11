@@ -89,7 +89,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     nVtx_ = 0;
     
     for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
-      nVtx_++;
       //bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
       //if (!isFake) {
       if (nVtx_ == 0) {
@@ -98,6 +97,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 	vty_     = v->y();
 	vtz_     = v->z();
       }
+      nVtx_++;
+
       //}
     }
   } else
