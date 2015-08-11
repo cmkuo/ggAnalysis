@@ -113,7 +113,7 @@ else:
         # + process.mvaNonTrigV025nsPHYS14 
         #    process.patDefaultSequence *
         process.HBHENoiseFilterResultProducer* # produces HBHE bools
-        process.ApplyBaselineHBHENoiseFilter*  # reject events 
+#        process.ApplyBaselineHBHENoiseFilter*  # reject events 
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
         process.ggNtuplizer
