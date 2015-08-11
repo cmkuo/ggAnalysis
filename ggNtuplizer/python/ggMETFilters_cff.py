@@ -10,7 +10,8 @@ primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
                                    vertexCollection = cms.InputTag('offlinePrimaryVertices'),
                                    minimumNDOF = cms.uint32(4) ,
                                    maxAbsZ = cms.double(15),
-                                   maxd0 = cms.double(2)
+                                   maxd0 = cms.double(2),
+                                   filter = cms.bool(false)
                                    )
 
 from CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi import *
