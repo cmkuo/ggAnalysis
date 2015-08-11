@@ -127,9 +127,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     edm::Handle<bool> bADSCHandle;
     e.getByLabel("eeBadScFilter","", bADSCHandle);
     EEBadSCResult_ = *bADSCHandle;
+
+    edm::Handle<bool> gOODVertexHandle;
+    e.getByLabel("GoodVertexFilter","",gOODVertexHandle);
+    goodVertexResult_ = *gOODVertexHandle;
      
     if ( !HBHENoiseResult_      ) metFilters_ += 1;
     if ( !CSCHaloResult_        ) metFilters_ += 2;
+    if ( !goodVertexResult_     ) metFilters_ += 4;
     if ( !EcalDeadCellTFResult_ ) metFilters_ += 8;
     if ( !EEBadSCResult_        ) metFilters_ += 16; 
     
