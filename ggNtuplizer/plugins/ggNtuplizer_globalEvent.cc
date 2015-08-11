@@ -11,11 +11,6 @@ Long64_t  event_;
 Int_t     lumis_;
 Bool_t    isData_;
 Int_t     metFilters_;
-Bool_t    HBHENoiseResult_;
-Bool_t    CSCHaloResult_;
-Bool_t    goodVertexResult_;
-Bool_t    EEBadSCResult_;
-Bool_t    EcalDeadCellTFResult_;
 Int_t     nVtx_;
 Int_t     nTrksPV_;
 float     vtx_;
@@ -42,13 +37,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("isData",  &isData_);
   if(addFilterInfoAOD_ || addFilterInfoMINIAOD_){
     tree->Branch("metFilters", &metFilters_);
-    tree->Branch("HBHENoiseResult", &HBHENoiseResult_);
-    tree->Branch("CSCHaloResult", &CSCHaloResult_);
-    tree->Branch("goodVertexResult", &goodVertexResult_);
-    tree->Branch("EEBadSCResult", &EEBadSCResult_);
-    tree->Branch("EcalDeadCellTFResult", &EcalDeadCellTFResult_);
   }
-
   tree->Branch("nVtx",    &nVtx_);
   tree->Branch("nTrksPV", &nTrksPV_);
   tree->Branch("vtx",     &vtx_); 
@@ -105,28 +94,23 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
 
   metFilters_ = 0;
-  HBHENoiseResult_      = true;
-  CSCHaloResult_        = true;
-  goodVertexResult_     = true;
-  EcalDeadCellTFResult_ = true;
-  EEBadSCResult_        = true;
   if (addFilterInfoAOD_ && isData_ ){
     
     edm::Handle<bool> hcalNoiseHandle;
     e.getByLabel("HBHENoiseFilterResultProducer","HBHENoiseFilterResultRun1", hcalNoiseHandle);
-    HBHENoiseResult_ = *hcalNoiseHandle;
+    bool HBHENoiseResult_ = *hcalNoiseHandle;
     
     edm::Handle<bool> cSCHandle;
     e.getByLabel("CSCTightHaloFilter","", cSCHandle);
-    CSCHaloResult_ = *cSCHandle;
+    bool CSCHaloResult_ = *cSCHandle;
     
     edm::Handle<bool> eCALTPHandle;
     e.getByLabel("EcalDeadCellTriggerPrimitiveFilter","",eCALTPHandle);
-    EcalDeadCellTFResult_ = *eCALTPHandle;
+    bool EcalDeadCellTFResult_ = *eCALTPHandle;
 
     edm::Handle<bool> bADSCHandle;
     e.getByLabel("eeBadScFilter","", bADSCHandle);
-    EEBadSCResult_ = *bADSCHandle;
+    bool EEBadSCResult_ = *bADSCHandle;
 
     //    edm::Handle<bool> gOODVertexHandle;
     //    e.getByLabel("primaryVertexFilter","GoodVertexFilter",gOODVertexHandle);
@@ -137,7 +121,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     //if ( !goodVertexResult_     ) metFilters_ += 4;
     if ( !EcalDeadCellTFResult_ ) metFilters_ += 8;
     if ( !EEBadSCResult_        ) metFilters_ += 16; 
-    
   }
 
   if (addFilterInfoMINIAOD_ && isData_ ){
@@ -154,7 +137,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     edm::TriggerResults const& patFilterResults = *patFilterResultsHandle;
     
     auto&& filterNames = e.triggerNames(patFilterResults);
-    for(unsigned iF = 0; iF != 5; ++iF) {
+    for (unsigned iF = 0; iF != 5; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
       if ( index == filterNames.size() ) 
 	edm::LogError("Unknown MET filter label") 
@@ -162,11 +145,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else {
 	if ( !patFilterResults.accept(index) ) {
 	  metFilters_ += pow(2, iF);
-	  if ( iF == 0 ) HBHENoiseResult_      = true;
-	  if ( iF == 1 ) CSCHaloResult_        = true;
-	  if ( iF == 2 ) goodVertexResult_     = true;
-	  if ( iF == 3 ) EcalDeadCellTFResult_ = true;
-	  if ( iF == 4 ) EEBadSCResult_        = true;
 	}
       }
     }
