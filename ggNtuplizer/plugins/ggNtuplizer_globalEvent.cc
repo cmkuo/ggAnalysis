@@ -29,6 +29,32 @@ float     pfMETsumEt_;
 float     pfMETmEtSig_;
 float     pfMETSig_;
 
+float     noHFMET_;
+float     noHFMETPhi_;
+float     noHFMETType1_;
+
+float     noHF_T1JERUp_;
+float     noHF_T1JERDo_;
+float     noHF_T1JESUp_;
+float     noHF_T1JESDo_;
+float     noHF_T1MESUp_;
+float     noHF_T1MESDo_;
+float     noHF_T1EESUp_;
+float     noHF_T1EESDo_;
+float     noHF_T1TESUp_;
+float     noHF_T1TESDo_;
+float     noHF_T1UESUp_;
+float     noHF_T1UESDo_;
+
+
+float     noHF_T1Phi_;
+float     noHF_T1Px_;
+float     noHF_T1Py_;
+float     noHF_T1SumEt_;
+
+float     noHF_T1TxyPhi_;
+float     noHF_T1TxyPt_;
+
 void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
   tree->Branch("run",     &run_);
@@ -57,6 +83,39 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("pfMETsumEt",  &pfMETsumEt_);
   tree->Branch("pfMETmEtSig", &pfMETmEtSig_);
   tree->Branch("pfMETSig",    &pfMETSig_);
+
+   if (doNoHFMET_){
+    tree->Branch("noHFMET", &noHFMET_);
+    tree->Branch("noHFMETPhi", &noHFMETPhi_);
+    tree->Branch("noHFMETType1", &noHFMETType1_);     
+    tree->Branch("noHF_T1JERUp", &noHF_T1JERUp_);
+    tree->Branch("noHF_T1JERDo", &noHF_T1JERDo_);
+    tree->Branch("noHF_T1JESUp", &noHF_T1JESUp_);
+    tree->Branch("noHF_T1JESDo", &noHF_T1JESDo_);
+    tree->Branch("noHF_T1MESUp", &noHF_T1MESUp_);
+    tree->Branch("noHF_T1MESDo", &noHF_T1MESDo_);
+    tree->Branch("noHF_T1EESUp", &noHF_T1EESUp_);
+    tree->Branch("noHF_T1EESDo", &noHF_T1EESDo_);
+    tree->Branch("noHF_T1TESUp", &noHF_T1TESUp_);
+    tree->Branch("noHF_T1TESDo", &noHF_T1TESDo_);
+    tree->Branch("noHF_T1UESUp", &noHF_T1UESUp_);
+    tree->Branch("noHF_T1UESDo", &noHF_T1UESDo_);
+
+
+    tree->Branch("noHF_T1Phi", &noHF_T1Phi_);
+    tree->Branch("noHF_T1Px", &noHF_T1Px_);
+    tree->Branch("noHF_T1Py", &noHF_T1Py_);
+    tree->Branch("noHF_T1SumEt", &noHF_T1SumEt_);
+
+    tree->Branch("noHF_T1TxyPhi", &noHF_T1TxyPhi_);
+    tree->Branch("noHF_T1TxyPt", &noHF_T1TxyPt_);
+
+
+
+   }
+
+
+
 }
 
 void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es) {
@@ -287,5 +346,58 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
   } else
     edm::LogWarning("ggNtuplizer") << "MET info unavailable";
+
+   if (doNoHFMET_){
+    pat::METCollection newMet;
+    pat::METCollection t1txyMet;
+
+    edm::Handle < pat::METCollection > newMetHandle;
+    edm::InputTag _newMetLabel("slimmedMETsNoHF","","ggKit");
+    edm::InputTag _t1txyMetLabel("patPFMetT1TxyNoHF");
+    e.getByLabel(_newMetLabel,newMetHandle);
+    if (newMetHandle.isValid() ) newMet = *newMetHandle;
+
+    edm::Handle < pat::METCollection > t1txyMetHandle;
+    e.getByLabel(_t1txyMetLabel,t1txyMetHandle);
+    if (t1txyMetHandle.isValid() ) t1txyMet = *t1txyMetHandle;
+    if (t1txyMetHandle.isValid() && newMetHandle.isValid()){
+      noHFMET_   = newMet[0].pt();
+      noHFMETPhi_= newMet[0].phi();
+
+      //alternate way to get the Type1 value
+      noHFMETType1_  = newMet[0].shiftedPt(pat::MET::NoShift, pat::MET::Type1); //second argument is Type1 per default
+
+      //Type1MET uncertainties =======================================
+      noHF_T1JERUp_ = newMet[0].shiftedPt(pat::MET::JetResUp);
+      noHF_T1JERDo_ = newMet[0].shiftedPt(pat::MET::JetResDown);
+      noHF_T1JESUp_ = newMet[0].shiftedPt(pat::MET::JetEnUp);
+      noHF_T1JESDo_ = newMet[0].shiftedPt(pat::MET::JetEnDown);
+      noHF_T1MESUp_ = newMet[0].shiftedPt(pat::MET::MuonEnUp);
+      noHF_T1MESDo_ = newMet[0].shiftedPt(pat::MET::MuonEnDown);
+      noHF_T1EESUp_ = newMet[0].shiftedPt(pat::MET::ElectronEnUp);
+      noHF_T1EESDo_ = newMet[0].shiftedPt(pat::MET::ElectronEnDown);
+      noHF_T1TESUp_ = newMet[0].shiftedPt(pat::MET::TauEnUp);
+      noHF_T1TESDo_ = newMet[0].shiftedPt(pat::MET::TauEnDown);
+      noHF_T1UESUp_ = newMet[0].shiftedPt(pat::MET::UnclusteredEnUp);
+      noHF_T1UESDo_ = newMet[0].shiftedPt(pat::MET::UnclusteredEnDown);
+
+      //other functions to access the shifted MET variables =================
+      noHF_T1Phi_ = newMet[0].shiftedPhi(pat::MET::NoShift);  //second argument is Type1 per default
+      noHF_T1Px_  = newMet[0].shiftedPx(pat::MET::NoShift);  //second argument is Type1 per default
+      noHF_T1Py_  = newMet[0].shiftedPy(pat::MET::NoShift);  //second argument is Type1 per default
+      noHF_T1SumEt_ = newMet[0].shiftedSumEt(pat::MET::NoShift);  //second argument is Type1 per default
+
+
+      //extra Txy stuff =======================================================
+      noHF_T1TxyPhi_ = t1txyMet[0].phi();
+      noHF_T1TxyPt_ = t1txyMet[0].pt();
+    }else
+    edm::LogWarning("ggNtuplizer") << "MET info unavailable";
+
+
+  }
+
+
+
 
 }
