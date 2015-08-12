@@ -79,6 +79,11 @@ vector<vector<float> > eleGSFCharge_;
 vector<vector<int> >   eleGSFHits_;
 vector<vector<int> >   eleGSFMissHits_;
 
+Int_t nGSFTrk_;
+vector<float> gsfPt_;
+vector<float> gsfEta_;
+vector<float> gsfPhi_;
+
 void ggNtuplizer::branchesElectrons(TTree* tree) {
 
   tree->Branch("nEle",                    &nEle_);
@@ -145,10 +150,16 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleGSFCharge",                &eleGSFCharge_);
   tree->Branch("eleGSFHits",                  &eleGSFHits_);
   tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
-
   tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
 
-  if (runeleIDVID_)  tree->Branch("eleIDbit", &eleIDbit_);
+  if (runeleIDVID_) tree->Branch("eleIDbit",  &eleIDbit_);
+
+  if (development_) {
+    tree->Branch("nGSFTrk",                   &nGSFTrk_);
+    tree->Branch("gsfPt",                     &gsfPt_);
+    tree->Branch("gsfEta",                    &gsfEta_);
+    tree->Branch("gsfPhi",                    &gsfPhi_);
+  }
   
 }
 
@@ -460,6 +471,24 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     }//if(runeleIDVID_)
 
     nEle_++;
+  }
+
+  if (development_) {
+
+    edm::Handle<edm::View<reco::GsfTrack> > GsfTrackHandle;
+    e.getByToken(gsfTracks_, GsfTrackHandle);
+
+    nGSFTrk_ = 0;
+    gsfPt_ .clear();
+    gsfEta_.clear();
+    gsfPhi_.clear();
+
+    for (edm::View<reco::GsfTrack>::const_iterator ig = GsfTrackHandle->begin(); ig != GsfTrackHandle->end(); ++ig) {
+      gsfPt_ .push_back(ig->pt());
+      gsfEta_.push_back(ig->eta());
+      gsfPhi_.push_back(ig->phi());
+      nGSFTrk_++;
+    }
   }
 
 }

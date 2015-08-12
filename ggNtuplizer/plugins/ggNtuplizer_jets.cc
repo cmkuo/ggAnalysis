@@ -19,11 +19,7 @@ vector<float>  jetHFEME_;
 vector<int>    jetNConstituents_;
 vector<float>  jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
 vector<float>  jetJetProbabilityBJetTags_;
-vector<float>  jetJetBProbabilityBJetTags_;
-vector<float>  jetTrackCountingHighPurBJetTags_;
-vector<float>  jetTrackCountingHighEffBJetTags_;
-vector<float>  jetSimpleSecondaryVertexHighEffBJetTags_;
-vector<float>  jetSimpleSecondaryVertexHighPurBJetTags_;
+vector<float>  jetpfCombinedMVABJetTags_;
 vector<int>    jetPartonID_;
 vector<bool>   jetPFLooseId_;
 
@@ -45,6 +41,17 @@ vector<int>    AK8JetNCH_;
 vector<int>    AK8Jetnconstituents_;
 vector<float>  AK8CHSSoftDropJetMass_;
 
+vector<int> nAK8softdropSubjet_ ;
+vector< vector<float> > AK8softdropSubjetPt_ ;
+vector< vector<float> > AK8softdropSubjetEta_ ;
+vector< vector<float> > AK8softdropSubjetMass_ ;
+vector< vector<float> > AK8softdropSubjetPhi_ ;
+vector< vector<float> > AK8softdropSubjetE_ ;
+vector< vector<int > > AK8softdropSubjetCharge_ ;
+vector< vector<int > > AK8softdropSubjetFlavour_;
+vector< vector<float> > AK8softdropSubjetCSV_ ;
+
+//
 void ggNtuplizer::branchesJets(TTree* tree)
 {
   tree->Branch("nJet",   &nJet_);
@@ -62,11 +69,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree->Branch("jetNConstituents", &jetNConstituents_);
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
-  tree->Branch("jetJetBProbabilityBJetTags", &jetJetBProbabilityBJetTags_);
-  tree->Branch("jetTrackCountingHighPurBJetTags", &jetTrackCountingHighPurBJetTags_);
-  tree->Branch("jetTrackCountingHighEffBJetTags", &jetTrackCountingHighEffBJetTags_);
-  tree->Branch("jetSimpleSecondaryVertexHighEffBJetTags", &jetSimpleSecondaryVertexHighEffBJetTags_);
-  tree->Branch("jetSimpleSecondaryVertexHighPurBJetTags", &jetSimpleSecondaryVertexHighPurBJetTags_);
+  tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
 
@@ -88,6 +91,17 @@ void ggNtuplizer::branchesJets(TTree* tree)
     tree->Branch("AK8JetNCH",           &AK8JetNCH_);
     tree->Branch("AK8Jetnconstituents", &AK8Jetnconstituents_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
+    tree->Branch("nAK8softdropSubjet",    &nAK8softdropSubjet_);
+    tree->Branch("AK8softdropSubjetPt",    &AK8softdropSubjetPt_);
+    tree->Branch("AK8softdropSubjetEta",    &AK8softdropSubjetEta_);
+    tree->Branch("AK8softdropSubjetPhi",    &AK8softdropSubjetPhi_);
+    tree->Branch("AK8softdropSubjetMass",    &AK8softdropSubjetMass_);
+    tree->Branch("AK8softdropSubjetE",    &AK8softdropSubjetE_);
+    tree->Branch("AK8softdropSubjetCharge",    &AK8softdropSubjetCharge_);
+    tree->Branch("AK8softdropSubjetFlavour",    &AK8softdropSubjetFlavour_);
+    tree->Branch("AK8softdropSubjetCSV",    &AK8softdropSubjetCSV_);
+
+
   }
 
 }
@@ -110,11 +124,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   jetNConstituents_                       .clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
-  jetJetBProbabilityBJetTags_             .clear();
-  jetTrackCountingHighPurBJetTags_        .clear();
-  jetTrackCountingHighEffBJetTags_        .clear();
-  jetSimpleSecondaryVertexHighEffBJetTags_.clear();
-  jetSimpleSecondaryVertexHighPurBJetTags_.clear();
+  jetpfCombinedMVABJetTags_             .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
 
@@ -134,6 +144,15 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   AK8JetNCH_          .clear();
   AK8Jetnconstituents_.clear();
   AK8CHSSoftDropJetMass_   .clear();
+  nAK8softdropSubjet_ .clear();
+  AK8softdropSubjetPt_ .clear();
+  AK8softdropSubjetEta_ .clear();
+  AK8softdropSubjetPhi_ .clear();
+  AK8softdropSubjetMass_ .clear();
+  AK8softdropSubjetCharge_ .clear();
+  AK8softdropSubjetE_ .clear();
+  AK8softdropSubjetFlavour_ .clear();
+  AK8softdropSubjetCSV_ .clear();
 
   nJet_ = 0;
 
@@ -147,7 +166,6 @@ void ggNtuplizer::fillJets(const edm::Event& e)
 
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
-    //    cout<<iJet->pt() <<endl;
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
@@ -163,11 +181,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
-    jetJetBProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetBProbabilityBJetTags"));
-    jetTrackCountingHighPurBJetTags_.push_back(iJet->bDiscriminator("pfTrackCountingHighPurBJetTags"));
-    jetTrackCountingHighEffBJetTags_.push_back(iJet->bDiscriminator("pfTrackCountingHighEffBJetTags"));
-    jetSimpleSecondaryVertexHighEffBJetTags_.push_back(iJet->bDiscriminator("pfSimpleSecondaryVertexHighEffBJetTags"));
-    jetSimpleSecondaryVertexHighPurBJetTags_.push_back(iJet->bDiscriminator("pfSimpleSecondaryVertexHighPurBJetTags"));
+    jetpfCombinedMVABJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVABJetTags"));
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
@@ -176,7 +190,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
     jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
     nJet_++;
   }
-
+  
   if(dumpSubJets_) {
     edm::Handle<edm::View<pat::Jet> > jetsAK8;
     e.getByToken(jetsAK8Label_, jetsAK8);
@@ -185,14 +199,23 @@ void ggNtuplizer::fillJets(const edm::Event& e)
       edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK8AK8) in event";
       return;
     }
-
+    
     nAK8Jet_ = 0;
     //jet substructure
-
+    int nsubjets = 0;
+    std::vector<float> vecSoftdropSubjetcsv ;
+    std::vector<float> vecSoftdropSubjetpt ;
+    std::vector<float> vecSoftdropSubjeteta ;
+    std::vector<float> vecSoftdropSubjetmass ;
+    std::vector<float> vecSoftdropSubjetphi ;
+    std::vector<float> vecSoftdropSubjete ;
+    std::vector<int > vecSoftdropSubjetcharge ;
+    std::vector<int > vecSoftdropSubjetflavour;
+    
     edm::View<pat::Jet>::const_iterator beginAK8 = jetsAK8->begin();
     edm::View<pat::Jet>::const_iterator endAK8 = jetsAK8->end();
     edm::View<pat::Jet>::const_iterator ijetAK8 = beginAK8;
-
+    
     // Loop over the "hard" jets
     for(ijetAK8 = beginAK8; ijetAK8 != endAK8; ++ijetAK8 ) {
       if( ijetAK8->pt() < 30.0 ) continue;
@@ -222,6 +245,40 @@ void ggNtuplizer::fillJets(const edm::Event& e)
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
 //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
 
+//save Softdrop subjet info Lvdp
+      vecSoftdropSubjetcsv.clear();
+      vecSoftdropSubjetpt.clear();
+      vecSoftdropSubjeteta.clear();
+      vecSoftdropSubjetmass.clear();
+      vecSoftdropSubjetphi.clear();
+      vecSoftdropSubjete.clear();
+      vecSoftdropSubjetcharge.clear();
+      vecSoftdropSubjetflavour.clear();
+      nsubjets = 0;
+      const std::vector<edm::Ptr<pat::Jet> > &wSubjets = ijetAK8->subjets("SoftDrop");
+      if(ijetAK8->subjets("SoftDrop").size()>0){
+	for ( const pat::Jet & softdropsubjet : wSubjets ) {
+	  if( softdropsubjet.pt() < 0.01 ) continue;
+	  nsubjets++;
+	  vecSoftdropSubjetpt.push_back(softdropsubjet.pt());
+	  vecSoftdropSubjeteta.push_back(softdropsubjet.eta());
+	  vecSoftdropSubjetmass.push_back(softdropsubjet.mass());
+	  vecSoftdropSubjetphi.push_back(softdropsubjet.phi());
+	  vecSoftdropSubjete.push_back(softdropsubjet.energy());
+	  vecSoftdropSubjetflavour.push_back(abs(softdropsubjet.partonFlavour()));
+	  vecSoftdropSubjetcharge.push_back(softdropsubjet.charge());
+	  vecSoftdropSubjetcsv.push_back(softdropsubjet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+	}
+      }
+      nAK8softdropSubjet_.push_back(nsubjets);
+      AK8softdropSubjetPt_.push_back(vecSoftdropSubjetpt);
+      AK8softdropSubjetEta_.push_back(vecSoftdropSubjeteta);
+      AK8softdropSubjetPhi_.push_back(vecSoftdropSubjetphi);
+      AK8softdropSubjetMass_.push_back(vecSoftdropSubjetmass);
+      AK8softdropSubjetE_.push_back(vecSoftdropSubjete);
+      AK8softdropSubjetCharge_.push_back(vecSoftdropSubjetcharge);
+      AK8softdropSubjetFlavour_.push_back(vecSoftdropSubjetflavour);
+      AK8softdropSubjetCSV_.push_back(vecSoftdropSubjetcsv);
     }
   }
 }
