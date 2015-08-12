@@ -99,8 +99,8 @@ if doNoHFMet == True:
                                      cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
                                      )
     from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-> #default configuration for miniAOD reprocessing, change the isData flag to run on data
-> #for a full met computation, remove the pfCandColl input
+    #default configuration for miniAOD reprocessing, change the isData flag to run on data
+    #for a full met computation, remove the pfCandColl input
     runMetCorAndUncFromMiniAOD(process,
                                isData=tellMETData,
                                pfCandColl=cms.InputTag("noHFCands"),
