@@ -1,9 +1,10 @@
 * New
    * add MET filters
-   * add MET corrections 
+   * add MET correction and uncertainties
    * add GSF hits to electrons
    * add single photon trigger filters
-   * change to newer b-tagger
+   * update to newer b-tagger
+   * add b-tagger for AK8 jets
 
 * V07-04-05-05
    * fix the problem of PF photon and NH isolation for photons
