@@ -14,6 +14,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   addFilterInfoAOD_          = ps.getParameter<bool>("addFilterInfoAOD");
   addFilterInfoMINIAOD_      = ps.getParameter<bool>("addFilterInfoMINIAOD");
+  doNoHFMET_                 = ps.getParameter<bool>("doNoHFMET");
+
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
   dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");
