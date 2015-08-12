@@ -17,7 +17,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:/data4/cmkuo/testfiles/8CEEB179-5527-E511-BFA8-02163E01420D.root' # miniAOD
+        '/store/mc/RunIISpring15DR74/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/Asympt50ns_MCRUN2_74_V9A-v2/60000/F88C81D1-9708-E511-93B9-008CFA05EA2C.root'
         #'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
@@ -48,6 +48,7 @@ useAOD = False
 if useAOD == True :
     dataFormat = DataFormat.AOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
+    doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
@@ -56,6 +57,7 @@ if useAOD == True :
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+    doNoHFMet = True
 
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
@@ -81,6 +83,29 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
+
+process.ggNtuplizer.doNoHFMET=cms.bool(doNoHFMet)
+tellMETData = False
+
+if doNoHFMet == True:
+    process.noHFCands = cms.EDFilter("CandPtrSelector",
+                                     src=cms.InputTag("packedPFCandidates"),
+                                     cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
+                                     )
+    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+    #default configuration for miniAOD reprocessing, change the isData flag to run on data
+    #for a full met computation, remove the pfCandColl input
+    runMetCorAndUncFromMiniAOD(process,
+                               isData=tellMETData,
+                               pfCandColl=cms.InputTag("noHFCands"),
+                               postfix="NoHF"
+                               )
+    process.patPFMetT1T2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
+    process.patPFMetT1T2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
+    process.patPFMetT2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
+    process.patPFMetT2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
+    process.shiftedPatJetEnDownNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
+    process.shiftedPatJetEnUpNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
 
 process.p = cms.Path(
     ###process.egmGsfElectronIDSequence
