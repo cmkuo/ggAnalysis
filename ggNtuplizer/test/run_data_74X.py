@@ -49,12 +49,14 @@ if useAOD == True :
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
     process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
     process.ggNtuplizer.addFilterInfo=cms.bool(True)
+    doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+    doNoHFMet = True
     process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.ApplyBaselineHBHENoiseFilter = cms.EDFilter("BooleanFlagFilter",
@@ -88,8 +90,6 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
-
-doNoHFMet = True
 process.ggNtuplizer.doNoHFMET=cms.bool(doNoHFMet)
 tellMETData = True
 
