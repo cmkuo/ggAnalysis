@@ -60,7 +60,7 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree->Branch("jetHFHAE", &jetHFHAE_);
   tree->Branch("jetHFEME", &jetHFEME_);
   tree->Branch("jetNConstituents", &jetNConstituents_);
-  tree->Branch("jetCombinedSecondaryVtxBJetTags", &jetCombinedSecondaryVtxBJetTags_);
+  tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetJetBProbabilityBJetTags", &jetJetBProbabilityBJetTags_);
   tree->Branch("jetTrackCountingHighPurBJetTags", &jetTrackCountingHighPurBJetTags_);
@@ -108,7 +108,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   jetHFHAE_                               .clear();
   jetHFEME_                               .clear();
   jetNConstituents_                       .clear();
-  jetCombinedSecondaryVtxBJetTags_        .clear();
+  jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
   jetJetBProbabilityBJetTags_             .clear();
   jetTrackCountingHighPurBJetTags_        .clear();
@@ -161,7 +161,7 @@ void ggNtuplizer::fillJets(const edm::Event& e)
     jetNCH_.push_back(   iJet->chargedMultiplicity());
     jetNConstituents_.push_back(iJet->numberOfDaughters());
     //b-tagging
-    jetCombinedSecondaryVtxBJetTags_.push_back(iJet->bDiscriminator("combinedSecondaryVertexBJetTags"));
+    jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
     jetJetBProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetBProbabilityBJetTags"));
     jetTrackCountingHighPurBJetTags_.push_back(iJet->bDiscriminator("pfTrackCountingHighPurBJetTags"));
