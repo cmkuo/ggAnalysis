@@ -72,6 +72,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   bool addFilterInfoAOD_;  
   bool addFilterInfoMINIAOD_;  
+  bool doNoHFMET_;
   bool doGenParticles_;
   bool runOnParticleGun_;
   bool dumpPhotons_;
