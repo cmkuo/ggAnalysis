@@ -2,6 +2,11 @@
 #### Newest tag for testing :
 #### Note that the current head version need to be run with CMSSW_7_4_5
 
+##### Caveat !
+If you take the head version of ggNtuplizer, you need to add
+git cms-merge-topic -u cms-met:METCorUnc74X 
+The new recipe and tag will be provided soon 
+
 ##### To work with CMSSW_7_4_5, you do:
 cd CMSSW_7_4_5/src <br>
 cmsenv <br>
