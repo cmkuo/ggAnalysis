@@ -1,3 +1,10 @@
+* New
+   * add MET filters
+   * add MET corrections 
+   * add GSF hits to electrons
+   * add single photon trigger filters
+   * change to newer b-tagger
+
 * V07-04-05-05
    * fix the problem of PF photon and NH isolation for photons
    * add low pt electrons and muons decaying from W/Z at generator level
