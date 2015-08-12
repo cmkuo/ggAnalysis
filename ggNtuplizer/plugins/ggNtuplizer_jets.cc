@@ -17,7 +17,7 @@ vector<int>    jetNCH_;
 vector<float>  jetHFHAE_;
 vector<float>  jetHFEME_;
 vector<int>    jetNConstituents_;
-vector<float>  jetCombinedSecondaryVtxBJetTags_; // recommended
+vector<float>  jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
 vector<float>  jetJetProbabilityBJetTags_;
 vector<float>  jetJetBProbabilityBJetTags_;
 vector<float>  jetTrackCountingHighPurBJetTags_;
