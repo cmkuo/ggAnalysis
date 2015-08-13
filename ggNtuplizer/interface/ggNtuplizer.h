@@ -70,6 +70,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   void cleanupPhotons();
 
+  bool development_;
   bool addFilterInfoAOD_;  
   bool addFilterInfoMINIAOD_;  
   bool doNoHFMET_;
@@ -115,6 +116,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::PhotonCollection>      recophotonCollection_;
   edm::EDGetTokenT<reco::TrackCollection>       tracklabel_;
   edm::EDGetTokenT<reco::GsfElectronCollection> gsfElectronlabel_;
+  edm::EDGetTokenT<edm::View<reco::GsfTrack> >  gsfTracks_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK4Label_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK8Label_;

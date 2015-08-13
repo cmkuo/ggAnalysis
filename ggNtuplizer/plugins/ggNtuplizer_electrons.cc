@@ -2,6 +2,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
+#include "DataFormats/EcalDetId/interface/ESDetId.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
@@ -17,6 +18,8 @@ vector<float>  eleSCEn_;
 vector<float>  eleESEn_;
 vector<float>  eleESEnP1_;
 vector<float>  eleESEnP2_;
+vector<float>  eleESEnP1Raw_;
+vector<float>  eleESEnP2Raw_;
 vector<float>  eleD0_;
 vector<float>  eleDz_;
 vector<float>  elePt_;
@@ -155,6 +158,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   if (runeleIDVID_) tree->Branch("eleIDbit",  &eleIDbit_);
 
   if (development_) {
+    tree->Branch("eleESEnP1Raw",              &eleESEnP1Raw_);
+    tree->Branch("eleESEnP2Raw",              &eleESEnP2Raw_);
     tree->Branch("nGSFTrk",                   &nGSFTrk_);
     tree->Branch("gsfPt",                     &gsfPt_);
     tree->Branch("gsfEta",                    &gsfEta_);
@@ -173,6 +178,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleESEn_                    .clear();
   eleESEnP1_                  .clear();
   eleESEnP2_                  .clear();
+  eleESEnP1Raw_               .clear();
+  eleESEnP2Raw_               .clear();
   eleD0_                      .clear();
   eleDz_                      .clear();
   elePt_                      .clear();
@@ -402,6 +409,21 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleGSFMissHits_  .push_back(eleGSFMissHits);
     }
 
+    if (development_) {
+
+      Float_t ESp1 = 0;
+      Float_t ESp2 = 0;
+      for (CaloClusterPtrVector::const_iterator ips = iEle->superCluster()->preshowerClustersBegin(); ips != iEle->superCluster()->preshowerClustersEnd(); ++ips) {
+
+	ESDetId esid = ESDetId((*ips)->seed());
+	if (esid.plane() == 1) ESp1 += (*ips)->energy();
+	if (esid.plane() == 2) ESp2 += (*ips)->energy();
+      }
+
+      eleESEnP1Raw_.push_back(ESp1);
+      eleESEnP2Raw_.push_back(ESp2);
+    }
+
     //
     // Look up and save the ID decisions
     // 
@@ -489,6 +511,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       gsfPhi_.push_back(ig->phi());
       nGSFTrk_++;
     }
+
+
+
   }
 
 }
