@@ -84,6 +84,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpTaus_;
   bool dumpJets_;
   bool dumpSubJets_;
+  bool dumpSoftDrop_;
 
   bool isAOD_;
 

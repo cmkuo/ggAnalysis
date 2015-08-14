@@ -255,19 +255,21 @@ void ggNtuplizer::fillJets(const edm::Event& e)
       vecSoftdropSubjetcharge.clear();
       vecSoftdropSubjetflavour.clear();
       nsubjets = 0;
-      const std::vector<edm::Ptr<pat::Jet> > &wSubjets = ijetAK8->subjets("SoftDrop");
-      if(ijetAK8->subjets("SoftDrop").size()>0){
-	for ( const pat::Jet & softdropsubjet : wSubjets ) {
-	  if( softdropsubjet.pt() < 0.01 ) continue;
-	  nsubjets++;
-	  vecSoftdropSubjetpt.push_back(softdropsubjet.pt());
-	  vecSoftdropSubjeteta.push_back(softdropsubjet.eta());
-	  vecSoftdropSubjetmass.push_back(softdropsubjet.mass());
-	  vecSoftdropSubjetphi.push_back(softdropsubjet.phi());
-	  vecSoftdropSubjete.push_back(softdropsubjet.energy());
-	  vecSoftdropSubjetflavour.push_back(abs(softdropsubjet.partonFlavour()));
-	  vecSoftdropSubjetcharge.push_back(softdropsubjet.charge());
-	  vecSoftdropSubjetcsv.push_back(softdropsubjet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+      if(dumpSoftDrop_) {
+	const std::vector<edm::Ptr<pat::Jet> > &wSubjets = ijetAK8->subjets("SoftDrop");
+	if(ijetAK8->subjets("SoftDrop").size()>0){
+	  for ( const pat::Jet & softdropsubjet : wSubjets ) {
+	    if( softdropsubjet.pt() < 0.01 ) continue;
+	    nsubjets++;
+	    vecSoftdropSubjetpt.push_back(softdropsubjet.pt());
+	    vecSoftdropSubjeteta.push_back(softdropsubjet.eta());
+	    vecSoftdropSubjetmass.push_back(softdropsubjet.mass());
+	    vecSoftdropSubjetphi.push_back(softdropsubjet.phi());
+	    vecSoftdropSubjete.push_back(softdropsubjet.energy());
+	    vecSoftdropSubjetflavour.push_back(abs(softdropsubjet.partonFlavour()));
+	    vecSoftdropSubjetcharge.push_back(softdropsubjet.charge());
+	    vecSoftdropSubjetcsv.push_back(softdropsubjet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
+	  }
 	}
       }
       nAK8softdropSubjet_.push_back(nsubjets);
