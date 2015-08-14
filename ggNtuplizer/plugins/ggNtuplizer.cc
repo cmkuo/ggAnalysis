@@ -28,6 +28,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   runeleMVAID_               = ps.getParameter<bool>("runeleMVAID");
   runphoMVAID_               = ps.getParameter<bool>("runphoMVAID");
 
+  runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
+
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
   trgFilterDeltaRCut_        = ps.getParameter<double>("trgFilterDeltaRCut");
 
@@ -44,6 +46,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   genParticlesCollection_    = consumes<vector<reco::GenParticle> > (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >            (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >       (ps.getParameter<InputTag>("electronSrc"));
+  if ( isAOD_ && runHFElectrons_ ) {
+    hfElectronCollection_      = consumes<vector<reco::RecoEcalCandidate> >(ps.getParameter<InputTag>("hfElectronSrc"));
+    hfClusterMapCollection_    = consumes<reco::HFEMClusterShapeAssociationCollection>(ps.getParameter<InputTag>("hfClusterShapeAssociationCollection"));
+  }
   gsfTracks_                 = consumes<View<reco::GsfTrack>>       (ps.getParameter<InputTag>("gsfTrackSrc"));
 
   photonCollection_          = consumes<View<pat::Photon> >         (ps.getParameter<InputTag>("photonSrc"));
@@ -95,6 +101,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   if (dumpPhotons_) branchesPhotons(tree_);
   branchesElectrons(tree_);
+  if (isAOD_ && runHFElectrons_) branchesHFElectrons(tree_);
   branchesMuons(tree_);
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
@@ -138,6 +145,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
+  if (isAOD_ && runHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv);
 
   if (dumpTaus_) fillTaus(e);

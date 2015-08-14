@@ -12,6 +12,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpSubJets      = cms.bool(False),
                              dumpTaus         = cms.bool(False),
                              isAOD            = cms.bool(False), #### actually configured through run_data_74x.py
+                             runHFElectrons   = cms.bool(False),
                              runphoIDVID      = cms.bool(True),
                              runeleIDVID      = cms.bool(True),
                              runphoMVAID      = cms.bool(False),

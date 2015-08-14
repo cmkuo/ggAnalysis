@@ -18,6 +18,8 @@
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/RecoCandidate/interface/RecoEcalCandidate.h"
+#include "DataFormats/EgammaReco/interface/HFEMClusterShapeAssociation.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -55,6 +57,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesGenPart    (TTree*);
   void branchesPhotons    (TTree*);
   void branchesElectrons  (TTree*);
+  void branchesHFElectrons(TTree*);
   void branchesMuons      (TTree*);
   void branchesTaus       (TTree*);
   void branchesJets       (TTree*);
@@ -64,6 +67,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillGenPart    (const edm::Event&);
   void fillPhotons    (const edm::Event&, const edm::EventSetup&);
   void fillElectrons  (const edm::Event&, const edm::EventSetup&, math::XYZPoint&);
+  void fillHFElectrons(const edm::Event&);
   void fillMuons      (const edm::Event&, math::XYZPoint&);
   void fillTaus       (const edm::Event&);
   void fillJets       (const edm::Event&);
@@ -88,7 +92,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   bool runeleMVAID_;
   bool runphoMVAID_;
-  
+
+  bool runHFElectrons_;
+
   vector<int> newparticles_;
 
   double trgFilterDeltaPtCut_;
@@ -107,6 +113,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >        pfMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >   electronCollection_;
+  edm::EDGetTokenT<std::vector<reco::RecoEcalCandidate> > hfElectronCollection_;
+  edm::EDGetTokenT<reco::HFEMClusterShapeAssociationCollection> hfClusterMapCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >     photonCollection_;
   edm::EDGetTokenT<edm::View<pat::Muon> >       muonCollection_;
   edm::EDGetTokenT<vector<pat::Tau> >           tauCollection_;
