@@ -52,14 +52,11 @@ if useAOD == True :
     process.ggNtuplizer.addFilterInfo=cms.bool(True)
     process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
+    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+    jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+    process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
 
-    #Fix for Lovedeep
-    process.ggNtuplizer.dumpSubJets=cms.bool(False)
-    process.ggNtuplizer.dumpJets=cms.bool(False)
-
-    #from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    #jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
-    #jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
@@ -71,6 +68,7 @@ else :
                                                                                   "HBHENoiseFilterResult"),
                                                         reverseDecision = cms.bool(False)
                                                        )
+    process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
