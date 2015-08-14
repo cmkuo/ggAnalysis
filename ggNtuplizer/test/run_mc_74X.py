@@ -53,7 +53,7 @@ if useAOD == True :
     process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
 

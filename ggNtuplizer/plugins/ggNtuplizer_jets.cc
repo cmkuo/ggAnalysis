@@ -22,6 +22,10 @@ vector<float>  jetJetProbabilityBJetTags_;
 vector<float>  jetpfCombinedMVABJetTags_;
 vector<int>    jetPartonID_;
 vector<bool>   jetPFLooseId_;
+vector<float>  jetPUidFullDIscriminant_;
+vector<float>  jetPUidCutbasedId_;
+vector<float>  jetPUidFullId_;
+
 
 //SubJet
 Int_t          nAK8Jet_;
@@ -72,6 +76,9 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
+  tree->Branch("jetPUidFullDIscriminant", &jetPUidFullDIscriminant_);
+  tree->Branch("jetPUidCutbasedId", &jetPUidCutbasedId_);
+  tree->Branch("jetPUidFullId", &jetPUidFullId_);
 
   // SubJet
   if (dumpSubJets_) {
@@ -127,6 +134,9 @@ void ggNtuplizer::fillJets(const edm::Event& e)
   jetpfCombinedMVABJetTags_             .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
+  jetPUidFullDIscriminant_.clear();
+  jetPUidCutbasedId_.clear();
+  jetPUidFullId_.clear();
 
   // SubJet
   AK8JetPt_           .clear();
@@ -188,6 +198,11 @@ void ggNtuplizer::fillJets(const edm::Event& e)
     //jet PF Loose ID
     pat::strbitset retjet = pfLooseId_.getBitTemplate();
     jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
+
+    //PUJet ID
+    jetPUidFullDIscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
+    jetPUidCutbasedId_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:cutbasedId"));
+    jetPUidFullId_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullId"));
     nJet_++;
   }
   

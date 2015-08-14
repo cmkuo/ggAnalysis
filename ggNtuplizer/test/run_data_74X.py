@@ -18,8 +18,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
-        #'/store/data/Run2015B/SinglePhoton/MINIAOD/17Jul2015-v1/30000/9AA235B1-C12E-E511-91BB-002618943902.root'
+    #    '/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
+        '/store/data/Run2015B/SinglePhoton/MINIAOD/17Jul2015-v1/30000/9AA235B1-C12E-E511-91BB-002618943902.root'
         #'file:DoubleEG_Run2015B_251562_miniAOD.root'
         #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
         #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
@@ -53,14 +53,14 @@ if useAOD == True :
     process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True , addPUJetID=True)
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
 
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-    doNoHFMet = True
+    doNoHFMet = False
     process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.ApplyBaselineHBHENoiseFilter = cms.EDFilter("BooleanFlagFilter",
