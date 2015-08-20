@@ -297,6 +297,15 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 39;
     else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 40;
     else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 41;
+    else if (name.find("HLT_Photon30_v"  )  != string::npos) bit50ns = 42;
+    else if (name.find("HLT_Photon36_v"  )  != string::npos) bit50ns = 43;
+    else if (name.find("HLT_Photon50_v"  )  != string::npos) bit50ns = 44;
+    else if (name.find("HLT_Photon75_v"  )  != string::npos) bit50ns = 45;
+    else if (name.find("HLT_Photon90_v"  )  != string::npos) bit50ns = 46;
+    else if (name.find("HLT_Photon120_v"  )  != string::npos) bit50ns = 47;
+    else if (name.find("HLT_Photon300_NoHE_v"  )  != string::npos) bit50ns = 48;
+    else if (name.find("HLT_Photon500_v"  )  != string::npos) bit50ns = 49;
+    else if (name.find("HLT_Photon600_v"  )  != string::npos) bit50ns = 50;
 
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name)!=1) ? 1 : 0;
