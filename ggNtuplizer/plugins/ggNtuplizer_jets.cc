@@ -60,17 +60,9 @@ void ggNtuplizer::branchesJets(TTree* tree)
 {
   tree->Branch("nJet",   &nJet_);
   tree->Branch("jetPt",  &jetPt_);
-  //tree->Branch("jetEn",  &jetEn_);
+  tree->Branch("jetEn",  &jetEn_);
   tree->Branch("jetEta", &jetEta_);
   tree->Branch("jetPhi", &jetPhi_);
-  tree->Branch("jetCHF", &jetCHF_);
-  tree->Branch("jetNHF", &jetNHF_);
-  tree->Branch("jetCEF", &jetCEF_);
-  tree->Branch("jetNEF", &jetNEF_);
-  tree->Branch("jetNCH", &jetNCH_);
-  tree->Branch("jetHFHAE", &jetHFHAE_);
-  tree->Branch("jetHFEME", &jetHFEME_);
-  tree->Branch("jetNConstituents", &jetNConstituents_);
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
@@ -79,6 +71,16 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree->Branch("jetPUidFullDIscriminant", &jetPUidFullDIscriminant_);
   tree->Branch("jetPUidCutbasedId", &jetPUidCutbasedId_);
   tree->Branch("jetPUidFullId", &jetPUidFullId_);
+  if (development_) {
+    tree->Branch("jetCHF", &jetCHF_);
+    tree->Branch("jetNHF", &jetNHF_);
+    tree->Branch("jetCEF", &jetCEF_);
+    tree->Branch("jetNEF", &jetNEF_);
+    tree->Branch("jetNCH", &jetNCH_);
+    tree->Branch("jetHFHAE", &jetHFHAE_);
+    tree->Branch("jetHFEME", &jetHFEME_);
+    tree->Branch("jetNConstituents", &jetNConstituents_);
+  }
 
   // SubJet
   if (dumpSubJets_) {
@@ -113,30 +115,31 @@ void ggNtuplizer::branchesJets(TTree* tree)
 
 }
 
-void ggNtuplizer::fillJets(const edm::Event& e)
-{
+void ggNtuplizer::fillJets(const edm::Event& e) {
 
   // cleanup from previous execution
   jetPt_                                  .clear();
   jetEn_                                  .clear();
   jetEta_                                 .clear();
   jetPhi_                                 .clear();
-  jetCHF_                                 .clear();
-  jetNHF_                                 .clear();
-  jetCEF_                                 .clear();
-  jetNEF_                                 .clear();
-  jetNCH_                                 .clear();
-  jetHFHAE_                               .clear();
-  jetHFEME_                               .clear();
-  jetNConstituents_                       .clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
-  jetpfCombinedMVABJetTags_             .clear();
+  jetpfCombinedMVABJetTags_               .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
-  jetPUidFullDIscriminant_.clear();
-  jetPUidCutbasedId_.clear();
-  jetPUidFullId_.clear();
+  jetPUidFullDIscriminant_                .clear();
+  jetPUidCutbasedId_                      .clear();
+  jetPUidFullId_                          .clear();
+  if (development_) {
+    jetCHF_                                 .clear();
+    jetNHF_                                 .clear();
+    jetCEF_                                 .clear();
+    jetNEF_                                 .clear();
+    jetNCH_                                 .clear();
+    jetHFHAE_                               .clear();
+    jetHFEME_                               .clear();
+    jetNConstituents_                       .clear();
+  }
 
   // SubJet
   AK8JetPt_           .clear();
@@ -180,14 +183,18 @@ void ggNtuplizer::fillJets(const edm::Event& e)
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
     jetPhi_.push_back(   iJet->phi());
-    jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
-    jetNEF_.push_back(   iJet->neutralEmEnergyFraction());
-    jetCHF_.push_back(   iJet->chargedHadronEnergyFraction());
-    jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
-    jetHFHAE_.push_back( iJet->HFHadronEnergy());
-    jetHFEME_.push_back( iJet->HFEMEnergy());
-    jetNCH_.push_back(   iJet->chargedMultiplicity());
-    jetNConstituents_.push_back(iJet->numberOfDaughters());
+
+    if (development_) {
+      jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
+      jetNEF_.push_back(   iJet->neutralEmEnergyFraction());
+      jetCHF_.push_back(   iJet->chargedHadronEnergyFraction());
+      jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
+      jetHFHAE_.push_back( iJet->HFHadronEnergy());
+      jetHFEME_.push_back( iJet->HFEMEnergy());
+      jetNCH_.push_back(   iJet->chargedMultiplicity());
+      jetNConstituents_.push_back(iJet->numberOfDaughters());
+    }
+
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
