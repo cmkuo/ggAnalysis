@@ -22,7 +22,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgMuEta [i].clear();
     trgMuPhi [i].clear();
   }
-  for(size_t i = 64; i < 64; i++){
+  for(size_t i = 0; i < 64; i++){
     trgPhoPt [i].clear();
     trgPhoEta[i].clear();
     trgPhoPhi[i].clear();
