@@ -270,6 +270,13 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Photon500_v")                   != string::npos) bitPho = 10; 
     else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
     else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
+    else if (name.find("HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v") != string::npos) bitPho = 13;
+    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v") != string::npos) bitPho = 14;
+    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v") != string::npos) bitPho = 15;
+    else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v") != string::npos) bitPho = 16;
+    else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v") != string::npos) bitPho = 17;
+    else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v") != string::npos) bitPho = 18;
+    else if (name.find("HLT_DoublePhoton85_v") != string::npos) bitPho = 19;
 
     // Jet triggers for 25 ns
     int bitJet    = -1;
@@ -277,6 +284,12 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq460_v") != string::npos) bitJet =  1; 
     else if (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq240_v") != string::npos) bitJet =  2; 
     else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq500_v") != string::npos) bitJet =  3; 
+    else if (name.find("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v")                      != string::npos) bitJet =  4;
+    else if (name.find("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v")                    != string::npos) bitJet =  5;
+    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v")   != string::npos) bitJet =  6;
+    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) bitJet =  7;
+    else if (name.find("HLT_PFMET170_NoiseCleaned_v")              != string::npos) bitJet =  8;
+    else if (name.find("HLT_CaloJet500_NoJetID_v")                 != string::npos) bitJet =  9;
 
     //////////////////////////////triggers for 50ns////////////////////////////////////////    
     ///muon triggers
