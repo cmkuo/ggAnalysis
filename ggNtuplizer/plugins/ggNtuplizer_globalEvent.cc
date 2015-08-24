@@ -17,8 +17,12 @@ float     vtx_;
 float     vty_;
 float     vtz_;
 float     rho_;
-ULong64_t HLT_;
-ULong64_t HLTIsPrescaled_;
+ULong64_t HLTEleMuX_;
+ULong64_t HLTPho_;
+ULong64_t HLTJet_;
+ULong64_t HLTEleMuXIsPrescaled_;
+ULong64_t HLTPhoIsPrescaled_;
+ULong64_t HLTJetIsPrescaled_;
 ULong64_t HLT50ns_;
 ULong64_t HLTIsPrescaled50ns_;
 float     genMET_;
@@ -64,16 +68,20 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   if(addFilterInfoAOD_ || addFilterInfoMINIAOD_){
     tree->Branch("metFilters", &metFilters_);
   }
-  tree->Branch("nVtx",    &nVtx_);
-  tree->Branch("nTrksPV", &nTrksPV_);
-  tree->Branch("vtx",     &vtx_); 
-  tree->Branch("vty",     &vty_); 
-  tree->Branch("vtz",     &vtz_); 
-  tree->Branch("rho",     &rho_);
-  tree->Branch("HLT",     &HLT_);
-  tree->Branch("HLTIsPrescaled",     &HLTIsPrescaled_);
-  tree->Branch("HLT50ns",            &HLT50ns_);
-  tree->Branch("HLTIsPrescaled50ns", &HLTIsPrescaled50ns_);
+  tree->Branch("nVtx",                 &nVtx_);
+  tree->Branch("nTrksPV",              &nTrksPV_);
+  tree->Branch("vtx",                  &vtx_); 
+  tree->Branch("vty",                  &vty_); 
+  tree->Branch("vtz",                  &vtz_); 
+  tree->Branch("rho",                  &rho_);
+  tree->Branch("HLTEleMuX",            &HLTEleMuX_);
+  tree->Branch("HLTPho",               &HLTPho_);
+  tree->Branch("HLTJet",               &HLTJet_);
+  tree->Branch("HLTEleMuXIsPrescaled", &HLTEleMuXIsPrescaled_);
+  tree->Branch("HLTPhoIsPrescaled",    &HLTPhoIsPrescaled_);
+  tree->Branch("HLTJetIsPrescaled",    &HLTJetIsPrescaled_);
+  tree->Branch("HLT50ns",              &HLT50ns_);
+  tree->Branch("HLTIsPrescaled50ns",   &HLTIsPrescaled50ns_);
   if (doGenParticles_) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
@@ -85,8 +93,8 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("pfMETSig",    &pfMETSig_);
 
    if (doNoHFMET_){
-    tree->Branch("noHFMET", &noHFMET_);
-    tree->Branch("noHFMETPhi", &noHFMETPhi_);
+    tree->Branch("noHFMET",      &noHFMET_);
+    tree->Branch("noHFMETPhi",   &noHFMETPhi_);
     tree->Branch("noHFMETType1", &noHFMETType1_);     
     tree->Branch("noHF_T1JERUp", &noHF_T1JERUp_);
     tree->Branch("noHF_T1JERDo", &noHF_T1JERDo_);
@@ -100,21 +108,13 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
     tree->Branch("noHF_T1TESDo", &noHF_T1TESDo_);
     tree->Branch("noHF_T1UESUp", &noHF_T1UESUp_);
     tree->Branch("noHF_T1UESDo", &noHF_T1UESDo_);
-
-
-    tree->Branch("noHF_T1Phi", &noHF_T1Phi_);
-    tree->Branch("noHF_T1Px", &noHF_T1Px_);
-    tree->Branch("noHF_T1Py", &noHF_T1Py_);
+    tree->Branch("noHF_T1Phi",   &noHF_T1Phi_);
+    tree->Branch("noHF_T1Px",    &noHF_T1Px_);
+    tree->Branch("noHF_T1Py",    &noHF_T1Py_);
     tree->Branch("noHF_T1SumEt", &noHF_T1SumEt_);
-
     tree->Branch("noHF_T1TxyPhi", &noHF_T1TxyPhi_);
     tree->Branch("noHF_T1TxyPt", &noHF_T1TxyPt_);
-
-
-
    }
-
-
 
 }
 
@@ -210,10 +210,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   }
 
   // HLT treatment
-  HLT_ = 0;
-  HLTIsPrescaled_ = 0;
-  HLT50ns_ = 0;
-  HLTIsPrescaled50ns_ = 0;
+  HLTEleMuX_            = 0;
+  HLTPho_               = 0;
+  HLTJet_               = 0;
+  HLTEleMuXIsPrescaled_ = 0;
+  HLTPhoIsPrescaled_    = 0;
+  HLTJetIsPrescaled_    = 0;
+  HLT50ns_              = 0;
+  HLTIsPrescaled50ns_   = 0;
 
   edm::Handle<edm::TriggerResults> trgResultsHandle;
   e.getByToken(trgResultsLabel_, trgResultsHandle);
@@ -228,24 +232,19 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     const string &name = trgNames.triggerName(i);
 
     // HLT name => bit correspondence
-    int bit = -1;
-    if      (name.find("HLT_Physics_v")                    != string::npos) bit = 0;  // bit 0 (lowest)
-    else if (name.find("HLT_L1SingleMu3p5_WideWindow_v" )  != string::npos) bit = 1;  // bit 1
-    else if (name.find("HLT_L1SingleMu3p5_v" )             != string::npos) bit = 2;
-    else if (name.find("HLT_L1SingleMuOpen_WideWindow_v" ) != string::npos) bit = 3;
-    else if (name.find("HLT_L1SingleMuOpen_v" )            != string::npos) bit = 4;
-    else if (name.find("HLT_L1SingleEG5_WideWindow_v")     != string::npos) bit = 5;
-    else if (name.find("HLT_L1SingleEG5_v")                != string::npos) bit = 6;
-    else if (name.find("HLT_L1SingleEG20_WideWindow_v")    != string::npos) bit = 7;
-    else if (name.find("HLT_L1SingleEG20_v")               != string::npos) bit = 8;
-    else if (name.find("HLT_L1SingleJet36_WideWindow_v")   != string::npos) bit = 9;
-    else if (name.find("HLT_L1SingleJet36_v")              != string::npos) bit = 10;
-    else if (name.find("HLT_L1SingleJet68_WideWindow_v")   != string::npos) bit = 11;
-    else if (name.find("HLT_L1SingleJet68_v")              != string::npos) bit = 12;
-    else if (name.find("HLT_ZeroBias_")                    != string::npos) bit = 13;
+    // Electron or Muon or Cross triggers for 25 ns
+    int bitEleMuX = -1;
+    if      (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  0; //bit0(lowest)
+    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 41;
+    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 42;
 
-    //////////////////////////////triggers for 50ns////////////////////////////////////////
-    
+    // Photon triggers for 25 ns
+    int bitPho    = -1;
+
+    // Jet triggers for 25 ns
+    int bitJet    = -1;
+
+    //////////////////////////////triggers for 50ns////////////////////////////////////////    
     ///muon triggers
     Long64_t bit50ns = -1;
     if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
@@ -311,9 +310,19 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name)!=1) ? 1 : 0;
     ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
 
-    if (bit >= 0) {
-      HLT_            |= (isFired << bit);
-      HLTIsPrescaled_ |= (isPrescaled << bit);
+    if (bitEleMuX >= 0) {
+      HLTEleMuX_            |= (isFired << bitEleMuX);
+      HLTEleMuXIsPrescaled_ |= (isPrescaled << bitEleMuX);
+    }
+
+    if (bitPho >= 0) {
+      HLTPho_            |= (isFired << bitPho);
+      HLTPhoIsPrescaled_ |= (isPrescaled << bitPho);
+    }
+
+    if (bitJet >= 0) {
+      HLTJet_            |= (isFired << bitJet);
+      HLTJetIsPrescaled_ |= (isPrescaled << bitJet);
     }
 
     if (bit50ns >= 0) {
@@ -322,8 +331,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
 
     //////////////////////////end of HLT 50ns menu////////////////////////////
-    
-    
 
   }//for (size_t i = 0; i < trgNames.size(); ++i)
 
