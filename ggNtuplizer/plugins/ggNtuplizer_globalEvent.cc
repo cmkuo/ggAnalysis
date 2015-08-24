@@ -361,7 +361,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
 
     //////////////////////////end of HLT 50ns menu////////////////////////////
-    cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<endl;
+    //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<endl;
 
   }
 
