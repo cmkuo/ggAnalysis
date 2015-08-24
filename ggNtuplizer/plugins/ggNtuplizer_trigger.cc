@@ -5,9 +5,9 @@
 using namespace std;
 
 // local variables: per-filter per-electron/muon/photon arrays of matched trigger objects
-// NOTE: number of elements in the arrays equals sizeof(Int_t)
+// NOTE: number of elements in the arrays equals sizeof(Int_t), except for trgPho*, which equals the sizeof(ULong64_t)
 vector<float> trgElePt[32], trgEleEta[32], trgElePhi[32];
-vector<float> trgPhoPt[32], trgPhoEta[32], trgPhoPhi[32];
+vector<float> trgPhoPt[64], trgPhoEta[64], trgPhoPhi[64];
 vector<float> trgMuPt[32],  trgMuEta[32],  trgMuPhi[32];
 
 void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
@@ -18,12 +18,14 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgElePt [i].clear();
     trgEleEta[i].clear();
     trgElePhi[i].clear();
-    trgPhoPt [i].clear();
-    trgPhoEta[i].clear();
-    trgPhoPhi[i].clear();
     trgMuPt  [i].clear();
     trgMuEta [i].clear();
     trgMuPhi [i].clear();
+  }
+  for(size_t i = 64; i < 64; i++){
+    trgPhoPt [i].clear();
+    trgPhoEta[i].clear();
+    trgPhoPhi[i].clear();
   }
 
   // filter => index (in trg*[] arrays) mappings
@@ -55,30 +57,30 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoFilters["hltEG500HEFilter"]   = 11;
     phoFilters["hltEG600HEFilter"]   = 12;
     //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"] = 13;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededLastFilter"] = 14;
-    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 15;
-    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"] = 16;
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 13;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededLastFilter"]                    = 14;
+    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 15;
+    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 16;
     //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9pixSeedUnseededLastFilter"] = 17;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededpixSeedLastFilter"] = 18;
-    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 19;
-    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"] = 20;
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9pixSeedUnseededLastFilter"]                          = 17;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededpixSeedLastFilter"]             = 18;
+    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 19;
+    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 20;
     //For path HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
-    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"] = 21;
-    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"] = 22;
-    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"] = 23;
+    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 21;
+    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 22;
+    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 23;
     phoFilters["hltEG30PVRId85ANDIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 24;
     //For path HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"] = 25;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoSolidUnseededLastFilter"] = 26;
-    phoFilters["hltEG30R9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 27;
-    phoFilters["hltEG30RId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombLastFilter"] = 28;
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 25;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoSolidUnseededLastFilter"]               = 26;
+    phoFilters["hltEG30R9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                       = 27;
+    phoFilters["hltEG30RId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombLastFilter"]                   = 28;
     //For path HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
-    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"] = 29;
-    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"] = 30;
-    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"] = 31;
-    phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 32;
+    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 29;
+    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 30;
+    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 31;
+    phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"]  = 32;
   }
 
   // AOD vs miniAOD
@@ -210,7 +212,7 @@ ULong64_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta, double p
   // bits in the return value correspond to decisions from filters defined above
   ULong64_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 64; ++f)
     for (size_t v = 0; v < trgPhoPt[f].size(); ++v)
       if (fabs(pt - trgPhoPt[f][v])/trgPhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgPhoEta[f][v], trgPhoPhi[f][v]) < trgFilterDeltaRCut_) {
