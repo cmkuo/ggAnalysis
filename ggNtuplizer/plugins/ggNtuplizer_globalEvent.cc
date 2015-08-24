@@ -32,11 +32,9 @@ float     pfMETPhi_;
 float     pfMETsumEt_;
 float     pfMETmEtSig_;
 float     pfMETSig_;
-
 float     noHFMET_;
 float     noHFMETPhi_;
 float     noHFMETType1_;
-
 float     noHF_T1JERUp_;
 float     noHF_T1JERDo_;
 float     noHF_T1JESUp_;
@@ -49,13 +47,10 @@ float     noHF_T1TESUp_;
 float     noHF_T1TESDo_;
 float     noHF_T1UESUp_;
 float     noHF_T1UESDo_;
-
-
 float     noHF_T1Phi_;
 float     noHF_T1Px_;
 float     noHF_T1Py_;
 float     noHF_T1SumEt_;
-
 float     noHF_T1TxyPhi_;
 float     noHF_T1TxyPt_;
 
@@ -234,15 +229,50 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     // HLT name => bit correspondence
     // Electron or Muon or Cross triggers for 25 ns
     int bitEleMuX = -1;
-    if      (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  0; //bit0(lowest)
+    if      (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v")                    != string::npos) bitEleMuX =  0; //bit0(lowest)
+    else if (name.find("HLT_Ele22_eta2p1_WPTight_Gsf_v")                    != string::npos) bitEleMuX =  1; 
+    else if (name.find("HLT_Ele27_eta2p1_WPLoose_Gsf_v")                    != string::npos) bitEleMuX =  2; 
+    else if (name.find("HLT_Ele27_eta2p1_WPTight_Gsf_v")                    != string::npos) bitEleMuX =  3; 
+    else if (name.find("HLT_Ele32_eta2p1_WPLoose_Gsf_v")                    != string::npos) bitEleMuX =  4; 
+    else if (name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v")                    != string::npos) bitEleMuX =  5; 
+    else if (name.find("HLT_Ele23_WPLoose_Gsf_v")                           != string::npos) bitEleMuX =  6; 
+    else if (name.find("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  7; 
+    else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  8; 
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")             != string::npos) bitEleMuX = 20;
+    else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")           != string::npos) bitEleMuX = 21;
+    else if (name.find("HLT_Mu27_TkMu8_v")                                  != string::npos) bitEleMuX = 22;
+    else if (name.find("HLT_DoubleIsoMu17_eta2p1_v")                        != string::npos) bitEleMuX = 23;
+    else if (name.find("HLT_IsoMu24_eta2p1_v")                              != string::npos) bitEleMuX = 24;
+    else if (name.find("HLT_IsoMu27_v")                                     != string::npos) bitEleMuX = 25;
+    else if (name.find("HLT_Mu45_eta2p1_v")                                 != string::npos) bitEleMuX = 26;
+    else if (name.find("HLT_Mu55_v")                                        != string::npos) bitEleMuX = 27;
     else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 41;
     else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 42;
+    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v")                 != string::npos) bitEleMuX = 43;
+    else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v")                 != string::npos) bitEleMuX = 44;
 
     // Photon triggers for 25 ns
     int bitPho    = -1;
+    if      (name.find("HLT_Photon22_v")                    != string::npos) bitPho =  0; //bit0(lowest)
+    else if (name.find("HLT_Photon30_v")                    != string::npos) bitPho =  1; 
+    else if (name.find("HLT_Photon36_v")                    != string::npos) bitPho =  2; 
+    else if (name.find("HLT_Photon50_v")                    != string::npos) bitPho =  3; 
+    else if (name.find("HLT_Photon75_v")                    != string::npos) bitPho =  4; 
+    else if (name.find("HLT_Photon90_v")                    != string::npos) bitPho =  5; 
+    else if (name.find("HLT_Photon120_v")                   != string::npos) bitPho =  6; 
+    else if (name.find("HLT_Photon175_v")                   != string::npos) bitPho =  7; 
+    else if (name.find("HLT_Photon250_NoHE_v")              != string::npos) bitPho =  8; 
+    else if (name.find("HLT_Photon300_NoHE_v")              != string::npos) bitPho =  9; 
+    else if (name.find("HLT_Photon500_v")                   != string::npos) bitPho = 10; 
+    else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
+    else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
 
     // Jet triggers for 25 ns
     int bitJet    = -1;
+    if      (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq200_v") != string::npos) bitJet =  0;
+    else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq460_v") != string::npos) bitJet =  1; 
+    else if (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq240_v") != string::npos) bitJet =  2; 
+    else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq500_v") != string::npos) bitJet =  3; 
 
     //////////////////////////////triggers for 50ns////////////////////////////////////////    
     ///muon triggers
@@ -331,8 +361,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
 
     //////////////////////////end of HLT 50ns menu////////////////////////////
+    cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<endl;
 
-  }//for (size_t i = 0; i < trgNames.size(); ++i)
+  }
 
   edm::Handle<edm::View<pat::MET> > pfMETHandle;
   e.getByToken(pfMETlabel_, pfMETHandle);
