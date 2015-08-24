@@ -5,6 +5,8 @@
    * add single photon trigger filters
    * update to newer b-tagger
    * add b-tagger for AK8 jets
+   * update to newest EGM IDs
+   * add muon energy
 
 * V07-04-05-05
    * fix the problem of PF photon and NH isolation for photons

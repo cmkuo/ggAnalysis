@@ -3,9 +3,18 @@
 #### Note that the current head version need to be run with CMSSW_7_4_5
 
 ##### Caveat !
-If you take the head version of ggNtuplizer, you need to add
-git cms-merge-topic -u cms-met:METCorUnc74X 
-The new recipe and tag will be provided soon 
+Please note that we are preparing to update ggNtuplizer to CMSSW_7_4_9.
+Therefore the current head version only works with CMSSW_7_4_9.
+
+##### To work with CMSSW_7_4_9, you do:
+cd CMSSW_7_4_9/src <br>
+cmsenv <br>
+git cms-merge-topic -u cms-met:METCorUnc74X
+git cms-merge-topic ikrav:egm_id_747_v2 <br>
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
 
 ##### To work with CMSSW_7_4_5, you do:
 cd CMSSW_7_4_5/src <br>
@@ -14,16 +23,6 @@ git cms-merge-topic ikrav:egm_id_74X_v2 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V07-04-05-05 https://github.com/cmkuo/ggAnalysis.git <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_7_4_2, you do:
-
-cd CMSSW_7_4_2/src <br>
-cmsenv <br>
-git cms-merge-topic ikrav:egm_id_74X_v0 <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-02-03 https://github.com/cmkuo/ggAnalysis.git <br>
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox -b jetToolbox_74X <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
