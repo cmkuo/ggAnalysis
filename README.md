@@ -9,7 +9,7 @@ Therefore the current head version only works with CMSSW_7_4_9.
 ##### To work with CMSSW_7_4_9, you do:
 cd CMSSW_7_4_9/src <br>
 cmsenv <br>
-git cms-merge-topic -u cms-met:METCorUnc74X
+git cms-merge-topic -u cms-met:METCorUnc74X <br>
 git cms-merge-topic ikrav:egm_id_747_v2 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
