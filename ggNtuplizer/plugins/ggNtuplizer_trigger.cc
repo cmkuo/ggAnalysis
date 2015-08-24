@@ -54,6 +54,31 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoFilters["hltEG300erEtFilter"] = 10;
     phoFilters["hltEG500HEFilter"]   = 11;
     phoFilters["hltEG600HEFilter"]   = 12;
+    //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"] = 13;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededLastFilter"] = 14;
+    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 15;
+    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"] = 16;
+    //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9pixSeedUnseededLastFilter"] = 17;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededpixSeedLastFilter"] = 18;
+    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 19;
+    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"] = 20;
+    //For path HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
+    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"] = 21;
+    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"] = 22;
+    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"] = 23;
+    phoFilters["hltEG30PVRId85ANDIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 24;
+    //For path HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v
+    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"] = 25;
+    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoSolidUnseededLastFilter"] = 26;
+    phoFilters["hltEG30R9Id85b90eHE10R9Id50b80eR9IdLastFilter"] = 27;
+    phoFilters["hltEG30RId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombLastFilter"] = 28;
+    //For path HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
+    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"] = 29;
+    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"] = 30;
+    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"] = 31;
+    phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 32;
   }
 
   // AOD vs miniAOD
