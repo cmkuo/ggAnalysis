@@ -205,10 +205,10 @@ Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta, double phi
   return result;
 }
 
-Int_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta, double phi) {
+ULong64_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above
-  Int_t result = 0;
+  ULong64_t result = 0;
 
   for (size_t f = 0; f < 32; ++f)
     for (size_t v = 0; v < trgPhoPt[f].size(); ++v)

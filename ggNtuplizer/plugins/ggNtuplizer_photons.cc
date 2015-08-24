@@ -73,7 +73,7 @@ vector<float>  phoPFNeuIsoFrix8_;
 vector<float>  phoSeedBCE_;
 vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
-vector<int>    phoFiredTrgs_;
+vector<ULong64_t>    phoFiredTrgs_;
 vector<float>  phoEcalRecHitSumEtConeDR03_;
 vector<float>  phohcalDepth1TowerSumEtConeDR03_;
 vector<float>  phohcalDepth2TowerSumEtConeDR03_;
