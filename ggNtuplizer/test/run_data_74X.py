@@ -16,11 +16,26 @@ process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(5) )
 
+#jec from sqlite
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+        connect = cms.string('sqlite:DBFiles/Summer15_50nsV4_MC.db'),
+        toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV4_MC_AK4PFchs'),
+            label  = cms.untracked.string('AK4PFchs')
+            )))
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
+
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
         #'/store/data/Run2015B/SinglePhoton/MINIAOD/17Jul2015-v1/30000/9AA235B1-C12E-E511-91BB-002618943902.root'
-        '/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
+        '/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
+#        '/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
         #'file:DoubleEG_Run2015B_251562_miniAOD.root'
         #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
         #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
@@ -54,7 +69,7 @@ if useAOD == True :
     process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True , addPUJetID=True)
+    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True )
     process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
 

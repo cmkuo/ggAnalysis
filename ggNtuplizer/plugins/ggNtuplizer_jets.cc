@@ -1,5 +1,11 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
+#include "JetMETCorrections/Objects/interface/JetCorrector.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectorParameters.h"
+#include "CondFormats/JetMETObjects/interface/JetCorrectionUncertainty.h"
+#include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
+#include "FWCore/Framework/interface/ESHandle.h"
+#include "FWCore/Framework/interface/EventSetup.h"
 
 using namespace std;
 
@@ -9,6 +15,9 @@ vector<float>  jetPt_;
 vector<float>  jetEn_;
 vector<float>  jetEta_;
 vector<float>  jetPhi_;
+vector<float> jetRawPt_;
+vector<float> jetRawEn_;
+vector<float> jetArea_;
 vector<float>  jetCHF_;
 vector<float>  jetNHF_;
 vector<float>  jetCEF_;
@@ -23,9 +32,7 @@ vector<float>  jetpfCombinedMVABJetTags_;
 vector<int>    jetPartonID_;
 vector<bool>   jetPFLooseId_;
 vector<float>  jetPUidFullDIscriminant_;
-vector<float>  jetPUidCutbasedId_;
-vector<float>  jetPUidFullId_;
-
+vector<float>  jetJECUnc_;
 
 //SubJet
 Int_t          nAK8Jet_;
@@ -63,14 +70,17 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree->Branch("jetEn",  &jetEn_);
   tree->Branch("jetEta", &jetEta_);
   tree->Branch("jetPhi", &jetPhi_);
+  tree_->Branch("jetRawPt", &jetRawPt_);
+  tree_->Branch("jetRawEn", &jetRawEn_);
+  tree_->Branch("jetArea", &jetArea_);
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetPUidFullDIscriminant", &jetPUidFullDIscriminant_);
-  tree->Branch("jetPUidCutbasedId", &jetPUidCutbasedId_);
-  tree->Branch("jetPUidFullId", &jetPUidFullId_);
+  tree->Branch("jetJECUnc", &jetJECUnc_);
+
   if (development_) {
     tree->Branch("jetCHF", &jetCHF_);
     tree->Branch("jetNHF", &jetNHF_);
@@ -115,21 +125,23 @@ void ggNtuplizer::branchesJets(TTree* tree)
 
 }
 
-void ggNtuplizer::fillJets(const edm::Event& e) {
+void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
   // cleanup from previous execution
   jetPt_                                  .clear();
   jetEn_                                  .clear();
   jetEta_                                 .clear();
   jetPhi_                                 .clear();
+  jetRawPt_.clear();
+  jetRawEn_.clear();
+  jetArea_.clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
   jetpfCombinedMVABJetTags_               .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
   jetPUidFullDIscriminant_                .clear();
-  jetPUidCutbasedId_                      .clear();
-  jetPUidFullId_                          .clear();
+  jetJECUnc_                              .clear();
   if (development_) {
     jetCHF_                                 .clear();
     jetNHF_                                 .clear();
@@ -177,13 +189,23 @@ void ggNtuplizer::fillJets(const edm::Event& e) {
     return;
   }
 
+  // Accessing the JEC uncertainties 
+  
+  edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
+  es.get<JetCorrectionsRecord>().get("AK4PFchs",JetCorParColl); 
+  JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
+  JetCorrectionUncertainty *jecUnc=0;
+  jecUnc = new JetCorrectionUncertainty(JetCorPar);
+  
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
     jetPhi_.push_back(   iJet->phi());
-
+    jetRawPt_.push_back( (*iJet).correctedJet("Uncorrected").pt());
+    jetRawEn_.push_back( (*iJet).correctedJet("Uncorrected").energy());
+    jetArea_.push_back( iJet->jetArea());
     if (development_) {
       jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
       jetNEF_.push_back(   iJet->neutralEmEnergyFraction());
@@ -195,6 +217,14 @@ void ggNtuplizer::fillJets(const edm::Event& e) {
       jetNConstituents_.push_back(iJet->numberOfDaughters());
     }
 
+    if (fabs(iJet->eta()) < 5.2) {
+      jecUnc->setJetEta(iJet->eta());
+      jecUnc->setJetPt(iJet->pt()); // here you must use the CORRECTED jet pt
+      jetJECUnc_.push_back(jecUnc->getUncertainty(true));
+    } else {
+      jetJECUnc_.push_back(-1.);
+    }
+    
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
@@ -208,15 +238,13 @@ void ggNtuplizer::fillJets(const edm::Event& e) {
 
     //PUJet ID
     jetPUidFullDIscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
-    jetPUidCutbasedId_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:cutbasedId"));
-    jetPUidFullId_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullId"));
     nJet_++;
   }
   
   if(dumpSubJets_) {
     edm::Handle<edm::View<pat::Jet> > jetsAK8;
     e.getByToken(jetsAK8Label_, jetsAK8);
-
+    
     if (!jetsAK8.isValid()) {
       edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK8AK8) in event";
       return;
@@ -305,4 +333,5 @@ void ggNtuplizer::fillJets(const edm::Event& e) {
       AK8softdropSubjetCSV_.push_back(vecSoftdropSubjetcsv);
     }
   }
+ delete jecUnc;
 }
