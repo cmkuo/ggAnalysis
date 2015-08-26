@@ -69,12 +69,12 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetEn",  &jetEn_);
   tree->Branch("jetEta", &jetEta_);
   tree->Branch("jetPhi", &jetPhi_);
-  tree_->Branch("jetRawPt", &jetRawPt_);
-  tree_->Branch("jetRawEn", &jetRawEn_);
-  tree_->Branch("jetArea", &jetArea_);
-  tree_->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
-  tree_->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
-  tree_->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
+  tree->Branch("jetRawPt", &jetRawPt_);
+  tree->Branch("jetRawEn", &jetRawEn_);
+  tree->Branch("jetArea", &jetArea_);
+  tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
+  tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
+  tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
