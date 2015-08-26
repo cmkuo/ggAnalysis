@@ -11,5 +11,8 @@
 <use name="HiggsAnalysis/HiggsTo2photons"/>
 <use name="RecoEcal/EgammaCoreTools"/>
 <use name="RecoEgamma/PhotonIdentification"/>
+<use name="CondFormats/JetMETObjects"/>
+<use name="JetMETCorrections/Objects"/>
+
 
 <flags EDM_PLUGIN="1"/>
