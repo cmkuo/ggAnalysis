@@ -10,61 +10,60 @@
 using namespace std;
 
 // (local) variables associated with tree branches
-Int_t          nJet_;
-vector<float>  jetPt_;
-vector<float>  jetEn_;
-vector<float>  jetEta_;
-vector<float>  jetPhi_;
+Int_t         nJet_;
+vector<float> jetPt_;
+vector<float> jetEn_;
+vector<float> jetEta_;
+vector<float> jetPhi_;
 vector<float> jetRawPt_;
 vector<float> jetRawEn_;
 vector<float> jetArea_;
-vector<float>  jetCHF_;
-vector<float>  jetNHF_;
-vector<float>  jetCEF_;
-vector<float>  jetNEF_;
-vector<int>    jetNCH_;
-vector<float>  jetHFHAE_;
-vector<float>  jetHFEME_;
-vector<int>    jetNConstituents_;
-vector<float>  jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
-vector<float>  jetJetProbabilityBJetTags_;
-vector<float>  jetpfCombinedMVABJetTags_;
-vector<int>    jetPartonID_;
-vector<bool>   jetPFLooseId_;
-vector<float>  jetPUidFullDIscriminant_;
-vector<float>  jetJECUnc_;
+vector<float> jetCHF_;
+vector<float> jetNHF_;
+vector<float> jetCEF_;
+vector<float> jetNEF_;
+vector<int>   jetNCH_;
+vector<float> jetHFHAE_;
+vector<float> jetHFEME_;
+vector<int>   jetNConstituents_;
+vector<float> jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
+vector<float> jetJetProbabilityBJetTags_;
+vector<float> jetpfCombinedMVABJetTags_;
+vector<int>   jetPartonID_;
+vector<bool>  jetPFLooseId_;
+vector<float> jetPUidFullDiscriminant_;
+vector<float> jetJECUnc_;
 
 //SubJet
-Int_t          nAK8Jet_;
-vector<float>  AK8JetPt_;
-vector<float>  AK8JetEn_;
-vector<float>  AK8JetEta_;
-vector<float>  AK8JetPhi_;
-vector<float>  AK8JetMass_;
-vector<float>  AK8Jet_tau1_;
-vector<float>  AK8Jet_tau2_;
-vector<float>  AK8Jet_tau3_;
-vector<float>  AK8JetCHF_;
-vector<float>  AK8JetNHF_;
-vector<float>  AK8JetCEF_;
-vector<float>  AK8JetNEF_;
-vector<int>    AK8JetNCH_;
-vector<int>    AK8Jetnconstituents_;
-vector<float>  AK8CHSSoftDropJetMass_;
+Int_t         nAK8Jet_;
+vector<float> AK8JetPt_;
+vector<float> AK8JetEn_;
+vector<float> AK8JetEta_;
+vector<float> AK8JetPhi_;
+vector<float> AK8JetMass_;
+vector<float> AK8Jet_tau1_;
+vector<float> AK8Jet_tau2_;
+vector<float> AK8Jet_tau3_;
+vector<float> AK8JetCHF_;
+vector<float> AK8JetNHF_;
+vector<float> AK8JetCEF_;
+vector<float> AK8JetNEF_;
+vector<int>   AK8JetNCH_;
+vector<int>   AK8Jetnconstituents_;
+vector<float> AK8CHSSoftDropJetMass_;
 
-vector<int> nAK8softdropSubjet_ ;
+vector<int>             nAK8softdropSubjet_ ;
 vector< vector<float> > AK8softdropSubjetPt_ ;
 vector< vector<float> > AK8softdropSubjetEta_ ;
 vector< vector<float> > AK8softdropSubjetMass_ ;
 vector< vector<float> > AK8softdropSubjetPhi_ ;
 vector< vector<float> > AK8softdropSubjetE_ ;
-vector< vector<int > > AK8softdropSubjetCharge_ ;
-vector< vector<int > > AK8softdropSubjetFlavour_;
+vector< vector<int > >  AK8softdropSubjetCharge_ ;
+vector< vector<int > >  AK8softdropSubjetFlavour_;
 vector< vector<float> > AK8softdropSubjetCSV_ ;
 
-//
-void ggNtuplizer::branchesJets(TTree* tree)
-{
+void ggNtuplizer::branchesJets(TTree* tree) {
+
   tree->Branch("nJet",   &nJet_);
   tree->Branch("jetPt",  &jetPt_);
   tree->Branch("jetEn",  &jetEn_);
@@ -73,12 +72,12 @@ void ggNtuplizer::branchesJets(TTree* tree)
   tree_->Branch("jetRawPt", &jetRawPt_);
   tree_->Branch("jetRawEn", &jetRawEn_);
   tree_->Branch("jetArea", &jetArea_);
-  tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
-  tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
-  tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
+  tree_->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
+  tree_->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
+  tree_->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
-  tree->Branch("jetPUidFullDIscriminant", &jetPUidFullDIscriminant_);
+  tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
   tree->Branch("jetJECUnc", &jetJECUnc_);
 
   if (development_) {
@@ -120,7 +119,6 @@ void ggNtuplizer::branchesJets(TTree* tree)
     tree->Branch("AK8softdropSubjetFlavour",    &AK8softdropSubjetFlavour_);
     tree->Branch("AK8softdropSubjetCSV",    &AK8softdropSubjetCSV_);
 
-
   }
 
 }
@@ -132,15 +130,15 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetEn_                                  .clear();
   jetEta_                                 .clear();
   jetPhi_                                 .clear();
-  jetRawPt_.clear();
-  jetRawEn_.clear();
-  jetArea_.clear();
+  jetRawPt_                               .clear();
+  jetRawEn_                               .clear();
+  jetArea_                                .clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
   jetpfCombinedMVABJetTags_               .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
-  jetPUidFullDIscriminant_                .clear();
+  jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
   if (development_) {
     jetCHF_                                 .clear();
@@ -199,6 +197,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
+
+    if (isAOD_ && iJet->pt() < 10) continue;
+
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
@@ -237,7 +238,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
 
     //PUJet ID
-    jetPUidFullDIscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
+    jetPUidFullDiscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
     nJet_++;
   }
   
