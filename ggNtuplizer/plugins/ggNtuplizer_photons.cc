@@ -104,6 +104,19 @@ float varESEffSigmaRR_; // for endcap MVA only
 float varPt_;
 float varEta_;
 
+//Necessary for the Photon Footprint removal
+template <class T, class U>
+bool isInFootprint(const T& thefootprint, const U& theCandidate) {
+  for ( auto itr = thefootprint.begin(); itr != thefootprint.end(); ++itr ) {
+
+    if( itr.key() == theCandidate.key() ) return true;
+    
+  }
+  return false;
+}
+
+
+
 // TMVA Reader for applying MVA
 TMVA::Reader *tmvaReader_[2];
 TString methodName_[2];
@@ -152,32 +165,32 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
   if (isAOD_) {
     tree->Branch("phoPFChWorstIso",       &phoPFChWorstIso_);
-    tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
-    tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
-    tree->Branch("phoPFChIsoFrix3",       &phoPFChIsoFrix3_);
-    tree->Branch("phoPFChIsoFrix4",       &phoPFChIsoFrix4_);
-    tree->Branch("phoPFChIsoFrix5",       &phoPFChIsoFrix5_);
-    tree->Branch("phoPFChIsoFrix6",       &phoPFChIsoFrix6_);
-    tree->Branch("phoPFChIsoFrix7",       &phoPFChIsoFrix7_);
-    tree->Branch("phoPFChIsoFrix8",       &phoPFChIsoFrix8_);
-    tree->Branch("phoPFPhoIsoFrix1",      &phoPFPhoIsoFrix1_);
-    tree->Branch("phoPFPhoIsoFrix2",      &phoPFPhoIsoFrix2_);
-    tree->Branch("phoPFPhoIsoFrix3",      &phoPFPhoIsoFrix3_);
-    tree->Branch("phoPFPhoIsoFrix4",      &phoPFPhoIsoFrix4_);
-    tree->Branch("phoPFPhoIsoFrix5",      &phoPFPhoIsoFrix5_);
-    tree->Branch("phoPFPhoIsoFrix6",      &phoPFPhoIsoFrix6_);
-    tree->Branch("phoPFPhoIsoFrix7",      &phoPFPhoIsoFrix7_);
-    tree->Branch("phoPFPhoIsoFrix8",      &phoPFPhoIsoFrix8_);
-    tree->Branch("phoPFNeuIsoFrix1",      &phoPFNeuIsoFrix1_);
-    tree->Branch("phoPFNeuIsoFrix2",      &phoPFNeuIsoFrix2_);
-    tree->Branch("phoPFNeuIsoFrix3",      &phoPFNeuIsoFrix3_);
-    tree->Branch("phoPFNeuIsoFrix4",      &phoPFNeuIsoFrix4_);
-    tree->Branch("phoPFNeuIsoFrix5",      &phoPFNeuIsoFrix5_);
-    tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
-    tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
-    tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
-  }
-
+   }
+  tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
+  tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
+  tree->Branch("phoPFChIsoFrix3",       &phoPFChIsoFrix3_);
+  tree->Branch("phoPFChIsoFrix4",       &phoPFChIsoFrix4_);
+  tree->Branch("phoPFChIsoFrix5",       &phoPFChIsoFrix5_);
+  tree->Branch("phoPFChIsoFrix6",       &phoPFChIsoFrix6_);
+  tree->Branch("phoPFChIsoFrix7",       &phoPFChIsoFrix7_);
+  tree->Branch("phoPFChIsoFrix8",       &phoPFChIsoFrix8_);
+  tree->Branch("phoPFPhoIsoFrix1",      &phoPFPhoIsoFrix1_);
+  tree->Branch("phoPFPhoIsoFrix2",      &phoPFPhoIsoFrix2_);
+  tree->Branch("phoPFPhoIsoFrix3",      &phoPFPhoIsoFrix3_);
+  tree->Branch("phoPFPhoIsoFrix4",      &phoPFPhoIsoFrix4_);
+  tree->Branch("phoPFPhoIsoFrix5",      &phoPFPhoIsoFrix5_);
+  tree->Branch("phoPFPhoIsoFrix6",      &phoPFPhoIsoFrix6_);
+  tree->Branch("phoPFPhoIsoFrix7",      &phoPFPhoIsoFrix7_);
+  tree->Branch("phoPFPhoIsoFrix8",      &phoPFPhoIsoFrix8_);
+  tree->Branch("phoPFNeuIsoFrix1",      &phoPFNeuIsoFrix1_);
+  tree->Branch("phoPFNeuIsoFrix2",      &phoPFNeuIsoFrix2_);
+  tree->Branch("phoPFNeuIsoFrix3",      &phoPFNeuIsoFrix3_);
+  tree->Branch("phoPFNeuIsoFrix4",      &phoPFNeuIsoFrix4_);
+  tree->Branch("phoPFNeuIsoFrix5",      &phoPFNeuIsoFrix5_);
+  tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
+  tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
+  tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
+  
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
@@ -368,6 +381,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap;
   edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap;
   edm::Handle<edm::ValueMap<float> > phoWorstChargedIsolationMap;
+  edm::Handle<std::vector<pat::PackedCandidate>> pfCndHandle; 
+  edm::Handle<edm::View<reco::Candidate> > CndHandle; 
+ 
+
+  e.getByLabel(pckPFCdsLabel_,pfCndHandle); 
+  e.getByLabel(pckPFCdsLabel_,CndHandle); 
+  auto_ptr<vector<pat::PackedCandidate> > CandColl( new vector<pat::PackedCandidate> (*pfCndHandle) );
+
+  
   if(runphoIDVID_){
     e.getByToken(phoLooseIdMapToken_ ,  loose_id_decisions);
     e.getByToken(phoMediumIdMapToken_,  medium_id_decisions);
@@ -402,6 +424,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
   double rho    = *(rhoHandle.product());
+
+  
 
   if (isAOD_) {
     edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
@@ -510,6 +534,76 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       std::vector<float> vtxIsolations03 = cicPhotonId_->pfTkIsoWithVertex(recophoRef, 0.3, 0.0, 0.0, 0.0, 0.2, 0.1, reco::PFCandidate::h);
       phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
     }
+    
+    //
+    //Filling Frix in case this is not AOD
+    if( !isAOD_ ){
+
+      //register 8 variables for each type of Iso corresponding to each frix. ring 
+      double IsoRNeu[8] = {0};
+      double IsoRPho[8] = {0};
+      double IsoRChg[8] = {0};
+      
+      //Quantities for charged hadron subtraction
+      const float dxyMax     = 0.1; 
+      const float dzMax      = 0.2; 
+      reco::Vertex pv = recVtxs->at(0);
+   
+
+      //Loop over PFCandidates in the event
+      for(uint ika = 0; ika < CandColl->size() ;ika++){ //PFCand Loop
+	pat::PackedCandidate & pfCand = (*CandColl)[ika];
+	const auto& iCand = CndHandle->ptrAt(ika);
+	
+	double DRgamma_cand = deltaR(iPho->eta(),iPho->phi(),iCand->eta(),iCand->phi()); 
+	
+	if(DRgamma_cand <  0.8){
+	  bool isF = isInFootprint(iPho->associatedPackedPFCandidates(),iCand); 
+	  if(isF == 0){
+	    int ir = DRgamma_cand*10;	    
+	    if( pfCand.pdgId() == 22  ) IsoRPho[ir] += pfCand.pt();
+	    if( pfCand.pdgId() == 130 ) IsoRNeu[ir] += pfCand.pt();
+	    if( pfCand.pdgId() == 211 ){
+	      float dz  = fabs(pfCand.pseudoTrack().dz(pv.position()));
+	      float dxy = fabs(pfCand.pseudoTrack().dxy(pv.position()));
+	      if( dxyMax > dxy ){
+		if( dzMax > dz ){
+		  IsoRChg[ir] += pfCand.pt();
+		}
+	      } 
+	    }// Charge Hadron Iso
+	  } // Is not in Photon Footprint
+	} // DR photon cand check
+      }//eof loop on pfCands 
+      phoPFChIsoFrix1_.push_back(IsoRChg[0]);
+      phoPFChIsoFrix2_.push_back(IsoRChg[1]);
+      phoPFChIsoFrix3_.push_back(IsoRChg[2]);
+      phoPFChIsoFrix4_.push_back(IsoRChg[3]);
+      phoPFChIsoFrix5_.push_back(IsoRChg[4]);
+      phoPFChIsoFrix6_.push_back(IsoRChg[5]);
+      phoPFChIsoFrix7_.push_back(IsoRChg[6]);
+      phoPFChIsoFrix8_.push_back(IsoRChg[7]);
+   
+      phoPFPhoIsoFrix1_.push_back(IsoRPho[0]);
+      phoPFPhoIsoFrix2_.push_back(IsoRPho[1]);
+      phoPFPhoIsoFrix3_.push_back(IsoRPho[2]);
+      phoPFPhoIsoFrix4_.push_back(IsoRPho[3]);
+      phoPFPhoIsoFrix5_.push_back(IsoRPho[4]);
+      phoPFPhoIsoFrix6_.push_back(IsoRPho[5]);
+      phoPFPhoIsoFrix7_.push_back(IsoRPho[6]);
+      phoPFPhoIsoFrix8_.push_back(IsoRPho[7]);
+   
+      phoPFNeuIsoFrix1_.push_back(IsoRNeu[0]);
+      phoPFNeuIsoFrix2_.push_back(IsoRNeu[1]);
+      phoPFNeuIsoFrix3_.push_back(IsoRNeu[2]);
+      phoPFNeuIsoFrix4_.push_back(IsoRNeu[3]);
+      phoPFNeuIsoFrix5_.push_back(IsoRNeu[4]);
+      phoPFNeuIsoFrix6_.push_back(IsoRNeu[5]);
+      phoPFNeuIsoFrix7_.push_back(IsoRNeu[6]);
+      phoPFNeuIsoFrix8_.push_back(IsoRNeu[7]);
+
+    }// is not AOD for frix calculations 
+     //
 
     phoSeedBCE_          .push_back((*iPho).superCluster()->seed()->energy());
     phoSeedBCEta_        .push_back((*iPho).superCluster()->seed()->eta());

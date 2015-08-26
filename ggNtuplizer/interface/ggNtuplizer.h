@@ -70,7 +70,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillHFElectrons(const edm::Event&);
   void fillMuons      (const edm::Event&, math::XYZPoint&);
   void fillTaus       (const edm::Event&);
-  void fillJets       (const edm::Event&, const edm::EventSetup&);
+  void fillJets       (const edm::Event&);
 
   void cleanupPhotons();
 
@@ -129,7 +129,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK4Label_;
   edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK8Label_;
- 
+
+  //Frix Req
+
+  edm::InputTag pckPFCdsLabel_;
+
+
   ///Photon ID in VID framework - 11th May, 2015
   // photon ID decision objects and isolations
   edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_;
