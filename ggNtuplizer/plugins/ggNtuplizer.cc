@@ -68,6 +68,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   newparticles_              = ps.getParameter< vector<int > >("newParticles");
 
   pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
+  pckPFCdsLabel_ = ps.getParameter<edm::InputTag>("packedPFCands");
 
   cicPhotonId_ = new CiCPhotonID(ps);
 
@@ -88,6 +89,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   phoNeutralHadronIsolationToken_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
   phoPhotonIsolationToken_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation"));
   phoWorstChargedIsolationToken_  = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoWorstChargedIsolation"));
+
 
   Service<TFileService> fs;
   tree_    = fs->make<TTree>("EventTree", "Event data");
@@ -150,7 +152,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMuons(e, pv);
 
   if (dumpTaus_) fillTaus(e);
-  if (dumpJets_) fillJets(e, es);
+  if (dumpJets_) fillJets(e);
 
   hEvents_->Fill(1.5);
   tree_->Fill();
