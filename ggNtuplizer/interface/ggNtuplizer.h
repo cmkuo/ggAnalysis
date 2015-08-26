@@ -70,7 +70,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillHFElectrons(const edm::Event&);
   void fillMuons      (const edm::Event&, math::XYZPoint&);
   void fillTaus       (const edm::Event&);
-  void fillJets       (const edm::Event&);
+  void fillJets       (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
 

@@ -152,7 +152,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMuons(e, pv);
 
   if (dumpTaus_) fillTaus(e);
-  if (dumpJets_) fillJets(e);
+  if (dumpJets_) fillJets(e,es);
 
   hEvents_->Fill(1.5);
   tree_->Fill();
