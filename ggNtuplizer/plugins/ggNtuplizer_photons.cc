@@ -163,44 +163,39 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPFChIso",              &phoPFChIso_);
   tree->Branch("phoPFPhoIso",             &phoPFPhoIso_);
   tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
-  if (isAOD_) {
-    tree->Branch("phoPFChWorstIso",       &phoPFChWorstIso_);
-   }
-  tree->Branch("phoPFChIsoFrix1",       &phoPFChIsoFrix1_);
-  tree->Branch("phoPFChIsoFrix2",       &phoPFChIsoFrix2_);
-  tree->Branch("phoPFChIsoFrix3",       &phoPFChIsoFrix3_);
-  tree->Branch("phoPFChIsoFrix4",       &phoPFChIsoFrix4_);
-  tree->Branch("phoPFChIsoFrix5",       &phoPFChIsoFrix5_);
-  tree->Branch("phoPFChIsoFrix6",       &phoPFChIsoFrix6_);
-  tree->Branch("phoPFChIsoFrix7",       &phoPFChIsoFrix7_);
-  tree->Branch("phoPFChIsoFrix8",       &phoPFChIsoFrix8_);
-  tree->Branch("phoPFPhoIsoFrix1",      &phoPFPhoIsoFrix1_);
-  tree->Branch("phoPFPhoIsoFrix2",      &phoPFPhoIsoFrix2_);
-  tree->Branch("phoPFPhoIsoFrix3",      &phoPFPhoIsoFrix3_);
-  tree->Branch("phoPFPhoIsoFrix4",      &phoPFPhoIsoFrix4_);
-  tree->Branch("phoPFPhoIsoFrix5",      &phoPFPhoIsoFrix5_);
-  tree->Branch("phoPFPhoIsoFrix6",      &phoPFPhoIsoFrix6_);
-  tree->Branch("phoPFPhoIsoFrix7",      &phoPFPhoIsoFrix7_);
-  tree->Branch("phoPFPhoIsoFrix8",      &phoPFPhoIsoFrix8_);
-  tree->Branch("phoPFNeuIsoFrix1",      &phoPFNeuIsoFrix1_);
-  tree->Branch("phoPFNeuIsoFrix2",      &phoPFNeuIsoFrix2_);
-  tree->Branch("phoPFNeuIsoFrix3",      &phoPFNeuIsoFrix3_);
-  tree->Branch("phoPFNeuIsoFrix4",      &phoPFNeuIsoFrix4_);
-  tree->Branch("phoPFNeuIsoFrix5",      &phoPFNeuIsoFrix5_);
-  tree->Branch("phoPFNeuIsoFrix6",      &phoPFNeuIsoFrix6_);
-  tree->Branch("phoPFNeuIsoFrix7",      &phoPFNeuIsoFrix7_);
-  tree->Branch("phoPFNeuIsoFrix8",      &phoPFNeuIsoFrix8_);
-  
+  tree->Branch("phoPFChWorstIso",         &phoPFChWorstIso_);
+  tree->Branch("phoPFChIsoFrix1",         &phoPFChIsoFrix1_);
+  tree->Branch("phoPFChIsoFrix2",         &phoPFChIsoFrix2_);
+  tree->Branch("phoPFChIsoFrix3",         &phoPFChIsoFrix3_);
+  tree->Branch("phoPFChIsoFrix4",         &phoPFChIsoFrix4_);
+  tree->Branch("phoPFChIsoFrix5",         &phoPFChIsoFrix5_);
+  tree->Branch("phoPFChIsoFrix6",         &phoPFChIsoFrix6_);
+  tree->Branch("phoPFChIsoFrix7",         &phoPFChIsoFrix7_);
+  tree->Branch("phoPFChIsoFrix8",         &phoPFChIsoFrix8_);
+  tree->Branch("phoPFPhoIsoFrix1",        &phoPFPhoIsoFrix1_);
+  tree->Branch("phoPFPhoIsoFrix2",        &phoPFPhoIsoFrix2_);
+  tree->Branch("phoPFPhoIsoFrix3",        &phoPFPhoIsoFrix3_);
+  tree->Branch("phoPFPhoIsoFrix4",        &phoPFPhoIsoFrix4_);
+  tree->Branch("phoPFPhoIsoFrix5",        &phoPFPhoIsoFrix5_);
+  tree->Branch("phoPFPhoIsoFrix6",        &phoPFPhoIsoFrix6_);
+  tree->Branch("phoPFPhoIsoFrix7",        &phoPFPhoIsoFrix7_);
+  tree->Branch("phoPFPhoIsoFrix8",        &phoPFPhoIsoFrix8_);
+  tree->Branch("phoPFNeuIsoFrix1",        &phoPFNeuIsoFrix1_);
+  tree->Branch("phoPFNeuIsoFrix2",        &phoPFNeuIsoFrix2_);
+  tree->Branch("phoPFNeuIsoFrix3",        &phoPFNeuIsoFrix3_);
+  tree->Branch("phoPFNeuIsoFrix4",        &phoPFNeuIsoFrix4_);
+  tree->Branch("phoPFNeuIsoFrix5",        &phoPFNeuIsoFrix5_);
+  tree->Branch("phoPFNeuIsoFrix6",        &phoPFNeuIsoFrix6_);
+  tree->Branch("phoPFNeuIsoFrix7",        &phoPFNeuIsoFrix7_);
+  tree->Branch("phoPFNeuIsoFrix8",        &phoPFNeuIsoFrix8_);
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
   tree->Branch("phohcalTowerSumEtConeDR03",       &phohcalTowerSumEtConeDR03_);
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
-
-  if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
-  tree->Branch("phoIDMVA", &phoIDMVA_);
-
+  tree->Branch("phoIDMVA",                        &phoIDMVA_);
   tree->Branch("phoFiredTrgs",                    &phoFiredTrgs_);
+  if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
 
   if (isAOD_ && runphoMVAID_) {
     ////////////Prepare for photon ID MVA for Run II///////////
@@ -383,14 +378,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<edm::ValueMap<float> > phoWorstChargedIsolationMap;
   edm::Handle<std::vector<pat::PackedCandidate>> pfCndHandle; 
   edm::Handle<edm::View<reco::Candidate> > CndHandle; 
- 
-
-  e.getByLabel(pckPFCdsLabel_,pfCndHandle); 
-  e.getByLabel(pckPFCdsLabel_,CndHandle); 
-  auto_ptr<vector<pat::PackedCandidate> > CandColl( new vector<pat::PackedCandidate> (*pfCndHandle) );
-
   
-  if(runphoIDVID_){
+  if (runphoIDVID_) {
     e.getByToken(phoLooseIdMapToken_ ,  loose_id_decisions);
     e.getByToken(phoMediumIdMapToken_,  medium_id_decisions);
     e.getByToken(phoTightIdMapToken_ ,  tight_id_decisions);
@@ -532,12 +521,16 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       phoPFNeuIsoFrix8_.push_back(IsoRings[7]);
 
       std::vector<float> vtxIsolations03 = cicPhotonId_->pfTkIsoWithVertex(recophoRef, 0.3, 0.0, 0.0, 0.0, 0.2, 0.1, reco::PFCandidate::h);
-      phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
+      //phoPFChWorstIso_  .push_back(*max_element(vtxIsolations03.begin(), vtxIsolations03.end()));
     }
     
     //
     //Filling Frix in case this is not AOD
-    if( !isAOD_ ){
+    if (!isAOD_) {
+
+      e.getByLabel(pckPFCdsLabel_,pfCndHandle); 
+      e.getByLabel(pckPFCdsLabel_,CndHandle); 
+      auto_ptr<vector<pat::PackedCandidate> > CandColl( new vector<pat::PackedCandidate> (*pfCndHandle) );
 
       //register 8 variables for each type of Iso corresponding to each frix. ring 
       double IsoRNeu[8] = {0};
@@ -659,6 +652,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
         phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
         phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
         phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
+	phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho->originalObjectRef()]);
 
         //cout<<"Photons "<<endl;
         bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
@@ -680,6 +674,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
         phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
         phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho]);
         phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
+	phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho]);
 
         //cout<<"Photons "<<endl;
         bool isPassLoose  = (*loose_id_decisions)[pho];
