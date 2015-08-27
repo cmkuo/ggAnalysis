@@ -19,7 +19,7 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
-	connect = cms.string('sqlite:DBFiles/Summer15_50nsV4_MC.db'),
+	connect = cms.string('sqlite:Summer15_50nsV4_MC.db'),
 	toGet = cms.VPSet(
       	cms.PSet(
             record = cms.string('JetCorrectionsRecord'),
@@ -32,14 +32,14 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'file:DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
-'/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
+        '/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
         #'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'file:/data4/cmkuo/testfiles/TTJets_amcatnloFXFX-pythia813TeV_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'file:/data4/cmkuo/testfiles/WZ_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
-       #'/store/mc/RunIISpring15DR74/WminusH_HToZZTo4L_M125_13TeV_powheg-minlo-HWJ_JHUgen_pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/04AFB8D8-900C-E511-8FA1-3417EBE6471A.root'
+        #'/store/mc/RunIISpring15DR74/WminusH_HToZZTo4L_M125_13TeV_powheg-minlo-HWJ_JHUgen_pythia8/AODSIM/Asympt25ns_MCRUN2_74_V9-v2/70000/04AFB8D8-900C-E511-8FA1-3417EBE6471A.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
