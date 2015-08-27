@@ -14,7 +14,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   // Fills the arrays above.
 
   // cleanup from previous execution
-  for (size_t i = 0; i < 32; i++) {
+  for (size_t i = 0; i < 32; ++i) {
     trgElePt [i].clear();
     trgEleEta[i].clear();
     trgElePhi[i].clear();
@@ -22,7 +22,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgMuEta [i].clear();
     trgMuPhi [i].clear();
   }
-  for(size_t i = 0; i < 64; i++){
+  for (size_t i = 0; i < 64; ++i) {
     trgPhoPt [i].clear();
     trgPhoEta[i].clear();
     trgPhoPhi[i].clear();
@@ -35,11 +35,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
 
   // one-time initialization
   if (eleFilters.size() == 0) {
-    // FIXME: define actual filters
-    // FIXME: using only the latest filter in a HLT is not sufficient
-    eleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] = 0;
-    eleFilters["hltL1sL1SingleEG20ORL1SingleEG15"] = 1;
-    eleFilters["hltEle25WP60SC4HcalIsoFilter"] = 2;
+    eleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
+    eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
   }
 
   if (phoFilters.size() == 0) {
