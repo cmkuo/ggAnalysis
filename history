@@ -12,6 +12,7 @@
    * add jet variables for JEC
    * add JEC uncertainty
    * set jet pt threshold to 10 GeV for AOD
+   * add Frixione cone variables when running on mini-AOD 
 
 * V07-04-05-05
    * fix the problem of PF photon and NH isolation for photons
