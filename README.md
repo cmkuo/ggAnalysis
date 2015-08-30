@@ -3,8 +3,7 @@
 #### Note that the current head version need to be run with CMSSW_7_4_5
 
 ##### Caveat !
-Please note that we are preparing to update ggNtuplizer to CMSSW_7_4_9.
-Therefore the current head version only works with CMSSW_7_4_9.
+The current head version only works with CMSSW_7_4_9.
 
 ##### To work with CMSSW_7_4_9, you do:
 cd CMSSW_7_4_9/src <br>
