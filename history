@@ -1,4 +1,4 @@
-* New
+* V07-04-09-00
    * add MET filters
    * add MET correction and uncertainties
    * add GSF hits to electrons
@@ -7,7 +7,7 @@
    * add b-tagger for AK8 jets
    * update to newest EGM IDs
    * add muon energy
-   * add 25 ns triggers
+   * add more 50 ns and 25 ns triggers
    * add PU jet ID
    * add jet variables for JEC
    * add JEC uncertainty
