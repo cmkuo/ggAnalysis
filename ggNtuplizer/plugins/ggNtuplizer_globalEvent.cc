@@ -357,7 +357,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v"  )  != string::npos) bit50ns = 51;
     else if (name.find("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v"  )  != string::npos) bit50ns = 52;
     else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v"  )  != string::npos) bit50ns = 53;
-    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v"  )  != string::npos) bit50ns = 54;
+    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v"  )  != string::npos) bit50ns = 54;
     else if (name.find("HLT_PFMET170_NoiseCleaned_v"  )  != string::npos) bit50ns = 55;
     else if (name.find("HLT_CaloMET200_NoiseCleaned_v"  )  != string::npos) bit50ns = 56;
     else if (name.find("HLT_CaloJet500_NoJetID_v"  )  != string::npos) bit50ns = 57;
