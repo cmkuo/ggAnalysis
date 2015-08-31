@@ -1,5 +1,5 @@
 #### Current production tag : V07-04-05-05
-#### Newest tag for testing : V07-04-09-00
+#### Newest tag for testing : V07-04-09-01
 #### Note that the current head version need to be run with CMSSW_7_4_5
 
 ##### Caveat !
@@ -12,8 +12,14 @@ git cms-merge-topic -u cms-met:METCorUnc74X <br>
 git cms-merge-topic ikrav:egm_id_747_v2 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-09-00 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V07-04-09-01 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
+
+##### CRAB3 and V07-04-09-01
+When you run jobs with CRAB3 and V07-04-09-01 <br>
+you need to add the following line to your crab py file <br>
+Data : config.JobType.inputFiles = ['Summer15_50nsV4_DATA.db'] <br>
+MC : config.JobType.inputFiles = ['Summer15_50nsV4_MC.db'] <br>
 
 ##### To work with CMSSW_7_4_5, you do:
 cd CMSSW_7_4_5/src <br>
