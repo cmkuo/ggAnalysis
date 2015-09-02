@@ -13,7 +13,7 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 #jec from sqlite
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
@@ -31,8 +31,8 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        #'file:DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
-        '/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
+        'file:DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        #'/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
         #'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
@@ -64,7 +64,6 @@ useAOD = True
 if useAOD == True :
     dataFormat = DataFormat.AOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
-    process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute'] )
@@ -77,6 +76,7 @@ else :
     doNoHFMet = True
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 
+process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)

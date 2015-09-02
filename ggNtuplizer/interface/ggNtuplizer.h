@@ -19,7 +19,6 @@
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
 #include "DataFormats/RecoCandidate/interface/RecoEcalCandidate.h"
-#include "DataFormats/EgammaReco/interface/HFEMClusterShapeAssociation.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
@@ -114,8 +113,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >        pfMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >   electronCollection_;
-  edm::EDGetTokenT<std::vector<reco::RecoEcalCandidate> > hfElectronCollection_;
-  edm::EDGetTokenT<reco::HFEMClusterShapeAssociationCollection> hfClusterMapCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >     photonCollection_;
   edm::EDGetTokenT<edm::View<pat::Muon> >       muonCollection_;
   edm::EDGetTokenT<vector<pat::Tau> >           tauCollection_;
@@ -153,6 +150,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > eleMVAValuesMapToken_;
+  edm::EDGetTokenT<reco::PFCandidateCollection> pfCandidateCollection_;
   //check
   edm::EDGetToken gsfEle_;
 

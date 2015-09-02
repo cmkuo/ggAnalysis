@@ -47,10 +47,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   genParticlesCollection_    = consumes<vector<reco::GenParticle> > (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >            (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >       (ps.getParameter<InputTag>("electronSrc"));
-  if ( isAOD_ && runHFElectrons_ ) {
-    hfElectronCollection_      = consumes<vector<reco::RecoEcalCandidate> >(ps.getParameter<InputTag>("hfElectronSrc"));
-    hfClusterMapCollection_    = consumes<reco::HFEMClusterShapeAssociationCollection>(ps.getParameter<InputTag>("hfClusterShapeAssociationCollection"));
-  }
   gsfTracks_                 = consumes<View<reco::GsfTrack>>       (ps.getParameter<InputTag>("gsfTrackSrc"));
 
   photonCollection_          = consumes<View<pat::Photon> >         (ps.getParameter<InputTag>("photonSrc"));

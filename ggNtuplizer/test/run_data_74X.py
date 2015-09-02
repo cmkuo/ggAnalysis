@@ -66,7 +66,6 @@ if useAOD == True :
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
     process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
     process.ggNtuplizer.addFilterInfo=cms.bool(True)
-    process.ggNtuplizer.runHFElectrons=cms.bool(True)
     doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
@@ -86,6 +85,7 @@ else :
                                                        )
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 
+process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
