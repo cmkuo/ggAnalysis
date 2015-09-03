@@ -292,6 +292,16 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) bitJet =  7;
     else if (name.find("HLT_PFMET170_NoiseCleaned_v")              != string::npos) bitJet =  8;
     else if (name.find("HLT_CaloJet500_NoJetID_v")                 != string::npos) bitJet =  9;
+    else if (name.find("HLT_PFJet40_v")                            != string::npos) bitJet = 10; 
+    else if (name.find("HLT_PFJet60_v")                            != string::npos) bitJet = 11; 
+    else if (name.find("HLT_PFJet80_v")                            != string::npos) bitJet = 12; 
+    else if (name.find("HLT_PFJet140_v")                           != string::npos) bitJet = 13; 
+    else if (name.find("HLT_PFJet200_v")                           != string::npos) bitJet = 14; 
+    else if (name.find("HLT_PFJet260_v")                           != string::npos) bitJet = 15; 
+    else if (name.find("HLT_PFJet320_v")                           != string::npos) bitJet = 16; 
+    else if (name.find("HLT_PFJet400_v")                           != string::npos) bitJet = 17; 
+    else if (name.find("HLT_PFJet450_v")                           != string::npos) bitJet = 18; 
+    else if (name.find("HLT_PFJet500_v")                           != string::npos) bitJet = 19; 
 
     //////////////////////////////triggers for 50ns////////////////////////////////////////    
     ///muon triggers
