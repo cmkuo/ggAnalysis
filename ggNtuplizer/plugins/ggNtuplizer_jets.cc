@@ -33,6 +33,7 @@ vector<int>   jetPartonID_;
 vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
 vector<float> jetJECUnc_;
+vector<int>   jetFiredTrgs_;
 
 //SubJet
 Int_t         nAK8Jet_;
@@ -79,6 +80,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
   tree->Branch("jetJECUnc", &jetJECUnc_);
+  tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
 
   if (development_) {
     tree->Branch("jetCHF", &jetCHF_);
@@ -140,6 +142,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetPFLooseId_                           .clear();
   jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
+  jetFiredTrgs_                           .clear();
   if (development_) {
     jetCHF_                                 .clear();
     jetNHF_                                 .clear();
@@ -226,6 +229,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetJECUnc_.push_back(-1.);
     }
     
+    jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));
+
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));

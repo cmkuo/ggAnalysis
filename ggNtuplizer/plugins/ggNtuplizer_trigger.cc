@@ -4,11 +4,12 @@
 
 using namespace std;
 
-// local variables: per-filter per-electron/muon/photon arrays of matched trigger objects
+// local variables: per-filter per-electron/muon/photon/jet arrays of matched trigger objects
 // NOTE: number of elements in the arrays equals sizeof(Int_t), except for trgPho*, which equals the sizeof(ULong64_t)
 vector<float> trgElePt[32], trgEleEta[32], trgElePhi[32];
 vector<float> trgPhoPt[64], trgPhoEta[64], trgPhoPhi[64];
 vector<float> trgMuPt[32],  trgMuEta[32],  trgMuPhi[32];
+vector<float> trgJetPt[32], trgJetEta[32], trgJetPhi[32];
 
 void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   // Fills the arrays above.
@@ -21,6 +22,9 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgMuPt  [i].clear();
     trgMuEta [i].clear();
     trgMuPhi [i].clear();
+    trgJetPt [i].clear();
+    trgJetEta[i].clear();
+    trgJetPhi[i].clear();
   }
   for (size_t i = 0; i < 64; ++i) {
     trgPhoPt [i].clear();
@@ -32,14 +36,13 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   static std::map<string,size_t> eleFilters;
   static std::map<string,size_t> phoFilters;
   static std::map<string,size_t> muFilters;
+  static std::map<string,size_t> jetFilters;
 
   // one-time initialization
   if (eleFilters.size() == 0) {
     eleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
     eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
-  }
 
-  if (phoFilters.size() == 0) {
     phoFilters["hltEG22HEFilter"]    = 0;
     phoFilters["hltEG30HEFilter"]    = 1;
     phoFilters["hltEG36HEFilter"]    = 2;
@@ -78,7 +81,9 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 30;
     phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 31;
     phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"]  = 32;
-  }
+
+    jetFilters["hltJetExample"] = 0;
+}
 
   // AOD vs miniAOD
   if (isAOD_) {
@@ -96,6 +101,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
       std::map<string,size_t>::iterator idxEle = eleFilters.find(label);
       std::map<string,size_t>::iterator idxPho = phoFilters.find(label);
       std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
+      std::map<string,size_t>::iterator idxJet = jetFilters.find(label);
 
       // electron filters
       if (idxEle != eleFilters.end()) {
@@ -132,6 +138,18 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
           trgMuPhi[idx].push_back(trgV.phi());
         }
       }
+
+      // jet filters
+      if (idxJet != jetFilters.end()) {
+        size_t idx = idxJet->second;
+
+        for (size_t iK = 0; iK < keys.size(); ++iK) {
+          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
+          trgJetPt [idx].push_back(trgV.pt());
+          trgJetEta[idx].push_back(trgV.eta());
+          trgJetPhi[idx].push_back(trgV.phi());
+        }
+      }
     } // HLT filter loop
 
     return;
@@ -159,6 +177,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
       std::map<string,size_t>::iterator idxEle = eleFilters.find(label);
       std::map<string,size_t>::iterator idxPho = phoFilters.find(label);
       std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
+      std::map<string,size_t>::iterator idxJet = jetFilters.find(label);
 
       // electron filters
       if (idxEle != eleFilters.end()) {
@@ -182,6 +201,14 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         trgMuPt [idx].push_back(obj.pt());
         trgMuEta[idx].push_back(obj.eta());
         trgMuPhi[idx].push_back(obj.phi());
+      }
+
+      // jet filters
+      if (idxJet != jetFilters.end()) {
+        size_t idx = idxJet->second;
+        trgJetPt [idx].push_back(obj.pt());
+        trgJetEta[idx].push_back(obj.eta());
+        trgJetPhi[idx].push_back(obj.phi());
       }
     }
   }
@@ -236,6 +263,22 @@ Int_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta, double phi) {
   return result;
 }
 
+Int_t ggNtuplizer::matchJetTriggerFilters(double pt, double eta, double phi) {
+
+  // bits in the return value correspond to decisions from filters defined above
+  Int_t result = 0;
+
+  for (size_t f = 0; f < 32; ++f)
+    for (size_t v = 0; v < trgJetPt[f].size(); ++v)
+      if (fabs(pt - trgJetPt[f][v])/trgJetPt[f][v] < trgFilterDeltaPtCut_ &&
+          deltaR(eta, phi, trgJetEta[f][v], trgJetPhi[f][v]) < trgFilterDeltaRCut_) {
+        result |= (1<<f);
+        break;
+      }
+
+  return result;
+}
+
 Double_t ggNtuplizer::deltaPhi(Double_t phi1, Double_t phi2) {
 
   Double_t dPhi = phi1 - phi2;
@@ -243,10 +286,6 @@ Double_t ggNtuplizer::deltaPhi(Double_t phi1, Double_t phi2) {
   if (dPhi < -TMath::Pi()) dPhi += 2.*TMath::Pi();
 
   return dPhi;
-}
-
-Double_t ggNtuplizer::deltaEta(Double_t eta1, Double_t eta2) {
-  return eta1 - eta2;
 }
 
 Double_t ggNtuplizer::deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2) {
