@@ -34,7 +34,17 @@ vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
 vector<float> jetJECUnc_;
 vector<int>   jetFiredTrgs_;
-
+ vector<int> jetGenJetIndex_;
+vector<float> jetGenJetEn_;
+vector<float> jetGenJetPt_;
+vector<float> jetGenJetEta_;
+vector<float> jetGenJetPhi_;
+vector<int> jetGenPartonID_;
+vector<float> jetGenEn_;
+vector<float> jetGenPt_;
+vector<float> jetGenEta_;
+vector<float> jetGenPhi_;
+vector<int> jetGenPartonMomID_;
 //SubJet
 Int_t         nAK8Jet_;
 vector<float> AK8JetPt_;
@@ -76,12 +86,26 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
-  if (doGenParticles_) tree->Branch("jetPartonID", &jetPartonID_);
+  if (doGenParticles_){
+    tree->Branch("jetPartonID", &jetPartonID_);
+    tree_->Branch("jetGenJetIndex", &jetGenJetIndex_);
+    tree_->Branch("jetGenJetEn", &jetGenJetEn_);
+    tree_->Branch("jetGenJetPt", &jetGenJetPt_);
+    tree_->Branch("jetGenJetEta", &jetGenJetEta_);
+    tree_->Branch("jetGenJetPhi", &jetGenJetPhi_);
+    tree_->Branch("jetGenPartonID", &jetGenPartonID_);
+    tree_->Branch("jetGenEn", &jetGenEn_);
+    tree_->Branch("jetGenPt", &jetGenPt_);
+    tree_->Branch("jetGenEta", &jetGenEta_);
+    tree_->Branch("jetGenPhi", &jetGenPhi_);
+    tree_->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
+  }
+  
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
   tree->Branch("jetJECUnc", &jetJECUnc_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
-
+  
   if (development_) {
     tree->Branch("jetCHF", &jetCHF_);
     tree->Branch("jetNHF", &jetNHF_);
@@ -122,7 +146,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8softdropSubjetCSV",    &AK8softdropSubjetCSV_);
 
   }
-
+  
 }
 
 void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
@@ -153,7 +177,18 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetHFEME_                               .clear();
     jetNConstituents_                       .clear();
   }
-
+  jetGenJetIndex_.clear();
+  jetGenJetEn_.clear();
+  jetGenJetPt_.clear();
+  jetGenJetEta_.clear();
+  jetGenJetPhi_.clear();
+  jetGenPartonID_.clear();
+  jetGenEn_.clear();
+  jetGenPt_.clear();
+  jetGenEta_.clear();
+  jetGenPhi_.clear();
+  jetGenPartonMomID_.clear();
+  
   // SubJet
   AK8JetPt_           .clear();
   AK8JetEn_           .clear();
@@ -190,6 +225,13 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     return;
   }
 
+  edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
+  e.getByToken(genParticlesCollection_, genParticlesHandle);
+  if (!genParticlesHandle.isValid()) {
+    edm::LogWarning("ggNtuplizer") << "no reco::GenParticles in event";
+    return;
+  }
+  
   // Accessing the JEC uncertainties 
   
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
@@ -244,6 +286,52 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
     //PUJet ID
     jetPUidFullDiscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
+
+    // gen jet and parton
+    int jetGenPartonID = -99;
+    int jetGenPartonMomID = -99;
+    float jetGenEn = 0;
+    float jetGenPt = 0;
+    float jetGenEta = 0;
+    float jetGenPhi = 0;
+    if (doGenParticles_ && genParticlesHandle.isValid() ) {
+      if ((*iJet).genParton()) {
+	jetGenPartonID = (*iJet).genParton()->pdgId();
+	jetGenEn = (*iJet).genParton()->energy();
+	jetGenPt = (*iJet).genParton()->pt();
+	jetGenEta = (*iJet).genParton()->eta();
+	jetGenPhi = (*iJet).genParton()->phi();
+	if ((*iJet).genParton()->mother()) {
+	  jetGenPartonMomID = (*iJet).genParton()->mother()->pdgId();
+	}
+      }
+    }
+    jetGenPartonID_.push_back(jetGenPartonID);
+    jetGenPartonMomID_.push_back(jetGenPartonMomID);
+    jetGenEn_ .push_back(jetGenEn);
+    jetGenPt_ .push_back(jetGenPt);
+    jetGenEta_ .push_back(jetGenEta);
+    jetGenPhi_ .push_back(jetGenPhi);
+    int jetGenJetIndex = -1;
+    float jetGenJetEn = -1;
+    float jetGenJetPt = -999;
+    float jetGenJetEta = -999;
+    float jetGenJetPhi = -999;
+    if (doGenParticles_ && genParticlesHandle.isValid() ) {
+      if ((*iJet).genJet()) {
+	jetGenJetIndex = 1;
+	jetGenJetEn = (*iJet).genJet()->energy();
+	jetGenJetPt = (*iJet).genJet()->pt();
+	jetGenJetEta = (*iJet).genJet()->eta();
+	jetGenJetPhi = (*iJet).genJet()->phi();
+      }
+    }
+    jetGenJetIndex_.push_back(jetGenJetIndex);
+    jetGenJetEn_.push_back(jetGenJetEn);
+    jetGenJetPt_.push_back(jetGenJetPt);
+    jetGenJetEta_.push_back(jetGenJetEta);
+    jetGenJetPhi_.push_back(jetGenJetPhi);
+    
     nJet_++;
   }
   
