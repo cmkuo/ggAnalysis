@@ -82,9 +82,18 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 31;
     phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"]  = 32;
 
-    jetFilters["hltJetExample"] = 0;
-}
-
+    jetFilters["hltSinglePFJet40"]  =  0;
+    jetFilters["hltSinglePFJet60"]  =  1;
+    jetFilters["hltSinglePFJet80"]  =  2;
+    jetFilters["hltSinglePFJet140"] =  3;
+    jetFilters["hltSinglePFJet200"] =  4;
+    jetFilters["hltSinglePFJet260"] =  5;
+    jetFilters["hltSinglePFJet320"] =  6;
+    jetFilters["hltSinglePFJet400"] =  7;
+    jetFilters["hltSinglePFJet450"] =  8;
+    jetFilters["hltSinglePFJet500"] =  9;
+  }
+  
   // AOD vs miniAOD
   if (isAOD_) {
     edm::Handle<trigger::TriggerEvent> triggerHandle;
@@ -145,6 +154,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
 
         for (size_t iK = 0; iK < keys.size(); ++iK) {
           const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
+	  //cout<<"key : "<<label<<" "<<iK<<" "<<keys[iK]<<" "<<trgV.pt()<<" "<<trgV.eta()<<" "<<trgV.phi()<<endl;
           trgJetPt [idx].push_back(trgV.pt());
           trgJetEta[idx].push_back(trgV.eta());
           trgJetPhi[idx].push_back(trgV.phi());
