@@ -301,7 +301,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFJet260_v")                           != string::npos) bitJet = 15; 
     else if (name.find("HLT_PFJet320_v")                           != string::npos) bitJet = 16; 
     else if (name.find("HLT_PFJet400_v")                           != string::npos) bitJet = 17; 
-    else if (name.find("HLT_PFJet450_v")                           != string::npos) bitJet = 18; 
+    else if (name.find("HLT_PFJet450_v")                           != string::npos) bitJet = 18;     
     else if (name.find("HLT_PFJet500_v")                           != string::npos) bitJet = 19; 
 
     //////////////////////////////triggers for 50ns////////////////////////////////////////    
@@ -398,7 +398,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
 
     //////////////////////////end of HLT 50ns menu////////////////////////////
-    //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<endl;
+    //if (name.find("HLT_PFJet450_v") != string::npos) 
+    //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
   }
 
