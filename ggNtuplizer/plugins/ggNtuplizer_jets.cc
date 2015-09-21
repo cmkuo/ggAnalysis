@@ -226,11 +226,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   }
 
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
-  e.getByToken(genParticlesCollection_, genParticlesHandle);
-  if (!genParticlesHandle.isValid()) {
-    edm::LogWarning("ggNtuplizer") << "no reco::GenParticles in event";
-    return;
-  }
+  if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
   // Accessing the JEC uncertainties 
   
@@ -244,7 +240,6 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
 
     if (isAOD_ && iJet->pt() < 10) continue;
-
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());

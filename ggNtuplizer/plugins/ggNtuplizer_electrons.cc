@@ -310,13 +310,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleMissHits_        .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
     eleESEffSigmaRR_    .push_back(lazyTool.eseffsirir(*((*iEle).superCluster())));
 
-    if (iEle->ecalEnergy() == 0) {
-      eleEoverPInv_.push_back(1e30);
-    } else if (!std::isfinite(iEle->ecalEnergy())) {
-      eleEoverPInv_.push_back(1e30);
-    } else {
-      eleEoverPInv_.push_back(1./iEle->ecalEnergy() - 1./iEle->p());
-    }
+    // VID calculation of (1/E - 1/p)
+    if (iEle->ecalEnergy() == 0)   eleEoverPInv_.push_back(1e30);
+    else if (!std::isfinite(iEle->ecalEnergy()))  eleEoverPInv_.push_back(1e30);
+    else  eleEoverPInv_.push_back((1.0 - iEle->eSuperClusterOverP())/iEle->ecalEnergy());
 
     ///HEEP ID
     double eledEtaseedAtVtx = iEle->superCluster().isNonnull() && iEle->superCluster()->seed().isNonnull() ?
