@@ -5,9 +5,10 @@
 using namespace std;
 
 // local variables: per-filter per-electron/muon/photon/jet arrays of matched trigger objects
-// NOTE: number of elements in the arrays equals sizeof(Int_t), except for trgPho*, which equals the sizeof(ULong64_t)
+// NOTE: number of elements in the arrays equals sizeof(Int_t)
 vector<float> trgElePt[32], trgEleEta[32], trgElePhi[32];
-vector<float> trgPhoPt[64], trgPhoEta[64], trgPhoPhi[64];
+vector<float> trgSinglePhoPt[32], trgSinglePhoEta[32], trgSinglePhoPhi[32];
+vector<float> trgDoublePhoPt[32], trgDoublePhoEta[32], trgDoublePhoPhi[32];
 vector<float> trgMuPt[32],  trgMuEta[32],  trgMuPhi[32];
 vector<float> trgJetPt[32], trgJetEta[32], trgJetPhi[32];
 
@@ -19,6 +20,12 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgElePt [i].clear();
     trgEleEta[i].clear();
     trgElePhi[i].clear();
+    trgSinglePhoPt [i].clear();
+    trgSinglePhoEta[i].clear();
+    trgSinglePhoPhi[i].clear();
+    trgDoublePhoPt [i].clear();
+    trgDoublePhoEta[i].clear();
+    trgDoublePhoPhi[i].clear();
     trgMuPt  [i].clear();
     trgMuEta [i].clear();
     trgMuPhi [i].clear();
@@ -26,15 +33,11 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     trgJetEta[i].clear();
     trgJetPhi[i].clear();
   }
-  for (size_t i = 0; i < 64; ++i) {
-    trgPhoPt [i].clear();
-    trgPhoEta[i].clear();
-    trgPhoPhi[i].clear();
-  }
 
   // filter => index (in trg*[] arrays) mappings
   static std::map<string,size_t> eleFilters;
-  static std::map<string,size_t> phoFilters;
+  static std::map<string,size_t> phoSingleFilters;
+  static std::map<string,size_t> phoDoubleFilters;
   static std::map<string,size_t> muFilters;
   static std::map<string,size_t> jetFilters;
 
@@ -43,44 +46,44 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
     eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
 
-    phoFilters["hltEG22HEFilter"]    = 0;
-    phoFilters["hltEG30HEFilter"]    = 1;
-    phoFilters["hltEG36HEFilter"]    = 2;
-    phoFilters["hltEG50HEFilter"]    = 3;
-    phoFilters["hltEG75HEFilter"]    = 4;
-    phoFilters["hltEG90HEFilter"]    = 5;
-    phoFilters["hltEG120HEFilter"]   = 6;
-    phoFilters["hltEG165HE10Filter"] = 7;
-    phoFilters["hltEG175HEFilter"]   = 8;
-    phoFilters["hltEG250erEtFilter"] = 9;
-    phoFilters["hltEG300erEtFilter"] = 10;
-    phoFilters["hltEG500HEFilter"]   = 11;
-    phoFilters["hltEG600HEFilter"]   = 12;
+    phoSingleFilters["hltEG22HEFilter"]    = 0;
+    phoSingleFilters["hltEG30HEFilter"]    = 1;
+    phoSingleFilters["hltEG36HEFilter"]    = 2;
+    phoSingleFilters["hltEG50HEFilter"]    = 3;
+    phoSingleFilters["hltEG75HEFilter"]    = 4;
+    phoSingleFilters["hltEG90HEFilter"]    = 5;
+    phoSingleFilters["hltEG120HEFilter"]   = 6;
+    phoSingleFilters["hltEG165HE10Filter"] = 7;
+    phoSingleFilters["hltEG175HEFilter"]   = 8;
+    phoSingleFilters["hltEG250erEtFilter"] = 9;
+    phoSingleFilters["hltEG300erEtFilter"] = 10;
+    phoSingleFilters["hltEG500HEFilter"]   = 11;
+    phoSingleFilters["hltEG600HEFilter"]   = 12;
     //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 13;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededLastFilter"]                    = 14;
-    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 15;
-    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 16;
+    phoDoubleFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 13;
+    phoDoubleFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededLastFilter"]                    = 14;
+    phoDoubleFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 15;
+    phoDoubleFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 16;
     //For path HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9pixSeedUnseededLastFilter"]                          = 17;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededpixSeedLastFilter"]             = 18;
-    phoFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 19;
-    phoFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 20;
+    phoDoubleFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9pixSeedUnseededLastFilter"]                          = 17;
+    phoDoubleFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededpixSeedLastFilter"]             = 18;
+    phoDoubleFilters["hltEG30LR9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                      = 19;
+    phoDoubleFilters["hltEG30LIso60CaloId15b35eHE10R9Id50b80eEcalIsoLastFilter"]                            = 20;
     //For path HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
-    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 21;
-    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 22;
-    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 23;
-    phoFilters["hltEG30PVRId85ANDIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 24;
+    phoDoubleFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 21;
+    phoDoubleFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 22;
+    phoDoubleFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 23;
+    phoDoubleFilters["hltEG30PVRId85ANDIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"] = 24;
     //For path HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v
-    phoFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 25;
-    phoFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoSolidUnseededLastFilter"]               = 26;
-    phoFilters["hltEG30R9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                       = 27;
-    phoFilters["hltEG30RId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombLastFilter"]                   = 28;
+    phoDoubleFilters["hltEG18R9Id85b90eHE10R9Id50b80eR9UnseededLastFilter"]                                 = 25;
+    phoDoubleFilters["hltEG18Iso60CaloId15b35eHE10R9Id50b80eTrackIsoSolidUnseededLastFilter"]               = 26;
+    phoDoubleFilters["hltEG30R9Id85b90eHE10R9Id50b80eR9IdLastFilter"]                                       = 27;
+    phoDoubleFilters["hltEG30RId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombLastFilter"]                   = 28;
     //For path HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v
-    phoFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 29;
-    phoFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 30;
-    phoFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 31;
-    phoFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"]  = 32;
+    phoDoubleFilters["hltEG18EBR9Idb85e90HE10R9Id50b80eR9DoublePixelVetoUnseededLastFilter"]                = 29;
+    phoDoubleFilters["hltEG18EBIso60CaloId15b35eHE10R9Id50b80eTrackIsoUnseededDoublePixelVetoLastFilter"]   = 30;
+    phoDoubleFilters["hltEG30EBR9Idb85e90HE10R9Id50b80eR9IdLastFilter"]                                     = 31;
+    phoDoubleFilters["hltEG30EBRId85ORIso60CaloId15b35eANDHE10R9Id50b80eLegCombDoublePixelVetoLastFilter"]  = 32;
 
     jetFilters["hltSinglePFJet40"]  =  0;
     jetFilters["hltSinglePFJet60"]  =  1;
@@ -108,7 +111,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
       const trigger::Keys& keys  = triggerHandle->filterKeys(iF);
 
       std::map<string,size_t>::iterator idxEle = eleFilters.find(label);
-      std::map<string,size_t>::iterator idxPho = phoFilters.find(label);
+      std::map<string,size_t>::iterator idxPhoSingle = phoSingleFilters.find(label);
+      std::map<string,size_t>::iterator idxPhoDouble = phoDoubleFilters.find(label);
       std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
       std::map<string,size_t>::iterator idxJet = jetFilters.find(label);
 
@@ -124,15 +128,27 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         }
       }
 
-      // photon filters
-      if (idxPho != phoFilters.end()) {
-        size_t idx = idxPho->second;
+      // single photon filters
+      if (idxPhoSingle != phoSingleFilters.end()) {
+        size_t idx = idxPhoSingle->second;
 
         for (size_t iK = 0; iK < keys.size(); ++iK) {
           const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgPhoPt [idx].push_back(trgV.pt());
-          trgPhoEta[idx].push_back(trgV.eta());
-          trgPhoPhi[idx].push_back(trgV.phi());
+          trgSinglePhoPt [idx].push_back(trgV.pt());
+          trgSinglePhoEta[idx].push_back(trgV.eta());
+          trgSinglePhoPhi[idx].push_back(trgV.phi());
+        }
+      }
+
+      // double photon filters
+      if (idxPhoDouble != phoDoubleFilters.end()) {
+        size_t idx = idxPhoDouble->second;
+
+        for (size_t iK = 0; iK < keys.size(); ++iK) {
+          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
+          trgDoublePhoPt [idx].push_back(trgV.pt());
+          trgDoublePhoEta[idx].push_back(trgV.eta());
+          trgDoublePhoPhi[idx].push_back(trgV.phi());
         }
       }
 
@@ -185,7 +201,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
       string label = obj.filterLabels()[iF];
 
       std::map<string,size_t>::iterator idxEle = eleFilters.find(label);
-      std::map<string,size_t>::iterator idxPho = phoFilters.find(label);
+      std::map<string,size_t>::iterator idxPhoSingle = phoSingleFilters.find(label);
+      std::map<string,size_t>::iterator idxPhoDouble = phoDoubleFilters.find(label);
       std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
       std::map<string,size_t>::iterator idxJet = jetFilters.find(label);
 
@@ -197,12 +214,20 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         trgElePhi[idx].push_back(obj.phi());
       }
 
-      // photon filters
-      if (idxPho != phoFilters.end()) {
-        size_t idx = idxPho->second;
-        trgPhoPt [idx].push_back(obj.pt());
-        trgPhoEta[idx].push_back(obj.eta());
-        trgPhoPhi[idx].push_back(obj.phi());
+      // single photon filters
+      if (idxPhoSingle != phoSingleFilters.end()) {
+        size_t idx = idxPhoSingle->second;
+        trgSinglePhoPt [idx].push_back(obj.pt());
+        trgSinglePhoEta[idx].push_back(obj.eta());
+        trgSinglePhoPhi[idx].push_back(obj.phi());
+      }
+
+      // double photon filters
+      if (idxPhoDouble != phoDoubleFilters.end()) {
+        size_t idx = idxPhoDouble->second;
+        trgDoublePhoPt [idx].push_back(obj.pt());
+        trgDoublePhoEta[idx].push_back(obj.eta());
+        trgDoublePhoPhi[idx].push_back(obj.phi());
       }
 
       // muon filters
@@ -241,15 +266,31 @@ Int_t ggNtuplizer::matchElectronTriggerFilters(double pt, double eta, double phi
   return result;
 }
 
-ULong64_t ggNtuplizer::matchPhotonTriggerFilters(double pt, double eta, double phi) {
+Int_t ggNtuplizer::matchSinglePhotonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above
-  ULong64_t result = 0;
+  Int_t result = 0;
 
   for (size_t f = 0; f < 64; ++f)
-    for (size_t v = 0; v < trgPhoPt[f].size(); ++v)
-      if (fabs(pt - trgPhoPt[f][v])/trgPhoPt[f][v] < trgFilterDeltaPtCut_ &&
-          deltaR(eta, phi, trgPhoEta[f][v], trgPhoPhi[f][v]) < trgFilterDeltaRCut_) {
+    for (size_t v = 0; v < trgSinglePhoPt[f].size(); ++v)
+      if (fabs(pt - trgSinglePhoPt[f][v])/trgSinglePhoPt[f][v] < trgFilterDeltaPtCut_ &&
+          deltaR(eta, phi, trgSinglePhoEta[f][v], trgSinglePhoPhi[f][v]) < trgFilterDeltaRCut_) {
+        result |= (1<<f);
+        break;
+      }
+
+  return result;
+}
+
+Int_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, double phi) {
+
+  // bits in the return value correspond to decisions from filters defined above
+  Int_t result = 0;
+
+  for (size_t f = 0; f < 64; ++f)
+    for (size_t v = 0; v < trgDoublePhoPt[f].size(); ++v)
+      if (fabs(pt - trgDoublePhoPt[f][v])/trgDoublePhoPt[f][v] < trgFilterDeltaPtCut_ &&
+          deltaR(eta, phi, trgDoublePhoEta[f][v], trgDoublePhoPhi[f][v]) < trgFilterDeltaRCut_) {
         result |= (1<<f);
         break;
       }

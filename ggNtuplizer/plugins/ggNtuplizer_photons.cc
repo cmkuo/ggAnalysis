@@ -73,7 +73,8 @@ vector<float>  phoPFNeuIsoFrix8_;
 vector<float>  phoSeedBCE_;
 vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
-vector<ULong64_t>    phoFiredTrgs_;
+vector<Int_t>  phoFiredSingleTrgs_;
+vector<Int_t>  phoFiredDoubleTrgs_;
 vector<float>  phoEcalRecHitSumEtConeDR03_;
 vector<float>  phohcalDepth1TowerSumEtConeDR03_;
 vector<float>  phohcalDepth2TowerSumEtConeDR03_;
@@ -194,7 +195,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phohcalTowerSumEtConeDR03",       &phohcalTowerSumEtConeDR03_);
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
   tree->Branch("phoIDMVA",                        &phoIDMVA_);
-  tree->Branch("phoFiredTrgs",                    &phoFiredTrgs_);
+  tree->Branch("phoFiredSingleTrgs",              &phoFiredSingleTrgs_);
+  tree->Branch("phoFiredDoubleTrgs",              &phoFiredDoubleTrgs_);
   if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
 
   if (isAOD_ && runphoMVAID_) {
@@ -341,7 +343,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoSeedBCE_           .clear();
   phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
-  phoFiredTrgs_         .clear();
+  phoFiredSingleTrgs_   .clear();
+  phoFiredDoubleTrgs_   .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
@@ -456,7 +459,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //phoPFPhoIso_      .push_back(iPho->photonIso());
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
 
-    phoFiredTrgs_     .push_back(matchPhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
+    phoFiredSingleTrgs_     .push_back(matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
+    phoFiredDoubleTrgs_     .push_back(matchDoublePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
 
     std::vector<float> vCov = lazyToolnoZS.localCovariances( *((*iPho).superCluster()->seed()) );
     //const float see = (isnan(vCov[0]) ? 0. : sqrt(vCov[0]));
