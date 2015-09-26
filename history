@@ -1,3 +1,8 @@
+* V07-04-09-02
+   * fix nJet = 0 for data
+   * split photon trigger matching into 2 variables (one for single photon and one for double photon)
+   * fix |1/E - 1/p| 
+
 * V07-04-09-01
    * use the right sqlite file for data
 
