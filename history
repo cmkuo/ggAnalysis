@@ -1,3 +1,7 @@
+* new development
+   * add the decision of 5 muon IDs
+   * decrease muon pt threshold to 3 GeV
+
 * V07-04-09-02
    * add GEN jets
    * split photon trigger matching into 2 variables (one for single photon and one for double photon)

@@ -118,6 +118,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
 
+  reco::Vertex vtx;
+
   // best-known primary vertex coordinates
   math::XYZPoint pv(0, 0, 0);
   for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
@@ -127,6 +129,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
     if (!isFake) {
       pv.SetXYZ(v->x(), v->y(), v->z());
+      vtx = *v;
       break;
     }
   }
@@ -145,7 +148,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
   if (isAOD_ && runHFElectrons_ ) fillHFElectrons(e);
-  fillMuons(e, pv);
+  fillMuons(e, pv, vtx);
 
   if (dumpTaus_) fillTaus(e);
   if (dumpJets_) fillJets(e,es);

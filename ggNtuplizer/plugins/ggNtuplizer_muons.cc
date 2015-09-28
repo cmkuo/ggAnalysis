@@ -1,4 +1,5 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "DataFormats/MuonReco/interface/MuonSelectors.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
@@ -11,8 +12,11 @@ vector<float>  muEta_;
 vector<float>  muPhi_;
 vector<int>    muCharge_;
 vector<int>    muType_;
-vector<int>    muIsGood_;
-//vector<int>    muID_;
+vector<Bool_t> muIsLooseID_;
+vector<Bool_t> muIsMediumID_;
+vector<Bool_t> muIsTightID_;
+vector<Bool_t> muIsSoftID_;
+vector<Bool_t> muIsHighPtID_;
 vector<float>  muD0_;
 vector<float>  muDz_;
 vector<float>  muChi2NDF_;
@@ -46,8 +50,11 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPhi",         &muPhi_);
   tree->Branch("muCharge",      &muCharge_);
   tree->Branch("muType",        &muType_);
-  tree->Branch("muIsGood",      &muIsGood_);
-  //tree->Branch("muID",          &muID_);
+  tree->Branch("muIsLooseID",   &muIsLooseID_);
+  tree->Branch("muIsMediumID",  &muIsMediumID_);
+  tree->Branch("muIsTightID",   &muIsTightID_);
+  tree->Branch("muIsSoftID",    &muIsSoftID_);
+  tree->Branch("muIsHighPtID",  &muIsHighPtID_);
   tree->Branch("muD0",          &muD0_);
   tree->Branch("muDz",          &muDz_);
   tree->Branch("muChi2NDF",     &muChi2NDF_);
@@ -73,7 +80,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muBestTrkPt",            &muBestTrkPt_);
 }
 
-void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv) {
+void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Vertex vtx) {
 
   // cleanup from previous execution
   muPt_         .clear();
@@ -82,8 +89,11 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv) {
   muPhi_        .clear();
   muCharge_     .clear();
   muType_       .clear();
-  muIsGood_     .clear();
-  //muID_         .clear();
+  muIsLooseID_  .clear();
+  muIsMediumID_ .clear();
+  muIsTightID_  .clear();
+  muIsSoftID_   .clear();
+  muIsHighPtID_ .clear();
   muD0_         .clear();
   muDz_         .clear();
   muChi2NDF_    .clear();
@@ -120,7 +130,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv) {
 
   for (edm::View<pat::Muon>::const_iterator iMu = muonHandle->begin(); iMu != muonHandle->end(); ++iMu) {
 
-    if (iMu->pt() < 5) continue;
+    if (iMu->pt() < 3) continue;
     if (! (iMu->isPFMuon() || iMu->isGlobalMuon() || iMu->isTrackerMuon())) continue;
 
     muPt_    .push_back(iMu->pt());
@@ -129,9 +139,14 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv) {
     muPhi_   .push_back(iMu->phi());
     muCharge_.push_back(iMu->charge());
     muType_  .push_back(iMu->type());
-    muIsGood_.push_back((int) iMu->isGood("TMOneStationTight"));
     muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
     muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
+
+    muIsLooseID_ .push_back(iMu->isLooseMuon());;
+    muIsMediumID_.push_back(iMu->isMediumMuon());
+    muIsTightID_ .push_back(iMu->isTightMuon(vtx));
+    muIsSoftID_  .push_back(iMu->isSoftMuon(vtx));
+    muIsHighPtID_.push_back(iMu->isHighPtMuon(vtx));
 
     muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
 
