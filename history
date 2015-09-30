@@ -1,6 +1,8 @@
-* new development
+* V07-04-09-03
    * add the decision of 5 muon IDs
    * decrease muon pt threshold to 3 GeV
+   * update diphoton triggers and filters
+   * add BC variables for electrons
 
 * V07-04-09-02
    * add GEN jets
