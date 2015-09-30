@@ -81,6 +81,14 @@ vector<vector<float> > eleGSFPhi_;
 vector<vector<float> > eleGSFCharge_;
 vector<vector<int> >   eleGSFHits_;
 vector<vector<int> >   eleGSFMissHits_;
+vector<vector<float> > eleBCEn_;
+vector<vector<float> > eleBCEta_;
+vector<vector<float> > eleBCPhi_;
+vector<vector<float> > eleBCS25_;
+vector<vector<float> > eleBCS15_;
+vector<vector<float> > eleBCSieie_;
+vector<vector<float> > eleBCSieip_;
+vector<vector<float> > eleBCSipip_;
 
 Int_t nGSFTrk_;
 vector<float> gsfPt_;
@@ -153,6 +161,14 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleGSFCharge",                &eleGSFCharge_);
   tree->Branch("eleGSFHits",                  &eleGSFHits_);
   tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
+  tree->Branch("eleBCEn",                     &eleBCEn_);
+  tree->Branch("eleBCEta",                    &eleBCEta_);
+  tree->Branch("eleBCPhi",                    &eleBCPhi_);
+  tree->Branch("eleBCS25",                    &eleBCS25_);
+  tree->Branch("eleBCS15",                    &eleBCS15_);
+  tree->Branch("eleBCSieie",                  &eleBCSieie_);
+  tree->Branch("eleBCSieip",                  &eleBCSieip_);
+  tree->Branch("eleBCSipip",                  &eleBCSipip_);
   tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
 
   if (runeleIDVID_) tree->Branch("eleIDbit",  &eleIDbit_);
@@ -237,6 +253,14 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleGSFCharge_               .clear();
   eleGSFHits_                 .clear();
   eleGSFMissHits_             .clear();
+  eleBCEn_                    .clear();
+  eleBCEta_                   .clear();
+  eleBCPhi_                   .clear();
+  eleBCS25_                   .clear();
+  eleBCS15_                   .clear();
+  eleBCSieie_                 .clear();
+  eleBCSieip_                 .clear();
+  eleBCSipip_                 .clear();
   eleFiredTrgs_               .clear();
   eleIDbit_                   .clear();
 
@@ -405,6 +429,37 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleGSFHits_      .push_back(eleGSFHits);
       eleGSFMissHits_  .push_back(eleGSFMissHits);
     }
+
+    vector<float> eleBCEn;
+    vector<float> eleBCEta;
+    vector<float> eleBCPhi;
+    vector<float> eleBCS25;
+    vector<float> eleBCS15;
+    vector<float> eleBCSieie;
+    vector<float> eleBCSieip;
+    vector<float> eleBCSipip;
+    for (CaloCluster_iterator itbc = iEle->superCluster()->clustersBegin(); itbc != iEle->superCluster()->clustersEnd(); ++itbc) {
+      eleBCEn   .push_back((*itbc)->energy());
+      eleBCEta  .push_back((*itbc)->eta());
+      eleBCPhi  .push_back((*itbc)->phi());
+      eleBCS25  .push_back(lazyToolnoZS.e2x5Max(**itbc)/lazyToolnoZS.e5x5(**itbc));
+      eleBCS15  .push_back(lazyToolnoZS.e1x5(**itbc)/lazyToolnoZS.e5x5(**itbc));
+      vector<float> eleCov;
+      eleCov.clear();
+      eleCov = lazyToolnoZS.localCovariances(**itbc);
+      eleBCSieie.push_back(sqrt(eleCov[0]));
+      eleBCSieip.push_back(eleCov[1]);
+      eleBCSipip.push_back(eleCov[2]);
+    }
+    eleBCEn_   .push_back(eleBCEn);
+    eleBCEta_  .push_back(eleBCEta);
+    eleBCPhi_  .push_back(eleBCPhi);
+    eleBCS25_  .push_back(eleBCS25);
+    eleBCS15_  .push_back(eleBCS15);
+    eleBCSieie_.push_back(eleBCSieie);
+    eleBCSieip_.push_back(eleBCSieip);
+    eleBCSipip_.push_back(eleBCSipip);
+
 
     if (development_) {
 
