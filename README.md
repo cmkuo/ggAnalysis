@@ -1,9 +1,9 @@
 #### Current production tag : V07-04-09-03
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_7_4_9 and CMSSW_7_4_12
+#### Note that the current head version can be run with CMSSW_7_4_9 and CMSSW_7_4_14
 
-##### To work with CMSSW_7_4_12, you do:
-cd CMSSW_7_4_12/src <br>
+##### To work with CMSSW_7_4_14, you do:
+cd CMSSW_7_4_14/src <br>
 cmsenv <br>
 git cms-merge-topic ikrav:egm_id_7.4.12_v1 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
