@@ -1,9 +1,15 @@
-#### Current production tag : V07-04-09-02
+#### Current production tag : V07-04-09-03
 #### Newest tag for testing : 
-#### Note that the current head version need to be run with CMSSW_7_4_5
+#### Note that the current head version can be run with CMSSW_7_4_9 and CMSSW_7_4_12
 
-##### Caveat !
-The current head version only works with CMSSW_7_4_9.
+##### To work with CMSSW_7_4_12, you do:
+cd CMSSW_7_4_12/src <br>
+cmsenv <br>
+git cms-merge-topic ikrav:egm_id_7.4.12_v1 <br>
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
 
 ##### To work with CMSSW_7_4_9, you do:
 cd CMSSW_7_4_9/src <br>
@@ -15,20 +21,11 @@ git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V07-04-09-02 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
-##### CRAB3 and V07-04-09-02
-When you run jobs with CRAB3 and V07-04-09-02 <br>
+##### CRAB3 and V07-04-09-03
+When you run jobs with CRAB3 and V07-04-09-03 <br>
 you need to add the following line to your crab py file <br>
 Data : config.JobType.inputFiles = ['Summer15_50nsV4_DATA.db'] <br>
 MC : config.JobType.inputFiles = ['Summer15_50nsV4_MC.db'] <br>
-
-##### To work with CMSSW_7_4_5, you do:
-cd CMSSW_7_4_5/src <br>
-cmsenv <br>
-git cms-merge-topic ikrav:egm_id_74X_v2 <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-05-05 https://github.com/cmkuo/ggAnalysis.git <br>
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
-scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
 for ELECRON ID: 5 IDs (Veto, Loose, Medium, Tight and HEEP) so only 5 bits are imp for us (59 bits of this integer  we are not using so may be we can change that to 16 bit integer later)<br>
