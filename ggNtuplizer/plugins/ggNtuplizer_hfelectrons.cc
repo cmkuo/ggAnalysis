@@ -47,135 +47,72 @@ void ggNtuplizer::fillHFElectrons(const edm::Event &e) {
   pfHFIso_   .clear();
   npfHF_ = 0;
 
-  edm::Handle<reco::PFCandidateCollection> pfCandidateHandle;
-  e.getByToken(pfAllParticles_, pfCandidateHandle);
-  if (!pfCandidateHandle.isValid()) {
-    edm::LogWarning("ggNtuplizer") << "no reco::PFCandidateCollection in event";
+  // =================================================================
+  edm::Handle<edm::View<pat::Jet> > jetHandle;
+  e.getByToken(jetsAK4Label_, jetHandle);
+  if (!jetHandle.isValid()) {
+    edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK4) in event";
     return;
   }
 
-  // =================================================================
-  // PF HF Electron candidates
-  vector<reco::PFCandidate> hfObjectsUnsorted;
-  hfObjectsUnsorted.clear();
-  for(unsigned int i=0; (unsigned int)i!=pfCandidateHandle->size(); ++i) {
-    reco::PFCandidate pfcand = pfCandidateHandle->at(i);
-    reco::PFCandidate::ParticleType candidateType = pfcand.particleId();
-    if ( candidateType != reco::PFCandidate::h_HF &&
-	 candidateType != reco::PFCandidate::egamma_HF ) continue;
-    hfObjectsUnsorted.push_back(pfcand);
-  }
-  // 
-  // sort them in energy
-  vector<std::pair<double, reco::PFCandidate> > hfObjectPairs;
-  for(unsigned int i = 0; (unsigned int)i!=hfObjectsUnsorted.size(); ++i) {
-    std::pair<double, reco::PFCandidate> newCluster =
-      make_pair(hfObjectsUnsorted[i].pt(), hfObjectsUnsorted[i]);
-    hfObjectPairs.push_back(newCluster);
-  }
-  std::sort(hfObjectPairs.begin(), hfObjectPairs.end(), pairCompare);
-  vector<reco::PFCandidate> hfObjects;
-  hfObjects.clear();
-  for(unsigned int i = 0; (unsigned int)i!=hfObjectPairs.size(); ++i) 
-    hfObjects.push_back(hfObjectPairs[i].second);
+  // Loop over jets
+  for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
+    if ( fabs(iJet->eta()) < 2.9 ) continue;
+    TLorentzVector pfJet;
+    pfJet.SetPtEtaPhiM(iJet->pt(), iJet->eta(), iJet->phi(), 0);
 
-  // Seeding is here ====================================================
-  bool seeding = true;
-  if ( seeding ) {
-    vector<int> seeds;
-    seeds.clear();
-    for(unsigned int ipf = 0; ipf != (unsigned int)hfObjects.size(); ++ipf) {
-      reco::PFCandidate object = hfObjects[ipf];
-      // remove PFCandidates that are marked as spikes
-      if ( object.ecalEnergy() == 0 && object.hcalEnergy() == 0 ) continue;
-      
+    vector<reco::PFCandidatePtr> pfs = iJet->getPFConstituents();
+
+    // seed is the most energetic cluster in the jet
+    if ( pfs[0]->ecalEnergy() == 0 && pfs[0]->hcalEnergy() == 0 ) continue; // skip the spike
+
+    TLorentzVector core;
+    core.SetPtEtaPhiM(pfs[0]->pt(), pfs[0]->eta(), pfs[0]->phi(), 0);    
+    TLorentzVector isolation;
+    isolation.SetPtEtaPhiM(0,0,0,0);
+    double ecalEnergy = pfs[0]->ecalEnergy();
+    double hcalEnergy = pfs[0]->hcalEnergy();
+    bool spike = false;
+    for(int i = 1; i != (int)pfs.size(); ++i) {
+      reco::PFCandidate pfCandidate =*(pfs[i]);
+      if ( pfCandidate.ecalEnergy() == 0 &&
+	   pfCandidate.hcalEnergy() == 0 ) {
+	spike = true;
+	break;
+      }
       TLorentzVector pf;
-      pf.SetPtEtaPhiM(object.pt(), object.eta(), object.phi(), 0);
-      if ( object.pt() < 5 ) continue; // require an energetic seed
-      bool rejectSeed = false;
-      for(int i = 0; i != (int)seeds.size(); ++i) {
-	reco::PFCandidate oldSeed = hfObjects[seeds[i]];
-	TLorentzVector pf2;
-	pf2.SetPtEtaPhiM(oldSeed.pt(), 
-			 oldSeed.eta(), 
-			 oldSeed.phi(), 
-			 0);
-	if ( pf2.DeltaR(pf) < 0.3 ) { // no other seeds within 0.3 in DeltaR
-	  rejectSeed = true;
-	  break;
-	}
+      pf.SetPtEtaPhiM(pfCandidate.pt(),
+		      pfCandidate.eta(),
+		      pfCandidate.phi(),
+		      0);
+      double dr = pf.DeltaR(core);
+      if ( dr < 0.15 ) {
+	core += pf;
+	ecalEnergy += pfCandidate.ecalEnergy();
+	hcalEnergy += pfCandidate.hcalEnergy();
       }
-      if (!rejectSeed) {
-	//cout << "This seed is selected!" << endl;
-	seeds.push_back(ipf);
+      if ( dr >= 0.15 && dr < 0.3 ) {
+	isolation += pf;
       }
-    } // loop over seeds
-    
-    // Loop over seeds
-    for(unsigned int iseed = 0; iseed != (unsigned int)seeds.size(); ++iseed) {
-      TLorentzVector electronHFCandidate;
-      int i = seeds[iseed];
+    } // Looped over constituents
 
-      TLorentzVector seed;
-      seed.SetPtEtaPhiM(hfObjects[i].pt(),
-			hfObjects[i].eta(),
-			hfObjects[i].phi(),
-			0);
-      electronHFCandidate = seed;
-      
-      double energyValue = hfObjects[i].energy();
-      double isoValue = 0;
-      double ecalEnergy = hfObjects[i].ecalEnergy();
-      double hcalEnergy = hfObjects[i].hcalEnergy();
-      // loop over the rest of PF objects
-      for(int ipf = 0; ipf != (int)hfObjects.size(); ++ipf) {
-	if ( ipf == i ) continue; // do not include the seed itself
-	reco::PFCandidate pf = hfObjects[ipf];
-	TLorentzVector cand;
-	cand.SetPtEtaPhiM(pf.pt(), pf.eta(), pf.phi(), 0);
-	if ( cand.DeltaR(seed) < 0.15 ) {
-	  energyValue += cand.E();
-	  ecalEnergy += pf.ecalEnergy();
-	  hcalEnergy += pf.hcalEnergy();
-	  electronHFCandidate += cand;
-	}
-	else if ( cand.DeltaR(seed) < 0.3 ) {
-	  if ( pf.ecalEnergy() == 0 &&
-	       pf.hcalEnergy() == 0 ) isoValue += 10000.0;
-	  isoValue += cand.E();
-	}
-      } 
-      
-      // Now, selection criteria
-      bool passEoH = false;
-      bool passIso = false;
-      if ( hcalEnergy == 0 || ecalEnergy/hcalEnergy > 0.4 ) passEoH = true;
-      if ( isoValue/energyValue < 0.4 ) passIso = true;
-      
-      if ( !(passEoH && passIso) ) continue;
-      
-      // object passed criteria, filling the tree
-      pfHFEn_.push_back(electronHFCandidate.E());
-      pfHFECALEn_.push_back(ecalEnergy);
-      pfHFHCALEn_.push_back(hcalEnergy);
-      pfHFPt_    .push_back(electronHFCandidate.Pt());
-      pfHFPhi_   .push_back(electronHFCandidate.Phi());
-      pfHFEta_   .push_back(electronHFCandidate.Eta());
-      pfHFIso_   .push_back(isoValue/energyValue);
-      ++npfHF_;
-    }
-  } else { // no seeding, save every single PFCandidate
-    for(unsigned int ipf = 0; ipf != (unsigned int)hfObjects.size(); ++ipf) {
-      reco::PFCandidate pf = hfObjects[ipf];
-      pfHFEn_.push_back(pf.energy());
-      pfHFECALEn_.push_back(pf.ecalEnergy());
-      pfHFHCALEn_.push_back(pf.hcalEnergy());
-      pfHFPt_    .push_back(pf.pt());
-      pfHFPhi_   .push_back(pf.phi());
-      pfHFEta_   .push_back(pf.eta());
-      pfHFIso_   .push_back(-1);
-      ++npfHF_;
-    } // no seeding
-  } // loop over HF PF objects    
+    // Selection criteria
+    if ( spike ) continue; // should not have any PFCandidates identidied as spike
+    //if ( core.Pt() < 5.0 ) continue; // sufficiently high pT
+    if ( pfs[0]->pt() < 5.0 ) continue; // require the seed PFCandidate to be energetic enough
+    
+    if ( ecalEnergy == 0 ) continue; // must have ecal energy to be called an electron/photon in HF
+    if ( hcalEnergy/ecalEnergy > 2.25 ) continue; // equivalent to ecal/hcal < 0.4 requirement
+    if ( isolation.E()/core.E() > 0.55 ) continue;
+    
+    ++npfHF_;
+    pfHFEn_.push_back(core.E());
+    pfHFECALEn_.push_back(ecalEnergy);
+    pfHFHCALEn_.push_back(hcalEnergy);
+    pfHFPt_.push_back(core.Pt());
+    pfHFPhi_.push_back(core.Phi());
+    pfHFEta_.push_back(core.Eta());
+    pfHFIso_.push_back(isolation.E());
+  }
 
 }
