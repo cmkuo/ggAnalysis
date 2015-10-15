@@ -239,6 +239,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  7; 
     else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  8; 
     else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")           != string::npos) bitEleMuX =  9;
+    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")                != string::npos) bitEleMuX = 10;
+    else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")                != string::npos) bitEleMuX = 11;
     else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")             != string::npos) bitEleMuX = 20;
     else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")           != string::npos) bitEleMuX = 21;
     else if (name.find("HLT_Mu27_TkMu8_v")                                  != string::npos) bitEleMuX = 22;
@@ -248,6 +250,11 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu45_eta2p1_v")                                 != string::npos) bitEleMuX = 26;
     else if (name.find("HLT_Mu55_v")                                        != string::npos) bitEleMuX = 27;
     else if (name.find("HLT_TripleMu_12_10_5_v")                            != string::npos) bitEleMuX = 28;
+    else if (name.find("HLT_IsoMu17_eta2p1_v")                              != string::npos) bitEleMuX = 29;
+    else if (name.find("HLT_IsoMu18_v")                                     != string::npos) bitEleMuX = 30;
+    else if (name.find("HLT_IsoMu20_v")                                     != string::npos) bitEleMuX = 31;
+    else if (name.find("HLT_Mu17_v")                                        != string::npos) bitEleMuX = 32;
+    else if (name.find("HLT_Mu20_v")                                        != string::npos) bitEleMuX = 33;
     else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 41;
     else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 42;
     else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")                != string::npos) bitEleMuX = 43;
