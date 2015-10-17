@@ -23,8 +23,6 @@ ULong64_t HLTJet_;
 ULong64_t HLTEleMuXIsPrescaled_;
 ULong64_t HLTPhoIsPrescaled_;
 ULong64_t HLTJetIsPrescaled_;
-ULong64_t HLT50ns_;
-ULong64_t HLTIsPrescaled50ns_;
 float     genMET_;
 float     genMETPhi_;
 float     pfMET_;
@@ -75,8 +73,6 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("HLTEleMuXIsPrescaled", &HLTEleMuXIsPrescaled_);
   tree->Branch("HLTPhoIsPrescaled",    &HLTPhoIsPrescaled_);
   tree->Branch("HLTJetIsPrescaled",    &HLTJetIsPrescaled_);
-  tree->Branch("HLT50ns",              &HLT50ns_);
-  tree->Branch("HLTIsPrescaled50ns",   &HLTIsPrescaled50ns_);
   if (doGenParticles_) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
@@ -211,8 +207,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   HLTEleMuXIsPrescaled_ = 0;
   HLTPhoIsPrescaled_    = 0;
   HLTJetIsPrescaled_    = 0;
-  HLT50ns_              = 0;
-  HLTIsPrescaled50ns_   = 0;
 
   edm::Handle<edm::TriggerResults> trgResultsHandle;
   e.getByToken(trgResultsLabel_, trgResultsHandle);
@@ -241,6 +235,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")           != string::npos) bitEleMuX =  9;
     else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")                != string::npos) bitEleMuX = 10;
     else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")                != string::npos) bitEleMuX = 11;
+    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL")                != string::npos) bitEleMuX = 12;
+    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW")             != string::npos) bitEleMuX = 13;
     else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")             != string::npos) bitEleMuX = 20;
     else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")           != string::npos) bitEleMuX = 21;
     else if (name.find("HLT_Mu27_TkMu8_v")                                  != string::npos) bitEleMuX = 22;
@@ -312,75 +308,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFJet450_v")                           != string::npos) bitJet = 18;     
     else if (name.find("HLT_PFJet500_v")                           != string::npos) bitJet = 19; 
 
-    //////////////////////////////triggers for 50ns////////////////////////////////////////    
-    ///muon triggers
-    Long64_t bit50ns = -1;
-    if      (name.find("HLT_Mu50_v")                    != string::npos) bit50ns = 0;  // bit 0 (lowest)
-    else if (name.find("HLT_Mu45_eta2p1_v" )  != string::npos) bit50ns = 1; 
-    else if (name.find("HLT_IsoMu20_v" )  != string::npos) bit50ns = 2; 
-    else if (name.find("HLT_IsoMu17_eta2p1_v" )  != string::npos) bit50ns = 3; 
-    else if (name.find("HLT_IsoTkMu20_v" )  != string::npos) bit50ns = 4; 
-    else if (name.find("HLT_IsoTkMu20_eta2p1_v" )  != string::npos) bit50ns = 5; 
-    else if (name.find("HLT_Mu27_TkMu8_v" )  != string::npos) bit50ns = 6; 
-    else if (name.find("HLT_Mu17_TrkIsoVVL_v" )  != string::npos) bit50ns = 7; 
-    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 8; 
-    else if (name.find("HLT_DoubleIsoMu17_eta2p1_v" )  != string::npos) bit50ns = 9; 
-    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v" )  != string::npos) bit50ns = 10; 
-    else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v" )  != string::npos) bit50ns = 11; 
-    
-    ///electron triggers
-    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 12; 
-    else if (name.find("HLT_Ele105_CaloIdVT_GsfTrkIdT_v" )  != string::npos) bit50ns = 13; 
-    else if (name.find("HLT_Ele27_eta2p1_WPLoose_Gsf_v" )  != string::npos) bit50ns = 14; 
-    else if (name.find("HLT_Ele27_eta2p1_WPTight_Gsf_v" )  != string::npos) bit50ns = 15; 
-    else if (name.find("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v" )  != string::npos) bit50ns = 16; 
-    else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 17; 
-    else if (name.find("HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v" )  != string::npos) bit50ns = 18; 
-    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v" )  != string::npos) bit50ns = 19; 
-    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v" )  != string::npos) bit50ns = 20; 
-
-    ///photon triggers
-    else if (name.find("HLT_Photon175_v")                    != string::npos) bit50ns = 21;  
-    else if (name.find("HLT_Photon250_NoHE_v" )  != string::npos) bit50ns = 22; 
-    else if (name.find("HLT_Photon165_HE10_v" )  != string::npos) bit50ns = 23;
-    else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v" )  != string::npos) bit50ns = 24; 
-    else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v" )  != string::npos) bit50ns = 25; 
-    else if (name.find("HLT_DoublePhoton85_v" )  != string::npos) bit50ns = 26; 
-    else if (name.find("HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v" )  != string::npos) bit50ns = 27; 
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v" )  != string::npos) bit50ns = 28; 
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v" )  != string::npos) bit50ns = 29; 
-    else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 30; 
-    else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v" )  != string::npos) bit50ns = 31; 
-    else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v" )  != string::npos) bit50ns = 32;
-    // tau triggers
-    else if (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v" )  != string::npos) bit50ns = 33; 
-    else if (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v")  != string::npos) bit50ns = 34;
-    // Tri-muon triggers
-    else if (name.find("HLT_TripleMu_12_10_5_v" )  != string::npos) bit50ns = 35; 
-    // cross triggers
-    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 36; 
-    else if (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v" )  != string::npos) bit50ns = 37; 
-    else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 38;
-    else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v" )  != string::npos) bit50ns = 39;
-    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 40;
-    else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v" )  != string::npos) bit50ns = 41;
-    else if (name.find("HLT_Photon30_v"  )  != string::npos) bit50ns = 42;
-    else if (name.find("HLT_Photon36_v"  )  != string::npos) bit50ns = 43;
-    else if (name.find("HLT_Photon50_v"  )  != string::npos) bit50ns = 44;
-    else if (name.find("HLT_Photon75_v"  )  != string::npos) bit50ns = 45;
-    else if (name.find("HLT_Photon90_v"  )  != string::npos) bit50ns = 46;
-    else if (name.find("HLT_Photon120_v"  )  != string::npos) bit50ns = 47;
-    else if (name.find("HLT_Photon300_NoHE_v"  )  != string::npos) bit50ns = 48;
-    else if (name.find("HLT_Photon500_v"  )  != string::npos) bit50ns = 49;
-    else if (name.find("HLT_Photon600_v"  )  != string::npos) bit50ns = 50;
-    else if (name.find("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v"  )  != string::npos) bit50ns = 51;
-    else if (name.find("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v"  )  != string::npos) bit50ns = 52;
-    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v"  )  != string::npos) bit50ns = 53;
-    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v"  )  != string::npos) bit50ns = 54;
-    else if (name.find("HLT_PFMET170_NoiseCleaned_v"  )  != string::npos) bit50ns = 55;
-    else if (name.find("HLT_CaloMET200_NoiseCleaned_v"  )  != string::npos) bit50ns = 56;
-    else if (name.find("HLT_CaloJet500_NoJetID_v"  )  != string::npos) bit50ns = 57;
-
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name)!=1) ? 1 : 0;
     ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
@@ -400,12 +327,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       HLTJetIsPrescaled_ |= (isPrescaled << bitJet);
     }
 
-    if (bit50ns >= 0) {
-      HLT50ns_            |= (isFired << bit50ns);
-      HLTIsPrescaled50ns_ |= (isPrescaled << bit50ns);
-    }
-
-    //////////////////////////end of HLT 50ns menu////////////////////////////
     //if (name.find("HLT_PFJet450_v") != string::npos) 
     //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
