@@ -1,6 +1,6 @@
 import FWCore.ParameterSet.Config as cms
 from HiggsAnalysis.HiggsTo2photons.hggPhotonIDCuts_cfi import *
-from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
+#from PhysicsTools.SelectorUtils.pfJetIDSelector_cfi import pfJetIDSelector
 #from CMGTools.External.pujetidproducer_cfi import stdalgos, chsalgos
 
 #useAOD = True
@@ -55,7 +55,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              ak4JetSrc                 = cms.InputTag("selectedPatJetsAK4PFCHS"),
                              ak8JetSrc                 = cms.InputTag("selectedPatJetsAK8PFCHS"),
                              tauSrc                    = cms.InputTag("selectedPatTaus"),
-                             pfLooseId                 = pfJetIDSelector.clone(),
+                             #pfLooseId                 = pfJetIDSelector.clone(),
                              
                              phoLooseIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-loose"),
                              phoMediumIdMap = cms.InputTag("egmPhotonIDs:cutBasedPhotonID-Spring15-50ns-V1-standalone-medium"),

@@ -23,7 +23,7 @@
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
-#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+//#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 
 using namespace std;
 
@@ -160,7 +160,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   CiCPhotonID    *cicPhotonId_;
 
-  PFJetIDSelectionFunctor pfLooseId_;
+  //PFJetIDSelectionFunctor pfLooseId_;
 
 };
 

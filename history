@@ -1,5 +1,9 @@
 * V07-04-14-00
    * update run py files for new tag
+   * remove HLT 50ns variables
+   * add new triggers
+   * change jet ID to 13 TeV one
+   * fix missing tau IDs
 
 * V07-04-09-03
    * add the decision of 5 muon IDs

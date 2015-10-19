@@ -77,7 +77,7 @@ process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
-process.ggNtuplizer.dumpTaus=cms.bool(False)
+process.ggNtuplizer.dumpTaus=cms.bool(True)
 
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)

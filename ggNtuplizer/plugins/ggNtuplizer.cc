@@ -63,7 +63,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   jetsAK8Label_ = consumes<View<pat::Jet> > (ps.getParameter<InputTag>("ak8JetSrc"));
   newparticles_              = ps.getParameter< vector<int > >("newParticles");
 
-  pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
+  //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
   pckPFCdsLabel_ = ps.getParameter<edm::InputTag>("packedPFCands");
 
   cicPhotonId_ = new CiCPhotonID(ps);
