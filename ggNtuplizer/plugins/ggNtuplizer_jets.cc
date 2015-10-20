@@ -306,10 +306,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     // gen jet and parton
     int jetGenPartonID = -99;
     int jetGenPartonMomID = -99;
-    float jetGenEn = 0;
-    float jetGenPt = 0;
-    float jetGenEta = 0;
-    float jetGenPhi = 0;
+    float jetGenEn = -999.;
+    float jetGenPt = -999.;
+    float jetGenEta = -999.;
+    float jetGenPhi = -999.;
     if (doGenParticles_ && genParticlesHandle.isValid() ) {
       if ((*iJet).genParton()) {
 	jetGenPartonID = (*iJet).genParton()->pdgId();
@@ -329,10 +329,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetGenEta_ .push_back(jetGenEta);
     jetGenPhi_ .push_back(jetGenPhi);
     int jetGenJetIndex = -1;
-    float jetGenJetEn = -1;
-    float jetGenJetPt = -999;
-    float jetGenJetEta = -999;
-    float jetGenJetPhi = -999;
+    float jetGenJetEn = -999.;
+    float jetGenJetPt = -999.;
+    float jetGenJetEta = -999.;
+    float jetGenJetPhi = -999.;
     if (doGenParticles_ && genParticlesHandle.isValid() ) {
       if ((*iJet).genJet()) {
 	jetGenJetIndex = 1;
