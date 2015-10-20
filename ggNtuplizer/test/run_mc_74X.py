@@ -31,10 +31,11 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        #'/store/mc/RunIISpring15DR74/WJetsToLNu_HT-100To200_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/Asympt25ns_MCRUN2_74_V9-v1/00000/0E885FA4-FF01-E511-B2DB-002590A3C95E.root'
+        #'file:DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'/store/mc/RunIISpring15DR74/QCD_Pt-15to7000_TuneCUETP8M1_Flat_13TeV_pythia8/AODSIM/Asympt50nsRaw_MCRUN2_74_V9A-v3/00000/04051FA7-CB05-E511-91BE-00266CFAE264.root'
         #'file:/data4/cmkuo/testfiles/GJet_pt_15to6000_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
-        #'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
+        'file:/data4/cmkuo/testfiles/DYJetsToLL_M50_13TeV_Spring15_Asympt50ns_MCRUN2_74_V9A-v3.root'
         #'file:/data4/cmkuo/testfiles/WJetsToLNu_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'file:/data4/cmkuo/testfiles/TTJets_amcatnloFXFX-pythia813TeV_Asympt25ns_MCRUN2_74_V9-v1.root'
         #'file:/data4/cmkuo/testfiles/WZ_13TeV_Spring15_Asympt25ns_MCRUN2_74_V9-v1.root'
@@ -75,6 +76,8 @@ else :
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     doNoHFMet = True
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
+    process.load("JetMETCorrections.Type1MET.pfMETmultShiftCorrections_cfi");
+    process.pfMEtMultShiftCorr.vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
 
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
@@ -89,7 +92,8 @@ switchOnVIDPhotonIdProducer(process, dataFormat)
 # define which IDs we want to produce
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff']
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff']
 
 #add them to the VID producer
 for idmod in my_id_modules:

@@ -74,7 +74,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   eleMediumIdMapToken_  = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleMediumIdMap"));
   eleTightIdMapToken_   = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleTightIdMap"));
   eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleHEEPIdMap"));
-  eleMVAValuesMapToken_ = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleMVAValuesMap"));
+  eleNonTrgMVAValuesMapToken_ = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleNonTrgMVAValuesMap"));
+  eleTrgMVAValuesMapToken_    = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleTrgMVAValuesMap"));
 
   // Photon ID in VID framwork 
   phoLooseIdMapToken_             = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoLooseIdMap"));

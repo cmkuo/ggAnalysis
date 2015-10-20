@@ -4,6 +4,8 @@
    * add new triggers
    * change jet ID to 13 TeV one
    * fix missing tau IDs
+   * add triggering electron MVA ID
+   * add conversion variables 
 
 * V07-04-09-03
    * add the decision of 5 muon IDs

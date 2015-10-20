@@ -53,6 +53,7 @@ vector<float>  elePFPhoIso_;
 vector<float>  elePFNeuIso_;
 vector<float>  elePFPUIso_;
 vector<float>  eleIDMVANonTrg_;
+vector<float>  eleIDMVATrg_;
 vector<float>  eledEtaseedAtVtx_;
 vector<float>  eleE1x5_;
 vector<float>  eleE2x5_;
@@ -142,6 +143,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFNeuIso",             &elePFNeuIso_);
   tree->Branch("elePFPUIso",              &elePFPUIso_);
   tree->Branch("eleIDMVANonTrg",          &eleIDMVANonTrg_);
+  tree->Branch("eleIDMVATrg",             &eleIDMVATrg_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
   tree->Branch("eleE1x5",                 &eleE1x5_);
   tree->Branch("eleE2x5",                 &eleE2x5_);
@@ -237,6 +239,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFNeuIso_                .clear();
   elePFPUIso_                 .clear();
   eleIDMVANonTrg_             .clear();
+  eleIDMVATrg_                .clear();
   eledEtaseedAtVtx_           .clear();
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
@@ -292,15 +295,17 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions; 
   edm::Handle<edm::ValueMap<bool> >  heep_id_decisions;
-  edm::Handle<edm::ValueMap<float> > eleMVAValues;
+  edm::Handle<edm::ValueMap<float> > eleNonTrgMVAValues;
+  edm::Handle<edm::ValueMap<float> > eleTrgMVAValues;
 
   if (runeleIDVID_) {
-    e.getByToken(eleVetoIdMapToken_ ,   veto_id_decisions);
-    e.getByToken(eleLooseIdMapToken_ ,  loose_id_decisions);
-    e.getByToken(eleMediumIdMapToken_,  medium_id_decisions);
-    e.getByToken(eleTightIdMapToken_,   tight_id_decisions);
-    e.getByToken(eleHEEPIdMapToken_ ,   heep_id_decisions);
-    e.getByToken(eleMVAValuesMapToken_, eleMVAValues);
+    e.getByToken(eleVetoIdMapToken_ ,         veto_id_decisions);
+    e.getByToken(eleLooseIdMapToken_ ,        loose_id_decisions);
+    e.getByToken(eleMediumIdMapToken_,        medium_id_decisions);
+    e.getByToken(eleTightIdMapToken_,         tight_id_decisions);
+    e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
+    e.getByToken(eleNonTrgMVAValuesMapToken_, eleNonTrgMVAValues);
+    e.getByToken(eleTrgMVAValuesMapToken_,    eleTrgMVAValues);
   }
 
   edm::Handle<reco::VertexCollection> recVtxs;
@@ -427,7 +432,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       vector<float> eleGSFCharge;
       vector<int>   eleGSFHits;  
       vector<int>   eleGSFMissHits;
-      vector<int>   eleGSFConvVtxFit;
       vector<int>   eleGSFNHitsMax;
       vector<float> eleGSFVtxProb;
       vector<float> eleGSFlxyPV;
@@ -461,7 +465,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	    for (vector<uint8_t>::const_iterator it = cnv->nHitsBeforeVtx().begin(); it!=cnv->nHitsBeforeVtx().end(); ++it) {
 	      if ((*it)>nHitsMax) nHitsMax = (*it);
 	    }
-	    
+	   
+	    break; 
 	  }
 	}
       }
@@ -500,6 +505,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	      for (std::vector<uint8_t>::const_iterator it = conv->nHitsBeforeVtx().begin(); it!=conv->nHitsBeforeVtx().end(); ++it) {
 		if ((*it)>nHitsMax) nHitsMax = (*it);
 	      }
+
+	      break; 
 	    }
 	  }
 	}
@@ -602,7 +609,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
         if(isPassHEEP) setbit(tmpeleIDbit, 4);
         //cout<<"isHeep: "<<isPassHEEP<<endl;
 
-        eleIDMVANonTrg_.push_back((*eleMVAValues)[el->originalObjectRef()]);
+        eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el->originalObjectRef()]);
+        eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el->originalObjectRef()]);
       }
 
       if (!isAOD_) {
@@ -627,7 +635,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
         if(isPassHEEP) setbit(tmpeleIDbit, 4);
         //cout<<"isHeep: "<<isPassHEEP<<endl;
 
-        eleIDMVANonTrg_.push_back((*eleMVAValues)[el]);
+        eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el]);
+        eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el]);
       }
 
       eleIDbit_.push_back(tmpeleIDbit);
