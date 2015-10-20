@@ -62,6 +62,7 @@ vector<float> AK8JetNEF_;
 vector<int>   AK8JetNCH_;
 vector<int>   AK8Jetnconstituents_;
 vector<float> AK8CHSSoftDropJetMass_;
+vector<float> AK8JetpfBoostedDSVBTag_;
 
 vector<int>             nAK8softdropSubjet_ ;
 vector< vector<float> > AK8softdropSubjetPt_ ;
@@ -119,31 +120,32 @@ void ggNtuplizer::branchesJets(TTree* tree) {
 
   // SubJet
   if (dumpSubJets_) {
-    tree->Branch("nAK8Jet",             &nAK8Jet_);
-    tree->Branch("AK8JetPt",            &AK8JetPt_);
-    //tree->Branch("AK8JetEn",            &AK8JetEn_);
-    tree->Branch("AK8JetEta",           &AK8JetEta_);
-    tree->Branch("AK8JetPhi",           &AK8JetPhi_);
-    tree->Branch("AK8JetMass",          &AK8JetMass_);
-    tree->Branch("AK8Jet_tau1",         &AK8Jet_tau1_);
-    tree->Branch("AK8Jet_tau2",         &AK8Jet_tau2_);
-    tree->Branch("AK8Jet_tau3",         &AK8Jet_tau3_);
-    tree->Branch("AK8JetCHF",           &AK8JetCHF_);
-    tree->Branch("AK8JetNHF",           &AK8JetNHF_);
-    tree->Branch("AK8JetCEF",           &AK8JetCEF_);
-    tree->Branch("AK8JetNEF",           &AK8JetNEF_);
-    tree->Branch("AK8JetNCH",           &AK8JetNCH_);
-    tree->Branch("AK8Jetnconstituents", &AK8Jetnconstituents_);
+    tree->Branch("nAK8Jet",                  &nAK8Jet_);
+    tree->Branch("AK8JetPt",                 &AK8JetPt_);
+    //tree->Branch("AK8JetEn",               &AK8JetEn_);
+    tree->Branch("AK8JetEta",                &AK8JetEta_);
+    tree->Branch("AK8JetPhi",                &AK8JetPhi_);
+    tree->Branch("AK8JetMass",               &AK8JetMass_);
+    tree->Branch("AK8Jet_tau1",              &AK8Jet_tau1_);
+    tree->Branch("AK8Jet_tau2",              &AK8Jet_tau2_);
+    tree->Branch("AK8Jet_tau3",              &AK8Jet_tau3_);
+    tree->Branch("AK8JetCHF",                &AK8JetCHF_);
+    tree->Branch("AK8JetNHF",                &AK8JetNHF_);
+    tree->Branch("AK8JetCEF",                &AK8JetCEF_);
+    tree->Branch("AK8JetNEF",                &AK8JetNEF_);
+    tree->Branch("AK8JetNCH",                &AK8JetNCH_);
+    tree->Branch("AK8Jetnconstituents",      &AK8Jetnconstituents_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
-    tree->Branch("nAK8softdropSubjet",    &nAK8softdropSubjet_);
-    tree->Branch("AK8softdropSubjetPt",    &AK8softdropSubjetPt_);
-    tree->Branch("AK8softdropSubjetEta",    &AK8softdropSubjetEta_);
-    tree->Branch("AK8softdropSubjetPhi",    &AK8softdropSubjetPhi_);
+    tree->Branch("AK8JetpfBoostedDSVBTag",               &AK8JetpfBoostedDSVBTag_);
+    tree->Branch("nAK8softdropSubjet",       &nAK8softdropSubjet_);
+    tree->Branch("AK8softdropSubjetPt",      &AK8softdropSubjetPt_);
+    tree->Branch("AK8softdropSubjetEta",     &AK8softdropSubjetEta_);
+    tree->Branch("AK8softdropSubjetPhi",     &AK8softdropSubjetPhi_);
     tree->Branch("AK8softdropSubjetMass",    &AK8softdropSubjetMass_);
-    tree->Branch("AK8softdropSubjetE",    &AK8softdropSubjetE_);
-    tree->Branch("AK8softdropSubjetCharge",    &AK8softdropSubjetCharge_);
-    tree->Branch("AK8softdropSubjetFlavour",    &AK8softdropSubjetFlavour_);
-    tree->Branch("AK8softdropSubjetCSV",    &AK8softdropSubjetCSV_);
+    tree->Branch("AK8softdropSubjetE",       &AK8softdropSubjetE_);
+    tree->Branch("AK8softdropSubjetCharge",  &AK8softdropSubjetCharge_);
+    tree->Branch("AK8softdropSubjetFlavour", &AK8softdropSubjetFlavour_);
+    tree->Branch("AK8softdropSubjetCSV",     &AK8softdropSubjetCSV_);
 
   }
   
@@ -202,9 +204,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetNHF_          .clear();
   AK8JetCEF_          .clear();
   AK8JetNEF_          .clear();
-  AK8JetNCH_          .clear();
-  AK8Jetnconstituents_.clear();
+  AK8JetNCH_          	.clear();
+  AK8Jetnconstituents_     .clear();
   AK8CHSSoftDropJetMass_   .clear();
+  AK8JetpfBoostedDSVBTag_              .clear();
   nAK8softdropSubjet_ .clear();
   AK8softdropSubjetPt_ .clear();
   AK8softdropSubjetEta_ .clear();
@@ -400,6 +403,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8Jetnconstituents_.push_back( ijetAK8->numberOfDaughters()); //1  
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
 //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
+      AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
 
 //save Softdrop subjet info Lvdp
       vecSoftdropSubjetcsv.clear();
