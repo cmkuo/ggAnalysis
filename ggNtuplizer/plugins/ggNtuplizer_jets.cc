@@ -61,6 +61,7 @@ vector<float> AK8JetCEF_;
 vector<float> AK8JetNEF_;
 vector<int>   AK8JetNCH_;
 vector<int>   AK8Jetnconstituents_;
+vector<bool>  AK8JetPFLooseId_;
 vector<float> AK8CHSSoftDropJetMass_;
 vector<float> AK8JetpfBoostedDSVBTag_;
 
@@ -75,7 +76,7 @@ vector< vector<int > >  AK8softdropSubjetFlavour_;
 vector< vector<float> > AK8softdropSubjetCSV_ ;
 
 void ggNtuplizer::branchesJets(TTree* tree) {
-
+  
   tree->Branch("nJet",   &nJet_);
   tree->Branch("jetPt",  &jetPt_);
   tree->Branch("jetEn",  &jetEn_);
@@ -135,8 +136,9 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetNEF",                &AK8JetNEF_);
     tree->Branch("AK8JetNCH",                &AK8JetNCH_);
     tree->Branch("AK8Jetnconstituents",      &AK8Jetnconstituents_);
+    tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
-    tree->Branch("AK8JetpfBoostedDSVBTag",               &AK8JetpfBoostedDSVBTag_);
+    tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
     tree->Branch("nAK8softdropSubjet",       &nAK8softdropSubjet_);
     tree->Branch("AK8softdropSubjetPt",      &AK8softdropSubjetPt_);
     tree->Branch("AK8softdropSubjetEta",     &AK8softdropSubjetEta_);
@@ -146,9 +148,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8softdropSubjetCharge",  &AK8softdropSubjetCharge_);
     tree->Branch("AK8softdropSubjetFlavour", &AK8softdropSubjetFlavour_);
     tree->Branch("AK8softdropSubjetCSV",     &AK8softdropSubjetCSV_);
-
   }
-  
 }
 
 void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
@@ -206,6 +206,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetNEF_          .clear();
   AK8JetNCH_          	.clear();
   AK8Jetnconstituents_     .clear();
+  AK8JetPFLooseId_         .clear();
   AK8CHSSoftDropJetMass_   .clear();
   AK8JetpfBoostedDSVBTag_              .clear();
   nAK8softdropSubjet_ .clear();
@@ -401,11 +402,31 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetNEF_.push_back( ijetAK8->neutralEmEnergyFraction()); //0.99
       AK8JetNCH_.push_back( ijetAK8->chargedMultiplicity()); //0
       AK8Jetnconstituents_.push_back( ijetAK8->numberOfDaughters()); //1  
+      
+      //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
+      bool AK8jetID = true;
+      if (fabs(ijetAK8->eta()) <= 3.0) {
+	if (!(ijetAK8->neutralHadronEnergyFraction() < 0.99))                       AK8jetID = false;
+	if (!(ijetAK8->neutralEmEnergyFraction() < 0.99))                           AK8jetID = false;
+	if (!((ijetAK8->chargedMultiplicity() + ijetAK8->neutralMultiplicity()) > 1))  AK8jetID = false;
+	if (fabs(ijetAK8->eta()) <= 2.4) {
+	  if (!(ijetAK8->chargedHadronEnergyFraction() > 0))  AK8jetID = false;
+	  if (!(ijetAK8->chargedMultiplicity() > 0))          AK8jetID = false;
+	  if (!(ijetAK8->chargedEmEnergyFraction() < 0.99))   AK8jetID = false;
+	}
+      }
+      if (fabs(ijetAK8->eta()) > 3.0) {
+	if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))  AK8jetID = false;
+	if (!(ijetAK8->neutralMultiplicity() > 10))        AK8jetID = false;
+      }
+      AK8JetPFLooseId_.push_back(AK8jetID);
+      
+      
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
-//      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
+      //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
-
-//save Softdrop subjet info Lvdp
+      
+      //save Softdrop subjet info Lvdp
       vecSoftdropSubjetcsv.clear();
       vecSoftdropSubjetpt.clear();
       vecSoftdropSubjeteta.clear();
@@ -443,5 +464,5 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8softdropSubjetCSV_.push_back(vecSoftdropSubjetcsv);
     }
   }
- delete jecUnc;
+  delete jecUnc;
 }
