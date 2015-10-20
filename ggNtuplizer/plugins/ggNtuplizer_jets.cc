@@ -280,19 +280,19 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //pat::strbitset retjet = pfLooseId_.getBitTemplate();
     //jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
     bool jetID = true;
-    if (fabs(iJet->eta()) < 3.) {
-      if (iJet->neutralHadronEnergyFraction() > 0.99) jetID = false;
-      if (iJet->neutralEmEnergyFraction() > 0.99) jetID = false;
-      if ((iJet->chargedMultiplicity() + iJet->neutralMultiplicity()) < 2) jetID = false;
-      if (fabs(iJet->eta()) < 2.4) {
-	if (iJet->chargedHadronEnergyFraction() < 0) jetID = false;
-	if (iJet->chargedMultiplicity() < 0) jetID = false;
-	if (iJet->chargedEmEnergyFraction() > 0.99) jetID = false;
+    if (fabs(iJet->eta()) <= 3.0) {
+      if (!(iJet->neutralHadronEnergyFraction() < 0.99))                       jetID = false;
+      if (!(iJet->neutralEmEnergyFraction() < 0.99))                           jetID = false;
+      if (!((iJet->chargedMultiplicity() + iJet->neutralMultiplicity()) > 1))  jetID = false;
+      if (fabs(iJet->eta()) <= 2.4) {
+        if (!(iJet->chargedHadronEnergyFraction() > 0))  jetID = false;
+        if (!(iJet->chargedMultiplicity() > 0))          jetID = false;
+        if (!(iJet->chargedEmEnergyFraction() < 0.99))   jetID = false;
       }
     }
-    if (fabs(iJet->eta()) > 3.) {
-      if (iJet->neutralEmEnergyFraction() > 0.9) jetID = false;
-      if (iJet->neutralMultiplicity() < 10) jetID = false;
+    if (fabs(iJet->eta()) > 3.0) {
+      if (!(iJet->neutralEmEnergyFraction() < 0.90))  jetID = false;
+      if (!(iJet->neutralMultiplicity() > 10))        jetID = false;
     }
     jetPFLooseId_.push_back(jetID);
 
