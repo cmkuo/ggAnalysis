@@ -1,8 +1,9 @@
-#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
-#include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
+#include "FWCore/MessageLogger/interface/MessageLogger.h"
+#include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
@@ -81,6 +82,10 @@ vector<vector<float> > eleGSFPhi_;
 vector<vector<float> > eleGSFCharge_;
 vector<vector<int> >   eleGSFHits_;
 vector<vector<int> >   eleGSFMissHits_;
+vector<vector<int> >   eleGSFNHitsMax_;
+vector<vector<float> > eleGSFVtxProb_;
+vector<vector<float> > eleGSFlxyPV_;
+vector<vector<float> > eleGSFlxyBS_;
 vector<vector<float> > eleBCEn_;
 vector<vector<float> > eleBCEta_;
 vector<vector<float> > eleBCPhi_;
@@ -161,6 +166,10 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleGSFCharge",                &eleGSFCharge_);
   tree->Branch("eleGSFHits",                  &eleGSFHits_);
   tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
+  tree->Branch("eleGSFNHitsMax",              &eleGSFNHitsMax_);
+  tree->Branch("eleGSFVtxProb",               &eleGSFVtxProb_);
+  tree->Branch("eleGSFlxyPV",                 &eleGSFlxyPV_);
+  tree->Branch("eleGSFlxyBS",                 &eleGSFlxyBS_);
   tree->Branch("eleBCEn",                     &eleBCEn_);
   tree->Branch("eleBCEta",                    &eleBCEta_);
   tree->Branch("eleBCPhi",                    &eleBCPhi_);
@@ -253,6 +262,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleGSFCharge_               .clear();
   eleGSFHits_                 .clear();
   eleGSFMissHits_             .clear();
+  eleGSFNHitsMax_             .clear();
+  eleGSFVtxProb_              .clear();
+  eleGSFlxyPV_                .clear();
+  eleGSFlxyBS_                .clear();
   eleBCEn_                    .clear();
   eleBCEta_                   .clear();
   eleBCPhi_                   .clear();
@@ -399,6 +412,14 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     }
 
     if (isAOD_) {
+
+      edm::Handle<reco::BeamSpot> bsHandle;
+      e.getByLabel("offlineBeamSpot", bsHandle);
+      const reco::BeamSpot &beamspot = *bsHandle.product();
+
+      edm::Handle<reco::ConversionCollection> hConversions;
+      e.getByLabel("allConversions", hConversions);      
+
       // Close-by GSF tracks
       vector<float> eleGSFPt;
       vector<float> eleGSFEta;
@@ -407,13 +428,48 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       vector<int>   eleGSFHits;  
       vector<int>   eleGSFMissHits;
       vector<int>   eleGSFConvVtxFit;
+      vector<int>   eleGSFNHitsMax;
+      vector<float> eleGSFVtxProb;
+      vector<float> eleGSFlxyPV;
+      vector<float> eleGSFlxyBS;
       eleGSFPt        .push_back(iEle->gsfTrack()->pt());
       eleGSFEta       .push_back(iEle->gsfTrack()->eta());
       eleGSFPhi       .push_back(iEle->gsfTrack()->phi());
       eleGSFCharge    .push_back(iEle->gsfTrack()->charge());
       eleGSFHits      .push_back(iEle->gsfTrack()->hitPattern().trackerLayersWithMeasurement());
       eleGSFMissHits  .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
-
+      
+      int   nHitsMax = -99;
+      float lxyBS    = -99.;
+      float lxyPV    = -99.;
+      float vtxProb  = -99.;
+      for (reco::ConversionCollection::const_iterator cnv = hConversions->begin(); cnv!= hConversions->end(); ++cnv) {
+	reco::Vertex vtx1 = cnv->conversionVertex();
+	if (vtx1.isValid()) {
+	  if (ConversionTools::matchesConversion(iEle->gsfTrack(), *cnv)) {
+	    vtxProb = TMath::Prob(vtx1.chi2(), vtx1.ndof());
+	    
+	    math::XYZVector mom1(cnv->refittedPairMomentum());
+	    double dbsx1 = vtx1.x() - beamspot.position().x();   
+	    double dbsy1 = vtx1.y() - beamspot.position().y();
+	    lxyBS = (mom1.x()*dbsx1 + mom1.y()*dbsy1)/mom1.rho();
+	    
+	    double dpvx1 = vtx1.x() - pv.x();   
+	    double dpvy1 = vtx1.y() - pv.y();
+	    lxyPV = (mom1.x()*dpvx1 + mom1.y()*dpvy1)/mom1.rho();
+	    
+	    for (vector<uint8_t>::const_iterator it = cnv->nHitsBeforeVtx().begin(); it!=cnv->nHitsBeforeVtx().end(); ++it) {
+	      if ((*it)>nHitsMax) nHitsMax = (*it);
+	    }
+	    
+	  }
+	}
+      }
+      eleGSFNHitsMax.push_back(nHitsMax);
+      eleGSFlxyPV.push_back(lxyPV);
+      eleGSFlxyBS.push_back(lxyBS);
+      eleGSFVtxProb.push_back(vtxProb);
+      
       for (GsfTrackRefVector::const_iterator igsf = iEle->ambiguousGsfTracksBegin(); igsf != iEle->ambiguousGsfTracksEnd(); ++igsf) {
 	eleGSFPt        .push_back((*igsf)->pt());
 	eleGSFEta       .push_back((*igsf)->eta());
@@ -421,13 +477,48 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	eleGSFCharge    .push_back((*igsf)->charge());
 	eleGSFHits      .push_back((*igsf)->hitPattern().trackerLayersWithMeasurement());
 	eleGSFMissHits  .push_back((*igsf)->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+
+	nHitsMax = -99;
+	lxyBS    = -99.;
+	lxyPV    = -99.;
+	vtxProb  = -99.;
+	for (reco::ConversionCollection::const_iterator conv = hConversions->begin(); conv!= hConversions->end(); ++conv) {
+	  reco::Vertex vtx = conv->conversionVertex();
+	  if (vtx.isValid()) {
+	    if (ConversionTools::matchesConversion(*igsf, *conv)) {
+	      vtxProb = TMath::Prob( vtx.chi2(), vtx.ndof() );
+
+	      math::XYZVector mom(conv->refittedPairMomentum());
+	      double dbsx = vtx.x() - beamspot.position().x();   
+	      double dbsy = vtx.y() - beamspot.position().y();
+	      lxyBS = (mom.x()*dbsx + mom.y()*dbsy)/mom.rho();
+
+	      double dpvx = vtx.x() - pv.x();   
+	      double dpvy = vtx.y() - pv.y();
+	      lxyPV = (mom.x()*dpvx + mom.y()*dpvy)/mom.rho();
+
+	      for (std::vector<uint8_t>::const_iterator it = conv->nHitsBeforeVtx().begin(); it!=conv->nHitsBeforeVtx().end(); ++it) {
+		if ((*it)>nHitsMax) nHitsMax = (*it);
+	      }
+	    }
+	  }
+	}
+	eleGSFNHitsMax.push_back(nHitsMax);
+	eleGSFlxyPV.push_back(lxyPV);
+	eleGSFlxyBS.push_back(lxyBS);
+	eleGSFVtxProb.push_back(vtxProb);
       }
+
       eleGSFPt_        .push_back(eleGSFPt);
       eleGSFEta_       .push_back(eleGSFEta);
       eleGSFPhi_       .push_back(eleGSFPhi);
       eleGSFCharge_    .push_back(eleGSFCharge);
       eleGSFHits_      .push_back(eleGSFHits);
       eleGSFMissHits_  .push_back(eleGSFMissHits);
+      eleGSFNHitsMax_  .push_back(eleGSFNHitsMax);
+      eleGSFlxyPV_     .push_back(eleGSFlxyPV);
+      eleGSFlxyBS_     .push_back(eleGSFlxyBS);
+      eleGSFVtxProb_   .push_back(eleGSFVtxProb);
     }
 
     vector<float> eleBCEn;
