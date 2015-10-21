@@ -68,6 +68,8 @@ vector<int>   AK8Jetnconstituents_;
 vector<bool>  AK8JetPFLooseId_;
 vector<float> AK8CHSSoftDropJetMass_;
 vector<float> AK8JetpfBoostedDSVBTag_;
+vector<float> AK8JetJECUnc_;
+
 //gen-info for ak8
 vector<int>   AK8JetPartonID_;
 vector<int>   AK8JetGenJetIndex_;
@@ -158,6 +160,8 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
     tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
+    tree->Branch("AK8JetJECUnc",             &AK8JetJECUnc_);
+
     if (doGenParticles_){
       tree->Branch("AK8JetPartonID", &AK8JetPartonID_);
       tree->Branch("AK8JetGenJetIndex", &AK8JetGenJetIndex_);
@@ -243,7 +247,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8Jetnconstituents_     .clear();
   AK8JetPFLooseId_         .clear();
   AK8CHSSoftDropJetMass_   .clear();
-  AK8JetpfBoostedDSVBTag_              .clear();
+  AK8JetpfBoostedDSVBTag_  .clear();
+  AK8JetJECUnc_            .clear();
 
   AK8JetPartonID_ .clear();
   AK8JetGenJetIndex_.clear();
@@ -282,12 +287,18 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
   // Accessing the JEC uncertainties 
-  
+//ak4  
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
   es.get<JetCorrectionsRecord>().get("AK4PFchs",JetCorParColl); 
   JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
+//ak8
+  edm::ESHandle<JetCorrectorParametersCollection> AK8JetCorParColl;
+  es.get<JetCorrectionsRecord>().get("AK8PFchs",AK8JetCorParColl);
+  JetCorrectorParameters const & AK8JetCorPar = (*AK8JetCorParColl)["Uncertainty"];
+  JetCorrectionUncertainty *AK8jecUnc=0;
+  AK8jecUnc = new JetCorrectionUncertainty(AK8JetCorPar);
   
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
@@ -476,6 +487,16 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
       //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+
+      //JEC uncertainty
+      if (fabs(ijetAK8->eta()) < 5.2) {
+         AK8jecUnc->setJetEta(ijetAK8->eta());
+         AK8jecUnc->setJetPt(ijetAK8->pt()); // here you must use the CORRECTED jet pt
+         AK8JetJECUnc_.push_back(AK8jecUnc->getUncertainty(true));
+      } else {
+         AK8JetJECUnc_.push_back(-1.);
+      }
+
       
       //save gen-info for ak8 jets
       //parton id                                                                                                                                                           
@@ -564,4 +585,5 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     }
   }
   delete jecUnc;
+  delete AK8jecUnc;
 }
