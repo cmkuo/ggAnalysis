@@ -49,6 +49,8 @@ vector<int>   jetGenPartonMomID_;
 Int_t         nAK8Jet_;
 vector<float> AK8JetPt_;
 vector<float> AK8JetEn_;
+vector<float> AK8JetRawPt_;
+vector<float> AK8JetRawEn_;
 vector<float> AK8JetEta_;
 vector<float> AK8JetPhi_;
 vector<float> AK8JetMass_;
@@ -123,7 +125,9 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   if (dumpSubJets_) {
     tree->Branch("nAK8Jet",                  &nAK8Jet_);
     tree->Branch("AK8JetPt",                 &AK8JetPt_);
-    //tree->Branch("AK8JetEn",               &AK8JetEn_);
+    tree->Branch("AK8JetEn",                 &AK8JetEn_);
+    tree->Branch("AK8JetRawPt",              &AK8JetRawPt_);
+    tree->Branch("AK8JetRawEn",              &AK8JetRawEn_);
     tree->Branch("AK8JetEta",                &AK8JetEta_);
     tree->Branch("AK8JetPhi",                &AK8JetPhi_);
     tree->Branch("AK8JetMass",               &AK8JetMass_);
@@ -194,6 +198,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   // SubJet
   AK8JetPt_           .clear();
   AK8JetEn_           .clear();
+  AK8JetRawPt_        .clear();
+  AK8JetRawEn_        .clear();
   AK8JetEta_          .clear();
   AK8JetPhi_          .clear();
   AK8JetMass_         .clear();
@@ -383,6 +389,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       nAK8Jet_++;
       AK8JetPt_.push_back( ijetAK8->pt() );
       AK8JetEn_.push_back( ijetAK8->energy() );
+      AK8JetRawPt_.push_back( (*ijetAK8).correctedJet("Uncorrected").pt() );
+      AK8JetRawEn_.push_back( (*ijetAK8).correctedJet("Uncorrected").energy() );
       AK8JetEta_.push_back( ijetAK8->eta() );
       AK8JetPhi_.push_back( ijetAK8->phi() );
       AK8JetMass_.push_back( ijetAK8->mass() );
