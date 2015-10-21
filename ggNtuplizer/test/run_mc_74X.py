@@ -16,17 +16,17 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
 #jec from sqlite
-process.load("CondCore.DBCommon.CondDBCommon_cfi")
-from CondCore.DBCommon.CondDBSetup_cfi import *
-process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
-	connect = cms.string('sqlite:Summer15_50nsV4_MC.db'),
-	toGet = cms.VPSet(
-      	cms.PSet(
-            record = cms.string('JetCorrectionsRecord'),
-            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV4_MC_AK4PFchs'),
-            label  = cms.untracked.string('AK4PFchs')
-            )))
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+#process.load("CondCore.DBCommon.CondDBCommon_cfi")
+#from CondCore.DBCommon.CondDBSetup_cfi import *
+#process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+#	connect = cms.string('sqlite:Summer15_50nsV4_MC.db'),
+#	toGet = cms.VPSet(
+#      	cms.PSet(
+#            record = cms.string('JetCorrectionsRecord'),
+#            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV4_MC_AK4PFchs'),
+#            label  = cms.untracked.string('AK4PFchs')
+#            )))
+#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 
 process.source = cms.Source("PoolSource",
