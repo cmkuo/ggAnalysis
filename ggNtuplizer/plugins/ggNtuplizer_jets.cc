@@ -10,6 +10,7 @@
 using namespace std;
 
 // (local) variables associated with tree branches
+//normal jets (ak4)
 Int_t         nJet_;
 vector<float> jetPt_;
 vector<float> jetEn_;
@@ -34,6 +35,7 @@ vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
 vector<float> jetJECUnc_;
 vector<int>   jetFiredTrgs_;
+//gen-info for ak4
 vector<int>   jetGenJetIndex_;
 vector<float> jetGenJetEn_;
 vector<float> jetGenJetPt_;
@@ -45,7 +47,7 @@ vector<float> jetGenPt_;
 vector<float> jetGenEta_;
 vector<float> jetGenPhi_;
 vector<int>   jetGenPartonMomID_;
-//SubJet
+//fat-jets (ak8)
 Int_t         nAK8Jet_;
 vector<float> AK8JetPt_;
 vector<float> AK8JetEn_;
@@ -66,7 +68,20 @@ vector<int>   AK8Jetnconstituents_;
 vector<bool>  AK8JetPFLooseId_;
 vector<float> AK8CHSSoftDropJetMass_;
 vector<float> AK8JetpfBoostedDSVBTag_;
-
+//gen-info for ak8
+vector<int>   AK8JetPartonID_;
+vector<int>   AK8JetGenJetIndex_;
+vector<float> AK8JetGenJetEn_;
+vector<float> AK8JetGenJetPt_;
+vector<float> AK8JetGenJetEta_;
+vector<float> AK8JetGenJetPhi_;
+vector<int>   AK8JetGenPartonID_;
+vector<float> AK8JetGenEn_;
+vector<float> AK8JetGenPt_;
+vector<float> AK8JetGenEta_;
+vector<float> AK8JetGenPhi_;
+vector<int>   AK8JetGenPartonMomID_;
+//soft drop subjets
 vector<int>             nAK8softdropSubjet_ ;
 vector< vector<float> > AK8softdropSubjetPt_ ;
 vector< vector<float> > AK8softdropSubjetEta_ ;
@@ -92,17 +107,17 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
   if (doGenParticles_){
     tree->Branch("jetPartonID", &jetPartonID_);
-    tree_->Branch("jetGenJetIndex", &jetGenJetIndex_);
-    tree_->Branch("jetGenJetEn", &jetGenJetEn_);
-    tree_->Branch("jetGenJetPt", &jetGenJetPt_);
-    tree_->Branch("jetGenJetEta", &jetGenJetEta_);
-    tree_->Branch("jetGenJetPhi", &jetGenJetPhi_);
-    tree_->Branch("jetGenPartonID", &jetGenPartonID_);
-    tree_->Branch("jetGenEn", &jetGenEn_);
-    tree_->Branch("jetGenPt", &jetGenPt_);
-    tree_->Branch("jetGenEta", &jetGenEta_);
-    tree_->Branch("jetGenPhi", &jetGenPhi_);
-    tree_->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
+    tree->Branch("jetGenJetIndex", &jetGenJetIndex_);
+    tree->Branch("jetGenJetEn", &jetGenJetEn_);
+    tree->Branch("jetGenJetPt", &jetGenJetPt_);
+    tree->Branch("jetGenJetEta", &jetGenJetEta_);
+    tree->Branch("jetGenJetPhi", &jetGenJetPhi_);
+    tree->Branch("jetGenPartonID", &jetGenPartonID_);
+    tree->Branch("jetGenEn", &jetGenEn_);
+    tree->Branch("jetGenPt", &jetGenPt_);
+    tree->Branch("jetGenEta", &jetGenEta_);
+    tree->Branch("jetGenPhi", &jetGenPhi_);
+    tree->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
   }
   
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
@@ -143,6 +158,20 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
     tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
+    if (doGenParticles_){
+      tree->Branch("AK8JetPartonID", &AK8JetPartonID_);
+      tree->Branch("AK8JetGenJetIndex", &AK8JetGenJetIndex_);
+      tree->Branch("AK8JetGenJetEn", &AK8JetGenJetEn_);
+      tree->Branch("AK8JetGenJetPt", &AK8JetGenJetPt_);
+      tree->Branch("AK8JetGenJetEta", &AK8JetGenJetEta_);
+      tree->Branch("AK8JetGenJetPhi", &AK8JetGenJetPhi_);
+      tree->Branch("AK8JetGenPartonID", &AK8JetGenPartonID_);
+      tree->Branch("AK8JetGenEn", &AK8JetGenEn_);
+      tree->Branch("AK8JetGenPt", &AK8JetGenPt_);
+      tree->Branch("AK8JetGenEta", &AK8JetGenEta_);
+      tree->Branch("AK8JetGenPhi", &AK8JetGenPhi_);
+      tree->Branch("AK8JetGenPartonMomID", &AK8JetGenPartonMomID_);
+    }
     tree->Branch("nAK8softdropSubjet",       &nAK8softdropSubjet_);
     tree->Branch("AK8softdropSubjetPt",      &AK8softdropSubjetPt_);
     tree->Branch("AK8softdropSubjetEta",     &AK8softdropSubjetEta_);
@@ -215,6 +244,20 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetPFLooseId_         .clear();
   AK8CHSSoftDropJetMass_   .clear();
   AK8JetpfBoostedDSVBTag_              .clear();
+
+  AK8JetPartonID_ .clear();
+  AK8JetGenJetIndex_.clear();
+  AK8JetGenJetEn_.clear();
+  AK8JetGenJetPt_.clear();
+  AK8JetGenJetEta_.clear();
+  AK8JetGenJetPhi_.clear();
+  AK8JetGenPartonID_.clear();
+  AK8JetGenEn_.clear();
+  AK8JetGenPt_.clear();
+  AK8JetGenEta_.clear();
+  AK8JetGenPhi_.clear();
+  AK8JetGenPartonMomID_.clear();
+
   nAK8softdropSubjet_ .clear();
   AK8softdropSubjetPt_ .clear();
   AK8softdropSubjetEta_ .clear();
@@ -434,6 +477,54 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
       
+      //save gen-info for ak8 jets
+      //parton id                                                                                                                                                           
+      AK8JetPartonID_.push_back(ijetAK8->partonFlavour());
+      int AK8JetGenPartonID = -99;
+      int AK8JetGenPartonMomID = -99;
+      float AK8JetGenEn = -999.;
+      float AK8JetGenPt = -999.;
+      float AK8JetGenEta = -999.;
+      float AK8JetGenPhi = -999.;
+      if (doGenParticles_ && genParticlesHandle.isValid() ) {
+	if ((*ijetAK8).genParton()) {
+	  AK8JetGenPartonID = (*ijetAK8).genParton()->pdgId();
+	  AK8JetGenEn = (*ijetAK8).genParton()->energy();
+	  AK8JetGenPt = (*ijetAK8).genParton()->pt();
+	  AK8JetGenEta = (*ijetAK8).genParton()->eta();
+	  AK8JetGenPhi = (*ijetAK8).genParton()->phi();
+	  if ((*ijetAK8).genParton()->mother()) {
+	    AK8JetGenPartonMomID = (*ijetAK8).genParton()->mother()->pdgId();
+	  }
+	}
+      }
+      AK8JetGenPartonID_.push_back(AK8JetGenPartonID);
+      AK8JetGenPartonMomID_.push_back(AK8JetGenPartonMomID);
+      AK8JetGenEn_ .push_back(AK8JetGenEn);
+      AK8JetGenPt_ .push_back(AK8JetGenPt);
+      AK8JetGenEta_ .push_back(AK8JetGenEta);
+      AK8JetGenPhi_ .push_back(AK8JetGenPhi);
+      int AK8JetGenJetIndex = -1;
+      float AK8JetGenJetEn = -999.;
+      float AK8JetGenJetPt = -999.;
+      float AK8JetGenJetEta = -999.;
+      float AK8JetGenJetPhi = -999.;
+      if (doGenParticles_ && genParticlesHandle.isValid() ) {
+	if ((*ijetAK8).genJet()) {
+	  AK8JetGenJetIndex = 1;
+	  AK8JetGenJetEn = (*ijetAK8).genJet()->energy();
+	  AK8JetGenJetPt = (*ijetAK8).genJet()->pt();
+	  AK8JetGenJetEta = (*ijetAK8).genJet()->eta();
+	  AK8JetGenJetPhi = (*ijetAK8).genJet()->phi();
+	}
+      }
+      AK8JetGenJetIndex_.push_back(AK8JetGenJetIndex);
+      AK8JetGenJetEn_.push_back(AK8JetGenJetEn);
+      AK8JetGenJetPt_.push_back(AK8JetGenJetPt);
+      AK8JetGenJetEta_.push_back(AK8JetGenJetEta);
+      AK8JetGenJetPhi_.push_back(AK8JetGenJetPhi);
+
+
       //save Softdrop subjet info Lvdp
       vecSoftdropSubjetcsv.clear();
       vecSoftdropSubjetpt.clear();
