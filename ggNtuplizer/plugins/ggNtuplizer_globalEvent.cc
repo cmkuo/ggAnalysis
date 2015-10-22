@@ -17,6 +17,7 @@ float     vtx_;
 float     vty_;
 float     vtz_;
 float     rho_;
+float     rhoCentral_;
 ULong64_t HLTEleMuX_;
 ULong64_t HLTPho_;
 ULong64_t HLTJet_;
@@ -67,6 +68,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vty",                  &vty_); 
   tree->Branch("vtz",                  &vtz_); 
   tree->Branch("rho",                  &rho_);
+  tree->Branch("rhoCentral",           &rhoCentral_);
   tree->Branch("HLTEleMuX",            &HLTEleMuX_);
   tree->Branch("HLTPho",               &HLTPho_);
   tree->Branch("HLTJet",               &HLTJet_);
@@ -114,11 +116,16 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
 
+  edm::Handle<double> rhoCentralHandle;
+  e.getByToken(rhoCentralLabel_, rhoCentralHandle);
+
   run_    = e.id().run();
   event_  = e.id().event();
   lumis_  = e.luminosityBlock();
   isData_ = e.isRealData();
   rho_    = *(rhoHandle.product());
+  if (rhoCentralHandle.isValid()) rhoCentral_ = *(rhoCentralHandle.product());
+  else rhoCentral_ = -99.;
 
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
@@ -174,12 +181,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   }
 
   if (addFilterInfoMINIAOD_ && isData_ ){
-    string filterNamesToCheck[5] = {
+    string filterNamesToCheck[7] = {
       "Flag_HBHENoiseFilter",
+      "Flag_HBHENoiseIsoFilter", 
       "Flag_CSCTightHaloFilter",
       "Flag_goodVertices",
       "Flag_eeBadScFilter",
-      "Flag_EcalDeadCellTriggerPrimitiveFilter"
+      "Flag_EcalDeadCellTriggerPrimitiveFilter",
+      "Flag_EcalDeadCellBoundaryEnergyFilter"
     };
 
     edm::Handle<edm::TriggerResults> patFilterResultsHandle;
@@ -187,7 +196,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     edm::TriggerResults const& patFilterResults = *patFilterResultsHandle;
     
     auto&& filterNames = e.triggerNames(patFilterResults);
-    for (unsigned iF = 0; iF != 5; ++iF) {
+    for (unsigned iF = 0; iF != 7; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
       if ( index == filterNames.size() ) 
 	edm::LogError("Unknown MET filter label") 

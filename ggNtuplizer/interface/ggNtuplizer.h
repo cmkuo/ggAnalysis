@@ -104,6 +104,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
   edm::EDGetTokenT<double>                      rhoLabel_;
+  edm::EDGetTokenT<double>                      rhoCentralLabel_;
   edm::EDGetTokenT<trigger::TriggerEvent>       trgEventLabel_;
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsLabel_;
   edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
