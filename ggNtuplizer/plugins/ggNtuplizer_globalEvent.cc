@@ -253,6 +253,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu20_v")                                        != string::npos) bitEleMuX = 33;
     else if (name.find("HLT_Mu8_TrkIsoVVL_v")                               != string::npos) bitEleMuX = 34;
     else if (name.find("HLT_Mu8_v")                                         != string::npos) bitEleMuX = 35;
+    else if (name.find("HLT_Mu17_TkMu8_DZ_v")                               != string::npos) bitEleMuX = 36;
     else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 41;
     else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 42;
     else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")                != string::npos) bitEleMuX = 43;
@@ -262,6 +263,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v")    != string::npos) bitEleMuX = 47;
     else if (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v")              != string::npos) bitEleMuX = 48;
     else if (name.find("HLT_Photon135_PFMET100_NoiseCleaned_v")             != string::npos) bitEleMuX = 49;
+    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 50;
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 51;
+
 
     // Photon triggers for 25 ns
     int bitPho    = -1;
