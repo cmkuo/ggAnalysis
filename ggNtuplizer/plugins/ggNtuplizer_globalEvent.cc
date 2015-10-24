@@ -307,10 +307,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq460_v") != string::npos) bitJet =  1; 
     else if (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq240_v") != string::npos) bitJet =  2; 
     else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq500_v") != string::npos) bitJet =  3; 
-    else if (name.find("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v")                      != string::npos) bitJet =  4;
-    else if (name.find("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v")                    != string::npos) bitJet =  5;
-    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v")   != string::npos) bitJet =  6;
-    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) bitJet =  7;
+    else if ( (name.find("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ||
+	      (name.find("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ) bitJet =  4;
+    else if ( (name.find("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) ||
+	      (name.find("HLT_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v") != string::npos) ) bitJet =  5;
+    else if ( (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ||
+	      (name.find("HLT_MonoCentralPFJet80_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ) bitJet =  6;
+    else if ( (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) ||
+	      (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_NoiseCleaned_PFMHTNoMu120_IDTight_v") != string::npos) ) bitJet =  7;
     else if (name.find("HLT_PFMET170_NoiseCleaned_v")              != string::npos) bitJet =  8;
     else if (name.find("HLT_CaloJet500_NoJetID_v")                 != string::npos) bitJet =  9;
     else if (name.find("HLT_PFJet40_v")                            != string::npos) bitJet = 10; 
