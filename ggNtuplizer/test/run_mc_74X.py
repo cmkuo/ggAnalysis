@@ -16,19 +16,6 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 
-#jec from sqlite
-#process.load("CondCore.DBCommon.CondDBCommon_cfi")
-#from CondCore.DBCommon.CondDBSetup_cfi import *
-#process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
-#	connect = cms.string('sqlite:Summer15_50nsV4_MC.db'),
-#	toGet = cms.VPSet(
-#      	cms.PSet(
-#            record = cms.string('JetCorrectionsRecord'),
-#            tag    = cms.string('JetCorrectorParametersCollection_Summer15_50nsV4_MC_AK4PFchs'),
-#            label  = cms.untracked.string('AK4PFchs')
-#            )))
-#process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         '/store/mc/RunIISpring15MiniAODv2/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia8/MINIAODSIM/74X_mcRun2_asymptotic_v2-v1/60000/02CDE51A-726D-E511-B2C4-0025905C96EA.root'
@@ -105,13 +92,6 @@ for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
-    ###process.egmGsfElectronIDSequence
-    # process.mvaTrigV050nsCSA14
-    # + process.mvaTrigV025nsCSA14
-    # + process.mvaNonTrigV050nsCSA14
-    # + process.mvaNonTrigV025nsCSA14
-    # + process.mvaNonTrigV025nsPHYS14 
-#    process.patDefaultSequence *
     process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 
     * process.ggNtuplizer

@@ -19,8 +19,8 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
-        #'/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
+        #'/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
+        '/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
         #'/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
 )
                             )
@@ -38,7 +38,7 @@ runOnData( process, outputModules = [] )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
-useAOD = True
+useAOD = False
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
@@ -91,13 +91,6 @@ for idmod in my_phoid_modules:
 
 if useAOD == True:
     process.p = cms.Path(
-        ###process.egmGsfElectronIDSequence
-        # process.mvaTrigV050nsCSA14
-        # + process.mvaTrigV025nsCSA14
-        # + process.mvaNonTrigV050nsCSA14
-        # + process.mvaNonTrigV025nsCSA14
-        # + process.mvaNonTrigV025nsPHYS14 
-        #    process.patDefaultSequence *
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
         process.ggMETFiltersSequence* 
@@ -105,13 +98,6 @@ if useAOD == True:
         )
 else:
     process.p = cms.Path(
-        ###process.egmGsfElectronIDSequence
-        # process.mvaTrigV050nsCSA14
-        # + process.mvaTrigV025nsCSA14
-        # + process.mvaNonTrigV050nsCSA14
-        # + process.mvaNonTrigV025nsCSA14
-        # + process.mvaNonTrigV025nsPHYS14 
-        #    process.patDefaultSequence *
         process.HBHENoiseFilterResultProducer* # produces HBHE bools
 #        process.ApplyBaselineHBHENoiseFilter*  # reject events 
         process.egmGsfElectronIDSequence*
