@@ -4,14 +4,31 @@
 
 using namespace std;
 
-Int_t     metFilters_;
-float     genMET_;
-float     genMETPhi_;
-float     pfMET_;
-float     pfMETPhi_;
-float     pfMETsumEt_;
-float     pfMETmEtSig_;
-float     pfMETSig_;
+Int_t metFilters_;
+float genMET_;
+float genMETPhi_;
+float pfMET_;
+float pfMETPhi_;
+float pfMETsumEt_;
+float pfMETmEtSig_;
+float pfMETSig_;
+float pfMET_T1JERUp_;
+float pfMET_T1JERDo_;
+float pfMET_T1JESUp_;
+float pfMET_T1JESDo_;
+float pfMET_T1MESUp_;
+float pfMET_T1MESDo_;
+float pfMET_T1EESUp_;
+float pfMET_T1EESDo_;
+float pfMET_T1PESUp_;
+float pfMET_T1PESDo_;
+float pfMET_T1TESUp_;
+float pfMET_T1TESDo_;
+float pfMET_T1UESUp_;
+float pfMET_T1UESDo_;
+float pfMET_T1TxyPhi_;
+float pfMET_T1TxyPt_;
+
 /*
 float     noHFMET_;
 float     noHFMETPhi_;
@@ -45,11 +62,26 @@ void ggNtuplizer::branchesMET(TTree* tree) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
   }
-  tree->Branch("pfMET",       &pfMET_);
-  tree->Branch("pfMETPhi",    &pfMETPhi_);
-  tree->Branch("pfMETsumEt",  &pfMETsumEt_);
-  tree->Branch("pfMETmEtSig", &pfMETmEtSig_);
-  tree->Branch("pfMETSig",    &pfMETSig_);
+  tree->Branch("pfMET",         &pfMET_);
+  tree->Branch("pfMETPhi",      &pfMETPhi_);
+  tree->Branch("pfMETsumEt",    &pfMETsumEt_);
+  tree->Branch("pfMETmEtSig",   &pfMETmEtSig_);
+  tree->Branch("pfMETSig",      &pfMETSig_);
+  tree->Branch("pfMET_T1JERUp", &pfMET_T1JERUp_);
+  tree->Branch("pfMET_T1JERDo", &pfMET_T1JERDo_);
+  tree->Branch("pfMET_T1JESUp", &pfMET_T1JESUp_);
+  tree->Branch("pfMET_T1JESDo", &pfMET_T1JESDo_);
+  tree->Branch("pfMET_T1MESUp", &pfMET_T1MESUp_);
+  tree->Branch("pfMET_T1MESDo", &pfMET_T1MESDo_);
+  tree->Branch("pfMET_T1EESUp", &pfMET_T1EESUp_);
+  tree->Branch("pfMET_T1EESDo", &pfMET_T1EESDo_);
+  tree->Branch("pfMET_T1PESUp", &pfMET_T1PESUp_);
+  tree->Branch("pfMET_T1PESDo", &pfMET_T1PESDo_);
+  tree->Branch("pfMET_T1TESUp", &pfMET_T1TESUp_);
+  tree->Branch("pfMET_T1TESDo", &pfMET_T1TESDo_);
+  tree->Branch("pfMET_T1UESUp", &pfMET_T1UESUp_);
+  tree->Branch("pfMET_T1UESDo", &pfMET_T1UESDo_);
+
   /*
   if (doNoHFMET_){
     tree->Branch("noHFMET",      &noHFMET_);
@@ -163,6 +195,24 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
     pfMETsumEt_  = pfMET->sumEt();
     pfMETmEtSig_ = (pfMET->mEtSig() < 1.e10) ? pfMET->mEtSig() : 0;
     pfMETSig_    = (pfMET->significance() < 1.e10) ? pfMET->significance() : 0;;
+
+    if (!isAOD_) {
+      // Type1MET uncertainties =======================================
+      pfMET_T1JERUp_ = pfMET->shiftedPt(pat::MET::JetResUp);
+      pfMET_T1JERDo_ = pfMET->shiftedPt(pat::MET::JetResDown);
+      pfMET_T1JESUp_ = pfMET->shiftedPt(pat::MET::JetEnUp);
+      pfMET_T1JESDo_ = pfMET->shiftedPt(pat::MET::JetEnDown);
+      pfMET_T1MESUp_ = pfMET->shiftedPt(pat::MET::MuonEnUp);
+      pfMET_T1MESDo_ = pfMET->shiftedPt(pat::MET::MuonEnDown);
+      pfMET_T1EESUp_ = pfMET->shiftedPt(pat::MET::ElectronEnUp);
+      pfMET_T1EESDo_ = pfMET->shiftedPt(pat::MET::ElectronEnDown);
+      pfMET_T1PESUp_ = pfMET->shiftedPt(pat::MET::PhotonEnUp);
+      pfMET_T1PESDo_ = pfMET->shiftedPt(pat::MET::PhotonEnDown);
+      pfMET_T1TESUp_ = pfMET->shiftedPt(pat::MET::TauEnUp);
+      pfMET_T1TESDo_ = pfMET->shiftedPt(pat::MET::TauEnDown);
+      pfMET_T1UESUp_ = pfMET->shiftedPt(pat::MET::UnclusteredEnUp);
+      pfMET_T1UESDo_ = pfMET->shiftedPt(pat::MET::UnclusteredEnDown);
+    }
 
     if (!e.isRealData()) {
       genMET_    = pfMET->genMET()->et();
