@@ -20,7 +20,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              development      = cms.bool(False),
                              addFilterInfoAOD = cms.bool(False),
                              addFilterInfoMINIAOD = cms.bool(True),
-                             doNoHFMET            = cms.bool(True),
+                             doNoHFMET            = cms.bool(False),
 
                              trgFilterDeltaPtCut = cms.double(0.5),
                              trgFilterDeltaRCut  = cms.double(0.3),
