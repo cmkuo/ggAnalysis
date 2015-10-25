@@ -10,6 +10,7 @@
    * add central rho
    * update MET filters
    * split MET from globalEvent.cc
+   * add MET uncertainties
 
 * V07-04-09-03
    * add the decision of 5 muon IDs
