@@ -526,38 +526,37 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleGSFlxyPV_     .push_back(eleGSFlxyPV);
       eleGSFlxyBS_     .push_back(eleGSFlxyBS);
       eleGSFVtxProb_   .push_back(eleGSFVtxProb);
-    }
 
-    vector<float> eleBCEn;
-    vector<float> eleBCEta;
-    vector<float> eleBCPhi;
-    vector<float> eleBCS25;
-    vector<float> eleBCS15;
-    vector<float> eleBCSieie;
-    vector<float> eleBCSieip;
-    vector<float> eleBCSipip;
-    for (CaloCluster_iterator itbc = iEle->superCluster()->clustersBegin(); itbc != iEle->superCluster()->clustersEnd(); ++itbc) {
-      eleBCEn   .push_back((*itbc)->energy());
-      eleBCEta  .push_back((*itbc)->eta());
-      eleBCPhi  .push_back((*itbc)->phi());
-      eleBCS25  .push_back(lazyToolnoZS.e2x5Max(**itbc)/lazyToolnoZS.e5x5(**itbc));
-      eleBCS15  .push_back(lazyToolnoZS.e1x5(**itbc)/lazyToolnoZS.e5x5(**itbc));
-      vector<float> eleCov;
-      eleCov.clear();
-      eleCov = lazyToolnoZS.localCovariances(**itbc);
-      eleBCSieie.push_back(sqrt(eleCov[0]));
-      eleBCSieip.push_back(eleCov[1]);
-      eleBCSipip.push_back(eleCov[2]);
+      vector<float> eleBCEn;
+      vector<float> eleBCEta;
+      vector<float> eleBCPhi;
+      vector<float> eleBCS25;
+      vector<float> eleBCS15;
+      vector<float> eleBCSieie;
+      vector<float> eleBCSieip;
+      vector<float> eleBCSipip;
+      for (CaloCluster_iterator itbc = iEle->superCluster()->clustersBegin(); itbc != iEle->superCluster()->clustersEnd(); ++itbc) {
+	eleBCEn   .push_back((*itbc)->energy());
+	eleBCEta  .push_back((*itbc)->eta());
+	eleBCPhi  .push_back((*itbc)->phi());
+	eleBCS25  .push_back(lazyToolnoZS.e2x5Max(**itbc)/lazyToolnoZS.e5x5(**itbc));
+	eleBCS15  .push_back(lazyToolnoZS.e1x5(**itbc)/lazyToolnoZS.e5x5(**itbc));
+	vector<float> eleCov;
+	eleCov.clear();
+	eleCov = lazyToolnoZS.localCovariances(**itbc);
+	eleBCSieie.push_back(sqrt(eleCov[0]));
+	eleBCSieip.push_back(eleCov[1]);
+	eleBCSipip.push_back(eleCov[2]);
+      }
+      eleBCEn_   .push_back(eleBCEn);
+      eleBCEta_  .push_back(eleBCEta);
+      eleBCPhi_  .push_back(eleBCPhi);
+      eleBCS25_  .push_back(eleBCS25);
+      eleBCS15_  .push_back(eleBCS15);
+      eleBCSieie_.push_back(eleBCSieie);
+      eleBCSieip_.push_back(eleBCSieip);
+      eleBCSipip_.push_back(eleBCSipip);
     }
-    eleBCEn_   .push_back(eleBCEn);
-    eleBCEta_  .push_back(eleBCEta);
-    eleBCPhi_  .push_back(eleBCPhi);
-    eleBCS25_  .push_back(eleBCS25);
-    eleBCS15_  .push_back(eleBCS15);
-    eleBCSieie_.push_back(eleBCSieie);
-    eleBCSieip_.push_back(eleBCSieip);
-    eleBCSipip_.push_back(eleBCSipip);
-
 
     if (development_) {
 
