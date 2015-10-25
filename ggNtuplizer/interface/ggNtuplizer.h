@@ -55,6 +55,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesGlobalEvent(TTree*);
   void branchesGenInfo    (TTree*, edm::Service<TFileService>&);
   void branchesGenPart    (TTree*);
+  void branchesMET        (TTree*);
   void branchesPhotons    (TTree*);
   void branchesElectrons  (TTree*);
   void branchesHFElectrons(TTree*);
@@ -65,6 +66,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
   void fillGenPart    (const edm::Event&);
+  void fillMET        (const edm::Event&, const edm::EventSetup&);
   void fillPhotons    (const edm::Event&, const edm::EventSetup&);
   void fillElectrons  (const edm::Event&, const edm::EventSetup&, math::XYZPoint&);
   void fillHFElectrons(const edm::Event&);

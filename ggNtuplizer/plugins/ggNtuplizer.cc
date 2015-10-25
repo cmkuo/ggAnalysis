@@ -100,6 +100,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
     branchesGenPart(tree_);
   }
 
+  branchesMET(tree_);
   if (dumpPhotons_) branchesPhotons(tree_);
   branchesElectrons(tree_);
   if (isAOD_ && runHFElectrons_) branchesHFElectrons(tree_);
@@ -139,19 +140,17 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   initTriggerFilters(e);
 
   fillGlobalEvent(e, es);
-
   if (!e.isRealData()) {
     fillGenInfo(e);
     if (doGenParticles_)
       fillGenPart(e);
   }
 
-
+  fillMET(e, es);
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
   if (isAOD_ && runHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv, vtx);
-
   if (dumpTaus_) fillTaus(e);
   if (dumpJets_) fillJets(e,es);
 

@@ -8,6 +8,8 @@
    * add conversion variables 
    * add b-tag and GEN jet for merged jets
    * add central rho
+   * update MET filters
+   * split MET from globalEvent.cc
 
 * V07-04-09-03
    * add the decision of 5 muon IDs

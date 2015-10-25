@@ -19,15 +19,9 @@ process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v3/000/256/677/00000/BEBF874C-0D5F-E511-B864-02163E0143F2.root'
-        #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
-        #'/store/data/Run2015B/SinglePhoton/MINIAOD/17Jul2015-v1/30000/9AA235B1-C12E-E511-91BB-002618943902.root'
-        #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
+        '/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
+        #'/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
         #'/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
-        #'file:DoubleEG_Run2015B_251562_miniAOD.root'
-        #'/store/data/Run2015B/SinglePhoton/AOD/PromptReco-v1/000/251/562/00000/000B31EB-262A-E511-8D03-02163E011976.root'
-        #'/store/data/Run2015B/DoubleEG/AOD/PromptReco-v1/000/251/244/00000/FA8EC6E3-D528-E511-B1D5-02163E012BD2.root'
-        #'/store/data/Run2015B/DoubleEG/MINIAOD/PromptReco-v1/000/251/562/00000/CCEFEFB1-402A-E511-BF33-02163E0136E2.root'
 )
                             )
 
@@ -54,7 +48,6 @@ if useAOD == True :
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
     process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
     process.ggNtuplizer.addFilterInfo=cms.bool(True)
-    doNoHFMet = False
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', runOnMC = False, miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
     jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', runOnMC = False, miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'] )
@@ -63,14 +56,10 @@ if useAOD == True :
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-    doNoHFMet = False
     process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-    process.ApplyBaselineHBHENoiseFilter = cms.EDFilter("BooleanFlagFilter",
-                                                        inputLabel = cms.InputTag("HBHENoiseFilterResultProducer",
-                                                                                  "HBHENoiseFilterResult"),
-                                                        reverseDecision = cms.bool(False)
-                                                       )
+    process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
+    process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
@@ -99,30 +88,6 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-
-process.ggNtuplizer.doNoHFMET=cms.bool(doNoHFMet)
-tellMETData = True
-
-if doNoHFMet == True:
-    process.noHFCands = cms.EDFilter("CandPtrSelector",
-                                     src=cms.InputTag("packedPFCandidates"),
-                                     cut=cms.string("abs(pdgId)!=1 && abs(pdgId)!=2 && abs(eta)<3.0")
-                                     )
-    from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-    #default configuration for miniAOD reprocessing, change the isData flag to run on data
-    #for a full met computation, remove the pfCandColl input
-    runMetCorAndUncFromMiniAOD(process,
-                               isData=tellMETData,
-                               pfCandColl=cms.InputTag("noHFCands"),
-                               postfix="NoHF"
-                               )
-    process.patPFMetT1T2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT1T2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT2CorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.patPFMetT2SmearCorrNoHF.jetCorrLabelRes = cms.InputTag("L3Absolute")
-    process.shiftedPatJetEnDownNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
-    process.shiftedPatJetEnUpNoHF.jetCorrLabelUpToL3Res = cms.InputTag("ak4PFCHSL1FastL2L3Corrector")
-
 
 if useAOD == True:
     process.p = cms.Path(
