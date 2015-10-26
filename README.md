@@ -1,6 +1,6 @@
-#### Current production tag : V07-04-09-03
+#### Current production tag : V07-04-14-00
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_7_4_9 and CMSSW_7_4_14
+#### Note that the current head version can be run with CMSSW_7_4_14
 
 ##### To work with CMSSW_7_4_14, you do:
 cd CMSSW_7_4_14/src <br>
@@ -8,24 +8,8 @@ cmsenv <br>
 git cms-merge-topic ikrav:egm_id_7.4.12_v1 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V07-04-14-00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
-
-##### To work with CMSSW_7_4_9, you do:
-cd CMSSW_7_4_9/src <br>
-cmsenv <br>
-git cms-merge-topic -u cms-met:METCorUnc74X <br>
-git cms-merge-topic ikrav:egm_id_747_v2 <br>
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-09-02 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### CRAB3 and V07-04-09-03
-When you run jobs with CRAB3 and V07-04-09-03 <br>
-you need to add the following line to your crab py file <br>
-Data : config.JobType.inputFiles = ['Summer15_50nsV4_DATA.db'] <br>
-MC : config.JobType.inputFiles = ['Summer15_50nsV4_MC.db'] <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
 for ELECRON ID: 5 IDs (Veto, Loose, Medium, Tight and HEEP) so only 5 bits are imp for us (59 bits of this integer  we are not using so may be we can change that to 16 bit integer later)<br>
@@ -51,12 +35,4 @@ to access the MC status flag with GEN particles <br>
 (a) fromHardProcessFinalState : mcStatusFlag[]>>0&1 ---> gives 0 (no) or 1 (yes). <br>
 (b) isPromptFinalState        : mcStatusFlag[]>>1&1 ---> gives 0 (no) or 1 (yes). <br>
 (c) fromHardProcessBeforeFSR  : mcStatusFlag[]>>2&1 ---> gives 0 (no) or 1 (yes). <br>
-
-##### To work with CMSSW_7_2_0 or 7_2_3, you do:
-
-git cms-merge-topic ikrav:egm_id_phys14 # for photon ID recipe <br>
-git cms-merge-topic HuguesBrun:trigElecIdInCommonIsoSelection720 # for electron ID recipe <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-02-03-00 https://github.com/cmkuo/ggAnalysis.git <br>
-
 
