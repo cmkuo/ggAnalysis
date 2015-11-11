@@ -5,6 +5,9 @@
 ##### To work with CMSSW_7_4_14, you do:
 cd CMSSW_7_4_14/src <br>
 cmsenv <br>
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch btv-cmssw <br>
+git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTagger-WithWeightFiles-v2_from-CMSSW_7_4_1 <br>
 git cms-merge-topic ikrav:egm_id_7.4.12_v1 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
