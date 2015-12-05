@@ -448,16 +448,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetEta_.push_back( ijetAK8->eta() );
       AK8JetPhi_.push_back( ijetAK8->phi() );
       AK8JetMass_.push_back( ijetAK8->mass() );
-      if (isAOD_ )
-       {    AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau1") );
-            AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau2") );
-            AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau3") );
-       }
-      else 
-       {    AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8:tau1") );
-            AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8:tau2") );
-            AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8:tau3") );
-       }
+      AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau1") );
+      AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau2") );
+      AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau3") );
       AK8JetCHF_.push_back( ijetAK8->chargedHadronEnergyFraction()); // 0.0
       AK8JetNHF_.push_back( ( ijetAK8->neutralHadronEnergy() + ijetAK8->HFHadronEnergy() ) / ijetAK8->energy()); //0.99
       AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
@@ -482,10 +475,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	if (!(ijetAK8->neutralMultiplicity() > 10))        AK8jetID = false;
       }
       AK8JetPFLooseId_.push_back(AK8jetID);
-      
-      
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
-      //      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedLinks")); //phys14
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
 
       //JEC uncertainty
