@@ -96,8 +96,19 @@ vector<vector<float> > eleBCSieie_;
 vector<vector<float> > eleBCSieip_;
 vector<vector<float> > eleBCSipip_;
 
+vector<vector<float> > eleESEnEta_;
+vector<vector<float> > eleESEnPhi_;
+vector<vector<int> >   eleESEnZ_;
+vector<vector<int> >   eleESEnP_;
+vector<vector<int> >   eleESEnX_;
+vector<vector<int> >   eleESEnY_;
+vector<vector<int> >   eleESEnS_;
+vector<vector<float> > eleESEnE_;
+
 Int_t nGSFTrk_;
 vector<float> gsfPt_;
+		     
+		     
 vector<float> gsfEta_;
 vector<float> gsfPhi_;
 
@@ -187,6 +198,14 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   if (development_) {
     tree->Branch("eleESEnP1Raw",              &eleESEnP1Raw_);
     tree->Branch("eleESEnP2Raw",              &eleESEnP2Raw_);
+    tree->Branch("eleESEnEta",                &eleESEnEta_);
+    tree->Branch("eleESEnPhi",                &eleESEnPhi_);
+    tree->Branch("eleESEnZ",                  &eleESEnZ_);
+    tree->Branch("eleESEnP",                  &eleESEnP_);
+    tree->Branch("eleESEnX",                  &eleESEnX_);
+    tree->Branch("eleESEnY",                  &eleESEnY_);
+    tree->Branch("eleESEnS",                  &eleESEnS_);
+    tree->Branch("eleESEnE",                  &eleESEnE_);
     tree->Branch("nGSFTrk",                   &nGSFTrk_);
     tree->Branch("gsfPt",                     &gsfPt_);
     tree->Branch("gsfEta",                    &gsfEta_);
@@ -207,6 +226,14 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleESEnP2_                  .clear();
   eleESEnP1Raw_               .clear();
   eleESEnP2Raw_               .clear();
+  eleESEnEta_                 .clear();
+  eleESEnPhi_                 .clear();
+  eleESEnE_                   .clear();
+  eleESEnZ_                   .clear();
+  eleESEnP_                   .clear();
+  eleESEnX_                   .clear();
+  eleESEnY_                   .clear();
+  eleESEnS_                   .clear();
   eleD0_                      .clear();
   eleDz_                      .clear();
   elePt_                      .clear();
@@ -562,23 +589,47 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
       Float_t ESp1 = 0;
       Float_t ESp2 = 0;
+      vector<float> ESEta; 
+      vector<float> ESPhi;
+      vector<int>   ESZ;
+      vector<int>   ESP;
+      vector<int>   ESX;
+      vector<int>   ESY;
+      vector<int>   ESS;
+      vector<float> ESE;
       for (CaloClusterPtrVector::const_iterator ips = iEle->superCluster()->preshowerClustersBegin(); ips != iEle->superCluster()->preshowerClustersEnd(); ++ips) {
 
 	ESDetId esid = ESDetId((*ips)->seed());
 	if (esid.plane() == 1) ESp1 += (*ips)->energy();
 	if (esid.plane() == 2) ESp2 += (*ips)->energy();
+
+	ESZ.push_back(esid.zside());
+	ESP.push_back(esid.plane());
+	ESX.push_back(esid.six());
+	ESY.push_back(esid.siy());
+	ESS.push_back(esid.strip());
+
+	ESEta.push_back((*ips)->eta());
+	ESPhi.push_back((*ips)->phi());
+	ESE.push_back((*ips)->energy());
       }
 
       eleESEnP1Raw_.push_back(ESp1);
       eleESEnP2Raw_.push_back(ESp2);
+      eleESEnEta_.push_back(ESEta);
+      eleESEnPhi_.push_back(ESPhi);
+      eleESEnZ_.push_back(ESZ);
+      eleESEnP_.push_back(ESP);
+      eleESEnX_.push_back(ESX);
+      eleESEnY_.push_back(ESY);
+      eleESEnS_.push_back(ESS);
+      eleESEnE_.push_back(ESE);
     }
 
     //
     // Look up and save the ID decisions
     // 
-    
     if (runeleIDVID_) {
-      
       //edm::Ptr<reco::GsfElectron> recoEl(iEle);
       
       //const auto el = electrons->ptrAt(nEle_);

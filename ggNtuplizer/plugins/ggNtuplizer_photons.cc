@@ -1,5 +1,4 @@
 #include <TString.h>
-#include <TMVA/Reader.h>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
@@ -30,6 +29,7 @@ vector<float>  phoSigmaIEtaIEta_;
 vector<float>  phoSigmaIEtaIPhi_;
 vector<float>  phoSigmaIPhiIPhi_;
 vector<float>  phoE1x3_;
+vector<float>  phoE1x5_;
 vector<float>  phoE2x2_;
 vector<float>  phoE2x5Max_;
 vector<float>  phoE5x5_;
@@ -38,6 +38,7 @@ vector<float>  phoSigmaIEtaIEtaFull5x5_;
 vector<float>  phoSigmaIEtaIPhiFull5x5_;
 vector<float>  phoSigmaIPhiIPhiFull5x5_;
 vector<float>  phoE1x3Full5x5_;
+vector<float>  phoE1x5Full5x5_;
 vector<float>  phoE2x2Full5x5_;
 vector<float>  phoE2x5MaxFull5x5_;
 vector<float>  phoE5x5Full5x5_;
@@ -80,30 +81,9 @@ vector<float>  phohcalDepth1TowerSumEtConeDR03_;
 vector<float>  phohcalDepth2TowerSumEtConeDR03_;
 vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
+vector<float>  photrkSumPtSolidConeDR03_;
 
 vector<UShort_t> phoIDbit_;
-
-// variables that will be containers on which TMVA Reader works
-float varPhi_;
-float varR9_;
-float varSieie_;
-float varSieip_;
-float varE1x3overE5x5_;
-float varE2x2overE5x5_;
-float varE2x5overE5x5_;
-float varSCEta_;
-float varRawE_;
-float varSCEtaWidth_;
-float varSCPhiWidth_;
-float varRho_;
-float varPhoIsoRaw_;
-float varChIsoRaw_;
-float varWorstChRaw_;
-float varESEnOverRawE_; // for endcap MVA only
-float varESEffSigmaRR_; // for endcap MVA only
-// The spectators
-float varPt_;
-float varEta_;
 
 //Necessary for the Photon Footprint removal
 template <class T, class U>
@@ -115,12 +95,6 @@ bool isInFootprint(const T& thefootprint, const U& theCandidate) {
   }
   return false;
 }
-
-
-
-// TMVA Reader for applying MVA
-TMVA::Reader *tmvaReader_[2];
-TString methodName_[2];
 
 void ggNtuplizer::branchesPhotons(TTree* tree) {
   
@@ -147,6 +121,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoSigmaIEtaIPhi",        &phoSigmaIEtaIPhi_);
   tree->Branch("phoSigmaIPhiIPhi",        &phoSigmaIPhiIPhi_);
   tree->Branch("phoE1x3",                 &phoE1x3_);
+  tree->Branch("phoE1x5",                 &phoE1x5_);
   tree->Branch("phoE2x2",                 &phoE2x2_);
   tree->Branch("phoE2x5Max",              &phoE2x5Max_);
   tree->Branch("phoE5x5",                 &phoE5x5_);
@@ -155,6 +130,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoSigmaIEtaIPhiFull5x5", &phoSigmaIEtaIPhiFull5x5_);
   tree->Branch("phoSigmaIPhiIPhiFull5x5", &phoSigmaIPhiIPhiFull5x5_);
   tree->Branch("phoE1x3Full5x5",          &phoE1x3Full5x5_);
+  tree->Branch("phoE1x5Full5x5",          &phoE1x5Full5x5_);
   tree->Branch("phoE2x2Full5x5",          &phoE2x2Full5x5_);
   tree->Branch("phoE2x5MaxFull5x5",       &phoE2x5MaxFull5x5_);
   tree->Branch("phoE5x5Full5x5",          &phoE5x5Full5x5_);
@@ -194,84 +170,11 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
   tree->Branch("phohcalTowerSumEtConeDR03",       &phohcalTowerSumEtConeDR03_);
   tree->Branch("photrkSumPtHollowConeDR03",       &photrkSumPtHollowConeDR03_);
+  tree->Branch("photrkSumPtSolidConeDR03",        &photrkSumPtSolidConeDR03_);
   tree->Branch("phoIDMVA",                        &phoIDMVA_);
   tree->Branch("phoFiredSingleTrgs",              &phoFiredSingleTrgs_);
   tree->Branch("phoFiredDoubleTrgs",              &phoFiredDoubleTrgs_);
   if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
-
-  if (isAOD_ && runphoMVAID_) {
-    ////////////Prepare for photon ID MVA for Run II///////////
-    //
-    // Create and configure barrel MVA
-    //
-    tmvaReader_[0] = new TMVA::Reader( "!Color:!Silent:Error" );
-    tmvaReader_[0]->SetVerbose(kFALSE);
-    // Add all the vars, we take the string with variable name from the weights file (the Expression field)
-    tmvaReader_[0]->AddVariable("recoPhi"   , &varPhi_);
-    tmvaReader_[0]->AddVariable("r9"        , &varR9_);
-    tmvaReader_[0]->AddVariable("sieieFull5x5", &varSieie_);
-    tmvaReader_[0]->AddVariable("sieipFull5x5", &varSieip_);
-    tmvaReader_[0]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
-    tmvaReader_[0]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
-    tmvaReader_[0]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
-    tmvaReader_[0]->AddVariable("recoSCEta" , &varSCEta_);
-    tmvaReader_[0]->AddVariable("rawE"      , &varRawE_);
-    tmvaReader_[0]->AddVariable("scEtaWidth", &varSCEtaWidth_);
-    tmvaReader_[0]->AddVariable("scPhiWidth", &varSCPhiWidth_);
-    tmvaReader_[0]->AddVariable("rho"       , &varRho_);
-    tmvaReader_[0]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
-    tmvaReader_[0]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
-    tmvaReader_[0]->AddVariable("chWorstRaw", &varWorstChRaw_);
-    // Add spectators
-    tmvaReader_[0]->AddSpectator("recoPt" , &varPt_);
-    tmvaReader_[0]->AddSpectator("recoEta", &varEta_);
-
-    //
-    // Create and configure endcap MVA
-    //
-    tmvaReader_[1] = new TMVA::Reader( "!Color:!Silent:Error" );
-    tmvaReader_[1]->SetVerbose(kFALSE);
-    // Add all the vars, we take the string with variable name from the weights file (the Expression field)
-    tmvaReader_[1]->AddVariable("recoPhi"   , &varPhi_);
-    tmvaReader_[1]->AddVariable("r9"        , &varR9_);
-    tmvaReader_[1]->AddVariable("sieie_2012", &varSieie_);
-    tmvaReader_[1]->AddVariable("sieip_2012", &varSieip_);
-    tmvaReader_[1]->AddVariable("e1x3_2012/e5x5_2012"        , &varE1x3overE5x5_);
-    tmvaReader_[1]->AddVariable("e2x2_2012/e5x5_2012"        , &varE2x2overE5x5_);
-    tmvaReader_[1]->AddVariable("e2x5_2012/e5x5_2012"        , &varE2x5overE5x5_);
-    tmvaReader_[1]->AddVariable("recoSCEta" , &varSCEta_);
-    tmvaReader_[1]->AddVariable("rawE"      , &varRawE_);
-    tmvaReader_[1]->AddVariable("scEtaWidth", &varSCEtaWidth_);
-    tmvaReader_[1]->AddVariable("scPhiWidth", &varSCPhiWidth_);
-    tmvaReader_[1]->AddVariable("esEn/rawE" , &varESEnOverRawE_);
-    tmvaReader_[1]->AddVariable("esRR"      , &varESEffSigmaRR_);
-    tmvaReader_[1]->AddVariable("rho"       , &varRho_);
-    tmvaReader_[1]->AddVariable("phoIsoRaw" , &varPhoIsoRaw_);
-    tmvaReader_[1]->AddVariable("chIsoRaw"  , &varChIsoRaw_);
-    tmvaReader_[1]->AddVariable("chWorstRaw", &varWorstChRaw_);
-    // Add spectators
-    tmvaReader_[1]->AddSpectator("recoPt" , &varPt_);
-    tmvaReader_[1]->AddSpectator("recoEta", &varEta_);
-
-    //
-    // Book the MVA method for each category
-    //
-    std::string cmssw_base_src = getenv("CMSSW_BASE");
-    cmssw_base_src += "/src/";
-    //
-    TString localFileName1 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EB_V1.weights.xml";
-    TString weightsFileName1 = TString(cmssw_base_src) + localFileName1;
-    //methodName_[0] = "BDT photons barrel";
-    methodName_[0] = "BDT";
-    tmvaReader_[0]->BookMVA(methodName_[0], weightsFileName1);
-    //
-    TString localFileName2 = "EgammaAnalysis/PhotonTools/data/PHYS14/photon_general_MVA_phys14_pu20bx25_EE_V1.weights.xml";
-    TString weightsFileName2 = TString(cmssw_base_src) + localFileName2;
-    //methodName_[1] = "BDT photons endcap";
-    methodName_[1] = "BDT";
-    tmvaReader_[1]->BookMVA(methodName_[1], weightsFileName2);
-    
-  }//  if (isAOD_ && runphoMVAID_) 
 
 }
 
@@ -300,6 +203,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoSigmaIEtaIPhi_     .clear();
   phoSigmaIPhiIPhi_     .clear();
   phoE1x3_              .clear();
+  phoE1x5_              .clear();
   phoE2x2_              .clear();
   phoE2x5Max_           .clear();
   phoE5x5_              .clear();
@@ -308,6 +212,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoSigmaIEtaIPhiFull5x5_.clear();
   phoSigmaIPhiIPhiFull5x5_.clear();
   phoE1x3Full5x5_       .clear();
+  phoE1x5Full5x5_       .clear();
   phoE2x2Full5x5_       .clear();
   phoE2x5MaxFull5x5_    .clear();
   phoE5x5Full5x5_       .clear();
@@ -351,6 +256,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phohcalDepth2TowerSumEtConeDR03_.clear();
   phohcalTowerSumEtConeDR03_      .clear();
   photrkSumPtHollowConeDR03_      .clear();
+  photrkSumPtSolidConeDR03_       .clear();
 
   phoIDbit_                       .clear();
   
@@ -451,9 +357,10 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoSigmaIEtaIPhi_ .push_back(iPho->sep());
     phoSigmaIPhiIPhi_ .push_back(iPho->spp());
     phoE1x3_          .push_back(lazyTool.e1x3(*((*iPho).superCluster()->seed())));
+    phoE1x5_          .push_back(iPho->e1x5());
     phoE2x2_          .push_back(lazyTool.e2x2(*((*iPho).superCluster()->seed())));
-    phoE2x5Max_       .push_back(lazyTool.e2x5Max(*((*iPho).superCluster()->seed())));
-    phoE5x5_          .push_back(lazyTool.e5x5(*((*iPho).superCluster()->seed())));
+    phoE2x5Max_       .push_back(iPho->e2x5());
+    phoE5x5_          .push_back(iPho->e5x5());
     phoESEffSigmaRR_  .push_back(lazyTool.eseffsirir(*((*iPho).superCluster())));
     //phoPFChIso_       .push_back(iPho->chargedHadronIso());
     //phoPFPhoIso_      .push_back(iPho->photonIso());
@@ -471,6 +378,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoSigmaIEtaIPhiFull5x5_ .push_back(sep);
     phoSigmaIPhiIPhiFull5x5_ .push_back(spp);
     phoE1x3Full5x5_          .push_back(lazyToolnoZS.e1x3(*((*iPho).superCluster()->seed())));
+    phoE1x5Full5x5_          .push_back(iPho->full5x5_e1x5());
     phoE2x2Full5x5_          .push_back(lazyToolnoZS.e2x2(*((*iPho).superCluster()->seed())));
     phoE2x5MaxFull5x5_       .push_back(iPho->full5x5_e2x5());
     phoE5x5Full5x5_          .push_back(iPho->full5x5_e5x5());
@@ -611,38 +519,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phohcalDepth2TowerSumEtConeDR03_              .push_back(iPho->hcalDepth2TowerSumEtConeDR03());
     phohcalTowerSumEtConeDR03_                    .push_back(iPho->hcalTowerSumEtConeDR03());
     photrkSumPtHollowConeDR03_                    .push_back(iPho->trkSumPtHollowConeDR03());
-
-    ////////9th April, 2015 - SJ
-    ///MVA for photons in PHYS14
-    // set MVA variables
-  
-    if (isAOD_ && runphoMVAID_ ) {
-      varPhi_          = phoPhi_[nPho_];
-      varR9_           = phoR9_[nPho_];
-      varSieie_        = phoSigmaIEtaIEtaFull5x5_[nPho_];
-      varSieip_        = phoSigmaIEtaIPhiFull5x5_[nPho_];
-      varE1x3overE5x5_ = phoE1x3Full5x5_[nPho_]/phoE5x5Full5x5_[nPho_];
-      varE2x2overE5x5_ = phoE2x2Full5x5_[nPho_]/phoE5x5Full5x5_[nPho_];
-      varSCEta_        = phoSCEta_[nPho_];
-      varRawE_         = phoSCRawE_[nPho_];
-      varSCEtaWidth_   = phoSCEtaWidth_[nPho_];
-      varSCPhiWidth_   = phoSCPhiWidth_[nPho_];
-      varESEnOverRawE_ = phoESEn_[nPho_]/phoSCRawE_[nPho_];
-      varESEffSigmaRR_ = phoESEffSigmaRR_[nPho_];
-      varRho_          = rho;
-      varPhoIsoRaw_    = phoPFPhoIso_[nPho_];
-      varChIsoRaw_     = phoPFChIso_[nPho_];
-      varWorstChRaw_   = phoPFNeuIso_[nPho_];
-
-      // spectator vars
-      varPt_           = phoEt_[nPho_];
-      varEta_          = phoEta_[nPho_];
-      
-      // 0=ECAL barrel or 1=ECAL endcaps
-      //int iBE = (fabs(phoSCEta_[nPho_]) < 1.479) ? 0 : 1;
-
-      //phoIDMVA_.push_back(tmvaReader_[iBE]->EvaluateMVA("BDT"));
-    }//if (isAOD_ && runphoMVAID_ )
+    photrkSumPtSolidConeDR03_                     .push_back(iPho->trkSumPtSolidConeDR03());
 
     if (runphoIDVID_) {
       //Photon ID in VID framwork - 11th may, 2015
@@ -706,10 +583,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   if (GEDIdTool) delete GEDIdTool;
 }
 
-void ggNtuplizer::cleanupPhotons()
-{
-  if (isAOD_ && runphoMVAID_) {
-    delete tmvaReader_[0];
-    delete tmvaReader_[1];
-  }
+void ggNtuplizer::cleanupPhotons() {
+
 }
