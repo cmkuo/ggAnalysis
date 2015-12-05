@@ -11,7 +11,7 @@ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cf
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_v4')
+process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_v5')
 
 #process.Tracer = cms.Service("Tracer")
 
