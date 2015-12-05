@@ -1,3 +1,8 @@
+* V07-04-14-01
+   * move to cut based 25ns photon ID
+   * add in ES rechits of PF ES clusters in development mode
+   * add photon shower shapes for high pt photon ID development
+
 * V07-04-14-00
    * update run py files for new tag
    * remove HLT 50ns variables
