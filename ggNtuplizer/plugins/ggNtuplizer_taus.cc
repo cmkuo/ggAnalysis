@@ -12,31 +12,21 @@ Int_t          nTau_;
 // decay mode discriminators
 
 //Tau Id & Isolation
-vector<bool>   pfTausDiscriminationByDecayModeFinding_;
-vector<bool>   pfTausDiscriminationByDecayModeFindingNewDMs_;
-//vector<bool>   tauByLooseElectronRejection_;
-//vector<bool>   tauByMediumElectronRejection_;
-//vector<bool>   tauByTightElectronRejection_;
+vector<bool>   taupfTausDiscriminationByDecayModeFinding_;
+vector<bool>   taupfTausDiscriminationByDecayModeFindingNewDMs_;
+vector<bool>   tauByMVA5VLooseElectronRejection_;
 vector<bool>   tauByMVA5LooseElectronRejection_;
 vector<bool>   tauByMVA5MediumElectronRejection_;
 vector<bool>   tauByMVA5TightElectronRejection_;
 vector<bool>   tauByMVA5VTightElectronRejection_;
 vector<bool>   tauByLooseMuonRejection3_;
 vector<bool>   tauByTightMuonRejection3_;
-//vector<bool>   tauByMVALooseMuonRejection_;
-//vector<bool>   tauByMVAMediumMuonRejection_;
-//vector<bool>   tauByMVATightMuonRejection_;
+
 vector<bool>   tauByLooseCombinedIsolationDeltaBetaCorr3Hits_;
 vector<bool>   tauByMediumCombinedIsolationDeltaBetaCorr3Hits_;
 vector<bool>   tauByTightCombinedIsolationDeltaBetaCorr3Hits_;
 vector<float>   tauCombinedIsolationDeltaBetaCorrRaw3Hits_;
-//vector<bool>   tauByVLooseIsolationMVA3newDMwoLT_;
-//vector<bool>   tauByLooseIsolationMVA3newDMwoLT_;
-//vector<bool>   tauByMediumIsolationMVA3newDMwoLT_;
-//vector<bool>   tauByTightIsolationMVA3newDMwoLT_;
-//vector<bool>   tauByVTightIsolationMVA3newDMwoLT_;
-//vector<bool>   tauByVVTightIsolationMVA3newDMwoLT_;
-//vector<float>   tauByIsolationMVA3newDMwoLTraw_;
+
 vector<bool>   tauByVLooseIsolationMVA3oldDMwLT_;
 vector<bool>   tauByLooseIsolationMVA3oldDMwLT_;
 vector<bool>   tauByMediumIsolationMVA3oldDMwLT_;
@@ -44,12 +34,7 @@ vector<bool>   tauByTightIsolationMVA3oldDMwLT_;
 vector<bool>   tauByVTightIsolationMVA3oldDMwLT_;
 vector<bool>   tauByVVTightIsolationMVA3oldDMwLT_;
 vector<float>   tauByIsolationMVA3oldDMwLTraw_;
-//vector<bool>   tauByVLooseIsolationMVA3oldDMwoLT_;
-//vector<bool>   tauByLooseIsolationMVA3oldDMwoLT_;
-//vector<bool>   tauByTightIsolationMVA3oldDMwoLT_;
-//vector<bool>   tauByVTightIsolationMVA3oldDMwoLT_;
-//vector<bool>   tauByVVTightIsolationMVA3oldDMwoLT_;
-//vector<float>   tauByIsolationMVA3oldDMwoLTraw_;
+
 vector<bool>   tauByVLooseIsolationMVA3newDMwLT_;
 vector<bool>   tauByLooseIsolationMVA3newDMwLT_;
 vector<bool>   tauByMediumIsolationMVA3newDMwLT_;
@@ -79,25 +64,32 @@ vector<float> tauZImpact_;
 vector<float> tauChargedIsoPtSum_;
 vector<float> tauNeutralIsoPtSum_;
 vector<float> tauPuCorrPtSum_;
-vector<float> tauNumSignalPFChargedHadrCands_;
-vector<float> tauNumSignalPFNeutrHadrCands_;
-vector<float> tauNumSignalPFGammaCands_;
-vector<float> tauNumSignalPFCands_;
-vector<float> tauNumIsolationPFChargedHadrCands_;
-vector<float> tauNumIsolationPFNeutrHadrCands_;
-vector<float> tauNumIsolationPFGammaCands_;
-vector<float> tauNumIsolationPFCands_;
-//vector<float> tauEMFraction_;
-//vector<float> tauHCAL3x3OverPLead_;
-//vector<float> tauHCALMaxOverPLead_;
-//vector<float> tauHCALTotOverPLead_;
-//vector<float> tauIsolationPFChargedHadrCandsPtSum_;
-//vector<float> tauIsolationPFGammaCandsEtSum_;
-//vector<float> tauLeadPFChargedHadrCandsignedSipt_;
+vector<int> tauNumSignalPFChargedHadrCands_;
+vector<int> tauNumSignalPFNeutrHadrCands_;
+vector<int> tauNumSignalPFGammaCands_;
+vector<int> tauNumSignalPFCands_;
+vector<int> tauNumIsolationPFChargedHadrCands_;
+vector<int> tauNumIsolationPFNeutrHadrCands_;
+vector<int> tauNumIsolationPFGammaCands_;
+vector<int> tauNumIsolationPFCands_;
 vector<bool>  tauLeadChargedHadronExists_;
 vector<float> tauLeadChargedHadronEta_;
 vector<float> tauLeadChargedHadronPhi_;
 vector<float> tauLeadChargedHadronPt_;
+
+
+vector<bool> taubyLoosePileupWeightedIsolation3Hits_;
+vector<bool> taubyMediumPileupWeightedIsolation3Hits_;
+vector<bool> taubyTightPileupWeightedIsolation3Hits_;
+vector<bool> taubyPhotonPtSumOutsideSignalCone_;
+vector<bool> taubyPileupWeightedIsolationRaw3Hits_;
+vector<float> tauneutralIsoPtSumWeight_;
+vector<float> taufootprintCorrection_;
+vector<float> tauphotonPtSumOutsideSignalCone_;
+vector<float> taudz_;
+vector<float> taudxy_;
+
+
 
 void ggNtuplizer::branchesTaus(TTree* tree)
 {
@@ -107,31 +99,24 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     tree->Branch("nTau", &nTau_);
     
     //Tau Id & Isolation
-    tree->Branch("pfTausDiscriminationByDecayModeFinding", &pfTausDiscriminationByDecayModeFinding_);
-    tree->Branch("pfTausDiscriminationByDecayModeFindingNewDMs", &pfTausDiscriminationByDecayModeFindingNewDMs_);
-//    tree->Branch("tauByLooseElectronRejection", &tauByLooseElectronRejection_);
-//    tree->Branch("tauByMediumElectronRejection", &tauByMediumElectronRejection_);
-//    tree->Branch("tauByTightElectronRejection", &tauByTightElectronRejection_);
+    tree->Branch("taupfTausDiscriminationByDecayModeFinding", &taupfTausDiscriminationByDecayModeFinding_);
+    tree->Branch("taupfTausDiscriminationByDecayModeFindingNewDMs", &taupfTausDiscriminationByDecayModeFindingNewDMs_);
+    
+    tree->Branch("tauByMVA5VLooseElectronRejection", &tauByMVA5VLooseElectronRejection_);
     tree->Branch("tauByMVA5LooseElectronRejection", &tauByMVA5LooseElectronRejection_);
     tree->Branch("tauByMVA5MediumElectronRejection", &tauByMVA5MediumElectronRejection_);
     tree->Branch("tauByMVA5TightElectronRejection", &tauByMVA5TightElectronRejection_);
     tree->Branch("tauByMVA5VTightElectronRejection", &tauByMVA5VTightElectronRejection_);
+    
     tree->Branch("tauByLooseMuonRejection3", &tauByLooseMuonRejection3_);
     tree->Branch("tauByTightMuonRejection3", &tauByTightMuonRejection3_);
-//    tree->Branch("tauByMVALooseMuonRejection", &tauByMVALooseMuonRejection_);
-//    tree->Branch("tauByMVAMediumMuonRejection", &tauByMVAMediumMuonRejection_);
-//    tree->Branch("tauByMVATightMuonRejection", &tauByMVATightMuonRejection_);
+    
     tree->Branch("tauByLooseCombinedIsolationDeltaBetaCorr3Hits", &tauByLooseCombinedIsolationDeltaBetaCorr3Hits_);
     tree->Branch("tauByMediumCombinedIsolationDeltaBetaCorr3Hits", &tauByMediumCombinedIsolationDeltaBetaCorr3Hits_);
     tree->Branch("tauByTightCombinedIsolationDeltaBetaCorr3Hits", &tauByTightCombinedIsolationDeltaBetaCorr3Hits_);
     tree->Branch("tauCombinedIsolationDeltaBetaCorrRaw3Hits", &tauCombinedIsolationDeltaBetaCorrRaw3Hits_);
-//    tree->Branch("tauByVLooseIsolationMVA3newDMwoLT", &tauByVLooseIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByLooseIsolationMVA3newDMwoLT", &tauByLooseIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByMediumIsolationMVA3newDMwoLT", &tauByMediumIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByTightIsolationMVA3newDMwoLT", &tauByTightIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByVTightIsolationMVA3newDMwoLT", &tauByVTightIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByVVTightIsolationMVA3newDMwoLT", &tauByVVTightIsolationMVA3newDMwoLT_);
-//    tree->Branch("tauByIsolationMVA3newDMwoLTraw", &tauByIsolationMVA3newDMwoLTraw_);
+    
+    
     tree->Branch("tauByVLooseIsolationMVA3oldDMwLT", &tauByVLooseIsolationMVA3oldDMwLT_);
     tree->Branch("tauByLooseIsolationMVA3oldDMwLT", &tauByLooseIsolationMVA3oldDMwLT_);
     tree->Branch("tauByMediumIsolationMVA3oldDMwLT", &tauByMediumIsolationMVA3oldDMwLT_);
@@ -139,12 +124,6 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     tree->Branch("tauByVTightIsolationMVA3oldDMwLT", &tauByVTightIsolationMVA3oldDMwLT_);
     tree->Branch("tauByVVTightIsolationMVA3oldDMwLT", &tauByVVTightIsolationMVA3oldDMwLT_);
     tree->Branch("tauByIsolationMVA3oldDMwLTraw", &tauByIsolationMVA3oldDMwLTraw_);
-//    tree->Branch("tauByVLooseIsolationMVA3oldDMwoLT", &tauByVLooseIsolationMVA3oldDMwoLT_);
-//    tree->Branch("tauByLooseIsolationMVA3oldDMwoLT", &tauByLooseIsolationMVA3oldDMwoLT_);
-//    tree->Branch("tauByTightIsolationMVA3oldDMwoLT", &tauByTightIsolationMVA3oldDMwoLT_);
-//    tree->Branch("tauByVTightIsolationMVA3oldDMwoLT", &tauByVTightIsolationMVA3oldDMwoLT_);
-//    tree->Branch("tauByVVTightIsolationMVA3oldDMwoLT", &tauByVVTightIsolationMVA3oldDMwoLT_);
-//    tree->Branch("tauByIsolationMVA3oldDMwoLTraw", &tauByIsolationMVA3oldDMwoLTraw_);
     tree->Branch("tauByLooseIsolationMVA3newDMwLT", &tauByLooseIsolationMVA3newDMwLT_);
     tree->Branch("tauByVLooseIsolationMVA3newDMwLT", &tauByVLooseIsolationMVA3newDMwLT_);
     tree->Branch("tauByMediumIsolationMVA3newDMwLT", &tauByMediumIsolationMVA3newDMwLT_);
@@ -171,13 +150,7 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     
     // Tau Ingredients
     tree->Branch("tauDecayMode"  ,&tauDecayMode_);
-    //    tree->Branch("tauEMFraction"  ,&tauEMFraction_);
-    //    tree->Branch("tauHCAL3x3OverPLead"  ,&tauHCAL3x3OverPLead_);
-    //    tree->Branch("tauHCALMaxOverPLead"  ,&tauHCALMaxOverPLead_);
-    //    tree->Branch("tauHCALTotOverPLead"  ,&tauHCALTotOverPLead_);
-    //    tree->Branch("tauIsolationPFChargedHadrCandsPtSum"  ,&tauIsolationPFChargedHadrCandsPtSum_);
-    //    tree->Branch("tauIsolationPFGammaCandsEtSum"  ,&tauIsolationPFGammaCandsEtSum_);
-    //    tree->Branch("tauLeadPFChargedHadrCandsignedSipt"  ,&tauLeadPFChargedHadrCandsignedSipt_);
+    
     tree->Branch("tauLeadChargedHadronExists"  ,&tauLeadChargedHadronExists_);
     tree->Branch("tauLeadChargedHadronEta"  ,&tauLeadChargedHadronEta_);
     tree->Branch("tauLeadChargedHadronPhi"  ,&tauLeadChargedHadronPhi_);
@@ -194,6 +167,18 @@ void ggNtuplizer::branchesTaus(TTree* tree)
     tree->Branch("tauNumIsolationPFGammaCands"  ,&tauNumIsolationPFGammaCands_);
     tree->Branch("tauNumIsolationPFCands"  ,&tauNumIsolationPFCands_);
     
+    tree->Branch("taubyLoosePileupWeightedIsolation3Hits"  ,&taubyLoosePileupWeightedIsolation3Hits_);
+    tree->Branch("taubyMediumPileupWeightedIsolation3Hits"  ,&taubyMediumPileupWeightedIsolation3Hits_);
+    tree->Branch("taubyTightPileupWeightedIsolation3Hits"  ,&taubyTightPileupWeightedIsolation3Hits_);
+    tree->Branch("taubyPhotonPtSumOutsideSignalCone"  ,&taubyPhotonPtSumOutsideSignalCone_);
+    tree->Branch("taubyPileupWeightedIsolationRaw3Hits"  ,&taubyPileupWeightedIsolationRaw3Hits_);
+    tree->Branch("tauneutralIsoPtSumWeight"  ,&tauneutralIsoPtSumWeight_);
+    
+    tree->Branch("taufootprintCorrection"  ,&taufootprintCorrection_);
+    tree->Branch("tauphotonPtSumOutsideSignalCone"  ,&tauphotonPtSumOutsideSignalCone_);
+    tree->Branch("taudz"  ,&taudz_);
+    tree->Branch("taudxy"  ,&taudxy_);
+    
     
     
     
@@ -208,31 +193,20 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
 {
     
     // Tau Id & Isolation
-//    tauByLooseElectronRejection_.clear();
-//    tauByMediumElectronRejection_.clear();
-//    tauByTightElectronRejection_.clear();
+    
+    tauByMVA5VLooseElectronRejection_.clear();
     tauByMVA5LooseElectronRejection_.clear();
     tauByMVA5MediumElectronRejection_.clear();
     tauByMVA5TightElectronRejection_.clear();
     tauByMVA5VTightElectronRejection_.clear();
     tauByLooseMuonRejection3_.clear();
     tauByTightMuonRejection3_.clear();
-//    tauByMVALooseMuonRejection_.clear();
-//    tauByMVAMediumMuonRejection_.clear();
-//    tauByMVATightMuonRejection_.clear();
-    pfTausDiscriminationByDecayModeFinding_.clear();
-    pfTausDiscriminationByDecayModeFindingNewDMs_.clear();
+    taupfTausDiscriminationByDecayModeFinding_.clear();
+    taupfTausDiscriminationByDecayModeFindingNewDMs_.clear();
     tauByLooseCombinedIsolationDeltaBetaCorr3Hits_.clear();
     tauByMediumCombinedIsolationDeltaBetaCorr3Hits_.clear();
     tauByTightCombinedIsolationDeltaBetaCorr3Hits_.clear();
     tauCombinedIsolationDeltaBetaCorrRaw3Hits_.clear();
-//    tauByVLooseIsolationMVA3newDMwoLT_.clear();
-//    tauByLooseIsolationMVA3newDMwoLT_.clear();
-//    tauByMediumIsolationMVA3newDMwoLT_.clear();
-//    tauByTightIsolationMVA3newDMwoLT_.clear();
-//    tauByVTightIsolationMVA3newDMwoLT_.clear();
-//    tauByVVTightIsolationMVA3newDMwoLT_.clear();
-//    tauByIsolationMVA3newDMwoLTraw_.clear();
     tauByVLooseIsolationMVA3oldDMwLT_.clear();
     tauByLooseIsolationMVA3oldDMwLT_.clear();
     tauByMediumIsolationMVA3oldDMwLT_.clear();
@@ -240,12 +214,6 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
     tauByVTightIsolationMVA3oldDMwLT_.clear();
     tauByVVTightIsolationMVA3oldDMwLT_.clear();
     tauByIsolationMVA3oldDMwLTraw_.clear();
-//    tauByVLooseIsolationMVA3oldDMwoLT_.clear();
-//    tauByLooseIsolationMVA3oldDMwoLT_.clear();
-//    tauByTightIsolationMVA3oldDMwoLT_.clear();
-//    tauByVTightIsolationMVA3oldDMwoLT_.clear();
-//    tauByVVTightIsolationMVA3oldDMwoLT_.clear();
-//    tauByIsolationMVA3oldDMwoLTraw_.clear();
     tauByLooseIsolationMVA3newDMwLT_.clear();
     tauByVLooseIsolationMVA3newDMwLT_.clear();
     tauByMediumIsolationMVA3newDMwLT_.clear();
@@ -272,13 +240,7 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
     
     // Tau Ingredients
     tauDecayMode_.clear();
-    //    tauEMFraction_.clear();
-    //    tauHCAL3x3OverPLead_.clear();
-    //    tauHCALMaxOverPLead_.clear();
-    //    tauHCALTotOverPLead_.clear();
-    //    tauIsolationPFChargedHadrCandsPtSum_.clear();
-    //    tauIsolationPFGammaCandsEtSum_.clear();
-    //    tauLeadPFChargedHadrCandsignedSipt_.clear();
+    
     tauLeadChargedHadronExists_.clear();
     tauLeadChargedHadronEta_.clear();
     tauLeadChargedHadronPhi_.clear();
@@ -295,6 +257,16 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
     tauNumIsolationPFGammaCands_.clear();
     tauNumIsolationPFCands_.clear();
     
+    taubyLoosePileupWeightedIsolation3Hits_.clear();
+    taubyMediumPileupWeightedIsolation3Hits_.clear();
+    taubyTightPileupWeightedIsolation3Hits_.clear();
+    taubyPhotonPtSumOutsideSignalCone_.clear();
+    taubyPileupWeightedIsolationRaw3Hits_.clear();
+    tauneutralIsoPtSumWeight_.clear();
+    taufootprintCorrection_.clear();
+    tauphotonPtSumOutsideSignalCone_.clear();
+    taudz_.clear();
+    taudxy_.clear();
     
     
     nTau_ = 0;
@@ -312,31 +284,23 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
         
         
         // Tau Id & Isolation
-//        tauByLooseElectronRejection_.push_back(itau->tauID("againstElectronLoose"));
-//        tauByMediumElectronRejection_.push_back(itau->tauID("againstElectronMedium"));
-//        tauByTightElectronRejection_.push_back(itau->tauID("againstElectronTight"));
+        tauByMVA5VLooseElectronRejection_.push_back(itau->tauID("againstElectronVLooseMVA5"));
         tauByMVA5LooseElectronRejection_.push_back(itau->tauID("againstElectronLooseMVA5"));
         tauByMVA5MediumElectronRejection_.push_back(itau->tauID("againstElectronMediumMVA5"));
         tauByMVA5TightElectronRejection_.push_back(itau->tauID("againstElectronTightMVA5"));
         tauByMVA5VTightElectronRejection_.push_back(itau->tauID("againstElectronVTightMVA5"));
+        
         tauByLooseMuonRejection3_.push_back(itau->tauID("againstMuonLoose3"));
         tauByTightMuonRejection3_.push_back(itau->tauID("againstMuonTight3"));
-//        tauByMVALooseMuonRejection_.push_back(itau->tauID("againstMuonLooseMVA"));
-//        tauByMVAMediumMuonRejection_.push_back(itau->tauID("againstMuonMediumMVA"));
-//        tauByMVATightMuonRejection_.push_back(itau->tauID("againstMuonTightMVA"));
-        pfTausDiscriminationByDecayModeFinding_.push_back(itau->tauID("decayModeFinding"));
-        pfTausDiscriminationByDecayModeFindingNewDMs_.push_back(itau->tauID("decayModeFindingNewDMs"));
+        
+        taupfTausDiscriminationByDecayModeFinding_.push_back(itau->tauID("decayModeFinding"));
+        taupfTausDiscriminationByDecayModeFindingNewDMs_.push_back(itau->tauID("decayModeFindingNewDMs"));
+        
         tauByLooseCombinedIsolationDeltaBetaCorr3Hits_.push_back(itau->tauID("byLooseCombinedIsolationDeltaBetaCorr3Hits"));
         tauByMediumCombinedIsolationDeltaBetaCorr3Hits_.push_back(itau->tauID("byMediumCombinedIsolationDeltaBetaCorr3Hits"));
         tauByTightCombinedIsolationDeltaBetaCorr3Hits_.push_back(itau->tauID("byTightCombinedIsolationDeltaBetaCorr3Hits"));
         tauCombinedIsolationDeltaBetaCorrRaw3Hits_.push_back(itau->tauID("byCombinedIsolationDeltaBetaCorrRaw3Hits"));
-//        tauByVLooseIsolationMVA3newDMwoLT_.push_back(itau->tauID("byVLooseIsolationMVA3newDMwoLT"));
-//        tauByLooseIsolationMVA3newDMwoLT_.push_back(itau->tauID("byLooseIsolationMVA3newDMwoLT"));
-//        tauByMediumIsolationMVA3newDMwoLT_.push_back(itau->tauID("byMediumIsolationMVA3newDMwoLT"));
-//        tauByTightIsolationMVA3newDMwoLT_.push_back(itau->tauID("byTightIsolationMVA3newDMwoLT"));
-//        tauByVTightIsolationMVA3newDMwoLT_.push_back(itau->tauID("byVTightIsolationMVA3newDMwoLT"));
-//        tauByVVTightIsolationMVA3newDMwoLT_.push_back(itau->tauID("byVVTightIsolationMVA3newDMwoLT"));
-//        tauByIsolationMVA3newDMwoLTraw_.push_back(itau->tauID("byIsolationMVA3newDMwoLTraw"));
+        
         tauByVLooseIsolationMVA3oldDMwLT_.push_back(itau->tauID("byVLooseIsolationMVA3oldDMwLT"));
         tauByLooseIsolationMVA3oldDMwLT_.push_back(itau->tauID("byLooseIsolationMVA3oldDMwLT"));
         tauByMediumIsolationMVA3oldDMwLT_.push_back(itau->tauID("byMediumIsolationMVA3oldDMwLT"));
@@ -344,12 +308,7 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
         tauByVTightIsolationMVA3oldDMwLT_.push_back(itau->tauID("byVTightIsolationMVA3oldDMwLT"));
         tauByVVTightIsolationMVA3oldDMwLT_.push_back(itau->tauID("byVVTightIsolationMVA3oldDMwLT"));
         tauByIsolationMVA3oldDMwLTraw_.push_back(itau->tauID("byIsolationMVA3oldDMwLTraw"));
-//        tauByVLooseIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVLooseIsolationMVA3oldDMwoLT"));
-//        tauByLooseIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byLooseIsolationMVA3oldDMwoLT"));
-//        tauByTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byTightIsolationMVA3oldDMwoLT"));
-//        tauByVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVTightIsolationMVA3oldDMwoLT"));
-//        tauByVVTightIsolationMVA3oldDMwoLT_.push_back(itau->tauID("byVVTightIsolationMVA3oldDMwoLT"));
-//        tauByIsolationMVA3oldDMwoLTraw_.push_back(itau->tauID("byIsolationMVA3oldDMwoLTraw"));
+        
         tauByLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byLooseIsolationMVA3newDMwLT"));
         tauByVLooseIsolationMVA3newDMwLT_.push_back(itau->tauID("byVLooseIsolationMVA3newDMwLT"));
         tauByMediumIsolationMVA3newDMwLT_.push_back(itau->tauID("byMediumIsolationMVA3newDMwLT"));
@@ -357,6 +316,13 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
         tauByVTightIsolationMVA3newDMwLT_.push_back(itau->tauID("byVTightIsolationMVA3newDMwLT"));
         tauByVVTightIsolationMVA3newDMwLT_.push_back(itau->tauID("byVVTightIsolationMVA3newDMwLT"));
         tauByIsolationMVA3newDMwLTraw_.push_back(itau->tauID("byIsolationMVA3newDMwLTraw"));
+
+        taubyLoosePileupWeightedIsolation3Hits_.push_back(itau->tauID("byLoosePileupWeightedIsolation3Hits"));
+        taubyMediumPileupWeightedIsolation3Hits_.push_back(itau->tauID("byMediumPileupWeightedIsolation3Hits"));
+        taubyTightPileupWeightedIsolation3Hits_.push_back(itau->tauID("byTightPileupWeightedIsolation3Hits"));
+        taubyPhotonPtSumOutsideSignalCone_.push_back(itau->tauID("byPhotonPtSumOutsideSignalCone"));
+        taubyPileupWeightedIsolationRaw3Hits_.push_back(itau->tauID("byPileupWeightedIsolationRaw3Hits"));
+
         
         //Tau Kinematics
         tauEta_.push_back(itau->eta());
@@ -377,37 +343,38 @@ void ggNtuplizer::fillTaus(const edm::Event& e)
         
         // Tau Ingredients
         tauDecayMode_.push_back(itau->decayMode());
-        //        tauEMFraction_.push_back(itau->emFraction());
-        //        tauHCAL3x3OverPLead_.push_back(itau->hcal3x3OverPLead());
-        //        tauHCALMaxOverPLead_.push_back(itau->hcalMaxOverPLead());
-        //        tauHCALTotOverPLead_.push_back(itau->hcalTotOverPLead());
-        //        tauIsolationPFChargedHadrCandsPtSum_.push_back(itau->isolationPFChargedHadrCandsPtSum());
-        //        tauIsolationPFGammaCandsEtSum_.push_back(itau->isolationPFGammaCandsEtSum());
-        //        tauLeadPFChargedHadrCandsignedSipt_.push_back(itau->leadPFChargedHadrCandsignedSipt());
         tauChargedIsoPtSum_.push_back(itau->tauID("chargedIsoPtSum") );
         tauNeutralIsoPtSum_.push_back(itau->tauID("neutralIsoPtSum")  );
         tauPuCorrPtSum_.push_back(itau->tauID("puCorrPtSum")  );
-        tauNumSignalPFChargedHadrCands_.push_back(itau->signalPFChargedHadrCands().size());
-        tauNumSignalPFNeutrHadrCands_.push_back(itau->signalPFNeutrHadrCands().size());
-        tauNumSignalPFGammaCands_.push_back(itau->signalPFGammaCands().size());
-        tauNumSignalPFCands_.push_back(itau->signalPFCands().size());
-        tauNumIsolationPFChargedHadrCands_.push_back(itau->isolationPFChargedHadrCands().size());
-        tauNumIsolationPFNeutrHadrCands_.push_back(itau->isolationPFNeutrHadrCands().size());
-        tauNumIsolationPFGammaCands_.push_back(itau->isolationPFGammaCands().size());
-        tauNumIsolationPFCands_.push_back(itau->isolationPFCands().size());
+        tauneutralIsoPtSumWeight_.push_back(itau->tauID("neutralIsoPtSumWeight"));
+        taufootprintCorrection_.push_back(itau->tauID("footprintCorrection"));
+        tauphotonPtSumOutsideSignalCone_.push_back(itau->tauID("photonPtSumOutsideSignalCone"));
         
-        const reco::PFCandidatePtr& leadPFChargedHadrCand_Ref = itau->leadPFChargedHadrCand();
-        if(leadPFChargedHadrCand_Ref.isNonnull()){// this check is needed in case hpsTau fails decayModeFinding
+        tauNumSignalPFChargedHadrCands_.push_back(itau->signalChargedHadrCands().size());
+        tauNumSignalPFNeutrHadrCands_.push_back(itau->signalNeutrHadrCands().size());
+        tauNumSignalPFGammaCands_.push_back(itau->signalGammaCands().size());
+        tauNumSignalPFCands_.push_back(itau->signalCands().size());
+        
+        tauNumIsolationPFChargedHadrCands_.push_back(itau->isolationChargedHadrCands().size());
+        tauNumIsolationPFNeutrHadrCands_.push_back(itau->isolationNeutrHadrCands().size());
+        tauNumIsolationPFGammaCands_.push_back(itau->isolationGammaCands().size());
+        tauNumIsolationPFCands_.push_back(itau->isolationCands().size());
+        
+         edm::Handle<reco::VertexCollection> vertexs;
+         e.getByToken(vtxLabel_, vertexs);
+
+        if (vertexs->size()>0) {
+            pat::PackedCandidate const* packedLeadTauCand = dynamic_cast<pat::PackedCandidate const*>(itau->leadChargedHadrCand().get());
+            taudz_.push_back(packedLeadTauCand->dz());
+            taudxy_.push_back(packedLeadTauCand->dxy());
             tauLeadChargedHadronExists_.push_back(true);
-            tauLeadChargedHadronEta_.push_back(leadPFChargedHadrCand_Ref->eta());
-            tauLeadChargedHadronPhi_.push_back(leadPFChargedHadrCand_Ref->phi());
-            tauLeadChargedHadronPt_.push_back(leadPFChargedHadrCand_Ref->pt());
-        } else {
-            tauLeadChargedHadronExists_.push_back(false);
-            tauLeadChargedHadronEta_.push_back(0);
-            tauLeadChargedHadronPhi_.push_back(0);
-            tauLeadChargedHadronPt_.push_back(0);
+            tauLeadChargedHadronEta_.push_back(packedLeadTauCand->eta());
+            tauLeadChargedHadronPhi_.push_back(packedLeadTauCand->phi());
+            tauLeadChargedHadronPt_.push_back(packedLeadTauCand->pt());
         }
+        
+        
+        
         
         ++nTau_;
         
