@@ -18,7 +18,15 @@ vector<float> jetEta_;
 vector<float> jetPhi_;
 vector<float> jetRawPt_;
 vector<float> jetRawEn_;
+vector<float> jetMt_;
 vector<float> jetArea_;
+vector<float> jetLeadTrackPt_;
+vector<float> jetLeadTrackEta_;
+vector<float> jetLeadTrackPhi_;
+vector<int>   jetLepTrackPID_;
+vector<float> jetLepTrackPt_;
+vector<float> jetLepTrackEta_;
+vector<float> jetLepTrackPhi_;
 vector<float> jetCHF_;
 vector<float> jetNHF_;
 vector<float> jetCEF_;
@@ -27,6 +35,11 @@ vector<int>   jetNCH_;
 vector<float> jetHFHAE_;
 vector<float> jetHFEME_;
 vector<int>   jetNConstituents_;
+vector<float> jetVtxPt_;
+vector<float> jetVtxMass_;
+vector<float> jetVtxNtrks_;
+vector<float> jetVtx3DVal_;
+vector<float> jetVtx3DSig_;
 vector<float> jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
 vector<float> jetJetProbabilityBJetTags_;
 vector<float> jetpfCombinedMVABJetTags_;
@@ -96,14 +109,22 @@ vector< vector<float> > AK8softdropSubjetCSV_ ;
 
 void ggNtuplizer::branchesJets(TTree* tree) {
   
-  tree->Branch("nJet",   &nJet_);
-  tree->Branch("jetPt",  &jetPt_);
-  tree->Branch("jetEn",  &jetEn_);
-  tree->Branch("jetEta", &jetEta_);
-  tree->Branch("jetPhi", &jetPhi_);
-  tree->Branch("jetRawPt", &jetRawPt_);
-  tree->Branch("jetRawEn", &jetRawEn_);
-  tree->Branch("jetArea", &jetArea_);
+  tree->Branch("nJet",            &nJet_);
+  tree->Branch("jetPt",           &jetPt_);
+  tree->Branch("jetEn",           &jetEn_);
+  tree->Branch("jetEta",          &jetEta_);
+  tree->Branch("jetPhi",          &jetPhi_);
+  tree->Branch("jetRawPt",        &jetRawPt_);
+  tree->Branch("jetRawEn",        &jetRawEn_);
+  tree->Branch("jetMt",           &jetMt_);
+  tree->Branch("jetArea",         &jetArea_);
+  tree->Branch("jetLeadTrackPt",  &jetLeadTrackPt_);
+  tree->Branch("jetLeadTrackEta", &jetLeadTrackEta_);
+  tree->Branch("jetLeadTrackPhi", &jetLeadTrackPhi_);
+  tree->Branch("jetLepTrackPID",  &jetLepTrackPID_);
+  tree->Branch("jetLepTrackPt",   &jetLepTrackPt_);
+  tree->Branch("jetLepTrackEta",  &jetLepTrackEta_);
+  tree->Branch("jetLepTrackPhi",  &jetLepTrackPhi_);
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
@@ -120,21 +141,24 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("jetGenEta", &jetGenEta_);
     tree->Branch("jetGenPhi", &jetGenPhi_);
     tree->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
-  }
-  
+  }  
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
-  tree->Branch("jetJECUnc", &jetJECUnc_);
+  tree->Branch("jetJECUnc",    &jetJECUnc_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
-  
+  tree->Branch("jetCHF",       &jetCHF_);
+  tree->Branch("jetNHF",       &jetNHF_);
+  tree->Branch("jetCEF",       &jetCEF_);
+  tree->Branch("jetNEF",       &jetNEF_);
+  tree->Branch("jetNCH",       &jetNCH_);
+  tree->Branch("jetVtxPt",     &jetVtxPt_);
+  tree->Branch("jetVtxMass",   &jetVtxMass_);
+  tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
+  tree->Branch("jetVtx3DVal",  &jetVtx3DVal_);
+  tree->Branch("jetVtx3DSig",  &jetVtx3DSig_);
   if (development_) {
-    tree->Branch("jetCHF", &jetCHF_);
-    tree->Branch("jetNHF", &jetNHF_);
-    tree->Branch("jetCEF", &jetCEF_);
-    tree->Branch("jetNEF", &jetNEF_);
-    tree->Branch("jetNCH", &jetNCH_);
-    tree->Branch("jetHFHAE", &jetHFHAE_);
-    tree->Branch("jetHFEME", &jetHFEME_);
+    tree->Branch("jetHFHAE",         &jetHFHAE_);
+    tree->Branch("jetHFEME",         &jetHFEME_);
     tree->Branch("jetNConstituents", &jetNConstituents_);
   }
 
@@ -197,7 +221,15 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetPhi_                                 .clear();
   jetRawPt_                               .clear();
   jetRawEn_                               .clear();
+  jetMt_                                  .clear();
   jetArea_                                .clear();
+  jetLeadTrackPt_                         .clear();
+  jetLeadTrackEta_                        .clear();
+  jetLeadTrackPhi_                        .clear();
+  jetLepTrackPt_                          .clear();
+  jetLepTrackPID_                         .clear();
+  jetLepTrackEta_                         .clear();
+  jetLepTrackPhi_                         .clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
   jetpfCombinedMVABJetTags_               .clear();
@@ -206,12 +238,17 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
   jetFiredTrgs_                           .clear();
+  jetCHF_                                 .clear();
+  jetNHF_                                 .clear();
+  jetCEF_                                 .clear();
+  jetNEF_                                 .clear();
+  jetNCH_                                 .clear();
+  jetVtxPt_                               .clear();
+  jetVtxMass_                             .clear();
+  jetVtxNtrks_                            .clear();
+  jetVtx3DVal_                            .clear();
+  jetVtx3DSig_                            .clear();
   if (development_) {
-    jetCHF_                                 .clear();
-    jetNHF_                                 .clear();
-    jetCEF_                                 .clear();
-    jetNEF_                                 .clear();
-    jetNCH_                                 .clear();
     jetHFHAE_                               .clear();
     jetHFEME_                               .clear();
     jetNConstituents_                       .clear();
@@ -310,15 +347,16 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetPhi_.push_back(   iJet->phi());
     jetRawPt_.push_back( (*iJet).correctedJet("Uncorrected").pt());
     jetRawEn_.push_back( (*iJet).correctedJet("Uncorrected").energy());
-    jetArea_.push_back( iJet->jetArea());
+    jetMt_.push_back(    iJet->mt());
+    jetArea_.push_back(  iJet->jetArea());
+    jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
+    jetNEF_.push_back(   iJet->neutralEmEnergyFraction());
+    jetCHF_.push_back(   iJet->chargedHadronEnergyFraction());
+    jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
+    jetNCH_.push_back(   iJet->chargedMultiplicity());
     if (development_) {
-      jetCEF_.push_back(   iJet->chargedEmEnergyFraction());
-      jetNEF_.push_back(   iJet->neutralEmEnergyFraction());
-      jetCHF_.push_back(   iJet->chargedHadronEnergyFraction());
-      jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
       jetHFHAE_.push_back( iJet->HFHadronEnergy());
       jetHFEME_.push_back( iJet->HFEMEnergy());
-      jetNCH_.push_back(   iJet->chargedMultiplicity());
       jetNConstituents_.push_back(iJet->numberOfDaughters());
     }
 
@@ -331,6 +369,46 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     }
     
     jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));
+
+    //Searching for leading track and lepton
+    float leadTrkPt  = -99;
+    float leadTrkEta = -99;
+    float leadTrkPhi = -99;
+    int   lepTrkPID  = -99;
+    float lepTrkPt   = -99;
+    float lepTrkEta  = -99;
+    float lepTrkPhi  = -99;
+    for (const reco::CandidatePtr & daughter : iJet->daughterPtrVector()) {
+      if (daughter.isNonnull() && daughter.isAvailable()) {
+	if (daughter->charge() != 0 && daughter->pt() > leadTrkPt) {
+	  leadTrkPt  = daughter->pt();
+	  leadTrkEta = daughter->eta();
+	  leadTrkPhi = daughter->phi();
+	}
+
+	if (abs(daughter->pdgId()) == 11 || abs(daughter->pdgId()) == 13) {
+	  if (daughter->pt() > lepTrkPt) {
+	    lepTrkPID = daughter->pdgId();
+	    lepTrkPt  = daughter->pt();
+	    lepTrkEta = daughter->eta();
+	    lepTrkPhi = daughter->phi();
+	  }
+	}
+      }
+    }
+    jetLeadTrackPt_ .push_back(leadTrkPt);
+    jetLeadTrackEta_.push_back(leadTrkEta);
+    jetLeadTrackPhi_.push_back(leadTrkPhi);
+    jetLepTrackPID_ .push_back(lepTrkPID);
+    jetLepTrackPt_  .push_back(lepTrkPt);
+    jetLepTrackEta_ .push_back(lepTrkEta);
+    jetLepTrackPhi_ .push_back(lepTrkPhi);
+
+    jetVtxPt_.push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
+    jetVtxMass_.push_back(iJet->userFloat("vtxMass"));
+    jetVtxNtrks_.push_back(iJet->userFloat("vtxNtracks"));
+    jetVtx3DVal_.push_back(iJet->userFloat("vtx3DVal"));
+    jetVtx3DSig_.push_back(iJet->userFloat("vtx3DSig"));
 
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -411,7 +489,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     nJet_++;
   }
   
-  if(dumpSubJets_) {
+  if (dumpSubJets_) {
     edm::Handle<edm::View<pat::Jet> > jetsAK8;
     e.getByToken(jetsAK8Label_, jetsAK8);
     
