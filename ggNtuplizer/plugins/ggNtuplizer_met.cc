@@ -134,7 +134,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
     e.getByLabel("eeBadScFilter", "", bADSCHandle);
     bool EEBadSCResult_ = *bADSCHandle;
 
-    //#edm::Handle<bool> gOODVertexHandle;
+    //edm::Handle<bool> gOODVertexHandle;
     //e.getByLabel("primaryVertexFilter", "GoodVertexFilter", gOODVertexHandle);
     //bool goodVertexResult_ = *gOODVertexHandle;
      
