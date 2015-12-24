@@ -27,6 +27,7 @@ vector<int>    muPixelLayers_;
 vector<int>    muPixelHits_;
 vector<int>    muMuonHits_;
 vector<int>    muStations_;
+vector<int>    muMatches_;
 vector<int>    muTrkQuality_;
 vector<float>  muIsoTrk_;
 vector<float>  muPFChIso_;
@@ -65,6 +66,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPixelHits",   &muPixelHits_);
   tree->Branch("muMuonHits",    &muMuonHits_);
   tree->Branch("muStations",    &muStations_);
+  tree->Branch("muMatches",     &muMatches_);
   tree->Branch("muTrkQuality",  &muTrkQuality_);
   tree->Branch("muIsoTrk",      &muIsoTrk_);
   tree->Branch("muPFChIso",     &muPFChIso_);
@@ -104,6 +106,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muPixelHits_  .clear();
   muMuonHits_   .clear();
   muStations_   .clear();
+  muMatches_    .clear();
   muTrkQuality_ .clear();
   muIsoTrk_     .clear();
   muPFChIso_    .clear();
@@ -188,6 +191,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     }
 
     muStations_ .push_back(iMu->numberOfMatchedStations());
+    muMatches_  .push_back(iMu->numberOfMatches());
     muIsoTrk_   .push_back(iMu->trackIso());
     muPFChIso_  .push_back(iMu->pfIsolationR04().sumChargedHadronPt);
     muPFPhoIso_ .push_back(iMu->pfIsolationR04().sumPhotonEt);
