@@ -52,6 +52,8 @@ vector<float>  elePFChIso_;
 vector<float>  elePFPhoIso_;
 vector<float>  elePFNeuIso_;
 vector<float>  elePFPUIso_;
+vector<float>  elePFClusEcalIso_;
+vector<float>  elePFClusHcalIso_;
 vector<float>  eleIDMVANonTrg_;
 vector<float>  eleIDMVATrg_;
 vector<float>  eledEtaseedAtVtx_;
@@ -153,6 +155,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFPhoIso",             &elePFPhoIso_);
   tree->Branch("elePFNeuIso",             &elePFNeuIso_);
   tree->Branch("elePFPUIso",              &elePFPUIso_);
+  tree->Branch("elePFClusEcalIso",        &elePFClusEcalIso_);
+  tree->Branch("elePFClusHcalIso",        &elePFClusHcalIso_);
   tree->Branch("eleIDMVANonTrg",          &eleIDMVANonTrg_);
   tree->Branch("eleIDMVATrg",             &eleIDMVATrg_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
@@ -265,6 +269,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFPhoIso_                .clear();
   elePFNeuIso_                .clear();
   elePFPUIso_                 .clear();
+  elePFClusEcalIso_           .clear();
+  elePFClusHcalIso_           .clear();
   eleIDMVANonTrg_             .clear();
   eleIDMVATrg_                .clear();
   eledEtaseedAtVtx_           .clear();
@@ -324,6 +330,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::ValueMap<bool> >  heep_id_decisions;
   edm::Handle<edm::ValueMap<float> > eleNonTrgMVAValues;
   edm::Handle<edm::ValueMap<float> > eleTrgMVAValues;
+  edm::Handle<edm::ValueMap<float> > elePFClusEcalIsoValues;
+  edm::Handle<edm::ValueMap<float> > elePFClusHcalIsoValues;
 
   if (runeleIDVID_) {
     e.getByToken(eleVetoIdMapToken_ ,         veto_id_decisions);
@@ -333,6 +341,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
     e.getByToken(eleNonTrgMVAValuesMapToken_, eleNonTrgMVAValues);
     e.getByToken(eleTrgMVAValuesMapToken_,    eleTrgMVAValues);
+    e.getByToken(elePFClusEcalIsoToken_,      elePFClusEcalIsoValues);
+    e.getByToken(elePFClusHcalIsoToken_,      elePFClusHcalIsoValues);
   }
 
   edm::Handle<reco::VertexCollection> recVtxs;
@@ -661,6 +671,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
         eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el->originalObjectRef()]);
         eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el->originalObjectRef()]);
+
+	elePFClusEcalIso_.push_back((*elePFClusEcalIsoValues)[el->originalObjectRef()]);
+	elePFClusHcalIso_.push_back((*elePFClusHcalIsoValues)[el->originalObjectRef()]);
       }
 
       if (!isAOD_) {
@@ -687,6 +700,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
         eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el]);
         eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el]);
+
+	elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
+	elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());
       }
 
       eleIDbit_.push_back(tmpeleIDbit);

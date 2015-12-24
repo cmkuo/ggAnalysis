@@ -20,7 +20,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");
   dumpJets_                  = ps.getParameter<bool>("dumpJets");
   dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
-  dumpSoftDrop_               = ps.getParameter<bool>("dumpSoftDrop");
+  dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   isAOD_                     = ps.getParameter<bool>("isAOD");
 
@@ -77,6 +77,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   eleHEEPIdMapToken_    = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleHEEPIdMap"));
   eleNonTrgMVAValuesMapToken_ = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleNonTrgMVAValuesMap"));
   eleTrgMVAValuesMapToken_    = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleTrgMVAValuesMap"));
+  elePFClusEcalIsoToken_      = mayConsume<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("elePFClusEcalIsoProducer"));
+  elePFClusHcalIsoToken_      = mayConsume<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("elePFClusHcalIsoProducer"));
 
   // Photon ID in VID framwork 
   phoLooseIdMapToken_             = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoLooseIdMap"));
