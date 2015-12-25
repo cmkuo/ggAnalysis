@@ -368,7 +368,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetJECUnc_.push_back(-1.);
     }
     
-    jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));
+    jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));    
 
     //Searching for leading track and lepton
     float leadTrkPt  = -99;
@@ -378,7 +378,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     float lepTrkPt   = -99;
     float lepTrkEta  = -99;
     float lepTrkPhi  = -99;
-    for (const reco::CandidatePtr & daughter : iJet->daughterPtrVector()) {
+
+    for (unsigned id = 0; id < iJet->getJetConstituents().size(); id++) {
+
+      const edm::Ptr<reco::Candidate> daughter = iJet->getJetConstituents().at(id);
+
       if (daughter.isNonnull() && daughter.isAvailable()) {
 	if (daughter->charge() != 0 && daughter->pt() > leadTrkPt) {
 	  leadTrkPt  = daughter->pt();
@@ -396,20 +400,20 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	}
       }
     }
+
     jetLeadTrackPt_ .push_back(leadTrkPt);
     jetLeadTrackEta_.push_back(leadTrkEta);
     jetLeadTrackPhi_.push_back(leadTrkPhi);
     jetLepTrackPID_ .push_back(lepTrkPID);
     jetLepTrackPt_  .push_back(lepTrkPt);
     jetLepTrackEta_ .push_back(lepTrkEta);
-    jetLepTrackPhi_ .push_back(lepTrkPhi);
-
-    jetVtxPt_.push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
-    jetVtxMass_.push_back(iJet->userFloat("vtxMass"));
-    jetVtxNtrks_.push_back(iJet->userFloat("vtxNtracks"));
-    jetVtx3DVal_.push_back(iJet->userFloat("vtx3DVal"));
-    jetVtx3DSig_.push_back(iJet->userFloat("vtx3DSig"));
-
+    jetLepTrackPhi_ .push_back(lepTrkPhi);    
+    jetVtxPt_       .push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
+    jetVtxMass_     .push_back(iJet->userFloat("vtxMass"));
+    jetVtxNtrks_    .push_back(iJet->userFloat("vtxNtracks"));
+    jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
+    jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
+    
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
