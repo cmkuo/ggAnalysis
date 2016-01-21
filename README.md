@@ -2,6 +2,18 @@
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_7_4_14
 
+##### To work with CMSSW_7_4_16, you do:
+cd CMSSW_7_4_14/src <br>
+cmsenv <br>
+git cms-merge-topic matteosan1:smearer
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch --tags btv-cmssw <br>
+git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v2_from-CMSSW_7_4_15 <br>
+git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
+
 ##### To work with CMSSW_7_4_14, you do:
 cd CMSSW_7_4_14/src <br>
 cmsenv <br>
