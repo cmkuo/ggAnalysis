@@ -45,9 +45,9 @@ vector<float>    mcTrkIsoDR03;
 vector<float>    mcCalIsoDR04;
 vector<float>    mcTrkIsoDR04;
 
-
 TH1*             hPU_;
 TH1*             hPUTrue_;
+TH1*             hGenWeight_;
 
 float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
                    reco::GenParticleCollection::const_iterator thisPart,
@@ -124,8 +124,9 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
   tree->Branch("puBX",         &puBX_);
   tree->Branch("puTrue",       &puTrue_);
 
-  hPU_     = fs->make<TH1F>("hPU",     "number of pileup",      200,  0, 200);
-  hPUTrue_ = fs->make<TH1F>("hPUTrue", "number of true pilepu", 1000, 0, 200);
+  hPU_        = fs->make<TH1F>("hPU",        "number of pileup",      200,  0, 200);
+  hPUTrue_    = fs->make<TH1F>("hPUTrue",    "number of true pilepu", 1000, 0, 200);
+  hGenWeight_ = fs->make<TH1F>("hGenWeight", "Gen weights",           2,    0, 2);
 }
 
 void ggNtuplizer::branchesGenPart(TTree* tree) {
@@ -163,10 +164,10 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   pthat_     = -99;
   processID_ = -99;
   genWeight_ = -99;
-  genHT_     =-99;
-  pdf_.clear();
+  genHT_     = -99;
+  nPUInfo_   = 0;
 
-  nPUInfo_ = 0;
+  pdf_   .clear();
   nPU_   .clear();
   puBX_  .clear();
   puTrue_.clear();
@@ -190,10 +191,11 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
       pthat_ = genEventInfoHandle->binningValues()[0];
     processID_ = genEventInfoHandle->signalProcessID();
     genWeight_ = genEventInfoHandle->weight();
-    
+    if (genWeight_ >= 0) hGenWeight_->Fill(0.5);    
+    else hGenWeight_->Fill(1.5);
+
   } else
     edm::LogWarning("ggNtuplizer") << "no GenEventInfoProduct in event";
-  
   
   // access generator level HT  
   edm::Handle<LHEEventProduct> lheEventProduct;
