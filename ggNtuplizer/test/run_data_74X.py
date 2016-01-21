@@ -15,12 +15,13 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_v5')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
-        #'/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
+        #'/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
+        '/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
         #'/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
 )
                             )
@@ -38,7 +39,7 @@ runOnData( process, outputModules = [] )
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
-useAOD = True
+useAOD = False
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
@@ -61,7 +62,10 @@ else :
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
     process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
+    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
+    jetToolbox( process, 'ak4', 'ak4JetSubs', 'out', runOnMC = False, PUMethod='CHS', miniAOD= True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
+    jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC = False, PUMethod='CHS', miniAOD= True,addSoftDrop=True, addSoftDropSubjets=True, addPruning=True, addPrunedSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'], JETCorrPayload='AK8PFchs',JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute', 'L2L3Residual'] )
+    process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
 
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
