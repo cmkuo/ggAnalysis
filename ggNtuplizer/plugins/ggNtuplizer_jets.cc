@@ -6,9 +6,12 @@
 #include "JetMETCorrections/Objects/interface/JetCorrectionsRecord.h"
 #include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/EventSetup.h"
+#include "DataFormats/Math/interface/LorentzVector.h"
+#include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+
 
 using namespace std;
-
+typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
 // (local) variables associated with tree branches
 //normal jets (ak4)
 Int_t         nJet_;
@@ -80,8 +83,12 @@ vector<int>   AK8JetNCH_;
 vector<int>   AK8Jetnconstituents_;
 vector<bool>  AK8JetPFLooseId_;
 vector<float> AK8CHSSoftDropJetMass_;
+vector<float> AK8CHSSoftDropJetMassCorr_;
+vector<float> AK8CHSPrunedJetMass_;
+vector<float> AK8CHSPrunedJetMassCorr_;
 vector<float> AK8JetpfBoostedDSVBTag_;
 vector<float> AK8JetJECUnc_;
+vector<float> AK8JetL2L3corr_;
 
 //gen-info for ak8
 vector<int>   AK8JetPartonID_;
@@ -183,8 +190,12 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8Jetnconstituents",      &AK8Jetnconstituents_);
     tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
+    tree->Branch("AK8CHSSoftDropJetMassCorr",&AK8CHSSoftDropJetMassCorr_);
+    tree->Branch("AK8CHSPrunedJetMass",      &AK8CHSPrunedJetMass_);
+    tree->Branch("AK8CHSPrunedJetMassCorr",      &AK8CHSPrunedJetMassCorr_);
     tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
     tree->Branch("AK8JetJECUnc",             &AK8JetJECUnc_);
+    tree->Branch("AK8JetL2L3corr",             &AK8JetL2L3corr_);
 
     if (doGenParticles_){
       tree->Branch("AK8JetPartonID", &AK8JetPartonID_);
@@ -284,8 +295,12 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8Jetnconstituents_     .clear();
   AK8JetPFLooseId_         .clear();
   AK8CHSSoftDropJetMass_   .clear();
+  AK8CHSSoftDropJetMassCorr_   .clear();
+  AK8CHSPrunedJetMass_   .clear();
+  AK8CHSPrunedJetMassCorr_   .clear();
   AK8JetpfBoostedDSVBTag_  .clear();
   AK8JetJECUnc_            .clear();
+  AK8JetL2L3corr_            .clear();
 
   AK8JetPartonID_ .clear();
   AK8JetGenJetIndex_.clear();
@@ -336,7 +351,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectorParameters const & AK8JetCorPar = (*AK8JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty *AK8jecUnc=0;
   AK8jecUnc = new JetCorrectionUncertainty(AK8JetCorPar);
-  
+ 
+ 
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
 
@@ -502,6 +518,41 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       return;
     }
     
+//https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#Recipes_to_apply_JEC_on_the_prun
+    std::vector<std::string> jecAK8PayloadNames_;
+    
+    jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt");
+    jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt");
+    if(e.isRealData())jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt");
+    
+
+    std::vector<JetCorrectorParameters> vPar;
+    for ( std::vector<std::string>::const_iterator payloadBegin = jecAK8PayloadNames_.begin(), payloadEnd = jecAK8PayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
+       JetCorrectorParameters pars(*ipayload);
+       vPar.push_back(pars);
+    }
+
+     // Make the FactorizedJetCorrector
+     jecAK8_ = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vPar) );
+
+     edm::Handle<double> rhoHandle;
+     e.getByToken(rhoLabel_, rhoHandle);
+    
+     float rho = *(rhoHandle.product());
+ edm::Handle<reco::VertexCollection> vtxHandle;
+e.getByToken(vtxLabel_, vtxHandle);
+
+int nVtx_ = -1;
+if (vtxHandle.isValid()) {
+nVtx_ = 0;
+ for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
+ nVtx_++;
+}
+}
+else
+edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
+
+    
     nAK8Jet_ = 0;
     //jet substructure
     int nsubjets = 0;
@@ -557,8 +608,22 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	if (!(ijetAK8->neutralMultiplicity() > 10))        AK8jetID = false;
       }
       AK8JetPFLooseId_.push_back(AK8jetID);
-      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); //new miniAOD
+      AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); 
+      AK8CHSPrunedJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")); 
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      
+      const LorentzVector uncorrJet = (*ijetAK8).correctedP4(0);
+      jecAK8_->setJetEta(uncorrJet.eta());
+      jecAK8_->setJetPt ( uncorrJet.pt() );
+      jecAK8_->setJetE  ( uncorrJet.energy() );
+      jecAK8_->setJetA  ( (*ijetAK8).jetArea() );
+      jecAK8_->setRho   ( rho );
+      jecAK8_->setNPV   ( vtxHandle->size() );
+
+      float corr = jecAK8_->getCorrection();
+      AK8JetL2L3corr_.push_back(corr);
+      AK8CHSSoftDropJetMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")));
+      AK8CHSPrunedJetMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")));
 
       //JEC uncertainty
       if (fabs(ijetAK8->eta()) < 5.2) {
