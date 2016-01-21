@@ -51,7 +51,7 @@ if useAOD == True :
 
 else :
     dataFormat = DataFormat.MiniAOD
-    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAODv2_cfi")
+    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     jetToolbox( process, 'ak4', 'ak4JetSubs', 'out', runOnMC = True, PUMethod='CHS', miniAOD= True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute'] )
     jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC = False, PUMethod='CHS', miniAOD= True,addSoftDrop=True, addSoftDropSubjets=True, addPruning=True, addPrunedSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'], JETCorrPayload='AK8PFchs',JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute'] )
