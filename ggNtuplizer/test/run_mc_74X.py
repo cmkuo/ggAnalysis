@@ -13,8 +13,8 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '74X_mcRun2_asymptotic_v4')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
-process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+#process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
@@ -26,6 +26,22 @@ process.source = cms.Source("PoolSource",
 
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
+
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                                                  calibratedPatElectrons = cms.PSet(
+    initialSeed = cms.untracked.uint32(12345),
+    engineName = cms.untracked.string('TRandom3')
+    ),
+                                                  calibratedPatPhotons = cms.PSet(
+    initialSeed = cms.untracked.uint32(12345),
+    engineName = cms.untracked.string('TRandom3')
+    )
+                                                   )
+
+process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
+process.calibratedPatElectrons.isMC = cms.bool(True)
+process.calibratedPatPhotons.isMC = cms.bool(True)
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 #from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -87,7 +103,9 @@ for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
-    process.egmGsfElectronIDSequence 
+    process.calibratedPatElectrons 
+    * process.calibratedPatPhotons 
+    * process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 
     * process.ggNtuplizer
     )

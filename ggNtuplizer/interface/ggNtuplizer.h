@@ -118,7 +118,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >        pfMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >   electronCollection_;
+  edm::EDGetTokenT<edm::View<pat::Electron> >   calibelectronCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >     photonCollection_;
+  edm::EDGetTokenT<edm::View<pat::Photon> >     calibphotonCollection_;
   edm::EDGetTokenT<edm::View<pat::Muon> >       muonCollection_;
   edm::EDGetTokenT<vector<pat::Tau> >           tauCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>        ebReducedRecHitCollection_;
@@ -164,6 +166,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   TTree   *tree_;
   TH1F    *hEvents_;
+  TH1F    *hPU_;
+  TH1F    *hPUTrue_;
+  TH1F    *hGenWeight_;
 
   CiCPhotonID    *cicPhotonId_;
 

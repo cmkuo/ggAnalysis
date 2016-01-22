@@ -15,7 +15,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_v5')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
@@ -31,6 +31,9 @@ process.source = cms.Source("PoolSource",
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
+
+process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -105,6 +108,8 @@ else:
     process.p = cms.Path(
         process.HBHENoiseFilterResultProducer* # produces HBHE bools
 #        process.ApplyBaselineHBHENoiseFilter*  # reject events 
+        process.calibratedPatElectrons*
+        process.calibratedPatPhotons*
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
         process.ggNtuplizer
