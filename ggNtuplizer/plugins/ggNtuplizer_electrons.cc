@@ -27,6 +27,8 @@ vector<float>  elePt_;
 vector<float>  eleEta_;
 vector<float>  elePhi_;
 vector<float>  eleR9_;
+vector<float>  eleCalibPt_;
+vector<float>  eleCalibEn_;
 vector<float>  eleSCEta_;
 vector<float>  eleSCPhi_;
 vector<float>  eleSCRawEn_;
@@ -109,8 +111,6 @@ vector<vector<float> > eleESEnE_;
 
 Int_t nGSFTrk_;
 vector<float> gsfPt_;
-		     
-		     
 vector<float> gsfEta_;
 vector<float> gsfPhi_;
 
@@ -130,6 +130,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleEta",                  &eleEta_);
   tree->Branch("elePhi",                  &elePhi_);
   tree->Branch("eleR9",                   &eleR9_);
+  tree->Branch("eleCalibPt",              &eleCalibPt_);
+  tree->Branch("eleCalibEn",              &eleCalibEn_);
   tree->Branch("eleSCEta",                &eleSCEta_);
   tree->Branch("eleSCPhi",                &eleSCPhi_);
   tree->Branch("eleSCRawEn",              &eleSCRawEn_);
@@ -244,6 +246,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleEta_                     .clear();
   elePhi_                     .clear();
   eleR9_                      .clear();
+  eleCalibPt_                 .clear();
+  eleCalibEn_                 .clear();
   eleSCEta_                   .clear();
   eleSCPhi_                   .clear();
   eleSCRawEn_                 .clear();
@@ -318,8 +322,16 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::View<pat::Electron> > electronHandle;
   e.getByToken(electronCollection_, electronHandle);
 
+  edm::Handle<edm::View<pat::Electron> > calibelectronHandle;
+  e.getByToken(calibelectronCollection_, calibelectronHandle);
+
   if (!electronHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Electrons in event";
+    return;
+  }
+
+  if (!calibelectronHandle.isValid()) {
+    edm::LogWarning("ggNtuplizer") << "no calibrated pat::Electrons in event";
     return;
   }
 
@@ -352,6 +364,18 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
 
   for (edm::View<pat::Electron>::const_iterator iEle = electronHandle->begin(); iEle != electronHandle->end(); ++iEle) {
+
+    Float_t corrPt = -1;
+    Float_t corrEn = -1;
+    for (edm::View<pat::Electron>::const_iterator iCEle = calibelectronHandle->begin(); iCEle != calibelectronHandle->end(); ++iCEle) {
+
+      if (fabs(iEle->eta() - iCEle->eta()) < 0.001 && fabs(iEle->phi() - iCEle->phi()) < 0.001) {
+	corrPt = iCEle->pt();
+	corrEn = iCEle->energy();
+      }
+    }
+    eleCalibPt_         .push_back(corrPt);
+    eleCalibEn_         .push_back(corrEn);
 
     eleCharge_          .push_back(iEle->charge());
     eleChargeConsistent_.push_back((Int_t)iEle->isGsfCtfScPixChargeConsistent());

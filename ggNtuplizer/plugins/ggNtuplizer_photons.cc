@@ -11,6 +11,8 @@ vector<float>  phoE_;
 vector<float>  phoEt_;
 vector<float>  phoEta_;
 vector<float>  phoPhi_;
+vector<float>  phoCalibE_;
+vector<float>  phoCalibEt_;
 vector<float>  phoSCE_;
 vector<float>  phoSCRawE_;
 vector<float>  phoESEn_;
@@ -103,6 +105,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoEt",                   &phoEt_);
   tree->Branch("phoEta",                  &phoEta_);
   tree->Branch("phoPhi",                  &phoPhi_);
+  tree->Branch("phoCalibE",               &phoCalibE_);
+  tree->Branch("phoCalibEt",              &phoCalibEt_);
   tree->Branch("phoSCE",                  &phoSCE_);
   tree->Branch("phoSCRawE",               &phoSCRawE_);
   tree->Branch("phoESEn",                 &phoESEn_);
@@ -185,6 +189,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoEt_                .clear();
   phoEta_               .clear();
   phoPhi_               .clear();
+  phoCalibE_            .clear();
+  phoCalibEt_           .clear();
   phoSCE_               .clear();
   phoSCRawE_            .clear();
   phoESEn_              .clear();
@@ -265,8 +271,16 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<edm::View<pat::Photon> > photonHandle;
   e.getByToken(photonCollection_, photonHandle);
 
+  edm::Handle<edm::View<pat::Photon> > calibphotonHandle;
+  e.getByToken(calibphotonCollection_, calibphotonHandle);
+
   if (!photonHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Photons in event";
+    return;
+  }
+
+  if (!calibphotonHandle.isValid()) {
+    edm::LogWarning("ggNtuplizer") << "no calibrated pat::Photons in event";
     return;
   }
 
@@ -323,8 +337,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   e.getByToken(rhoLabel_, rhoHandle);
   double rho    = *(rhoHandle.product());
 
-  
-
   if (isAOD_) {
     edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
     e.getByToken(pfAllParticles_, pfAllCandidates);
@@ -335,6 +347,17 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
 
+    Float_t corrPt = -1;
+    Float_t corrEn = -1;
+    for (edm::View<pat::Photon>::const_iterator iCPho = calibphotonHandle->begin(); iCPho != calibphotonHandle->end(); ++iCPho) {
+      if (fabs(iPho->eta() - iCPho->eta()) < 0.001 && fabs(iPho->phi() - iCPho->phi()) < 0.001) {
+	corrPt = iCPho->pt();
+	corrEn = iCPho->energy();
+      }
+    }
+    phoCalibEt_       .push_back(corrPt);
+    phoCalibE_        .push_back(corrEn);
+    
     phoE_             .push_back(iPho->energy());
     phoEt_            .push_back(iPho->et());
     phoEta_           .push_back(iPho->eta());
