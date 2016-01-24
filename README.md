@@ -8,9 +8,6 @@ cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
 git cms-merge-topic matteosan1:smearer <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV2-WithWeightFiles-v2_from-CMSSW_7_4_15 <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone https://github.com/cmkuo/ggAnalysis.git <br>
