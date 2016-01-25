@@ -339,23 +339,23 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
   // Accessing the JEC uncertainties 
-//ak4  
+  //ak4  
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
   es.get<JetCorrectionsRecord>().get("AK4PFchs",JetCorParColl); 
   JetCorrectorParameters const & JetCorPar = (*JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
-//ak8
+  //ak8
   edm::ESHandle<JetCorrectorParametersCollection> AK8JetCorParColl;
   es.get<JetCorrectionsRecord>().get("AK8PFchs",AK8JetCorParColl);
   JetCorrectorParameters const & AK8JetCorPar = (*AK8JetCorParColl)["Uncertainty"];
   JetCorrectionUncertainty *AK8jecUnc=0;
   AK8jecUnc = new JetCorrectionUncertainty(AK8JetCorPar);
- 
- 
+  
+  
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
-
+    
     if (isAOD_ && iJet->pt() < 10) continue;
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
@@ -457,10 +457,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       if (!(iJet->neutralMultiplicity() > 10))        jetID = false;
     }
     jetPFLooseId_.push_back(jetID);
-
-    //PUJet ID
-    jetPUidFullDiscriminant_.push_back( iJet->userFloat("AK4PFCHSpileupJetIdEvaluator:fullDiscriminant"));
-
+    
+    //PUJet ID from slimmedJets
+    jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
+    
     // gen jet and parton
     int jetGenPartonID = -99;
     int jetGenPartonMomID = -99;
@@ -518,40 +518,29 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       return;
     }
     
-//https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#Recipes_to_apply_JEC_on_the_prun
-    std::vector<std::string> jecAK8PayloadNames_;
+    //Double B-tagger 
+    edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex; 
+    e.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); 
     
-    jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt");
-    jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt");
-    if(e.isRealData())jecAK8PayloadNames_.push_back("Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt");
+    //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#Recipes_to_apply_JEC_on_the_prun
     
-
     std::vector<JetCorrectorParameters> vPar;
     for ( std::vector<std::string>::const_iterator payloadBegin = jecAK8PayloadNames_.begin(), payloadEnd = jecAK8PayloadNames_.end(), ipayload = payloadBegin; ipayload != payloadEnd; ++ipayload ) {
-       JetCorrectorParameters pars(*ipayload);
-       vPar.push_back(pars);
+      JetCorrectorParameters pars(*ipayload);
+    vPar.push_back(pars);
     }
-
-     // Make the FactorizedJetCorrector
-     jecAK8_ = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vPar) );
-
-     edm::Handle<double> rhoHandle;
-     e.getByToken(rhoLabel_, rhoHandle);
     
-     float rho = *(rhoHandle.product());
- edm::Handle<reco::VertexCollection> vtxHandle;
-e.getByToken(vtxLabel_, vtxHandle);
-
-int nVtx_ = -1;
-if (vtxHandle.isValid()) {
-nVtx_ = 0;
- for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
- nVtx_++;
-}
-}
-else
-edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
-
+    // Make the FactorizedJetCorrector
+    jecAK8_ = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vPar) );
+    
+    edm::Handle<double> rhoHandle;
+    e.getByToken(rhoLabel_, rhoHandle);
+    float rho = *(rhoHandle.product());
+    
+    edm::Handle<reco::VertexCollection> vtxHandle;
+    e.getByToken(vtxLabel_, vtxHandle);
+    if (!vtxHandle.isValid()) edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
+    
     
     nAK8Jet_ = 0;
     //jet substructure
@@ -568,11 +557,11 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
     edm::View<pat::Jet>::const_iterator beginAK8 = jetsAK8->begin();
     edm::View<pat::Jet>::const_iterator endAK8 = jetsAK8->end();
     edm::View<pat::Jet>::const_iterator ijetAK8 = beginAK8;
-    
+    int ijetRef = -1;   
     // Loop over the "hard" jets
     for(ijetAK8 = beginAK8; ijetAK8 != endAK8; ++ijetAK8 ) {
+      ijetRef++;
       if( ijetAK8->pt() < 30.0 ) continue;
-
       nAK8Jet_++;
       AK8JetPt_.push_back( ijetAK8->pt() );
       AK8JetEn_.push_back( ijetAK8->energy() );
@@ -581,9 +570,9 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
       AK8JetEta_.push_back( ijetAK8->eta() );
       AK8JetPhi_.push_back( ijetAK8->phi() );
       AK8JetMass_.push_back( ijetAK8->mass() );
-      AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau1") );
-      AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau2") );
-      AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8CHS:tau3") );
+      AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8:tau1") );
+      AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8:tau2") );
+      AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8:tau3") );
       AK8JetCHF_.push_back( ijetAK8->chargedHadronEnergyFraction()); // 0.0
       AK8JetNHF_.push_back( ( ijetAK8->neutralHadronEnergy() + ijetAK8->HFHadronEnergy() ) / ijetAK8->energy()); //0.99
       AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
@@ -610,7 +599,8 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
       AK8JetPFLooseId_.push_back(AK8jetID);
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); 
       AK8CHSPrunedJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")); 
-      AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      // AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      AK8JetpfBoostedDSVBTag_.push_back(     (*pfBoostedDoubleSecondaryVertex).value(ijetRef));
       
       const LorentzVector uncorrJet = (*ijetAK8).correctedP4(0);
       jecAK8_->setJetEta(uncorrJet.eta());
@@ -619,21 +609,21 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
       jecAK8_->setJetA  ( (*ijetAK8).jetArea() );
       jecAK8_->setRho   ( rho );
       jecAK8_->setNPV   ( vtxHandle->size() );
-
+      
       float corr = jecAK8_->getCorrection();
       AK8JetL2L3corr_.push_back(corr);
       AK8CHSSoftDropJetMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")));
       AK8CHSPrunedJetMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")));
-
+      
       //JEC uncertainty
       if (fabs(ijetAK8->eta()) < 5.2) {
-         AK8jecUnc->setJetEta(ijetAK8->eta());
-         AK8jecUnc->setJetPt(ijetAK8->pt()); // here you must use the CORRECTED jet pt
-         AK8JetJECUnc_.push_back(AK8jecUnc->getUncertainty(true));
+	AK8jecUnc->setJetEta(ijetAK8->eta());
+	AK8jecUnc->setJetPt(ijetAK8->pt()); // here you must use the CORRECTED jet pt
+	AK8JetJECUnc_.push_back(AK8jecUnc->getUncertainty(true));
       } else {
-         AK8JetJECUnc_.push_back(-1.);
+	AK8JetJECUnc_.push_back(-1.);
       }
-
+      
       
       //save gen-info for ak8 jets
       //parton id                                                                                                                                                           
@@ -681,8 +671,8 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
       AK8JetGenJetPt_.push_back(AK8JetGenJetPt);
       AK8JetGenJetEta_.push_back(AK8JetGenJetEta);
       AK8JetGenJetPhi_.push_back(AK8JetGenJetPhi);
-
-
+      
+      
       //save Softdrop subjet info Lvdp
       vecSoftdropSubjetcsv.clear();
       vecSoftdropSubjetpt.clear();
@@ -694,20 +684,17 @@ edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
       vecSoftdropSubjetflavour.clear();
       nsubjets = 0;
       if(dumpSoftDrop_) {
-	const std::vector<edm::Ptr<pat::Jet> > &wSubjets = ijetAK8->subjets("SoftDrop");
-	if(ijetAK8->subjets("SoftDrop").size()>0){
-	  for ( const pat::Jet & softdropsubjet : wSubjets ) {
-	    if( softdropsubjet.pt() < 0.01 ) continue;
-	    nsubjets++;
-	    vecSoftdropSubjetpt.push_back(softdropsubjet.pt());
-	    vecSoftdropSubjeteta.push_back(softdropsubjet.eta());
-	    vecSoftdropSubjetmass.push_back(softdropsubjet.mass());
-	    vecSoftdropSubjetphi.push_back(softdropsubjet.phi());
-	    vecSoftdropSubjete.push_back(softdropsubjet.energy());
-	    vecSoftdropSubjetflavour.push_back(abs(softdropsubjet.partonFlavour()));
-	    vecSoftdropSubjetcharge.push_back(softdropsubjet.charge());
-	    vecSoftdropSubjetcsv.push_back(softdropsubjet.bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
-	  }
+	auto const & sdSubjets = ijetAK8->subjets("SoftDrop");
+	for ( auto const & softdropsubjet : sdSubjets ) {
+	  nsubjets++;
+	  vecSoftdropSubjetpt.push_back(softdropsubjet->pt());
+	  vecSoftdropSubjeteta.push_back(softdropsubjet->eta());
+	  vecSoftdropSubjetmass.push_back(softdropsubjet->mass());
+	  vecSoftdropSubjetphi.push_back(softdropsubjet->phi());
+	  vecSoftdropSubjete.push_back(softdropsubjet->energy());
+	  vecSoftdropSubjetflavour.push_back(abs(softdropsubjet->partonFlavour()));
+	  vecSoftdropSubjetcharge.push_back(softdropsubjet->charge());
+	  vecSoftdropSubjetcsv.push_back(softdropsubjet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags") );
 	}
       }
       nAK8softdropSubjet_.push_back(nsubjets);
