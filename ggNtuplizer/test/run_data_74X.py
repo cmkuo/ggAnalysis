@@ -40,7 +40,22 @@ from PhysicsTools.PatAlgos.tools.coreTools import *
 runOnData( process, outputModules = [] )
 #removeMCMatching(process, names=['All'], outputModules=[])
 
+# this loads all available b-taggers
+process.load("RecoBTag.Configuration.RecoBTag_cff")
+process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
+process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
+process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
+process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8")
+process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
+process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
+
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
+
+jecLevels = [
+  'Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt',
+  'Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt',
+  'Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt'
+]
 
 useAOD = False
 #####VID framework####################
@@ -65,11 +80,9 @@ else :
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
     process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4JetSubs', 'out', runOnMC = False, PUMethod='CHS', miniAOD= True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
-    jetToolbox( process, 'ak8', 'ak8JetSubs', 'out', runOnMC = False, PUMethod='CHS', miniAOD= True,addSoftDrop=True, addSoftDropSubjets=True, addPruning=True, addPrunedSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'], JETCorrPayload='AK8PFchs',JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute', 'L2L3Residual'] )
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
+    process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 
+process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
@@ -108,6 +121,9 @@ else:
     process.p = cms.Path(
         process.HBHENoiseFilterResultProducer* # produces HBHE bools
 #        process.ApplyBaselineHBHENoiseFilter*  # reject events 
+        process.pfImpactParameterTagInfosAK8 *
+        process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
+        process.pfBoostedDoubleSecondaryVertexAK8BJetTags *
         process.calibratedPatElectrons*
         process.calibratedPatPhotons*
         process.egmGsfElectronIDSequence*
