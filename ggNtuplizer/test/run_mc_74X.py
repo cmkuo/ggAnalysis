@@ -84,7 +84,6 @@ if useAOD == True :
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 #    process.load("JetMETCorrections.Type1MET.pfMETmultShiftCorrections_cfi");
 #    process.pfMEtMultShiftCorr.vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
