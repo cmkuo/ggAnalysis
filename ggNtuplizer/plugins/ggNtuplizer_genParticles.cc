@@ -44,6 +44,10 @@ vector<float>    mcCalIsoDR04;
 vector<float>    mcTrkIsoDR04;
 
 
+TH1*             hPU_;
+TH1*             hPUTrue_;
+TH1*             hGenWeight_;
+
 float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
                    reco::GenParticleCollection::const_iterator thisPart,
                    float dRMax, bool removeMu, bool removeNu) {
