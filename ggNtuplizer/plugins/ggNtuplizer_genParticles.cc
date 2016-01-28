@@ -1,8 +1,8 @@
+#include "TH1F.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 #include "ggAnalysis/ggNtuplizer/interface/GenParticleParentage.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
-
 using namespace std;
 
 // (local) variables associated with tree branches
@@ -42,6 +42,7 @@ vector<float>    mcCalIsoDR03;
 vector<float>    mcTrkIsoDR03;
 vector<float>    mcCalIsoDR04;
 vector<float>    mcTrkIsoDR04;
+
 
 float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
                    reco::GenParticleCollection::const_iterator thisPart,
@@ -195,21 +196,20 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   edm::Handle<LHEEventProduct> lheEventProduct;
   e.getByLabel("externalLHEProducer", lheEventProduct);
 
-  if (lheEventProduct.isValid()) {
-    
-    const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
-    std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
-    double lheHt = 0.;
-    size_t numParticles = lheParticles.size();
-    for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
-      int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
-      int status = lheEvent.ISTUP[idxParticle];
-      if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
-	lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
-      } 
-    }
-    genHT_ = lheHt;  
+  double lheHt = 0.;
+if (lheEventProduct.isValid()){
+  const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
+  std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
+  size_t numParticles = lheParticles.size();
+  for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
+    int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
+    int status = lheEvent.ISTUP[idxParticle];
+    if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
+      lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
+    } 
   }
+}
+  genHT_=lheHt;  
 
   edm::Handle<vector<PileupSummaryInfo> > genPileupHandle;
   e.getByToken(puCollection_, genPileupHandle);
