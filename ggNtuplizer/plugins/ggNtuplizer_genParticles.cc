@@ -1,4 +1,3 @@
-#include "TH1F.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 #include "ggAnalysis/ggNtuplizer/interface/GenParticleParentage.h"
@@ -42,11 +41,6 @@ vector<float>    mcCalIsoDR03;
 vector<float>    mcTrkIsoDR03;
 vector<float>    mcCalIsoDR04;
 vector<float>    mcTrkIsoDR04;
-
-
-TH1*             hPU_;
-TH1*             hPUTrue_;
-TH1*             hGenWeight_;
 
 float getGenCalIso(edm::Handle<reco::GenParticleCollection> handle,
                    reco::GenParticleCollection::const_iterator thisPart,
