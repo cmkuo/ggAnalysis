@@ -15,15 +15,32 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '74X_dataRun2_v5')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
+#jec from sqlite
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+                           connect = cms.string('sqlite:Summer15_25nsV7_DATA.db'),
+                           toGet = cms.VPSet(
+        cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag = cms.string('JetCorrectorParametersCollection_Summer15_25nsV7_DATA_AK4PFchs'),
+            label = cms.untracked.string('AK4PFchs')
+            ),
+        cms.PSet(
+            record = cms.string('JetCorrectionsRecord'),
+            tag = cms.string('JetCorrectorParametersCollection_Summer15_25nsV7_DATA_AK8PFchs'),
+            label = cms.untracked.string('AK8PFchs')
+            )))
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'/store/data/Run2015D/SinglePhoton/AOD/PromptReco-v4/000/258/705/00000/2E125E8A-1071-E511-9BE9-02163E01392B.root'
         '/store/data/Run2015D/DoubleMuon/MINIAOD/05Oct2015-v1/30000/04008DF6-8A6F-E511-B034-0025905A6136.root'
         #'/store/express/Run2015C/ExpressPhysics/FEVT/Express-v1/000/254/879/00000/FA465069-4D49-E511-AD11-02163E011E1E.root'
-)
+        )
                             )
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -52,9 +69,9 @@ process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputT
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 jecLevels = [
-  'Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt',
-  'Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt',
-  'Summer15_25nsV6_DATA_L2L3Residual_AK8PFchs.txt'
+  'Summer15_25nsV7_DATA_L2Relative_AK8PFchs.txt',
+  'Summer15_25nsV7_DATA_L3Absolute_AK8PFchs.txt',
+  'Summer15_25nsV7_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
 useAOD = False
@@ -81,6 +98,30 @@ else :
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
     process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
+    process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+    process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+        src = cms.InputTag("slimmedJets"),
+        levels = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'],
+        payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+    process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+        jetSource = cms.InputTag("slimmedJets"),
+        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+        )
+
+    process.patJetAK8CorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+        src = cms.InputTag("slimmedJetsAK8"),
+        levels = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'],
+        payload = 'AK8PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+    process.patJetsAK8ReapplyJEC = process.patJetsUpdated.clone(
+        jetSource = cms.InputTag("slimmedJetsAK8"),
+        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetAK8CorrFactorsReapplyJEC"))
+        )
+
+    process.reapplyJEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC +process.patJetAK8CorrFactorsReapplyJEC + process. patJetsAK8ReapplyJEC )
 
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
@@ -121,6 +162,7 @@ else:
     process.p = cms.Path(
         process.HBHENoiseFilterResultProducer* # produces HBHE bools
 #        process.ApplyBaselineHBHENoiseFilter*  # reject events 
+        process.reapplyJEC*
         process.pfImpactParameterTagInfosAK8 *
         process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
         process.pfBoostedDoubleSecondaryVertexAK8BJetTags *
