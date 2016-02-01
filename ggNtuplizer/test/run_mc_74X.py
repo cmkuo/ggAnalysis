@@ -85,8 +85,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
-  'Summer15_25nsV6_DATA_L2Relative_AK8PFchs.txt',
-  'Summer15_25nsV6_DATA_L3Absolute_AK8PFchs.txt'
+  'Summer15_25nsV7_DATA_L2Relative_AK8PFchs.txt',
+  'Summer15_25nsV7_DATA_L3Absolute_AK8PFchs.txt'
 ]
 
 useAOD = False
@@ -103,6 +103,31 @@ else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
+    process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
+    process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+        src = cms.InputTag("slimmedJets"),
+        levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+        payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+    from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
+    process.patJetsReapplyJEC = process.patJetsUpdated.clone(
+        jetSource = cms.InputTag("slimmedJets"),
+        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+        )
+
+    process.patJetAK8CorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
+        src = cms.InputTag("slimmedJetsAK8"),
+        levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+        payload = 'AK8PFchs' ) # Make sure to choose the appropriate levels and payload here!
+
+    process.patJetsAK8ReapplyJEC = process.patJetsUpdated.clone(
+        jetSource = cms.InputTag("slimmedJetsAK8"),
+        jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetAK8CorrFactorsReapplyJEC"))
+        )
+
+    process.reapplyJEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC +process.patJetAK8CorrFactorsReapplyJEC + process. patJetsAK8ReapplyJEC )
+
 #    process.load("JetMETCorrections.Type1MET.pfMETmultShiftCorrections_cfi");
 #    process.pfMEtMultShiftCorr.vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
 
@@ -135,6 +160,7 @@ for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
+    process.reapplyJEC*
     process.pfImpactParameterTagInfosAK8 *
     process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
     process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
