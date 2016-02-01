@@ -16,6 +16,24 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
+#jec from sqlite
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+  connect = cms.string('sqlite:Summer15_25nsV7_MC.db'),
+  toGet = cms.VPSet(
+  cms.PSet(
+   record = cms.string('JetCorrectionsRecord'),
+   tag = cms.string('JetCorrectorParametersCollection_Summer15_25nsV7_MC_AK4PFchs'),
+   label = cms.untracked.string('AK4PFchs')
+   ),
+  cms.PSet(
+   record = cms.string('JetCorrectionsRecord'),
+   tag = cms.string('JetCorrectorParametersCollection_Summer15_25nsV7_MC_AK8PFchs'),
+   label = cms.untracked.string('AK8PFchs')
+   )))
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
 'root://cmsxrootd.fnal.gov//store/user/lovedeep/RunIISpring15MiniAODv2DYJetsToLL_M-50_TuneCUETP8M1_13TeV-madgraphMLM-pythia802CDE51A-726D-E511-B2C4-0025905C96EA.root'
