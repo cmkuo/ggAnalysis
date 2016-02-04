@@ -188,6 +188,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE10p0_R9Id_Mass95_v")                         != string::npos) bitPho = 21;
 
     else if (name.find("HLT_Photon135_PFMET100_v")              != string::npos) bitPho = 22; 
+    else if (name.find("HLT_Photon135_PFMET100_JetIdCleaned_v")             != string::npos) bitPho = 23;
 
     // Jet triggers for 25 ns
     int bitJet    = -1;
