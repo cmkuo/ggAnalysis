@@ -290,11 +290,11 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
     
     // select also Z, W, H, top and b 
     bool heavyParticle =
-      ((    ip->pdgId()  == 23 && ip->isLastCopy()) || 
-       (abs(ip->pdgId()) == 24 && ip->isLastCopy()) || 
-       (    ip->pdgId()  == 25 && ip->isLastCopy()) ||
-       (abs(ip->pdgId()) ==  6 && ip->isLastCopy()) || 
-       (abs(ip->pdgId()) ==  5 && ip->isLastCopy()));
+      ((    ip->pdgId()  == 23 && ip->isHardProcess()) || 
+       (abs(ip->pdgId()) == 24 && ip->isHardProcess()) || 
+       (    ip->pdgId()  == 25 && ip->isHardProcess()) ||
+       (abs(ip->pdgId()) ==  6 && ip->isHardProcess()) || 
+       (abs(ip->pdgId()) ==  5 && ip->isHardProcess()));
     
     bool newParticle = false;
     for (size_t inp = 0; inp < newparticles_.size(); ++inp) {
@@ -330,7 +330,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       UShort_t tmpStatusFlag = 0;
       if (ip->fromHardProcessFinalState()) setbit(tmpStatusFlag, 0);
       if (ip->isPromptFinalState())        setbit(tmpStatusFlag, 1);
-      if (ip->isLastCopy())  setbit(tmpStatusFlag, 2);
+      if (ip->isHardProcess())  setbit(tmpStatusFlag, 2);
 
       // if genParticle is W or Z, check its decay type
       if ( ip->pdgId() == 23 || abs(ip->pdgId()) == 24 ) {
