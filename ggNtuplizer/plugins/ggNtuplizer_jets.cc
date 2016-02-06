@@ -433,7 +433,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
-    jetpfCombinedMVABJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVAV2BJetTags"));
+    jetpfCombinedMVABJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVABJetTags"));
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
