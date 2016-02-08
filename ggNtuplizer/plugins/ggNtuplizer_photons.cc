@@ -85,7 +85,7 @@ vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
 vector<float>  photrkSumPtSolidConeDR03_;
 
-vector<int> phoisSaturated_;
+vector<UShort_t> phoxtalBits_;
 
 vector<UShort_t> phoIDbit_;
 
@@ -181,7 +181,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoFiredSingleTrgs",              &phoFiredSingleTrgs_);
   tree->Branch("phoFiredDoubleTrgs",              &phoFiredDoubleTrgs_);
 
-  tree->Branch("phoisSaturated",                        &phoisSaturated_);
+  tree->Branch("phoxtalBits",                        &phoxtalBits_);
 
   if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
 
@@ -262,7 +262,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoFiredSingleTrgs_   .clear();
   phoFiredDoubleTrgs_   .clear();
 
-  phoisSaturated_             .clear();
+  phoxtalBits_             .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
@@ -410,34 +410,45 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     ///     cout << "seed endpcas " << eeId.ix() << " " << eeId.iy() << endl;
     /// 
     /// }
-    //unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
+    unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
 
     int isSaturated = 0;
     
+    UShort_t tmpxtalbit = 0;
+
     auto matrix5x5 = lazyTool.matrixDetId(seed,-2,+2,-2,+2);
     for(auto & deId : matrix5x5 ) {
       /// cout << "matrix " << deId.rawId() << endl;
       auto rh = rechits->find(deId);
       if( rh != rechits->end() ) {
-	/*nSaturated += rh->checkFlag( EcalRecHit::kSaturated );
+	nSaturated += rh->checkFlag( EcalRecHit::kSaturated );
 	nLeRecovered += rh->checkFlag( EcalRecHit::kLeadingEdgeRecovered );
 	nNeighRecovered += rh->checkFlag( EcalRecHit::kNeighboursRecovered );
 	nGain1 += rh->checkFlag( EcalRecHit::kHasSwitchToGain1 );
 	nGain6 += rh->checkFlag( EcalRecHit::kHasSwitchToGain6 );
 	nWeired += rh->checkFlag( EcalRecHit::kWeird ) || rh->checkFlag( EcalRecHit::kDiWeird );
-	*/
+	
 
-	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) ){
+	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated){ //this is to fill only once, i.e. only if xtal has this, no need to check for other xtals
 
+	  setbit(tmpxtalbit, 0);
 	  isSaturated = 1;
-	  break;
+	  //break;
 	}
-
+	
       }//if( rh != rechits->end() ) 
-                
+       
+      if(nWeired>0)
+	setbit(tmpxtalbit,1);
+      
+      if(nGain6>0)
+	setbit(tmpxtalbit,2); 
+         
+      if(nSaturated >0)
+	setbit(tmpxtalbit,3);
     }//for(auto & deId : matrix5x5 )
   
-    phoisSaturated_.push_back(isSaturated);
+    phoxtalBits_.push_back(tmpxtalbit);
 
 
     //////////////////////////////////////////////////////////////
