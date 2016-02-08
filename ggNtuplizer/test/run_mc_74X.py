@@ -85,8 +85,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
-  'Summer15_25nsV7_DATA_L2Relative_AK8PFchs.txt',
-  'Summer15_25nsV7_DATA_L3Absolute_AK8PFchs.txt'
+  'Summer15_25nsV7_MC_L2Relative_AK8PFchs.txt',
+  'Summer15_25nsV7_MC_L3Absolute_AK8PFchs.txt'
 ]
 
 useAOD = False
