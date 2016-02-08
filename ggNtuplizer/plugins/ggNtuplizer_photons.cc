@@ -85,6 +85,8 @@ vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
 vector<float>  photrkSumPtSolidConeDR03_;
 
+vector<int> phoisSaturated_;
+
 vector<UShort_t> phoIDbit_;
 
 //Necessary for the Photon Footprint removal
@@ -178,6 +180,9 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoIDMVA",                        &phoIDMVA_);
   tree->Branch("phoFiredSingleTrgs",              &phoFiredSingleTrgs_);
   tree->Branch("phoFiredDoubleTrgs",              &phoFiredDoubleTrgs_);
+
+  tree->Branch("phoisSaturated",                        &phoisSaturated_);
+
   if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
 
 }
@@ -256,6 +261,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoIDMVA_             .clear();
   phoFiredSingleTrgs_   .clear();
   phoFiredDoubleTrgs_   .clear();
+
+  phoisSaturated_             .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
@@ -388,6 +395,52 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //phoPFChIso_       .push_back(iPho->chargedHadronIso());
     //phoPFPhoIso_      .push_back(iPho->photonIso());
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
+
+
+    ///////////////////////////////SATURATED/UNSATURATED ///from ggFlash////
+    DetId seed = (iPho->superCluster()->seed()->hitsAndFractions())[0].first;
+    bool isBarrel = seed.subdetId() == EcalBarrel;
+    const EcalRecHitCollection * rechits = (isBarrel?lazyTool.getEcalEBRecHitCollection():lazyTool.getEcalEERecHitCollection());
+            
+    /// if( isBarrel ) {
+    ///     EBDetId ebId(seed);
+    ///     cout << "seed barrel " << ebId.ieta() << " " << ebId.iphi() << endl;
+    /// } else {
+    ///     EEDetId eeId(seed);
+    ///     cout << "seed endpcas " << eeId.ix() << " " << eeId.iy() << endl;
+    /// 
+    /// }
+    //unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
+
+    int isSaturated = 0;
+    
+    auto matrix5x5 = lazyTool.matrixDetId(seed,-2,+2,-2,+2);
+    for(auto & deId : matrix5x5 ) {
+      /// cout << "matrix " << deId.rawId() << endl;
+      auto rh = rechits->find(deId);
+      if( rh != rechits->end() ) {
+	/*nSaturated += rh->checkFlag( EcalRecHit::kSaturated );
+	nLeRecovered += rh->checkFlag( EcalRecHit::kLeadingEdgeRecovered );
+	nNeighRecovered += rh->checkFlag( EcalRecHit::kNeighboursRecovered );
+	nGain1 += rh->checkFlag( EcalRecHit::kHasSwitchToGain1 );
+	nGain6 += rh->checkFlag( EcalRecHit::kHasSwitchToGain6 );
+	nWeired += rh->checkFlag( EcalRecHit::kWeird ) || rh->checkFlag( EcalRecHit::kDiWeird );
+	*/
+
+	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) ){
+
+	  isSaturated = 1;
+	  break;
+	}
+
+      }//if( rh != rechits->end() ) 
+                
+    }//for(auto & deId : matrix5x5 )
+  
+    phoisSaturated_.push_back(isSaturated);
+
+
+    //////////////////////////////////////////////////////////////
 
     phoFiredSingleTrgs_     .push_back(matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredDoubleTrgs_     .push_back(matchDoublePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
