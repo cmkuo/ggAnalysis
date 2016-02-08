@@ -38,6 +38,7 @@ vector<int>   jetNCH_;
 vector<float> jetHFHAE_;
 vector<float> jetHFEME_;
 vector<int>   jetNConstituents_;
+vector<float> AK8JetMUF_;
 vector<float> jetVtxPt_;
 vector<float> jetVtxMass_;
 vector<float> jetVtxNtrks_;
@@ -82,6 +83,7 @@ vector<float> AK8JetNEF_;
 vector<int>   AK8JetNCH_;
 vector<int>   AK8Jetnconstituents_;
 vector<bool>  AK8JetPFLooseId_;
+vector<bool>  AK8JetPFTightLepVetoId_;
 vector<float> AK8CHSSoftDropJetMass_;
 vector<float> AK8CHSSoftDropJetMassCorr_;
 vector<float> AK8CHSPrunedJetMass_;
@@ -188,7 +190,9 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetNEF",                &AK8JetNEF_);
     tree->Branch("AK8JetNCH",                &AK8JetNCH_);
     tree->Branch("AK8Jetnconstituents",      &AK8Jetnconstituents_);
+    tree->Branch("AK8JetMUF",                &AK8JetMUF_);
     tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
+    tree->Branch("AK8JetPFTightLepVetoId",   &AK8JetPFTightLepVetoId_);
     tree->Branch("AK8CHSSoftDropJetMass",    &AK8CHSSoftDropJetMass_);
     tree->Branch("AK8CHSSoftDropJetMassCorr",&AK8CHSSoftDropJetMassCorr_);
     tree->Branch("AK8CHSPrunedJetMass",      &AK8CHSPrunedJetMass_);
@@ -293,7 +297,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetNEF_          .clear();
   AK8JetNCH_          	.clear();
   AK8Jetnconstituents_     .clear();
+  AK8JetMUF_          .clear();
   AK8JetPFLooseId_         .clear();
+  AK8JetPFTightLepVetoId_  .clear();
   AK8CHSSoftDropJetMass_   .clear();
   AK8CHSSoftDropJetMassCorr_   .clear();
   AK8CHSPrunedJetMass_   .clear();
@@ -574,13 +580,14 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8:tau2") );
       AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8:tau3") );
       AK8JetCHF_.push_back( ijetAK8->chargedHadronEnergyFraction()); // 0.0
-      AK8JetNHF_.push_back( ( ijetAK8->neutralHadronEnergy() + ijetAK8->HFHadronEnergy() ) / ijetAK8->energy()); //0.99
+      AK8JetNHF_.push_back( ijetAK8->neutralHadronEnergyFraction()); //0.99
       AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
       AK8JetNEF_.push_back( ijetAK8->neutralEmEnergyFraction()); //0.99
       AK8JetNCH_.push_back( ijetAK8->chargedMultiplicity()); //0
-      AK8Jetnconstituents_.push_back( ijetAK8->numberOfDaughters()); //1  
-      
+      AK8Jetnconstituents_.push_back( ijetAK8->chargedMultiplicity() + ijetAK8->neutralMultiplicity()); //1  
+      AK8JetMUF_.push_back(ijetAK8->muonEnergyFraction());
       //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
+      //LooseID
       bool AK8jetID = true;
       if (fabs(ijetAK8->eta()) <= 3.0) {
 	if (!(ijetAK8->neutralHadronEnergyFraction() < 0.99))                       AK8jetID = false;
@@ -597,6 +604,22 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	if (!(ijetAK8->neutralMultiplicity() > 10))        AK8jetID = false;
       }
       AK8JetPFLooseId_.push_back(AK8jetID);
+
+      //TightIDMuon Fraction
+      bool AK8jetIDTightLepVeto = true;
+      if (fabs(ijetAK8->eta()) <= 3.0) {
+        if (!(ijetAK8->neutralHadronEnergyFraction() < 0.90))                       AK8jetIDTightLepVeto = false;
+        if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))                           AK8jetIDTightLepVeto = false;
+        if (!((ijetAK8->chargedMultiplicity() + ijetAK8->neutralMultiplicity()) > 1))  AK8jetIDTightLepVeto = false;
+        if (!(ijetAK8->muonEnergyFraction()<0.8))                                   AK8jetIDTightLepVeto = false;
+        if (fabs(ijetAK8->eta()) <= 2.4) {
+          if (!(ijetAK8->chargedHadronEnergyFraction() > 0))  AK8jetIDTightLepVeto = false;
+          if (!(ijetAK8->chargedMultiplicity() > 0))          AK8jetIDTightLepVeto = false;
+          if (!(ijetAK8->chargedEmEnergyFraction() < 0.90))   AK8jetIDTightLepVeto = false;
+        }
+      }
+      AK8JetPFTightLepVetoId_.push_back(AK8jetIDTightLepVeto);
+
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); 
       AK8CHSPrunedJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")); 
       // AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
