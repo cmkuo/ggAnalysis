@@ -413,6 +413,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
 
     int isSaturated = 0;
+    int isSaturated_gain6 = 0;
     
     UShort_t tmpxtalbit = 0;
 
@@ -436,16 +437,21 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 	  //break;
 	}
 	
+	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain6 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated_gain6){ //this is to fill only once, i.e. only if xtal has this, no need to check for other xtals
+
+	  setbit(tmpxtalbit, 1);
+	  isSaturated_gain6 = 1;
+	  //break;
+	}
+	
       }//if( rh != rechits->end() ) 
        
       if(nWeired>0)
-	setbit(tmpxtalbit,1);
+	setbit(tmpxtalbit,2);
       
       if(nGain6>0)
-	setbit(tmpxtalbit,2); 
-         
-      if(nSaturated >0)
-	setbit(tmpxtalbit,3);
+	setbit(tmpxtalbit,3); 
+
     }//for(auto & deId : matrix5x5 )
   
     phoxtalBits_.push_back(tmpxtalbit);
