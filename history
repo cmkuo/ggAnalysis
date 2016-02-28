@@ -1,7 +1,10 @@
-* V07-04-16-00
+* V07-04-16-01
    * update jets
+   * update triggers
    * add histogram for GEN weight
    * add energy scale correction and smearing for electrons and photons
+   * add PDF systematic weights (default : off)
+   * add mini isolation for electrons and muons
 
 * V07-04-14-01
    * move to cut based 25ns photon ID
