@@ -36,14 +36,14 @@ class ggNtuplizer : public edm::EDAnalyzer {
   explicit ggNtuplizer(const edm::ParameterSet&);
   ~ggNtuplizer();
   
-//   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+  //   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
   
  private:
   
-//   virtual void beginJob() {};
+  //   virtual void beginJob() {};
   virtual void analyze(const edm::Event&, const edm::EventSetup&);
-//   virtual void endJob() {};
-
+  //   virtual void endJob() {};
+  
   void initTriggerFilters(const edm::Event&);
   Int_t matchElectronTriggerFilters(double pt, double eta, double phi);
   Int_t matchSinglePhotonTriggerFilters(double pt, double eta, double phi);
@@ -52,6 +52,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   Int_t matchJetTriggerFilters(double pt, double eta, double phi);
   Double_t deltaPhi(Double_t phi1, Double_t phi2);
   Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2);
+  Double_t getMiniIsolation(edm::Handle<pat::PackedCandidateCollection> pfcands, const reco::Candidate* ptcl,  
+			    double r_iso_min, double r_iso_max, double kt_scale, bool charged_only);
 
   void branchesGlobalEvent(TTree*);
   void branchesGenInfo    (TTree*, edm::Service<TFileService>&);
@@ -88,6 +90,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpJets_;
   bool dumpSubJets_;
   bool dumpSoftDrop_;
+  bool dumpPDFSystWeight_;
 
   bool isAOD_;
 
@@ -104,40 +107,39 @@ class ggNtuplizer : public edm::EDAnalyzer {
   double trgFilterDeltaPtCut_;
   double trgFilterDeltaRCut_;
 
-  edm::EDGetTokenT<reco::VertexCollection>      vtxLabel_;
-  edm::EDGetTokenT<reco::VertexCollection>      vtxBSLabel_;
-  edm::EDGetTokenT<double>                      rhoLabel_;
-  edm::EDGetTokenT<double>                      rhoCentralLabel_;
-  edm::EDGetTokenT<trigger::TriggerEvent>       trgEventLabel_;
+  edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
+  edm::EDGetTokenT<reco::VertexCollection>         vtxBSLabel_;
+  edm::EDGetTokenT<double>                         rhoLabel_;
+  edm::EDGetTokenT<double>                         rhoCentralLabel_;
+  edm::EDGetTokenT<trigger::TriggerEvent>          trgEventLabel_;
   edm::EDGetTokenT<pat::TriggerObjectStandAloneCollection> triggerObjectsLabel_;
-  edm::EDGetTokenT<edm::TriggerResults>         trgResultsLabel_;
-  string                                        trgResultsProcess_;
-  edm::EDGetTokenT<edm::TriggerResults>         patTrgResultsLabel_;
-  edm::EDGetTokenT<GenEventInfoProduct>         generatorLabel_;
-  edm::EDGetTokenT<vector<PileupSummaryInfo> >  puCollection_;
-  edm::EDGetTokenT<vector<reco::GenParticle> >  genParticlesCollection_;
-  edm::EDGetTokenT<edm::View<pat::MET> >        pfMETlabel_;
-  edm::EDGetTokenT<edm::View<pat::Electron> >   electronCollection_;
-  edm::EDGetTokenT<edm::View<pat::Electron> >   calibelectronCollection_;
-  edm::EDGetTokenT<edm::View<pat::Photon> >     photonCollection_;
-  edm::EDGetTokenT<edm::View<pat::Photon> >     calibphotonCollection_;
-  edm::EDGetTokenT<edm::View<pat::Muon> >       muonCollection_;
-  edm::EDGetTokenT<vector<pat::Tau> >           tauCollection_;
-  edm::EDGetTokenT<EcalRecHitCollection>        ebReducedRecHitCollection_;
-  edm::EDGetTokenT<EcalRecHitCollection>        eeReducedRecHitCollection_;
-  edm::EDGetTokenT<EcalRecHitCollection>        esReducedRecHitCollection_; 
-  edm::EDGetTokenT<reco::PhotonCollection>      recophotonCollection_;
-  edm::EDGetTokenT<reco::TrackCollection>       tracklabel_;
-  edm::EDGetTokenT<reco::GsfElectronCollection> gsfElectronlabel_;
-  edm::EDGetTokenT<edm::View<reco::GsfTrack> >  gsfTracks_;
-  edm::EDGetTokenT<reco::PFCandidateCollection> pfAllParticles_;
-  edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK4Label_;
-  edm::EDGetTokenT<edm::View<pat::Jet> >        jetsAK8Label_;
+  edm::EDGetTokenT<edm::TriggerResults>            trgResultsLabel_;
+  string                                           trgResultsProcess_;
+  edm::EDGetTokenT<edm::TriggerResults>            patTrgResultsLabel_;
+  edm::EDGetTokenT<GenEventInfoProduct>            generatorLabel_;
+  edm::EDGetTokenT<vector<PileupSummaryInfo> >     puCollection_;
+  edm::EDGetTokenT<vector<reco::GenParticle> >     genParticlesCollection_;
+  edm::EDGetTokenT<edm::View<pat::MET> >           pfMETlabel_;
+  edm::EDGetTokenT<edm::View<pat::Electron> >      electronCollection_;
+  edm::EDGetTokenT<edm::View<pat::Electron> >      calibelectronCollection_;
+  edm::EDGetTokenT<edm::View<pat::Photon> >        photonCollection_;
+  edm::EDGetTokenT<edm::View<pat::Photon> >        calibphotonCollection_;
+  edm::EDGetTokenT<edm::View<pat::Muon> >          muonCollection_;
+  edm::EDGetTokenT<vector<pat::Tau> >              tauCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection>           ebReducedRecHitCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection>           eeReducedRecHitCollection_;
+  edm::EDGetTokenT<EcalRecHitCollection>           esReducedRecHitCollection_; 
+  edm::EDGetTokenT<reco::PhotonCollection>         recophotonCollection_;
+  edm::EDGetTokenT<reco::TrackCollection>          tracklabel_;
+  edm::EDGetTokenT<reco::GsfElectronCollection>    gsfElectronlabel_;
+  edm::EDGetTokenT<edm::View<reco::GsfTrack> >     gsfTracks_;
+  edm::EDGetTokenT<reco::PFCandidateCollection>    pfAllParticles_;
+  edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK4Label_;
+  edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK8Label_;
+  edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
   //Frix Req
-
   edm::InputTag pckPFCdsLabel_;
-
 
   ///Photon ID in VID framework - 11th May, 2015
   // photon ID decision objects and isolations

@@ -56,6 +56,7 @@ vector<float>  elePFNeuIso_;
 vector<float>  elePFPUIso_;
 vector<float>  elePFClusEcalIso_;
 vector<float>  elePFClusHcalIso_;
+vector<float>  elePFMiniIso_;
 vector<float>  eleIDMVANonTrg_;
 vector<float>  eleIDMVATrg_;
 vector<float>  eledEtaseedAtVtx_;
@@ -159,6 +160,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFPUIso",              &elePFPUIso_);
   tree->Branch("elePFClusEcalIso",        &elePFClusEcalIso_);
   tree->Branch("elePFClusHcalIso",        &elePFClusHcalIso_);
+  tree->Branch("elePFMiniIso",            &elePFMiniIso_);
   tree->Branch("eleIDMVANonTrg",          &eleIDMVANonTrg_);
   tree->Branch("eleIDMVATrg",             &eleIDMVATrg_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
@@ -275,6 +277,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFPUIso_                 .clear();
   elePFClusEcalIso_           .clear();
   elePFClusHcalIso_           .clear();
+  elePFMiniIso_               .clear();
   eleIDMVANonTrg_             .clear();
   eleIDMVATrg_                .clear();
   eledEtaseedAtVtx_           .clear();
@@ -324,6 +327,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
   edm::Handle<edm::View<pat::Electron> > calibelectronHandle;
   e.getByToken(calibelectronCollection_, calibelectronHandle);
+
+  edm::Handle<pat::PackedCandidateCollection> pfcands;
+  e.getByToken(pckPFCandidateCollection_, pfcands);
 
   if (!electronHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Electrons in event";
@@ -434,6 +440,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     elePFNeuIso_        .push_back(pfIso.sumNeutralHadronEt);
     elePFPUIso_         .push_back(pfIso.sumPUPt);
     elecaloEnergy_      .push_back(iEle->caloEnergy());
+    elePFMiniIso_       .push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iEle)), 0.05, 0.2, 10., false));
 
     /////quantities which were used for Run1 - these do not
     ///calculated through PF (meaning no energy is subtracted

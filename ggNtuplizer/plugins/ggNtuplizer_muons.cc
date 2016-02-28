@@ -34,6 +34,7 @@ vector<float>  muPFChIso_;
 vector<float>  muPFPhoIso_;
 vector<float>  muPFNeuIso_;
 vector<float>  muPFPUIso_;
+vector<float>  muPFMiniIso_;
 vector<int>    muFiredTrgs_;
 vector<float>  muInnervalidFraction_;
 vector<float>  musegmentCompatibility_;
@@ -73,6 +74,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
   tree->Branch("muPFPUIso",     &muPFPUIso_);
+  tree->Branch("muPFMiniIso",   &muPFMiniIso_);
   tree->Branch("muFiredTrgs",   &muFiredTrgs_);
   tree->Branch("muInnervalidFraction",   &muInnervalidFraction_);
   tree->Branch("musegmentCompatibility", &musegmentCompatibility_);
@@ -113,6 +115,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muPFPhoIso_   .clear();
   muPFNeuIso_   .clear();
   muPFPUIso_    .clear();
+  muPFMiniIso_  .clear();
   muFiredTrgs_  .clear();
   muInnervalidFraction_  .clear();
   musegmentCompatibility_.clear();
@@ -125,6 +128,9 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
   e.getByToken(muonCollection_, muonHandle);
+
+  edm::Handle<pat::PackedCandidateCollection> pfcands;
+  e.getByToken(pckPFCandidateCollection_, pfcands);
 
   if (!muonHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Muons in event";
@@ -197,6 +203,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muPFPhoIso_ .push_back(iMu->pfIsolationR04().sumPhotonEt);
     muPFNeuIso_ .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
     muPFPUIso_  .push_back(iMu->pfIsolationR04().sumPUPt);
+    muPFMiniIso_.push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iMu)), 0.05, 0.2, 10., false));
 
     nMu_++;
   }

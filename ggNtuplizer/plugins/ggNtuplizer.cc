@@ -22,6 +22,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
   dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
+  dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   isAOD_                     = ps.getParameter<bool>("isAOD");
 
   runphoIDVID_               = ps.getParameter<bool>("runphoIDVID");
@@ -62,6 +63,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   gsfElectronlabel_          = consumes<reco::GsfElectronCollection>(ps.getParameter<InputTag>("gsfElectronLabel"));
   tauCollection_             = consumes<vector<pat::Tau> >          (ps.getParameter<InputTag>("tauSrc"));
   pfAllParticles_            = consumes<reco::PFCandidateCollection>(ps.getParameter<InputTag>("PFAllCandidates"));
+  pckPFCandidateCollection_  = consumes<pat::PackedCandidateCollection>(ps.getParameter<InputTag>("packedPFCands"));
+
   jetsAK4Label_              = consumes<View<pat::Jet> > (ps.getParameter<InputTag>("ak4JetSrc"));
   jetsAK8Label_              = consumes<View<pat::Jet> > (ps.getParameter<InputTag>("ak8JetSrc"));
   newparticles_              = ps.getParameter< vector<int > >("newParticles");
