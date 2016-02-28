@@ -5,6 +5,7 @@
    * add energy scale correction and smearing for electrons and photons
    * add PDF systematic weights (default : off)
    * add mini isolation for electrons and muons
+   * store gluino if it is in GEN particles 
 
 * V07-04-14-01
    * move to cut based 25ns photon ID
