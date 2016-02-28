@@ -10,6 +10,8 @@ float            pthat_;
 float            processID_;
 float            genWeight_;
 float            genHT_;
+float            pdfWeight_;     
+vector<float>    pdfSystWeight_;
 
 Int_t            nPUInfo_;
 vector<int>      nPU_;
@@ -106,16 +108,20 @@ float getGenTrkIso(edm::Handle<reco::GenParticleCollection> handle,
 
 void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
 
-  tree->Branch("pdf",          &pdf_);
-  tree->Branch("pthat",        &pthat_);
-  tree->Branch("processID",    &processID_);
-  tree->Branch("genWeight",    &genWeight_);
-  tree->Branch("genHT",        &genHT_);
+  tree->Branch("pdf",           &pdf_);
+  tree->Branch("pthat",         &pthat_);
+  tree->Branch("processID",     &processID_);
+  tree->Branch("genWeight",     &genWeight_);
+  tree->Branch("genHT",         &genHT_);
+  if (dumpPDFSystWeight_) {
+    tree->Branch("pdfWeight",     &pdfWeight_);
+    tree->Branch("pdfSystWeight", &pdfSystWeight_);
+  }
 
-  tree->Branch("nPUInfo",      &nPUInfo_);
-  tree->Branch("nPU",          &nPU_);
-  tree->Branch("puBX",         &puBX_);
-  tree->Branch("puTrue",       &puTrue_);
+  tree->Branch("nPUInfo",       &nPUInfo_);
+  tree->Branch("nPU",           &nPU_);
+  tree->Branch("puBX",          &puBX_);
+  tree->Branch("puTrue",        &puTrue_);
 
   hPU_        = fs->make<TH1F>("hPU",        "number of pileup",      200,  0, 200);
   hPUTrue_    = fs->make<TH1F>("hPUTrue",    "number of true pilepu", 1000, 0, 200);
@@ -159,11 +165,13 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   genWeight_ = -99;
   genHT_     = -99;
   nPUInfo_   = 0;
+  pdfWeight_ = -99;
 
-  pdf_   .clear();
-  nPU_   .clear();
-  puBX_  .clear();
-  puTrue_.clear();
+  pdf_          .clear();
+  pdfSystWeight_.clear();
+  nPU_          .clear();
+  puBX_         .clear();
+  puTrue_       .clear();
 
   edm::Handle<GenEventInfoProduct> genEventInfoHandle;
   e.getByToken(generatorLabel_, genEventInfoHandle);
@@ -186,32 +194,38 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
     genWeight_ = genEventInfoHandle->weight();
     if (genWeight_ >= 0) hGenWeight_->Fill(0.5);    
     else hGenWeight_->Fill(1.5);
-
   } else
     edm::LogWarning("ggNtuplizer") << "no GenEventInfoProduct in event";
   
   // access generator level HT  
   edm::Handle<LHEEventProduct> lheEventProduct;
   e.getByLabel("externalLHEProducer", lheEventProduct);
-
+  
   double lheHt = 0.;
-if (lheEventProduct.isValid()){
-  const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
-  std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
-  size_t numParticles = lheParticles.size();
-  for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
-    int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
-    int status = lheEvent.ISTUP[idxParticle];
-    if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
-      lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
-    } 
-  }
-}
-  genHT_=lheHt;  
+  if (lheEventProduct.isValid()){
+    const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
+    std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
+    size_t numParticles = lheParticles.size();
+    for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
+      int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
+      int status = lheEvent.ISTUP[idxParticle];
+      if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
+	lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
+      } 
+    }
 
+    if (dumpPDFSystWeight_) {
+      pdfWeight_ = lheEventProduct->originalXWGTUP(); // PDF weight of this event !
+      for (unsigned i = 0; i < lheEventProduct->weights().size(); ++i) {
+	pdfSystWeight_.push_back(lheEventProduct->weights()[i].wgt);
+      }
+    }
+  }
+  genHT_=lheHt;  
+  
   edm::Handle<vector<PileupSummaryInfo> > genPileupHandle;
   e.getByToken(puCollection_, genPileupHandle);
-
+  
   if (genPileupHandle.isValid()) {
     for (vector<PileupSummaryInfo>::const_iterator pu = genPileupHandle->begin(); pu != genPileupHandle->end(); ++pu) {
       if (pu->getBunchCrossing() == 0) {

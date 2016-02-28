@@ -1,4 +1,4 @@
-#### Current production tag : V07-04-16-01
+#### Current production tag : V07-04-16-02
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_7_4_14
 
@@ -10,7 +10,7 @@ git cms-init <br>
 git cms-merge-topic matteosan1:smearer <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-16-01 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V07-04-16-02 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_7_4_14, you do:
