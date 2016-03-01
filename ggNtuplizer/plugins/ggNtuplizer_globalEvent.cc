@@ -142,7 +142,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu50_v")                                        != string::npos) bitEleMuX = 27;
     else if (name.find("HLT_TripleMu_12_10_5_v")                            != string::npos) bitEleMuX = 28;
     else if (name.find("HLT_IsoMu17_eta2p1_v")                              != string::npos) bitEleMuX = 29;
-    else if (name.find("HLT_IsoMu18_v")                                     != string::npos) bitEleMuX = 30;
+    else if (name.find("HLT_IsoMu20_eta2p1_v")                              != string::npos) bitEleMuX = 30;
     else if (name.find("HLT_IsoMu20_v")                                     != string::npos) bitEleMuX = 31;
     else if (name.find("HLT_IsoTkMu20_v")                                   != string::npos) bitEleMuX = 32;
     else if (name.find("HLT_Mu20_v")                                        != string::npos) bitEleMuX = 33;
