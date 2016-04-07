@@ -5,7 +5,7 @@
 ##### To work with CMSSW_7_6_3_patch2, you do:
 cd CMSSW_7_6_3_patch2/src <br>
 cmsenv <br>
-git cms-merge-topic -u matteosan1:smearer_76X
+git cms-merge-topic -u matteosan1:smearer_76X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
