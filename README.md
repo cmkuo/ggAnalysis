@@ -1,6 +1,14 @@
-#### Current production tag : V07-04-16-02
+#### Current production tag : V07-06-03-00
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_7_4_14
+#### Note that the current head version can be run with CMSSW_7_6_3_patch2
+
+##### To work with CMSSW_7_6_3_patch2, you do:
+cd CMSSW_7_6_3_patch2/src <br>
+cmsenv <br>
+git cms-merge-topic -u matteosan1:smearer_76X
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
 
 ##### To work with CMSSW_7_4_16, you do:
 cd CMSSW_7_4_16/src <br>
@@ -11,18 +19,6 @@ git cms-merge-topic matteosan1:smearer <br>
 git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V07-04-16-02 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_7_4_14, you do:
-cd CMSSW_7_4_14/src <br>
-cmsenv <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch btv-cmssw <br>
-git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTagger-WithWeightFiles-v2_from-CMSSW_7_4_1 <br>
-git cms-merge-topic ikrav:egm_id_7.4.12_v1 <br>
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-14-00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
