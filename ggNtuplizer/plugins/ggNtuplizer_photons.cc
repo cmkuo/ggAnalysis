@@ -533,8 +533,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //Filling Frix in case this is not AOD
     if (!isAOD_) {
 
-      e.getByLabel(pckPFCdsLabel_,pfCndHandle); 
-      e.getByLabel(pckPFCdsLabel_,CndHandle); 
+      e.getByToken(pckPFCdsLabel_, pfCndHandle); 
+      e.getByToken(recoCdsLabel_,  CndHandle); 
       auto_ptr<vector<pat::PackedCandidate> > CandColl( new vector<pat::PackedCandidate> (*pfCndHandle) );
 
       //register 8 variables for each type of Iso corresponding to each frix. ring 

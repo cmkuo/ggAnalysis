@@ -526,7 +526,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     
     //Double B-tagger 
     edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex; 
-    e.getByLabel("pfBoostedDoubleSecondaryVertexAK8BJetTags",pfBoostedDoubleSecondaryVertex); 
+    e.getByToken(boostedDoubleSVLabel_, pfBoostedDoubleSecondaryVertex); 
     
     //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#Recipes_to_apply_JEC_on_the_prun
     

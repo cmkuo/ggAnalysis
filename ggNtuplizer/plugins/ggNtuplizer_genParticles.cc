@@ -1,7 +1,6 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 #include "ggAnalysis/ggNtuplizer/interface/GenParticleParentage.h"
-#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 using namespace std;
 
 // (local) variables associated with tree branches
@@ -199,7 +198,7 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   
   // access generator level HT  
   edm::Handle<LHEEventProduct> lheEventProduct;
-  e.getByLabel("externalLHEProducer", lheEventProduct);
+  e.getByToken(lheEventLabel_, lheEventProduct);
   
   double lheHt = 0.;
   if (lheEventProduct.isValid()){
@@ -322,10 +321,6 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       const reco::Candidate *p = (const reco::Candidate*)&(*ip);
       if (!runOnParticleGun_ && !p->mother()) continue;
 
-      reco::GenParticleRef partRef = reco::GenParticleRef(genParticlesHandle,
-                      ip-genParticlesHandle->begin());
-      genpartparentage::GenParticleParentage particleHistory(partRef);
-
       mcPID    .push_back(p->pdgId());
       mcVtx    .push_back(p->vx());
       mcVty    .push_back(p->vy());
@@ -336,13 +331,8 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       mcPhi    .push_back(p->phi());
       mcE      .push_back(p->energy());
       mcEt     .push_back(p->et());
-      mcParentage.push_back(particleHistory.hasLeptonParent()*16   +
-      particleHistory.hasBosonParent()*8     +
-      particleHistory.hasNonPromptParent()*4 +
-      particleHistory.hasQCDParent()*2       +
-      particleHistory.hasExoticParent());
-      mcStatus.push_back(p->status());
-      
+      mcStatus .push_back(p->status());
+	
       UShort_t tmpStatusFlag = 0;
       if (ip->fromHardProcessFinalState()) setbit(tmpStatusFlag, 0);
       if (ip->isPromptFinalState())        setbit(tmpStatusFlag, 1);
@@ -366,29 +356,42 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       float mcMomMass_  = -999.;
       float mcMomEta_   = -999.;
       float mcMomPhi_   = -999.;
-      if ( particleHistory.hasRealParent() ) {
-        reco::GenParticleRef momRef = particleHistory.parent();
-        if ( momRef.isNonnull() && momRef.isAvailable() ) {
-          mcMomPID_  = momRef->pdgId();
-          mcMomPt_   = momRef->pt();
-          mcMomMass_ = momRef->mass();
-          mcMomEta_  = momRef->eta();
-          mcMomPhi_  = momRef->phi();
-
-          // get Granny
-          genpartparentage::GenParticleParentage motherParticle(momRef);
-          if ( motherParticle.hasRealParent() ) {
-            reco::GenParticleRef granny = motherParticle.parent();
-            mcGMomPID_ = granny->pdgId();
-          }
-        }
+      if (!runOnSherpa_) {
+	
+	reco::GenParticleRef partRef = reco::GenParticleRef(genParticlesHandle,
+							    ip-genParticlesHandle->begin());
+	genpartparentage::GenParticleParentage particleHistory(partRef);
+	
+	mcParentage.push_back(particleHistory.hasLeptonParent()*16   +
+			      particleHistory.hasBosonParent()*8     +
+			      particleHistory.hasNonPromptParent()*4 +
+			      particleHistory.hasQCDParent()*2       +
+			      particleHistory.hasExoticParent());      
+	
+	if ( particleHistory.hasRealParent() ) {
+	  reco::GenParticleRef momRef = particleHistory.parent();
+	  if ( momRef.isNonnull() && momRef.isAvailable() ) {
+	    mcMomPID_  = momRef->pdgId();
+	    mcMomPt_   = momRef->pt();
+	    mcMomMass_ = momRef->mass();
+	    mcMomEta_  = momRef->eta();
+	    mcMomPhi_  = momRef->phi();
+	    
+	    // get Granny
+	    genpartparentage::GenParticleParentage motherParticle(momRef);
+	    if ( motherParticle.hasRealParent() ) {
+	      reco::GenParticleRef granny = motherParticle.parent();
+	      mcGMomPID_ = granny->pdgId();
+	    }
+	  }
+	}
+	mcGMomPID.push_back(mcGMomPID_);
+	mcMomPID.push_back(mcMomPID_);
+	mcMomPt.push_back(mcMomPt_);
+	mcMomMass.push_back(mcMomMass_);
+	mcMomEta.push_back(mcMomEta_);
+	mcMomPhi.push_back(mcMomPhi_);
       }
-      mcGMomPID.push_back(mcGMomPID_);
-      mcMomPID.push_back(mcMomPID_);
-      mcMomPt.push_back(mcMomPt_);
-      mcMomMass.push_back(mcMomMass_);
-      mcMomEta.push_back(mcMomEta_);
-      mcMomPhi.push_back(mcMomPhi_);
 
       mcIndex.push_back(genIndex-1);
 

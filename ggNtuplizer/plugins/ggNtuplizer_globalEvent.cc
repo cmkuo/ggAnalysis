@@ -142,7 +142,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu50_v")                                        != string::npos) bitEleMuX = 27;
     else if (name.find("HLT_TripleMu_12_10_5_v")                            != string::npos) bitEleMuX = 28;
     else if (name.find("HLT_IsoMu17_eta2p1_v")                              != string::npos) bitEleMuX = 29;
-    else if (name.find("HLT_IsoMu20_eta2p1_v")                              != string::npos) bitEleMuX = 30;
+    else if (name.find("HLT_IsoMu18_v")                                     != string::npos) bitEleMuX = 30;
     else if (name.find("HLT_IsoMu20_v")                                     != string::npos) bitEleMuX = 31;
     else if (name.find("HLT_IsoTkMu20_v")                                   != string::npos) bitEleMuX = 32;
     else if (name.find("HLT_Mu20_v")                                        != string::npos) bitEleMuX = 33;
@@ -189,9 +189,6 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
     else if (name.find("HLT_Photon135_PFMET100_v")              != string::npos) bitPho = 22; 
     else if (name.find("HLT_Photon135_PFMET100_JetIdCleaned_v")             != string::npos) bitPho = 23;
-    
-    else if (name.find("HLT_Photon90_CaloIdL_PFHT500_v")                  != string::npos) bitPho = 24;
-    else if (name.find("HLT_Photon36_R9Id90_HE10_Iso40_EBOnly_PFMET40_v") != string::npos) bitPho = 25;
 
     // Jet triggers for 25 ns
     int bitJet    = -1;
@@ -221,7 +218,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFJet500_v")                           != string::npos) bitJet = 19; 
 
     // indicates prescaling and whether trigger was fired or not
-    ULong64_t isPrescaled = (hltCfg.prescaleValue(e, es, name)!=1) ? 1 : 0;
+    ULong64_t isPrescaled = (hltCfg.prescaleValue(0, name)!=1) ? 1 : 0;
     ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
 
     if (bitEleMuX >= 0) {
