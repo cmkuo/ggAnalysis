@@ -10,6 +10,7 @@
 #include "CommonTools/UtilAlgos/interface/TFileService.h"
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
+#include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
 #include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
@@ -85,6 +86,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool doNoHFMET_;
   bool doGenParticles_;
   bool runOnParticleGun_;
+  bool runOnSherpa_;
   bool dumpPhotons_;
   bool dumpTaus_;
   bool dumpJets_;
@@ -117,6 +119,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   string                                           trgResultsProcess_;
   edm::EDGetTokenT<edm::TriggerResults>            patTrgResultsLabel_;
   edm::EDGetTokenT<GenEventInfoProduct>            generatorLabel_;
+  edm::EDGetTokenT<LHEEventProduct>                lheEventLabel_;
   edm::EDGetTokenT<vector<PileupSummaryInfo> >     puCollection_;
   edm::EDGetTokenT<vector<reco::GenParticle> >     genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >           pfMETlabel_;
@@ -134,12 +137,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::GsfElectronCollection>    gsfElectronlabel_;
   edm::EDGetTokenT<edm::View<reco::GsfTrack> >     gsfTracks_;
   edm::EDGetTokenT<reco::PFCandidateCollection>    pfAllParticles_;
+  edm::EDGetTokenT<vector<pat::PackedCandidate> >  pckPFCdsLabel_;
+  edm::EDGetTokenT<edm::View<reco::Candidate> >    recoCdsLabel_;
   edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK4Label_;
   edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK8Label_;
+  edm::EDGetTokenT<reco::JetTagCollection>         boostedDoubleSVLabel_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
-
-  //Frix Req
-  edm::InputTag pckPFCdsLabel_;
 
   ///Photon ID in VID framework - 11th May, 2015
   // photon ID decision objects and isolations
