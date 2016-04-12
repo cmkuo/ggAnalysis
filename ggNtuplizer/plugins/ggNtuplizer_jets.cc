@@ -46,7 +46,7 @@ vector<float> jetVtx3DVal_;
 vector<float> jetVtx3DSig_;
 vector<float> jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
 vector<float> jetJetProbabilityBJetTags_;
-vector<float> jetpfCombinedMVABJetTags_;
+vector<float> jetpfCombinedMVAV2BJetTags_;
 vector<int>   jetPartonID_;
 vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
@@ -136,7 +136,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetLepTrackPhi",  &jetLepTrackPhi_);
   tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
-  tree->Branch("jetpfCombinedMVABJetTags", &jetpfCombinedMVABJetTags_);
+  tree->Branch("jetpfCombinedMVAV2BJetTags", &jetpfCombinedMVAV2BJetTags_);
   if (doGenParticles_){
     tree->Branch("jetPartonID", &jetPartonID_);
     tree->Branch("jetGenJetIndex", &jetGenJetIndex_);
@@ -247,7 +247,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetLepTrackPhi_                         .clear();
   jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
   jetJetProbabilityBJetTags_              .clear();
-  jetpfCombinedMVABJetTags_               .clear();
+  jetpfCombinedMVAV2BJetTags_               .clear();
   jetPartonID_                            .clear();
   jetPFLooseId_                           .clear();
   jetPUidFullDiscriminant_                .clear();
@@ -439,7 +439,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //b-tagging
     jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
-    jetpfCombinedMVABJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVABJetTags"));
+    jetpfCombinedMVAV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVAV2BJetTags"));
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
