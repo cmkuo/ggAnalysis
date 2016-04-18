@@ -48,6 +48,7 @@ vector<float> jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
 vector<float> jetJetProbabilityBJetTags_;
 vector<float> jetpfCombinedMVAV2BJetTags_;
 vector<int>   jetPartonID_;
+vector<int>   jetHadFlvr_;
 vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
 vector<float> jetJECUnc_;
@@ -94,6 +95,7 @@ vector<float> AK8JetL2L3corr_;
 
 //gen-info for ak8
 vector<int>   AK8JetPartonID_;
+vector<int>   AK8JetHadFlvr_;
 vector<int>   AK8JetGenJetIndex_;
 vector<float> AK8JetGenJetEn_;
 vector<float> AK8JetGenJetPt_;
@@ -139,6 +141,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetpfCombinedMVAV2BJetTags", &jetpfCombinedMVAV2BJetTags_);
   if (doGenParticles_){
     tree->Branch("jetPartonID", &jetPartonID_);
+    tree->Branch("jetHadFlvr", &jetHadFlvr_);
     tree->Branch("jetGenJetIndex", &jetGenJetIndex_);
     tree->Branch("jetGenJetEn", &jetGenJetEn_);
     tree->Branch("jetGenJetPt", &jetGenJetPt_);
@@ -203,6 +206,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
 
     if (doGenParticles_){
       tree->Branch("AK8JetPartonID", &AK8JetPartonID_);
+      tree->Branch("AK8JetHadFlvr", &AK8JetHadFlvr_);
       tree->Branch("AK8JetGenJetIndex", &AK8JetGenJetIndex_);
       tree->Branch("AK8JetGenJetEn", &AK8JetGenJetEn_);
       tree->Branch("AK8JetGenJetPt", &AK8JetGenJetPt_);
@@ -249,6 +253,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetJetProbabilityBJetTags_              .clear();
   jetpfCombinedMVAV2BJetTags_               .clear();
   jetPartonID_                            .clear();
+  jetHadFlvr_                           .clear();
   jetPFLooseId_                           .clear();
   jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
@@ -309,6 +314,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetL2L3corr_            .clear();
 
   AK8JetPartonID_ .clear();
+  AK8JetHadFlvr_ .clear();
   AK8JetGenJetIndex_.clear();
   AK8JetGenJetEn_.clear();
   AK8JetGenJetPt_.clear();
@@ -443,6 +449,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
+    jetHadFlvr_.push_back(iJet->hadronFlavour());
 
     //jet PF Loose ID
     //pat::strbitset retjet = pfLooseId_.getBitTemplate();
@@ -651,6 +658,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       //save gen-info for ak8 jets
       //parton id                                                                                                                                                           
       AK8JetPartonID_.push_back(ijetAK8->partonFlavour());
+      AK8JetHadFlvr_.push_back(ijetAK8->hadronFlavour());
       int AK8JetGenPartonID = -99;
       int AK8JetGenPartonMomID = -99;
       float AK8JetGenEn = -999.;
