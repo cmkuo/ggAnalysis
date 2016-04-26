@@ -9,6 +9,7 @@ float            pthat_;
 float            processID_;
 float            genWeight_;
 float            genHT_;
+TString          EventTag_;
 float            pdfWeight_;     
 vector<float>    pdfSystWeight_;
 
@@ -116,6 +117,7 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
     tree->Branch("pdfWeight",     &pdfWeight_);
     tree->Branch("pdfSystWeight", &pdfSystWeight_);
   }
+  tree->Branch("EventTag",      &EventTag_);
 
   tree->Branch("nPUInfo",       &nPUInfo_);
   tree->Branch("nPU",           &nPU_);
@@ -165,7 +167,7 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   genHT_     = -99;
   nPUInfo_   = 0;
   pdfWeight_ = -99;
-
+  EventTag_  = "";
   pdf_          .clear();
   pdfSystWeight_.clear();
   nPU_          .clear();
@@ -211,6 +213,20 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
       if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
 	lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
       } 
+
+      typedef std::vector<std::string>::const_iterator comments_const_iterator;
+
+      comments_const_iterator c_begin = lheEventProduct->comments_begin();
+      comments_const_iterator c_end = lheEventProduct->comments_end();
+
+      TString model_params;
+      for(comments_const_iterator cit=c_begin; cit!=c_end; ++cit) {
+	size_t found = (*cit).find("model");
+	if(found != std::string::npos)   { 
+	  model_params = *cit;
+	}
+      }
+      EventTag_ = model_params;
     }
 
     if (dumpPDFSystWeight_) {
