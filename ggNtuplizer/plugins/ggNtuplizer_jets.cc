@@ -532,8 +532,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     }
     
     //Double B-tagger 
-    edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex; 
-    e.getByToken(boostedDoubleSVLabel_, pfBoostedDoubleSecondaryVertex); 
+//    edm::Handle<reco::JetTagCollection> pfBoostedDoubleSecondaryVertex; 
+//    e.getByToken(boostedDoubleSVLabel_, pfBoostedDoubleSecondaryVertex); 
     
     //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetWtagging#Recipes_to_apply_JEC_on_the_prun
     
@@ -629,8 +629,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); 
       AK8CHSPrunedJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")); 
-      // AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
-      AK8JetpfBoostedDSVBTag_.push_back(     (*pfBoostedDoubleSecondaryVertex).value(ijetRef));
+      AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      //AK8JetpfBoostedDSVBTag_.push_back(     (*pfBoostedDoubleSecondaryVertex).value(ijetRef));
       
       const LorentzVector uncorrJet = (*ijetAK8).correctedP4(0);
       jecAK8_->setJetEta(uncorrJet.eta());
