@@ -9,8 +9,8 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 #process.load("Configuration.Geometry.GeometryRecoDB_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
-#process.GlobalTag = GlobalTag(process.GlobalTag, '76X_mcRun2_asymptotic_RunIIFall15DR76_v1')
+#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
+process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_miniAODv2')
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
@@ -19,7 +19,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/mc/RunIISpring16MiniAODv1/GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/02ED80EA-5012-E611-BC71-842B2B76670F.root'
+        'file:RunIISpring16MiniAODv1GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8MINIAODSIMPUSpring16_80X_mcRun2_asymptotic_2016_v3-v1.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -98,33 +98,21 @@ else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
-    ###process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-    ###from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-    ###process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-        ###src = cms.InputTag("slimmedJets"),
-        ###levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
-        ###payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
 
-    ###from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-    ###process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-        ###jetSource = cms.InputTag("slimmedJets"),
-        ###jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-        ###)
+    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+    updateJetCollection(
+      process,
+      jetSource = cms.InputTag('slimmedJets'),
+      labelName = 'UpdatedJEC',
+      jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+    )
+    updateJetCollection(
+      process,
+      jetSource = cms.InputTag('slimmedJetsAK8'),
+      labelName = 'UpdatedJECAK8',
+      jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+    )
 
-    ###process.patJetAK8CorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-        ###src = cms.InputTag("slimmedJetsAK8"),
-        ###levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
-        ###payload = 'AK8PFchs' ) # Make sure to choose the appropriate levels and payload here!
-
-    ###process.patJetsAK8ReapplyJEC = process.patJetsUpdated.clone(
-        ###jetSource = cms.InputTag("slimmedJetsAK8"),
-        ###jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetAK8CorrFactorsReapplyJEC"))
-        ###)
-
-    ###process.reapplyJEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC +process.patJetAK8CorrFactorsReapplyJEC + process. patJetsAK8ReapplyJEC )
-
-#    process.load("JetMETCorrections.Type1MET.pfMETmultShiftCorrections_cfi");
-#    process.pfMEtMultShiftCorr.vertexCollection = cms.InputTag('offlineSlimmedPrimaryVertices')
 
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
