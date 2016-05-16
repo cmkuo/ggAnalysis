@@ -154,6 +154,12 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_; 
   edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_; 
   edm::EDGetTokenT<edm::ValueMap<float> > phoWorstChargedIsolationToken_; 
+  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_CITK_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_CITK_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_CITK_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_PUPPI_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_PUPPI_;
+  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_PUPPI_;
 
   // elecontr ID decisions objects
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_;

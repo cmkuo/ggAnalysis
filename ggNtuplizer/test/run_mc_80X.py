@@ -19,7 +19,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:RunIISpring16MiniAODv1GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8MINIAODSIMPUSpring16_80X_mcRun2_asymptotic_2016_v3-v1.root'
+        '/store/mc/RunIISpring16MiniAODv1/GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/02ED80EA-5012-E611-BC71-842B2B76670F.root'
+        #'file:RunIISpring16MiniAODv1GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8MINIAODSIMPUSpring16_80X_mcRun2_asymptotic_2016_v3-v1.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -113,6 +114,7 @@ else :
       jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
     )
 
+    process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
@@ -120,7 +122,7 @@ process.ggNtuplizer.isAOD=cms.bool(useAOD)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
-process.ggNtuplizer.dumpTaus=cms.bool(False)
+process.ggNtuplizer.dumpTaus=cms.bool(True)
 
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
@@ -151,6 +153,7 @@ process.p = cms.Path(
     * process.calibratedPatPhotons 
     * process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 
+    * process.ggPhotonIso_CITK_PUPPI_Sequence
     * process.ggNtuplizer
     )
 

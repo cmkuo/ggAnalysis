@@ -73,6 +73,12 @@ vector<float>  phoPFNeuIsoFrix5_;
 vector<float>  phoPFNeuIsoFrix6_;
 vector<float>  phoPFNeuIsoFrix7_;
 vector<float>  phoPFNeuIsoFrix8_;
+vector<float>  phoCITKChIso_;
+vector<float>  phoCITKPhoIso_;
+vector<float>  phoCITKNeuIso_;
+vector<float>  phoPUPPIChIso_;
+vector<float>  phoPUPPIPhoIso_;
+vector<float>  phoPUPPINeuIso_;
 vector<float>  phoSeedBCE_;
 vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
@@ -171,6 +177,12 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPFNeuIsoFrix6",        &phoPFNeuIsoFrix6_);
   tree->Branch("phoPFNeuIsoFrix7",        &phoPFNeuIsoFrix7_);
   tree->Branch("phoPFNeuIsoFrix8",        &phoPFNeuIsoFrix8_);
+  tree->Branch("phoCITKChIso",            &phoCITKChIso_);
+  tree->Branch("phoCITKPhoIso",           &phoCITKPhoIso_);
+  tree->Branch("phoCITKNeuIso",           &phoCITKNeuIso_);
+  tree->Branch("phoPUPPIChIso",           &phoPUPPIChIso_);
+  tree->Branch("phoPUPPIPhoIso",          &phoPUPPIPhoIso_);
+  tree->Branch("phoPUPPINeuIso",          &phoPUPPINeuIso_);
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
@@ -256,13 +268,18 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPFNeuIsoFrix6_     .clear();
   phoPFNeuIsoFrix7_     .clear();
   phoPFNeuIsoFrix8_     .clear();
+  phoCITKChIso_         .clear();
+  phoCITKPhoIso_        .clear();
+  phoCITKNeuIso_        .clear();
+  phoPUPPIChIso_        .clear();
+  phoPUPPIPhoIso_       .clear();
+  phoPUPPINeuIso_       .clear();
   phoSeedBCE_           .clear();
   phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
   phoFiredSingleTrgs_   .clear();
   phoFiredDoubleTrgs_   .clear();
-
-  phoxtalBits_             .clear();
+  phoxtalBits_          .clear();
 
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
@@ -320,6 +337,22 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     e.getByToken(phoPhotonIsolationToken_,        phoPhotonIsolationMap);
     e.getByToken(phoWorstChargedIsolationToken_,  phoWorstChargedIsolationMap);
   }
+
+  // Get the isolation maps for CITK
+  edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_CITK;
+  e.getByToken(phoChargedIsolationToken_CITK_, phoChargedIsolationMap_CITK);
+  edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_CITK;
+  e.getByToken(phoPhotonIsolationToken_CITK_, phoPhotonIsolationMap_CITK);
+  edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_CITK;
+  e.getByToken(phoNeutralHadronIsolationToken_CITK_, phoNeutralHadronIsolationMap_CITK);
+
+  // Get the isolation maps for PUPPI
+  edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_PUPPI;
+  e.getByToken(phoChargedIsolationToken_PUPPI_, phoChargedIsolationMap_PUPPI);
+  edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_PUPPI;
+  e.getByToken(phoPhotonIsolationToken_PUPPI_, phoPhotonIsolationMap_PUPPI);
+  edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_PUPPI;
+  e.getByToken(phoNeutralHadronIsolationToken_PUPPI_, phoNeutralHadronIsolationMap_PUPPI);
 
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
@@ -650,18 +683,21 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
         phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
 	phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho]);
 
-        //cout<<"Photons "<<endl;
+	phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
+	phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
+	phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
+	phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
+	phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
+	phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
+
         bool isPassLoose  = (*loose_id_decisions)[pho];
         if(isPassLoose) setbit(tmpphoIDbit, 0);
-        //cout<<"isPassLoose "<<isPassLoose<<endl;
 
         bool isPassMedium = (*medium_id_decisions)[pho];
         if(isPassMedium) setbit(tmpphoIDbit, 1);
-        //cout<<"isPassMedium "<<isPassMedium<<endl;
 
         bool isPassTight  = (*tight_id_decisions)[pho];
         if(isPassTight) setbit(tmpphoIDbit, 2);
-        //cout<<"isPassTight "<<isPassTight<<endl;
 
         phoIDMVA_.push_back((*mvaValues)[pho]);
       }
