@@ -90,6 +90,7 @@ vector<float> AK8CHSSoftDropJetMassCorr_;
 vector<float> AK8CHSPrunedJetMass_;
 vector<float> AK8CHSPrunedJetMassCorr_;
 vector<float> AK8JetpfBoostedDSVBTag_;
+vector<float> AK8JetCSV_;
 vector<float> AK8JetJECUnc_;
 vector<float> AK8JetL2L3corr_;
 
@@ -201,6 +202,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8CHSPrunedJetMass",      &AK8CHSPrunedJetMass_);
     tree->Branch("AK8CHSPrunedJetMassCorr",      &AK8CHSPrunedJetMassCorr_);
     tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
+    tree->Branch("AK8JetCSV",        &AK8JetCSV_);
     tree->Branch("AK8JetJECUnc",             &AK8JetJECUnc_);
     tree->Branch("AK8JetL2L3corr",             &AK8JetL2L3corr_);
 
@@ -310,6 +312,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8CHSPrunedJetMass_   .clear();
   AK8CHSPrunedJetMassCorr_   .clear();
   AK8JetpfBoostedDSVBTag_  .clear();
+  AK8JetCSV_   .clear();
   AK8JetJECUnc_            .clear();
   AK8JetL2L3corr_            .clear();
 
@@ -630,6 +633,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8CHSSoftDropJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")); 
       AK8CHSPrunedJetMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")); 
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      AK8JetCSV_.push_back(ijetAK8->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       //AK8JetpfBoostedDSVBTag_.push_back(     (*pfBoostedDoubleSecondaryVertex).value(ijetRef));
       
       const LorentzVector uncorrJet = (*ijetAK8).correctedP4(0);
