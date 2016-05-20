@@ -49,17 +49,18 @@ process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
-runOnData( process, outputModules = [] )
+runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outputModules = [] )
+#runOnData( process, outputModules = [] )
 #removeMCMatching(process, names=['All'], outputModules=[])
 
 # this loads all available b-taggers
-process.load("RecoBTag.Configuration.RecoBTag_cff")
-process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
-process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
-process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
-process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8")
-process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
-process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
+#process.load("RecoBTag.Configuration.RecoBTag_cff")
+#process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
+#process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
+#process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
+#process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8")
+#process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
+#process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
@@ -93,30 +94,20 @@ else :
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
     process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
-    ###process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-    ###from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetCorrFactorsUpdated
-    ###process.patJetCorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-        ###src = cms.InputTag("slimmedJets"),
-        ###levels = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'],
-        ###payload = 'AK4PFchs' ) # Make sure to choose the appropriate levels and payload here!
-
-    ###from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import patJetsUpdated
-    ###process.patJetsReapplyJEC = process.patJetsUpdated.clone(
-        ###jetSource = cms.InputTag("slimmedJets"),
-        ###jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
-        ###)
-
-    ###process.patJetAK8CorrFactorsReapplyJEC = process.patJetCorrFactorsUpdated.clone(
-        ###src = cms.InputTag("slimmedJetsAK8"),
-        ###levels = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'],
-        ###payload = 'AK8PFchs' ) # Make sure to choose the appropriate levels and payload here!
-
-    ###process.patJetsAK8ReapplyJEC = process.patJetsUpdated.clone(
-        ###jetSource = cms.InputTag("slimmedJetsAK8"),
-        ###jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetAK8CorrFactorsReapplyJEC"))
-        ###)
-
-    ###process.reapplyJEC = cms.Sequence( process.patJetCorrFactorsReapplyJEC + process. patJetsReapplyJEC +process.patJetAK8CorrFactorsReapplyJEC + process. patJetsAK8ReapplyJEC )
+    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+    updateJetCollection(
+      process,
+      jetSource = cms.InputTag('slimmedJets'),
+      labelName = 'UpdatedJEC',
+      jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+    )
+    updateJetCollection(
+      process,
+      jetSource = cms.InputTag('slimmedJetsAK8'),
+      labelName = 'UpdatedJECAK8',
+      jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+    )
+    process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
