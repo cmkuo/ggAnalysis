@@ -19,8 +19,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/mc/RunIISpring16MiniAODv1/GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/02ED80EA-5012-E611-BC71-842B2B76670F.root'
-        #'file:RunIISpring16MiniAODv1GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8MINIAODSIMPUSpring16_80X_mcRun2_asymptotic_2016_v3-v1.root'
+        #'/store/mc/RunIISpring16MiniAODv1/GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/02ED80EA-5012-E611-BC71-842B2B76670F.root'
+        'file:RunIISpring16MiniAODv1GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8MINIAODSIMPUSpring16_80X_mcRun2_asymptotic_2016_v3-v1.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -81,8 +81,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
-  'Fall15_25nsV2_MC_L2Relative_AK8PFchs.txt',
-  'Fall15_25nsV2_MC_L3Absolute_AK8PFchs.txt'
+  'Spring16_25nsV1_MC_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV1_MC_L3Absolute_AK8PFchs.txt'
 ]
 
 useAOD = False

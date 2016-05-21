@@ -65,9 +65,9 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 jecLevels = [
-  'Fall15_25nsV2_DATA_L2Relative_AK8PFchs.txt',
-  'Fall15_25nsV2_DATA_L3Absolute_AK8PFchs.txt',
-  'Fall15_25nsV2_DATA_L2L3Residual_AK8PFchs.txt'
+  'Spring16_25nsV1_DATA_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV1_DATA_L3Absolute_AK8PFchs.txt',
+  'Spring16_25nsV1_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
 useAOD = False
