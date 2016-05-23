@@ -116,7 +116,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     const string &name = trgNames.triggerName(i);
 
     // HLT name => bit correspondence
-    // Electron or Muon or Cross triggers for 25 ns
+    // Electron or Muon or Cross triggers
     int bitEleMuX = -1;
     if      (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_v")                    != string::npos) bitEleMuX =  0; //bit0(lowest)
     else if (name.find("HLT_Ele22_eta2p1_WPTight_Gsf_v")                    != string::npos) bitEleMuX =  1; 
@@ -128,10 +128,10 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele17_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  7; 
     else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")       != string::npos) bitEleMuX =  8; 
     else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")           != string::npos) bitEleMuX =  9;
-    else if (name.find("HLT_Ele23_WP75_Gsf_v")                              != string::npos) bitEleMuX = 10;
+    else if (name.find("HLT_Mu17_Photon22_CaloIdL_L1ISO_v")                 != string::npos) bitEleMuX = 10;
     else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")                != string::npos) bitEleMuX = 11;
-    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL")                != string::npos) bitEleMuX = 12;
-    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW")             != string::npos) bitEleMuX = 13;
+    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_v")              != string::npos) bitEleMuX = 12;
+    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v")           != string::npos) bitEleMuX = 13;
     else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")             != string::npos) bitEleMuX = 20;
     else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")           != string::npos) bitEleMuX = 21;
     else if (name.find("HLT_Mu27_TkMu8_v")                                  != string::npos) bitEleMuX = 22;
@@ -162,7 +162,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 51;
     else if (name.find("HLT_HIDoublePhoton15_Eta2p5_Mass50_1000_R9SigmaHECut_v") != string::npos) bitEleMuX = 52;
 
-    // Photon triggers for 25 ns
+    // Photon triggers
     int bitPho    = -1;
     if      (name.find("HLT_Photon22_v")                    != string::npos) bitPho =  0; //bit0(lowest)
     else if (name.find("HLT_Photon30_v")                    != string::npos) bitPho =  1; 
@@ -190,12 +190,12 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Photon135_PFMET100_v")              != string::npos) bitPho = 22; 
     else if (name.find("HLT_Photon135_PFMET100_JetIdCleaned_v")             != string::npos) bitPho = 23;
 
-    // Jet triggers for 25 ns
+    // Jet triggers
     int bitJet    = -1;
-    if      (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq200_v") != string::npos) bitJet =  0;
-    else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq460_v") != string::npos) bitJet =  1; 
-    else if (name.find("HLT_QuadPFJet_DoubleBTagCSV_VBF_Mqq240_v") != string::npos) bitJet =  2; 
-    else if (name.find("HLT_QuadPFJet_SingleBTagCSV_VBF_Mqq500_v") != string::npos) bitJet =  3; 
+    if      (name.find("HLT_QuadPFJet_BTagCSV_p016_VBF_Mqq460_v")     != string::npos) bitJet =  0;
+    else if (name.find("HLT_QuadPFJet_BTagCSV_p016_VBF_Mqq500_v")     != string::npos) bitJet =  1; 
+    else if (name.find("HLT_QuadPFJet_BTagCSV_p016_p11_VBF_Mqq200_v") != string::npos) bitJet =  2; 
+    else if (name.find("HLT_QuadPFJet_BTagCSV_p016_p11_VBF_Mqq240_v") != string::npos) bitJet =  3; 
     else if ( (name.find("HLT_PFMETNoMu90_JetIdCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ||
 	      (name.find("HLT_PFMETNoMu90_NoiseCleaned_PFMHTNoMu90_IDTight_v") != string::npos) ) bitJet =  4;
     else if ( (name.find("HLT_PFMETNoMu120_JetIdCleaned_PFMHTNoMu120_IDTight_v") != string::npos) ||
