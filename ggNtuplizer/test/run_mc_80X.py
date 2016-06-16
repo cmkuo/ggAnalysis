@@ -17,6 +17,24 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
+#jec from sqlite
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+ connect = cms.string('sqlite:Spring16_25nsV3_MC.db'),
+ toGet = cms.VPSet(
+ cms.PSet(
+  record = cms.string('JetCorrectionsRecord'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+  label = cms.untracked.string('AK4PFchs')
+ ),
+ cms.PSet(
+  record = cms.string('JetCorrectionsRecord'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
+  label = cms.untracked.string('AK8PFchs')
+  )))
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'/store/mc/RunIISpring16MiniAODv1/GJet_Pt-15To6000_TuneCUETP8M1-Flat_13TeV_pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_v3-v1/00000/02ED80EA-5012-E611-BC71-842B2B76670F.root'
@@ -81,8 +99,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
-  'Spring16_25nsV1_MC_L2Relative_AK8PFchs.txt',
-  'Spring16_25nsV1_MC_L3Absolute_AK8PFchs.txt'
+  'Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt'
 ]
 
 useAOD = False

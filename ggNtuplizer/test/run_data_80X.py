@@ -18,6 +18,24 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_v5')
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
+#jec from sqlite
+process.load("CondCore.DBCommon.CondDBCommon_cfi")
+from CondCore.DBCommon.CondDBSetup_cfi import *
+process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
+ connect = cms.string('sqlite:Spring16_25nsV3_DATA.db'),
+ toGet = cms.VPSet(
+ cms.PSet(
+  record = cms.string('JetCorrectionsRecord'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK4PFchs'),
+  label = cms.untracked.string('AK4PFchs')
+ ),
+ cms.PSet(
+  record = cms.string('JetCorrectionsRecord'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_DATA_AK8PFchs'),
+  label = cms.untracked.string('AK8PFchs')
+  )))
+process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
+
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         '/store/data/Run2016B/HLTPhysics/MINIAOD/PromptReco-v1/000/272/022/00000/98263424-E20F-E611-864C-02163E011D0A.root'
@@ -65,9 +83,9 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 jecLevels = [
-  'Spring16_25nsV1_DATA_L2Relative_AK8PFchs.txt',
-  'Spring16_25nsV1_DATA_L3Absolute_AK8PFchs.txt',
-  'Spring16_25nsV1_DATA_L2L3Residual_AK8PFchs.txt'
+  'Spring16_25nsV3_DATA_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV3_DATA_L3Absolute_AK8PFchs.txt',
+  'Spring16_25nsV3_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
 useAOD = False
