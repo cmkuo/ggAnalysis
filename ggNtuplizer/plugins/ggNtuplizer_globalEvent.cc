@@ -161,6 +161,10 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v")  != string::npos) bitEleMuX = 50;
     else if (name.find("HLT_Mu17_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v") != string::npos) bitEleMuX = 51;
     else if (name.find("HLT_HIDoublePhoton15_Eta2p5_Mass50_1000_R9SigmaHECut_v") != string::npos) bitEleMuX = 52;
+    else if (name.find("HLT_Ele35_WPLoose_Gsf_v")                           != string::npos) bitEleMuX = 53;
+    else if (name.find("HLT_Ele45_WPLoose_Gsf_v")                           != string::npos) bitEleMuX = 54;
+    else if (name.find("HLT_Ele27_WPTight_Gsf_v")                           != string::npos) bitEleMuX = 55;
+    else if (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v")                    != string::npos) bitEleMuX = 56;
 
     // Photon triggers
     int bitPho    = -1;
@@ -178,7 +182,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
     else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
     else if (name.find("HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v") != string::npos) bitPho = 13;
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v")                             != string::npos) bitPho = 14;
+    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v")                             != string::npos) bitPho = 14;
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v")        != string::npos) bitPho = 15;
     else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")        != string::npos) bitPho = 16;
     else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")         != string::npos) bitPho = 17;
@@ -186,9 +190,15 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_DoublePhoton85_v")                                                                 != string::npos) bitPho = 19;
     else if (name.find("HLT_Photon26_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon16_AND_HE10_R9Id65_Eta2_Mass60_v") != string::npos) bitPho = 20;
     else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE10p0_R9Id_Mass95_v")                         != string::npos) bitPho = 21;
-
-    else if (name.find("HLT_Photon135_PFMET100_v")              != string::npos) bitPho = 22; 
+    else if (name.find("HLT_Photon135_PFMET100_v")                          != string::npos) bitPho = 22; 
     else if (name.find("HLT_Photon135_PFMET100_JetIdCleaned_v")             != string::npos) bitPho = 23;
+    else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 24;
+    else if (name.find("HLT_Photon120_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 25;
+    else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 26;
+    else if (name.find("HLT_Photon90_CaloIdL_PFHT500_v")                    != string::npos) bitPho = 27;
+    else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                    != string::npos) bitPho = 28;
+    else if (name.find("HLT_Photon90_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")   != string::npos) bitPho = 29;
+    else if (name.find("HLT_Photon90_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 30;
 
     // Jet triggers
     int bitJet    = -1;
@@ -216,6 +226,10 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFJet400_v")                           != string::npos) bitJet = 17; 
     else if (name.find("HLT_PFJet450_v")                           != string::npos) bitJet = 18;     
     else if (name.find("HLT_PFJet500_v")                           != string::npos) bitJet = 19; 
+    else if (name.find("HLT_AK8PFHT650_TrimR0p1PT0p3Mass50_v")     != string::npos) bitJet = 20; 
+    else if (name.find("HLT_AK8PFJet360_TrimMass30_v")             != string::npos) bitJet = 21;
+    else if (name.find("HLT_PFHT800_v")                            != string::npos) bitJet = 22;
+    else if (name.find("HLT_PFHT475_v")                            != string::npos) bitJet = 23;
 
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(0, name)!=1) ? 1 : 0;
