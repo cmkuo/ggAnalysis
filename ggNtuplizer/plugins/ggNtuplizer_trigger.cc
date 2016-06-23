@@ -45,10 +45,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   if (eleFilters.size() == 0) {
     eleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
     eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
-    // for HLT_Ele23_WPLoose_Gsf_v
+    // for HLT_Ele23_WPLoose_Gsf_v and EventTree
     eleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 2;
-    // for HLT_Ele25_WPTight_Gsf_v
-    eleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 3;
 
     // for HLT_Iso(Tk)Mu20_v
     muFilters["hltL1sSingleMu18"] = 0;
