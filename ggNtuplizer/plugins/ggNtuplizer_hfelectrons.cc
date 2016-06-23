@@ -8,8 +8,8 @@ using namespace std;
 using namespace reco;
 
 // simple compare 
-bool pairCompare(const std::pair<double, reco::PFCandidate>& firstItem,
-		 const std::pair<double, reco::PFCandidate>& secondItem) {
+bool pairCompare(const std::pair<double, edm::Ptr<reco::Candidate> >& firstItem,
+		 const std::pair<double, edm::Ptr<reco::Candidate> >& secondItem) {
   return firstItem.first > secondItem.first;
 }
 
@@ -61,25 +61,40 @@ void ggNtuplizer::fillHFElectrons(const edm::Event &e) {
     TLorentzVector pfJet;
     pfJet.SetPtEtaPhiM(iJet->pt(), iJet->eta(), iJet->phi(), 0);
 
-    vector<reco::PFCandidatePtr> pfs = iJet->getPFConstituents();
+    vector<edm::Ptr<reco::Candidate> > constituentsUnsorted = iJet->getJetConstituents();
+    vector<edm::Ptr<reco::Candidate> > constituents;
+    constituents.clear();
+    vector<std::pair<double, edm::Ptr<reco::Candidate> > > pfEn;
+    pfEn.clear();
+    for(auto& cand : constituentsUnsorted ) {
+      std::pair<double, edm::Ptr<reco::Candidate> > newPair = make_pair(cand->pt(), cand);
+      pfEn.push_back(newPair);
+    }
+    sort(pfEn.begin(), pfEn.end(), pairCompare);
+    for(auto& cand : pfEn ) 
+      constituents.push_back(cand.second);
+
+    //int counter = 0;
+    vector<edm::Ptr<pat::PackedCandidate> > pfs;
+    pfs.clear();
+    for(auto& cand : constituents ) {
+      edm::Ptr<pat::PackedCandidate> pkcand(cand);
+      pfs.push_back(pkcand);
+      //cout << ++counter << " " << pkcand->pt() << " " << pkcand->eta() << " " << pkcand->hcalFraction() << endl;
+    }
 
     // seed is the most energetic cluster in the jet
-    if ( pfs[0]->ecalEnergy() == 0 && pfs[0]->hcalEnergy() == 0 ) continue; // skip the spike
+    //if ( pfs[0]->ecalEnergy() == 0 && pfs[0]->hcalEnergy() == 0 ) continue; // skip the spike
 
     TLorentzVector core;
     core.SetPtEtaPhiM(pfs[0]->pt(), pfs[0]->eta(), pfs[0]->phi(), 0);    
     TLorentzVector isolation;
     isolation.SetPtEtaPhiM(0,0,0,0);
-    double ecalEnergy = pfs[0]->ecalEnergy();
-    double hcalEnergy = pfs[0]->hcalEnergy();
-    bool spike = false;
+    double ecalEnergy = (1.0 - pfs[0]->hcalFraction())*pfs[0]->energy();
+    double hcalEnergy = pfs[0]->hcalFraction()*pfs[0]->energy();
+
     for(int i = 1; i != (int)pfs.size(); ++i) {
-      reco::PFCandidate pfCandidate =*(pfs[i]);
-      if ( pfCandidate.ecalEnergy() == 0 &&
-	   pfCandidate.hcalEnergy() == 0 ) {
-	spike = true;
-	break;
-      }
+      pat::PackedCandidate pfCandidate =*(pfs[i]);
       TLorentzVector pf;
       pf.SetPtEtaPhiM(pfCandidate.pt(),
 		      pfCandidate.eta(),
@@ -88,8 +103,8 @@ void ggNtuplizer::fillHFElectrons(const edm::Event &e) {
       double dr = pf.DeltaR(core);
       if ( dr < 0.15 ) {
 	core += pf;
-	ecalEnergy += pfCandidate.ecalEnergy();
-	hcalEnergy += pfCandidate.hcalEnergy();
+	ecalEnergy += pfCandidate.energy()*(1.0 - pfCandidate.hcalFraction());
+	hcalEnergy += pfCandidate.energy()*pfCandidate.hcalFraction();
       }
       if ( dr >= 0.15 && dr < 0.3 ) {
 	isolation += pf;
@@ -97,7 +112,7 @@ void ggNtuplizer::fillHFElectrons(const edm::Event &e) {
     } // Looped over constituents
 
     // Selection criteria
-    if ( spike ) continue; // should not have any PFCandidates identidied as spike
+    //if ( spike ) continue; // should not have any PFCandidates identidied as spike
     //if ( core.Pt() < 5.0 ) continue; // sufficiently high pT
     if ( pfs[0]->pt() < 5.0 ) continue; // require the seed PFCandidate to be energetic enough
     

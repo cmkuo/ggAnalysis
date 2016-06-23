@@ -109,7 +109,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   phoPhotonIsolationToken_PUPPI_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_PUPPI"));
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_10_00)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
@@ -122,7 +122,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   branchesMET(tree_);
   if (dumpPhotons_) branchesPhotons(tree_);
   branchesElectrons(tree_);
-  if (isAOD_ && runHFElectrons_) branchesHFElectrons(tree_);
+  if (runHFElectrons_) branchesHFElectrons(tree_);
   branchesMuons(tree_);
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
@@ -168,7 +168,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMET(e, es);
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
-  if (isAOD_ && runHFElectrons_ ) fillHFElectrons(e);
+  if (runHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv, vtx);
   if (dumpTaus_) fillTaus(e);
   if (dumpJets_) fillJets(e,es);
