@@ -316,6 +316,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       (status == 1 && ip->pdgId() == 22 && ip->isPromptFinalState()) ||
       (status == 1 && abs(ip->pdgId()) == 11 && ip->isPromptFinalState()) || 
       (status == 1 && abs(ip->pdgId()) == 13 && ip->isPromptFinalState()) ||
+      (status == 1 && (abs(ip->pdgId()) == 12 || abs(ip->pdgId()) == 14 || abs(ip->pdgId()) == 16)) ||
       (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
       (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
     
