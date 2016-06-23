@@ -90,6 +90,14 @@ vector<float>  phohcalDepth2TowerSumEtConeDR03_;
 vector<float>  phohcalTowerSumEtConeDR03_;
 vector<float>  photrkSumPtHollowConeDR03_;
 vector<float>  photrkSumPtSolidConeDR03_;
+//vector<float>  phoSeedTime_;
+//vector<float>  phoSeedTimeFull5x5_;
+//vector<float>  phoMIPChi2_;
+//vector<float>  phoMIPTotEnergy_;
+//vector<float>  phoMIPSlope_;
+//vector<float>  phoMIPIntercept_;
+//vector<float>  phoMIPNhitCone_;
+//vector<float>  phoMIPIsHalo_;
 
 vector<UShort_t> phoxtalBits_;
 
@@ -192,6 +200,14 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoIDMVA",                        &phoIDMVA_);
   tree->Branch("phoFiredSingleTrgs",              &phoFiredSingleTrgs_);
   tree->Branch("phoFiredDoubleTrgs",              &phoFiredDoubleTrgs_);
+  //tree->Branch("phoSeedTime",                     &phoSeedTime_);
+  //tree->Branch("phoSeedTimeFull5x5",              &phoSeedTimeFull5x5_);
+  //tree->Branch("phoMIPChi2",                      &phoMIPChi2_);
+  //tree->Branch("phoMIPTotEnergy",                 &phoMIPTotEnergy_);
+  //tree->Branch("phoMIPSlope",                     &phoMIPSlope_);
+  //tree->Branch("phoMIPIntercept",                 &phoMIPIntercept_);
+  //tree->Branch("phoMIPNhitCone",                  &phoMIPNhitCone_);
+  //tree->Branch("phoMIPIsHalo",                    &phoMIPIsHalo_);
 
   tree->Branch("phoxtalBits",                        &phoxtalBits_);
 
@@ -280,7 +296,16 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoFiredSingleTrgs_   .clear();
   phoFiredDoubleTrgs_   .clear();
   phoxtalBits_          .clear();
-
+  /*
+  phoSeedTime_          .clear();
+  phoSeedTimeFull5x5_   .clear();
+  phoMIPChi2_           .clear();
+  phoMIPTotEnergy_      .clear();
+  phoMIPSlope_          .clear();
+  phoMIPIntercept_      .clear();
+  phoMIPNhitCone_       .clear();
+  phoMIPIsHalo_         .clear();
+  */
   phoEcalRecHitSumEtConeDR03_     .clear();
   phohcalDepth1TowerSumEtConeDR03_.clear();
   phohcalDepth2TowerSumEtConeDR03_.clear();
@@ -636,9 +661,18 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     }// is not AOD for frix calculations 
      //
 
-    phoSeedBCE_          .push_back((*iPho).superCluster()->seed()->energy());
-    phoSeedBCEta_        .push_back((*iPho).superCluster()->seed()->eta());
-
+    phoSeedBCE_        .push_back((*iPho).superCluster()->seed()->energy());
+    phoSeedBCEta_      .push_back((*iPho).superCluster()->seed()->eta());
+    /*
+    phoSeedTime_       .push_back(lazyTool.SuperClusterSeedTime(*((*iPho).superCluster())));
+    phoSeedTimeFull5x5_.push_back(lazyToolnoZS.SuperClusterSeedTime(*((*iPho).superCluster())));
+    phoMIPChi2_        .push_back(iPho->mipChi2());
+    phoMIPTotEnergy_   .push_back(iPho->mipTotEnergy());
+    phoMIPSlope_       .push_back(iPho->mipSlope());
+    phoMIPIntercept_   .push_back(iPho->mipIntercept());
+    phoMIPNhitCone_    .push_back(iPho->mipNhitCone());
+    phoMIPIsHalo_      .push_back(iPho->mipIsHalo());
+    */
     ///SJ - isolation variables
     phoEcalRecHitSumEtConeDR03_                   .push_back(iPho->ecalRecHitSumEtConeDR03());
     phohcalDepth1TowerSumEtConeDR03_              .push_back(iPho->hcalDepth1TowerSumEtConeDR03());
