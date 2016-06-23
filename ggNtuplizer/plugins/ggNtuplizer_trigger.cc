@@ -45,6 +45,13 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   if (eleFilters.size() == 0) {
     eleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
     eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
+    // for HLT_Ele23_WPLoose_Gsf_v
+    eleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 2;
+    // for HLT_Ele25_WPTight_Gsf_v
+    eleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 3;
+
+    // for HLT_Iso(Tk)Mu20_v
+    muFilters["hltL1sSingleMu18"] = 0;
 
     phoSingleFilters["hltEG22HEFilter"]    = 0;
     phoSingleFilters["hltEG30HEFilter"]    = 1;
@@ -98,7 +105,6 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoDoubleFilters["hltEG22Iso50T80LCaloId24b40eHE10R9Id65TrackIsoUnseededLastFilter"]                    = 25;
     phoDoubleFilters["hltEG36R9Id85HE10R9Id65R9IdEta2LastFilter"]                                           = 26;
     phoDoubleFilters["hltEG36Iso50T80LCaloId24b40eHE10R9Id65Eta2HcalIsoLastFilter"]                         = 27;
-
 
     jetFilters["hltSinglePFJet40"]  =  0;
     jetFilters["hltSinglePFJet60"]  =  1;
