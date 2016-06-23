@@ -1,13 +1,13 @@
-#### Current production tag : V07-06-03-00
-#### Newest tag for testing : V08_00_08_00
-#### Note that the current head version can be run with CMSSW_8_0_8
+#### Current production tag : V08_00_10_00
+#### Newest tag for testing : 
+#### Note that the current head version can be run with CMSSW_8_0_10
 
-##### To work with CMSSW_8_0_8, you do:
-cd CMSSW_8_0_8/src <br>
+##### To work with CMSSW_8_0_10, you do:
+cd CMSSW_8_0_10/src <br>
 cmsenv <br>
 git cms-merge-topic -u matteosan1:smearer_76X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_08_00 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_10_00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_7_6_3_patch2, you do:
