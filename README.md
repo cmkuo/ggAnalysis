@@ -5,6 +5,11 @@
 ##### To work with CMSSW_8_0_10, you do:
 cd CMSSW_8_0_10/src <br>
 cmsenv <br>
+setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
+git cms-init <br>
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch --tags btv-cmssw <br>
+git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV3-WithWeightFiles-v1_from-CMSSW_8_0_8_patch1 <br>
 git cms-merge-topic -u matteosan1:smearer_76X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V08_00_10_00 https://github.com/cmkuo/ggAnalysis.git <br>
