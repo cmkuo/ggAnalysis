@@ -21,16 +21,16 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
- connect = cms.string('sqlite:Spring16_25nsV3_MC.db'),
+ connect = cms.string('sqlite:Spring16_25nsV6_MC.db'),
  toGet = cms.VPSet(
  cms.PSet(
   record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK4PFchs'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK4PFchs'),
   label = cms.untracked.string('AK4PFchs')
  ),
  cms.PSet(
   record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV3_MC_AK8PFchs'),
+  tag = cms.string('JetCorrectorParametersCollection_Spring16_25nsV6_MC_AK8PFchs'),
   label = cms.untracked.string('AK8PFchs')
   )))
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
@@ -99,8 +99,8 @@ from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
 # turn on VID producer, indicate data format  to be
 # DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
-  'Spring16_25nsV3_MC_L2Relative_AK8PFchs.txt',
-  'Spring16_25nsV3_MC_L3Absolute_AK8PFchs.txt'
+  'Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt'
 ]
 
 useAOD = False
