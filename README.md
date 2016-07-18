@@ -1,8 +1,8 @@
-#### Current production tag : V08_00_10_00
+#### Current production tag : V08_00_11_00
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_8_0_10
+#### Note that the current head version can be run with CMSSW_8_0_11
 
-##### To work with CMSSW_8_0_11 (under test), you do :
+##### To work with CMSSW_8_0_11, you do :
 cd CMSSW_8_0_11/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
@@ -18,7 +18,7 @@ git clone -b ICHEP2016_approval_7p65fb https://github.com/emanueledimarco/Scales
 cd ../../../ <br>
 git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_11_00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_8_0_10, you do:
