@@ -2,6 +2,25 @@
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_8_0_10
 
+##### To work with CMSSW_8_0_11 (under test), you do :
+cd CMSSW_8_0_10/src <br>
+cmsenv <br>
+setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
+git cms-init <br>
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch --tags btv-cmssw <br>
+git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV3-WithWeightFiles-v1_from-CMSSW_8_0_8_patch1 <br>
+git remote add -f -t ecal_smear_fix_80X emanueledimarco https://github.com/emanueledimarco/cmssw.git <br>
+git cms-addpkg EgammaAnalysis/ElectronTools <br>
+git checkout -b from-277de3c 277de3c <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git clone -b ICHEP2016_approval_7p65fb https://github.com/emanueledimarco/ScalesSmearings.git <br>
+cd ../../../ <br>
+git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
+
 ##### To work with CMSSW_8_0_10, you do:
 cd CMSSW_8_0_10/src <br>
 cmsenv <br>

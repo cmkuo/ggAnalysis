@@ -83,5 +83,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              eleNonTrgMVAValuesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15NonTrig25nsV1Values"),
                              eleTrgMVAValuesMap = cms.InputTag("electronMVAValueMapProducer:ElectronMVAEstimatorRun2Spring15Trig25nsV1Values"),
                              elePFClusEcalIsoProducer = cms.InputTag("electronEcalPFClusterIsolationProducer"),
-                             elePFClusHcalIsoProducer = cms.InputTag("electronHcalPFClusterIsolationProducer")
+                             elePFClusHcalIsoProducer = cms.InputTag("electronHcalPFClusterIsolationProducer"),
+                             BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
+                             BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter")
 )

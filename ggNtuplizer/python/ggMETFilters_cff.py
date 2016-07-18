@@ -1,31 +1,14 @@
 import FWCore.ParameterSet.Config as cms
 
-from RecoMET.METFilters.CSCTightHaloFilter_cfi import *
-CSCTightHaloFilter.taggingMode = cms.bool(True)
+from RecoMET.METFilters.BadPFMuonFilter_cfi import *
+BadPFMuonFilter.muons = cms.InputTag("slimmedMuons")
+BadPFMuonFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
-from RecoMET.METFilters.eeBadScFilter_cfi import *
-eeBadScFilter.taggingMode = cms.bool(True)
-
-primaryVertexFilter = cms.EDFilter("GoodVertexFilter",
-                                   vertexCollection = cms.InputTag('offlinePrimaryVertices'),
-                                   minimumNDOF = cms.uint32(4) ,
-                                   maxAbsZ = cms.double(24),
-                                   maxd0 = cms.double(2),
-                                   filter = cms.bool(False)
-                                   )
-
-from CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi import *
-HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
-HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
-
-from RecoMET.METFilters.EcalDeadCellTriggerPrimitiveFilter_cfi import *
-EcalDeadCellTriggerPrimitiveFilter.taggingMode = cms.bool(True)
+from RecoMET.METFilters.BadChargedCandidateFilter_cfi import *
+BadChargedCandidateFilter.muons = cms.InputTag("slimmedMuons")
+BadChargedCandidateFilter.PFCandidates = cms.InputTag("packedPFCandidates")
 
 ggMETFiltersSequence = cms.Sequence(
-     CSCTightHaloFilter*
-     HBHENoiseFilterResultProducer*
-     primaryVertexFilter*
-     eeBadScFilter*
-     EcalDeadCellTriggerPrimitiveFilter
+     BadPFMuonFilter *
+     BadChargedCandidateFilter 
 )

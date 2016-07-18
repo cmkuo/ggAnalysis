@@ -51,7 +51,7 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 #process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
 #process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
 process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
     electrons = cms.InputTag("slimmedElectrons"),
     gbrForestName = cms.string('gedelectron_p4combination_25ns'),
     isMC = cms.bool(False),
@@ -59,10 +59,10 @@ process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRu
 )
 
 process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/76X_16DecRereco_2015'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
+    photons = cms.InputTag("slimmedPhotons"),
     isMC = cms.bool(False),
-    isSynchronization = cms.bool(False),
-    photons = cms.InputTag("slimmedPhotons")
+    isSynchronization = cms.bool(False)
 )
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
@@ -107,6 +107,7 @@ if useAOD == True :
 else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
     process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
     process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
     process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
@@ -170,6 +171,7 @@ else:
         ###process.pfImpactParameterTagInfosAK8 *
         ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
         ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags *
+        process.ggMETFiltersSequence* 
         process.calibratedPatElectrons*
         process.calibratedPatPhotons*
         process.egmGsfElectronIDSequence*

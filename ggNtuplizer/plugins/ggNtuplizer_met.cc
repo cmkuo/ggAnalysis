@@ -55,13 +55,11 @@ float     noHF_T1TxyPt_;
 
 void ggNtuplizer::branchesMET(TTree* tree) {
 
-  if (addFilterInfoAOD_ || addFilterInfoMINIAOD_) {
-    tree->Branch("metFilters", &metFilters_);
-  }
   if (doGenParticles_) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
   }
+  tree->Branch("metFilters",    &metFilters_);
   tree->Branch("pfMET",         &pfMET_);
   tree->Branch("pfMETPhi",      &pfMETPhi_);
   tree->Branch("pfMETsumEt",    &pfMETsumEt_);
@@ -112,49 +110,15 @@ void ggNtuplizer::branchesMET(TTree* tree) {
 void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 
   metFilters_ = 0;
-  if (addFilterInfoAOD_ && e.isRealData()){
-    
-    edm::Handle<bool> hcalNoiseHandle;
-    e.getByLabel("HBHENoiseFilterResultProducer", "HBHENoiseFilterResult", hcalNoiseHandle);
-    bool HBHENoiseResult_ = *hcalNoiseHandle;
-
-    edm::Handle<bool> hcalIsoNoiseHandle;
-    e.getByLabel("HBHENoiseFilterResultProducer", "HBHEIsoNoiseFilterResult", hcalIsoNoiseHandle);
-    bool HBHEIsoNoiseResult_ = *hcalIsoNoiseHandle;
-    
-    edm::Handle<bool> cSCHandle;
-    e.getByLabel("CSCTightHaloFilter", "", cSCHandle);
-    bool CSCHaloResult_ = *cSCHandle;
-    
-    edm::Handle<bool> eCALTPHandle;
-    e.getByLabel("EcalDeadCellTriggerPrimitiveFilter", "", eCALTPHandle);
-    bool EcalDeadCellTFResult_ = *eCALTPHandle;
-
-    edm::Handle<bool> bADSCHandle;
-    e.getByLabel("eeBadScFilter", "", bADSCHandle);
-    bool EEBadSCResult_ = *bADSCHandle;
-
-    //edm::Handle<bool> gOODVertexHandle;
-    //e.getByLabel("primaryVertexFilter", "GoodVertexFilter", gOODVertexHandle);
-    //bool goodVertexResult_ = *gOODVertexHandle;
-     
-    if ( !HBHENoiseResult_      ) metFilters_ += 1; 
-    if ( !HBHEIsoNoiseResult_   ) metFilters_ += 2; 
-    if ( !CSCHaloResult_        ) metFilters_ += 4; 
-    //if ( !goodVertexResult_     ) metFilters_ += 8; 
-    if ( !EEBadSCResult_        ) metFilters_ += 16; 
-    if ( !EcalDeadCellTFResult_ ) metFilters_ += 32; 
-  }
 
   if (addFilterInfoMINIAOD_ && e.isRealData()){
-    string filterNamesToCheck[7] = {
+    string filterNamesToCheck[6] = {
       "Flag_HBHENoiseFilter",
       "Flag_HBHENoiseIsoFilter", 
-      "Flag_CSCTightHaloFilter",
+      "Flag_globalTightHalo2016Filter",
       "Flag_goodVertices",
       "Flag_eeBadScFilter",
-      "Flag_EcalDeadCellTriggerPrimitiveFilter",
-      "Flag_EcalDeadCellBoundaryEnergyFilter"
+      "Flag_EcalDeadCellTriggerPrimitiveFilter"
     };
 
     edm::Handle<edm::TriggerResults> patFilterResultsHandle;
@@ -162,17 +126,28 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
     edm::TriggerResults const& patFilterResults = *patFilterResultsHandle;
     
     auto&& filterNames = e.triggerNames(patFilterResults);
-    for (unsigned iF = 0; iF != 7; ++iF) {
+    for (unsigned iF = 0; iF < 6; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
       if ( index == filterNames.size() ) 
 	edm::LogError("Unknown MET filter label") 
 	  << filterNamesToCheck[iF] << " is missing, exiting";
       else {
 	if ( !patFilterResults.accept(index) ) {
-	  metFilters_ += pow(2, iF);
+	  metFilters_ += pow(2, iF+1);
 	}
       }
     }
+
+    edm::Handle<bool> ifilterbadChCand;
+    e.getByToken(BadChCandFilterToken_, ifilterbadChCand);
+    bool filterbadChCandidate_ = *ifilterbadChCand;
+     
+    edm::Handle<bool> ifilterbadPFMuon;
+    e.getByToken(BadPFMuonFilterToken_, ifilterbadPFMuon);
+    bool filterbadPFMuon_ = *ifilterbadPFMuon;
+
+    if ( !filterbadPFMuon_      ) metFilters_ += pow(2, 7);
+    if ( !filterbadChCandidate_ ) metFilters_ += pow(2, 8);
   }
 
   edm::Handle<edm::View<pat::MET> > pfMETHandle;
