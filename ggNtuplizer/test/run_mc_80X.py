@@ -117,6 +117,7 @@ else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
+    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 
     from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
     updateJetCollection(
@@ -167,7 +168,8 @@ process.p = cms.Path(
     ###process.pfImpactParameterTagInfosAK8 *
     ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
     ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
-    process.calibratedPatElectrons 
+    process.ggMETFiltersSequence
+    * process.calibratedPatElectrons 
     * process.calibratedPatPhotons 
     * process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 

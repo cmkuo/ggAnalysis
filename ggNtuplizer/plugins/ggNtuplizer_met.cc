@@ -138,19 +138,20 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       }
     }
   }
-  if (addFilterInfoMINIAOD_ ){ 
+  
+  if (addFilterInfoMINIAOD_) {
     edm::Handle<bool> ifilterbadChCand;
     e.getByToken(BadChCandFilterToken_, ifilterbadChCand);
     bool filterbadChCandidate_ = *ifilterbadChCand;
-     
+    
     edm::Handle<bool> ifilterbadPFMuon;
     e.getByToken(BadPFMuonFilterToken_, ifilterbadPFMuon);
     bool filterbadPFMuon_ = *ifilterbadPFMuon;
-
+    
     if ( !filterbadPFMuon_      ) metFilters_ += pow(2, 7);
     if ( !filterbadChCandidate_ ) metFilters_ += pow(2, 8);
   }
-
+  
   edm::Handle<edm::View<pat::MET> > pfMETHandle;
   e.getByToken(pfMETlabel_, pfMETHandle);
 
