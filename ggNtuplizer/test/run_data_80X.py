@@ -108,10 +108,6 @@ else :
     dataFormat = DataFormat.MiniAOD
     process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
     process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
-    process.load("CommonTools.RecoAlgos.HBHENoiseFilterResultProducer_cfi")
-    process.HBHENoiseFilterResultProducer.minZeros = cms.int32(99999)
-    process.HBHENoiseFilterResultProducer.IgnoreTS4TS5ifJetInLowBVRegion=cms.bool(False) 
-    process.HBHENoiseFilterResultProducer.defaultDecision = cms.string("HBHENoiseFilterResultRun2Loose")
     process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
     from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
     updateJetCollection(
@@ -165,8 +161,6 @@ if useAOD == True:
         )
 else:
     process.p = cms.Path(
-        process.HBHENoiseFilterResultProducer* # produces HBHE bools
-#        process.ApplyBaselineHBHENoiseFilter*  # reject events 
         ###process.reapplyJEC*
         ###process.pfImpactParameterTagInfosAK8 *
         ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
