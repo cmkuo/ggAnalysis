@@ -137,7 +137,8 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 	}
       }
     }
-
+  }
+  if (addFilterInfoMINIAOD_ ){ 
     edm::Handle<bool> ifilterbadChCand;
     e.getByToken(BadChCandFilterToken_, ifilterbadChCand);
     bool filterbadChCandidate_ = *ifilterbadChCand;
