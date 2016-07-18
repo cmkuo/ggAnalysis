@@ -3,7 +3,7 @@
 #### Note that the current head version can be run with CMSSW_8_0_10
 
 ##### To work with CMSSW_8_0_11 (under test), you do :
-cd CMSSW_8_0_10/src <br>
+cd CMSSW_8_0_11/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
