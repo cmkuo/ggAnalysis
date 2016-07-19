@@ -28,6 +28,10 @@ float pfMET_T1UESUp_;
 float pfMET_T1UESDo_;
 float pfMET_T1TxyPhi_;
 float pfMET_T1TxyPt_;
+float pfMETPhi_T1JESUp_;
+float pfMETPhi_T1JESDo_;
+float pfMETPhi_T1UESUp_;
+float pfMETPhi_T1UESDo_;
 
 /*
 float     noHFMET_;
@@ -59,26 +63,30 @@ void ggNtuplizer::branchesMET(TTree* tree) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
   }
-  tree->Branch("metFilters",    &metFilters_);
-  tree->Branch("pfMET",         &pfMET_);
-  tree->Branch("pfMETPhi",      &pfMETPhi_);
-  tree->Branch("pfMETsumEt",    &pfMETsumEt_);
-  tree->Branch("pfMETmEtSig",   &pfMETmEtSig_);
-  tree->Branch("pfMETSig",      &pfMETSig_);
-  tree->Branch("pfMET_T1JERUp", &pfMET_T1JERUp_);
-  tree->Branch("pfMET_T1JERDo", &pfMET_T1JERDo_);
-  tree->Branch("pfMET_T1JESUp", &pfMET_T1JESUp_);
-  tree->Branch("pfMET_T1JESDo", &pfMET_T1JESDo_);
-  tree->Branch("pfMET_T1MESUp", &pfMET_T1MESUp_);
-  tree->Branch("pfMET_T1MESDo", &pfMET_T1MESDo_);
-  tree->Branch("pfMET_T1EESUp", &pfMET_T1EESUp_);
-  tree->Branch("pfMET_T1EESDo", &pfMET_T1EESDo_);
-  tree->Branch("pfMET_T1PESUp", &pfMET_T1PESUp_);
-  tree->Branch("pfMET_T1PESDo", &pfMET_T1PESDo_);
-  tree->Branch("pfMET_T1TESUp", &pfMET_T1TESUp_);
-  tree->Branch("pfMET_T1TESDo", &pfMET_T1TESDo_);
-  tree->Branch("pfMET_T1UESUp", &pfMET_T1UESUp_);
-  tree->Branch("pfMET_T1UESDo", &pfMET_T1UESDo_);
+  tree->Branch("metFilters",       &metFilters_);
+  tree->Branch("pfMET",            &pfMET_);
+  tree->Branch("pfMETPhi",         &pfMETPhi_);
+  tree->Branch("pfMETsumEt",       &pfMETsumEt_);
+  tree->Branch("pfMETmEtSig",      &pfMETmEtSig_);
+  tree->Branch("pfMETSig",         &pfMETSig_);
+  tree->Branch("pfMET_T1JERUp",    &pfMET_T1JERUp_);
+  tree->Branch("pfMET_T1JERDo",    &pfMET_T1JERDo_);
+  tree->Branch("pfMET_T1JESUp",    &pfMET_T1JESUp_);
+  tree->Branch("pfMET_T1JESDo",    &pfMET_T1JESDo_);
+  tree->Branch("pfMET_T1MESUp",    &pfMET_T1MESUp_);
+  tree->Branch("pfMET_T1MESDo",    &pfMET_T1MESDo_);
+  tree->Branch("pfMET_T1EESUp",    &pfMET_T1EESUp_);
+  tree->Branch("pfMET_T1EESDo",    &pfMET_T1EESDo_);
+  tree->Branch("pfMET_T1PESUp",    &pfMET_T1PESUp_);
+  tree->Branch("pfMET_T1PESDo",    &pfMET_T1PESDo_);
+  tree->Branch("pfMET_T1TESUp",    &pfMET_T1TESUp_);
+  tree->Branch("pfMET_T1TESDo",    &pfMET_T1TESDo_);
+  tree->Branch("pfMET_T1UESUp",    &pfMET_T1UESUp_);
+  tree->Branch("pfMET_T1UESDo",    &pfMET_T1UESDo_);
+  tree->Branch("pfMETPhi_T1JESUp", &pfMETPhi_T1JESUp_);
+  tree->Branch("pfMETPhi_T1JESDo", &pfMETPhi_T1JESDo_);
+  tree->Branch("pfMETPhi_T1UESUp", &pfMETPhi_T1UESUp_);
+  tree->Branch("pfMETPhi_T1UESDo", &pfMETPhi_T1UESDo_);
 
   /*
   if (doNoHFMET_){
@@ -189,6 +197,11 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       pfMET_T1TESDo_ = pfMET->shiftedPt(pat::MET::TauEnDown);
       pfMET_T1UESUp_ = pfMET->shiftedPt(pat::MET::UnclusteredEnUp);
       pfMET_T1UESDo_ = pfMET->shiftedPt(pat::MET::UnclusteredEnDown);
+
+      pfMETPhi_T1JESUp_ = pfMET->shiftedPhi(pat::MET::JetEnUp);
+      pfMETPhi_T1JESDo_ = pfMET->shiftedPhi(pat::MET::JetEnDown);
+      pfMETPhi_T1UESUp_ = pfMET->shiftedPhi(pat::MET::UnclusteredEnUp);
+      pfMETPhi_T1UESDo_ = pfMET->shiftedPhi(pat::MET::UnclusteredEnDown);
     }
 
     if (!e.isRealData()) {
