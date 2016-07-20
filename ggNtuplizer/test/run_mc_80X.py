@@ -14,7 +14,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_min
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(50000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 #jec from sqlite
@@ -78,71 +78,48 @@ process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
 
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 
-# this loads all available b-taggers
-###process.load("RecoBTag.Configuration.RecoBTag_cff") 
-###process.load("RecoBTag.SecondaryVertex.pfBoostedDoubleSecondaryVertexAK8BJetTags_cfi")
-###process.pfImpactParameterTagInfosAK8.primaryVertex = cms.InputTag("offlineSlimmedPrimaryVertices")
-###process.pfImpactParameterTagInfosAK8.candidates = cms.InputTag("packedPFCandidates")
-###process.pfImpactParameterTagInfosAK8.jets = cms.InputTag("slimmedJetsAK8")
-###process.load("RecoBTag.SecondaryVertex.pfInclusiveSecondaryVertexFinderTagInfosAK8_cfi")
-###process.pfInclusiveSecondaryVertexFinderTagInfosAK8.extSVCollection = cms.InputTag("slimmedSecondaryVertices")
-
-#from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
-#from PhysicsTools.PatAlgos.tools.coreTools import *
-#runOnData( process, outputModules = [] )
-#removeMCMatching(process, names=['All'], outputModules=[])
-
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
-#####VID framework####################
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# turn on VID producer, indicate data format  to be
-# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
 jecLevels = [
   'Spring16_25nsV6_MC_L2Relative_AK8PFchs.txt',
   'Spring16_25nsV6_MC_L3Absolute_AK8PFchs.txt'
 ]
 
-useAOD = False
-
-if useAOD == True :
-    dataFormat = DataFormat.AOD
-    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute'] )
-    jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'],JETCorrPayload='AK8PFchs',JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute']  )
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
-
-else :
-    dataFormat = DataFormat.MiniAOD
-    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
-    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
-
-    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-    updateJetCollection(
-      process,
-      jetSource = cms.InputTag('slimmedJets'),
-      labelName = 'UpdatedJEC',
-      jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJets'),
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
     )
-    updateJetCollection(
-      process,
-      jetSource = cms.InputTag('slimmedJetsAK8'),
-      labelName = 'UpdatedJECAK8',
-      jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJetsAK8'),
+    labelName = 'UpdatedJECAK8',
+    jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
     )
 
-    process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
+# MET correction and uncertainties
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=False
+                           )
 
+process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
+process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
-process.ggNtuplizer.isAOD=cms.bool(useAOD)
+process.ggNtuplizer.isAOD=cms.bool(False)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(True)
 
+#####VID framework####################
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
 
@@ -164,10 +141,6 @@ for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
-    ###process.reapplyJEC*
-    ###process.pfImpactParameterTagInfosAK8 *
-    ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-    ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags 
     process.ggMETFiltersSequence
     * process.calibratedPatElectrons 
     * process.calibratedPatPhotons 

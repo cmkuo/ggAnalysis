@@ -15,7 +15,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '80X_dataRun2_Prompt_ICHEP16JEC
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(100) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 #jec from sqlite
@@ -38,7 +38,8 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2016B/HLTPhysics/MINIAOD/PromptReco-v1/000/272/022/00000/98263424-E20F-E611-864C-02163E011D0A.root'
+        #'/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/447/00000/B20D35CE-101C-E611-B915-02163E011C2A.root'
+        '/store/data/Run2016C/SingleElectron/MINIAOD/PromptReco-v2/000/275/769/00000/349EFD01-373C-E611-B105-02163E0144FD.root'
         )
                             )
 
@@ -88,50 +89,41 @@ jecLevels = [
   'Spring16_25nsV6_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
-useAOD = False
-#####VID framework####################
-from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
-# turn on VID producer, indicate data format  to be
-# DataFormat.AOD or DataFormat.MiniAOD, as appropriate 
-if useAOD == True :
-    dataFormat = DataFormat.AOD
-    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_cfi")
-    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
-    process.ggNtuplizer.addFilterInfo=cms.bool(True)
-    process.ggNtuplizer.development=cms.bool(False)
-    from JMEAnalysis.JetToolbox.jetToolbox_cff import *
-    jetToolbox( process, 'ak4', 'ak4PFJetsCHS', 'out', runOnMC = False, miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, addPUJetID=True, JETCorrPayload='AK4PFchs', JETCorrLevels=['L1FastJet','L2Relative', 'L3Absolute','L2L3Residual'] )
-    jetToolbox( process, 'ak8', 'ak8PFJetsCHS', 'out', runOnMC = False, miniAOD= False, addSoftDrop=True, addSoftDropSubjets=True, addNsub=True, bTagDiscriminators=['pfBoostedDoubleSecondaryVertexAK8BJetTags'] )
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(False)
-
-else :
-    dataFormat = DataFormat.MiniAOD
-    process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-    process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
-    process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
-    from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-    updateJetCollection(
-      process,
-      jetSource = cms.InputTag('slimmedJets'),
-      labelName = 'UpdatedJEC',
-      jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJets'),
+    labelName = 'UpdatedJEC',
+    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
     )
-    updateJetCollection(
-      process,
-      jetSource = cms.InputTag('slimmedJetsAK8'),
-      labelName = 'UpdatedJECAK8',
-      jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+updateJetCollection(
+    process,
+    jetSource = cms.InputTag('slimmedJetsAK8'),
+    labelName = 'UpdatedJECAK8',
+    jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
     )
-    process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 
+# MET correction and uncertainties
+from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
+runMetCorAndUncFromMiniAOD(process,
+                           isData=True                           
+                           )
+
+process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
+process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
+process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
-process.ggNtuplizer.isAOD=cms.bool(useAOD)
+process.ggNtuplizer.isAOD=cms.bool(False)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(True)
 
+#####VID framework####################
+from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
+dataFormat = DataFormat.MiniAOD
 switchOnVIDElectronIdProducer(process, dataFormat)
 switchOnVIDPhotonIdProducer(process, dataFormat)
 
@@ -151,15 +143,7 @@ my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhot
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
-
-if useAOD == True:
-    process.p = cms.Path(
-        process.egmGsfElectronIDSequence*
-        process.egmPhotonIDSequence*
-        process.ggMETFiltersSequence* 
-        process.ggNtuplizer
-        )
-else:
+    
     process.p = cms.Path(
         ###process.reapplyJEC*
         ###process.pfImpactParameterTagInfosAK8 *
