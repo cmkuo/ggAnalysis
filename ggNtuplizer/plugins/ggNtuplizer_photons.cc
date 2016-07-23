@@ -76,9 +76,9 @@ vector<float>  phoPFNeuIsoFrix8_;
 vector<float>  phoCITKChIso_;
 vector<float>  phoCITKPhoIso_;
 vector<float>  phoCITKNeuIso_;
-vector<float>  phoPUPPIChIso_;
-vector<float>  phoPUPPIPhoIso_;
-vector<float>  phoPUPPINeuIso_;
+//vector<float>  phoPUPPIChIso_;
+//vector<float>  phoPUPPIPhoIso_;
+//vector<float>  phoPUPPINeuIso_;
 vector<float>  phoSeedBCE_;
 vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
@@ -188,9 +188,9 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoCITKChIso",            &phoCITKChIso_);
   tree->Branch("phoCITKPhoIso",           &phoCITKPhoIso_);
   tree->Branch("phoCITKNeuIso",           &phoCITKNeuIso_);
-  tree->Branch("phoPUPPIChIso",           &phoPUPPIChIso_);
-  tree->Branch("phoPUPPIPhoIso",          &phoPUPPIPhoIso_);
-  tree->Branch("phoPUPPINeuIso",          &phoPUPPINeuIso_);
+  //tree->Branch("phoPUPPIChIso",           &phoPUPPIChIso_);
+  //tree->Branch("phoPUPPIPhoIso",          &phoPUPPIPhoIso_);
+  //tree->Branch("phoPUPPINeuIso",          &phoPUPPINeuIso_);
   tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
@@ -287,9 +287,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoCITKChIso_         .clear();
   phoCITKPhoIso_        .clear();
   phoCITKNeuIso_        .clear();
-  phoPUPPIChIso_        .clear();
-  phoPUPPIPhoIso_       .clear();
-  phoPUPPINeuIso_       .clear();
+  //phoPUPPIChIso_        .clear();
+  //phoPUPPIPhoIso_       .clear();
+  //phoPUPPINeuIso_       .clear();
   phoSeedBCE_           .clear();
   phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
@@ -372,12 +372,12 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   e.getByToken(phoNeutralHadronIsolationToken_CITK_, phoNeutralHadronIsolationMap_CITK);
 
   // Get the isolation maps for PUPPI
-  edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_PUPPI;
-  e.getByToken(phoChargedIsolationToken_PUPPI_, phoChargedIsolationMap_PUPPI);
-  edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_PUPPI;
-  e.getByToken(phoPhotonIsolationToken_PUPPI_, phoPhotonIsolationMap_PUPPI);
-  edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_PUPPI;
-  e.getByToken(phoNeutralHadronIsolationToken_PUPPI_, phoNeutralHadronIsolationMap_PUPPI);
+  //edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_PUPPI;
+  //e.getByToken(phoChargedIsolationToken_PUPPI_, phoChargedIsolationMap_PUPPI);
+  //edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_PUPPI;
+  //e.getByToken(phoPhotonIsolationToken_PUPPI_, phoPhotonIsolationMap_PUPPI);
+  //edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_PUPPI;
+  //e.getByToken(phoNeutralHadronIsolationToken_PUPPI_, phoNeutralHadronIsolationMap_PUPPI);
 
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
@@ -720,9 +720,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 	phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
 	phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
 	phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
-	phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
-	phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
-	phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
+	//phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
+	//phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
+	//phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
 
         bool isPassLoose  = (*loose_id_decisions)[pho];
         if(isPassLoose) setbit(tmpphoIDbit, 0);
