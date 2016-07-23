@@ -313,9 +313,9 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
     // keep non-FSR photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
       (status == 1 && ip->pdgId() == 22 && ip->pt() > 5.0) ||
-      (status == 1 && ip->pdgId() == 22 && ip->isPromptFinalState()) ||
-      (status == 1 && abs(ip->pdgId()) == 11 && ip->isPromptFinalState()) || 
-      (status == 1 && abs(ip->pdgId()) == 13 && ip->isPromptFinalState()) ||
+      (status == 1 && ip->pdgId() == 22 && (ip->isPromptFinalState() || ip->isLastCopy())) ||
+      (status == 1 && abs(ip->pdgId()) == 11 && (ip->isPromptFinalState() || ip->isLastCopy())) || 
+      (status == 1 && abs(ip->pdgId()) == 13 && (ip->isPromptFinalState() || ip->isLastCopy())) ||
       (status == 1 && (abs(ip->pdgId()) == 12 || abs(ip->pdgId()) == 14 || abs(ip->pdgId()) == 16)) ||
       (status == 1 && ( abs(ip->pdgId()) >= 11 && abs(ip->pdgId()) <= 16 ) && ip->pt() > 3.0)  ||
       (status < 10 && abs(ip->pdgId()) == 15 && ip->pt() > 3.0);
