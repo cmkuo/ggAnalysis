@@ -4,6 +4,7 @@
    * run MET correction and uncertainty when using new JES
    * add gen photons/leptons if it's last copy
    * change tag version 
+   * update to 2016 ICHEP EGM corrections
 
 * V08-00-11-00
    * update to 8_0_11
