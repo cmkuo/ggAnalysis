@@ -52,7 +52,7 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 #process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
 #process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
 process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV1_2016_ele'),
     electrons = cms.InputTag("slimmedElectrons"),
     gbrForestName = cms.string('gedelectron_p4combination_25ns'),
     isMC = cms.bool(False),
@@ -60,7 +60,7 @@ process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRu
 )
 
 process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV2_2016_pho'),
     photons = cms.InputTag("slimmedPhotons"),
     isMC = cms.bool(False),
     isSynchronization = cms.bool(False)
@@ -119,7 +119,7 @@ process.ggNtuplizer.isAOD=cms.bool(False)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
-process.ggNtuplizer.dumpTaus=cms.bool(True)
+process.ggNtuplizer.dumpTaus=cms.bool(False)
 
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *

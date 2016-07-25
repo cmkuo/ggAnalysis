@@ -62,7 +62,7 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 #process.calibratedPatElectrons.isMC = cms.bool(True)
 #process.calibratedPatPhotons.isMC = cms.bool(True)
 process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV1_2016_ele'),
     electrons = cms.InputTag("slimmedElectrons"),
     gbrForestName = cms.string('gedelectron_p4combination_25ns'),
     isMC = cms.bool(True),
@@ -70,7 +70,7 @@ process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRu
 )
 
 process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_Golden22June_approval'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV2_2016_pho'),
     photons = cms.InputTag("slimmedPhotons"),
     isMC = cms.bool(True),
     isSynchronization = cms.bool(False)
@@ -115,7 +115,7 @@ process.ggNtuplizer.isAOD=cms.bool(False)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
-process.ggNtuplizer.dumpTaus=cms.bool(True)
+process.ggNtuplizer.dumpTaus=cms.bool(False)
 
 #####VID framework####################
 from PhysicsTools.SelectorUtils.tools.vid_id_tools import *
