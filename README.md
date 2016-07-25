@@ -1,5 +1,5 @@
-#### Current production tag : V08_00_11_00
-#### Newest tag for testing : V08_00_11_01
+#### Current production tag : V08_00_11_01
+#### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_8_0_11
 
 ##### To work with CMSSW_8_0_11 and V08_00_11_01, you do :
