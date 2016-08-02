@@ -181,6 +181,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleTrkdxy",                   &eleTrkdxy_);
   tree->Branch("eleKFHits",                   &eleKFHits_);
   tree->Branch("eleKFChi2",                   &eleKFChi2_);
+  tree->Branch("eleGSFChi2",                  &eleGSFChi2_);
   tree->Branch("eleGSFPt",                    &eleGSFPt_);
   tree->Branch("eleGSFEta",                   &eleGSFEta_);
   tree->Branch("eleGSFPhi",                   &eleGSFPhi_);
@@ -471,7 +472,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       else
 	eleTrkdxy_.push_back(-999);
     } else {
-      eleGSFChi2_.push_back(0.);
+      eleGSFChi2_.push_back(999.);
       eleTrkdxy_.push_back(-999);
     }
     
@@ -481,7 +482,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleKFChi2_.push_back(kfTrackRef->normalizedChi2());
     } else {
       eleKFHits_.push_back(-1.);
-      eleKFChi2_.push_back(0.);
+      eleKFChi2_.push_back(999.);
     }
 
     if (isAOD_) {
