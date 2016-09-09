@@ -231,7 +231,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFHT800_v")                            != string::npos) bitJet = 22;
     else if (name.find("HLT_PFHT475_v")                            != string::npos) bitJet = 23;
     else if (name.find("HLT_PFMET170_HBHECleaned_v")               != string::npos) bitJet = 24;
-
+    else if (name.find("HLT_PFHT300_PFMET110_v")                   != string::npos) bitJet = 25;
+    else if (name.find("HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v") != string::npos) bitJet = 26;
+    
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(0, name)!=1) ? 1 : 0;
     ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
