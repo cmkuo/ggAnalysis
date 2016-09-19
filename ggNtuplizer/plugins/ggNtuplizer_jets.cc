@@ -35,6 +35,7 @@ vector<float> jetNHF_;
 vector<float> jetCEF_;
 vector<float> jetNEF_;
 vector<int>   jetNCH_;
+vector<int>   jetNNP_;
 vector<float> jetHFHAE_;
 vector<float> jetHFEME_;
 vector<int>   jetNConstituents_;
@@ -82,6 +83,7 @@ vector<float> AK8JetNHF_;
 vector<float> AK8JetCEF_;
 vector<float> AK8JetNEF_;
 vector<int>   AK8JetNCH_;
+vector<int>   AK8JetNNP_;
 vector<int>   AK8Jetnconstituents_;
 vector<bool>  AK8JetPFLooseId_;
 vector<bool>  AK8JetPFTightLepVetoId_;
@@ -164,6 +166,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetCEF",       &jetCEF_);
   tree->Branch("jetNEF",       &jetNEF_);
   tree->Branch("jetNCH",       &jetNCH_);
+  tree->Branch("jetNNP",       &jetNNP_);
   tree->Branch("jetVtxPt",     &jetVtxPt_);
   tree->Branch("jetVtxMass",   &jetVtxMass_);
   tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
@@ -193,6 +196,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetCEF",                &AK8JetCEF_);
     tree->Branch("AK8JetNEF",                &AK8JetNEF_);
     tree->Branch("AK8JetNCH",                &AK8JetNCH_);
+    tree->Branch("AK8JetNNP",                &AK8JetNNP_);
     tree->Branch("AK8Jetnconstituents",      &AK8Jetnconstituents_);
     tree->Branch("AK8JetMUF",                &AK8JetMUF_);
     tree->Branch("AK8JetPFLooseId",          &AK8JetPFLooseId_);
@@ -265,6 +269,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetCEF_                                 .clear();
   jetNEF_                                 .clear();
   jetNCH_                                 .clear();
+  jetNNP_                                 .clear();
   jetVtxPt_                               .clear();
   jetVtxMass_                             .clear();
   jetVtxNtrks_                            .clear();
@@ -302,7 +307,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetNHF_          .clear();
   AK8JetCEF_          .clear();
   AK8JetNEF_          .clear();
-  AK8JetNCH_          	.clear();
+  AK8JetNCH_            .clear();
+  AK8JetNNP_          	.clear();
   AK8Jetnconstituents_     .clear();
   AK8JetMUF_          .clear();
   AK8JetPFLooseId_         .clear();
@@ -385,6 +391,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetCHF_.push_back(   iJet->chargedHadronEnergyFraction());
     jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
     jetNCH_.push_back(   iJet->chargedMultiplicity());
+    jetNNP_.push_back(   iJet->neutralMultiplicity());
     if (development_) {
       jetHFHAE_.push_back( iJet->HFHadronEnergy());
       jetHFEME_.push_back( iJet->HFEMEnergy());
@@ -458,7 +465,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //pat::strbitset retjet = pfLooseId_.getBitTemplate();
     //jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
     bool jetID = true;
-    if (fabs(iJet->eta()) <= 3.0) {
+    if (fabs(iJet->eta()) <= 2.7) {
       if (!(iJet->neutralHadronEnergyFraction() < 0.99))                       jetID = false;
       if (!(iJet->neutralEmEnergyFraction() < 0.99))                           jetID = false;
       if (!((iJet->chargedMultiplicity() + iJet->neutralMultiplicity()) > 1))  jetID = false;
@@ -468,7 +475,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
         if (!(iJet->chargedEmEnergyFraction() < 0.99))   jetID = false;
       }
     }
-    if (fabs(iJet->eta()) > 3.0) {
+    else if (fabs(iJet->eta()) > 2.7 && fabs(iJet->eta()) <= 3.0) {
+	if (!(iJet->neutralEmEnergyFraction() < 0.90))  jetID = false;
+	if (!(iJet->neutralMultiplicity() > 2))         jetID = false;
+      }
+    else if (fabs(iJet->eta()) > 3.0) {
       if (!(iJet->neutralEmEnergyFraction() < 0.90))  jetID = false;
       if (!(iJet->neutralMultiplicity() > 10))        jetID = false;
     }
@@ -594,12 +605,13 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
       AK8JetNEF_.push_back( ijetAK8->neutralEmEnergyFraction()); //0.99
       AK8JetNCH_.push_back( ijetAK8->chargedMultiplicity()); //0
+      AK8JetNNP_.push_back( ijetAK8->neutralMultiplicity()); //0
       AK8Jetnconstituents_.push_back( ijetAK8->chargedMultiplicity() + ijetAK8->neutralMultiplicity()); //1  
       AK8JetMUF_.push_back(ijetAK8->muonEnergyFraction());
       //https://twiki.cern.ch/twiki/bin/viewauth/CMS/JetID#Recommendations_for_13_TeV_data
       //LooseID
       bool AK8jetID = true;
-      if (fabs(ijetAK8->eta()) <= 3.0) {
+      if (fabs(ijetAK8->eta()) <= 2.7) {
 	if (!(ijetAK8->neutralHadronEnergyFraction() < 0.99))                       AK8jetID = false;
 	if (!(ijetAK8->neutralEmEnergyFraction() < 0.99))                           AK8jetID = false;
 	if (!((ijetAK8->chargedMultiplicity() + ijetAK8->neutralMultiplicity()) > 1))  AK8jetID = false;
@@ -609,7 +621,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	  if (!(ijetAK8->chargedEmEnergyFraction() < 0.99))   AK8jetID = false;
 	}
       }
-      if (fabs(ijetAK8->eta()) > 3.0) {
+      else if (fabs(ijetAK8->eta()) > 2.7 && fabs(ijetAK8->eta()) <= 3.0) {
+        if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))  AK8jetID = false;
+        if (!(ijetAK8->neutralMultiplicity() > 2))        AK8jetID = false;
+      }
+      else if (fabs(ijetAK8->eta()) > 3.0) {
 	if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))  AK8jetID = false;
 	if (!(ijetAK8->neutralMultiplicity() > 10))        AK8jetID = false;
       }
