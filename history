@@ -1,4 +1,9 @@
-* V08-00-11-01 (in preparation)
+* V08-00-11-02
+   * update jet ID
+   * update the list of triggers
+   * move muon ID variables from boolean to bit !
+
+* V08-00-11-01 
    * remove unused MET uncertainties
    * remove unused photon PUPPI isolations
    * run MET correction and uncertainty when using new JES

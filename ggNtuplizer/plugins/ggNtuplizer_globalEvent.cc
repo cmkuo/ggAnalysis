@@ -11,9 +11,9 @@ Long64_t  event_;
 Int_t     lumis_;
 Bool_t    isData_;
 Int_t     nVtx_;
+Int_t     nGoodVtx_;
 Int_t     nTrksPV_;
 Bool_t    isPVGood_;
-Bool_t    hasGoodVtx_;
 float     vtx_;
 float     vty_;
 float     vtz_;
@@ -33,9 +33,9 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("lumis",   &lumis_);
   tree->Branch("isData",  &isData_);
   tree->Branch("nVtx",                 &nVtx_);
+  tree->Branch("nGoodVtx",             &nGoodVtx_);
   tree->Branch("nTrksPV",              &nTrksPV_);
   tree->Branch("isPVGood",             &isPVGood_);
-  tree->Branch("hasGoodVtx",           &hasGoodVtx_);
   tree->Branch("vtx",                  &vtx_); 
   tree->Branch("vty",                  &vty_); 
   tree->Branch("vtz",                  &vtz_); 
@@ -69,14 +69,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
   
-  nVtx_ = -1;
+  nVtx_     = -1;
+  nGoodVtx_ = -1;
   if (vtxHandle.isValid()) {
-    nVtx_ = 0;
-    
-    hasGoodVtx_ = false;
+    nVtx_     = 0;
+    nGoodVtx_ = 0;    
+
     for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
-      //bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
-      //if (!isFake) {
+
       if (nVtx_ == 0) {
 	nTrksPV_ = v->nTracks();
 	vtx_     = v->x();
@@ -84,13 +84,12 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 	vtz_     = v->z();
 
 	isPVGood_ = false;
-	if (v->ndof() > 4. && fabs(v->z()) <= 24. && fabs(v->position().rho()) <= 2.) isPVGood_ = true;
+	if (!v->isFake() && v->ndof() > 4. && fabs(v->z()) <= 24. && fabs(v->position().rho()) <= 2.) isPVGood_ = true;
       }
 
-      if (v->ndof() > 4. && fabs(v->z()) <= 24. && fabs(v->position().rho()) <= 2.) hasGoodVtx_ = true;
+      if (!v->isFake() && v->ndof() > 4. && fabs(v->z()) <= 24. && fabs(v->position().rho()) <= 2.) nGoodVtx_++;
       nVtx_++;
 
-      //}
     }
   } else
     edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
