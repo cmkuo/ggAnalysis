@@ -166,21 +166,18 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Photon500_v")                   != string::npos) bitPho = 10; 
     else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
     else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
-    else if (name.find("HLT_Photon36_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon22_AND_HE10_R9Id65_Eta2_Mass15_v") != string::npos) bitPho = 13;
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v")                             != string::npos) bitPho = 14;
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v")        != string::npos) bitPho = 15;
-    else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")        != string::npos) bitPho = 16;
-    else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")         != string::npos) bitPho = 17;
-    else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v")                      != string::npos) bitPho = 18;
-    else if (name.find("HLT_Photon26_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon16_AND_HE10_R9Id65_Eta2_Mass60_v") != string::npos) bitPho = 19;
-    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE10p0_R9Id_Mass95_v")                         != string::npos) bitPho = 20;
-    else if (name.find("HLT_Photon135_PFMET100_v")                          != string::npos) bitPho = 21; 
-    else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 22;
-    else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")       != string::npos) bitPho = 23;
-    else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                    != string::npos) bitPho = 24;
-    else if (name.find("HLT_DoublePhoton60_v")                              != string::npos) bitPho = 25;
-    else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 26;
-    else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 27;
+    else if (name.find("HLT_Photon42_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon25_AND_HE10_R9Id65_Eta2_Mass15_v") != string::npos) bitPho = 13; // exist
+    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v")                             != string::npos) bitPho = 14; // used
+    else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v")        != string::npos) bitPho = 15; // exist
+    else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")        != string::npos) bitPho = 16; // used
+    else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")         != string::npos) bitPho = 17; // used
+    else if (name.find("HLT_Photon135_PFMET100_v")                          != string::npos) bitPho = 18; 
+    else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 19;
+    else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")       != string::npos) bitPho = 20;
+    else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                    != string::npos) bitPho = 21;
+    else if (name.find("HLT_DoublePhoton60_v")                              != string::npos) bitPho = 22;
+    else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23;
+    else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 24;
 
     // Jet triggers
     int bitJet    = -1;
@@ -204,7 +201,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFJet400_v")                                             != string::npos) bitJet = 17; 
     else if (name.find("HLT_PFJet450_v")                                             != string::npos) bitJet = 18;     
     else if (name.find("HLT_PFJet500_v")                                             != string::npos) bitJet = 19; 
-    else if (name.find("HLT_AK8PFHT650_TrimR0p1PT0p3Mass50_v")                       != string::npos) bitJet = 20; 
+    else if (name.find("HLT_AK8PFHT700_TrimR0p1PT0p3Mass50_v")                       != string::npos) bitJet = 20; 
     else if (name.find("HLT_AK8PFJet360_TrimMass30_v")                               != string::npos) bitJet = 21;
     else if (name.find("HLT_PFHT300_PFMET110_v")                                     != string::npos) bitJet = 22;
     else if (name.find("HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v")   != string::npos) bitJet = 23;
