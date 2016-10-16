@@ -2,6 +2,9 @@
    * update jet ID
    * update the list of triggers
    * move muon ID variables from boolean to bit !
+   * remove hasGoodVtx but add nGoodVtx
+   * add muon energy fraction for AK4 jets
+   * shorten the name of CSV2 b-tag
 
 * V08-00-11-01 
    * remove unused MET uncertainties

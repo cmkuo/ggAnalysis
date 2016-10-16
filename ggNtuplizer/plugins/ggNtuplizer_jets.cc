@@ -36,6 +36,7 @@ vector<float> jetCEF_;
 vector<float> jetNEF_;
 vector<int>   jetNCH_;
 vector<int>   jetNNP_;
+vector<float> jetMUF_;
 vector<float> jetHFHAE_;
 vector<float> jetHFEME_;
 vector<int>   jetNConstituents_;
@@ -45,7 +46,7 @@ vector<float> jetVtxMass_;
 vector<float> jetVtxNtrks_;
 vector<float> jetVtx3DVal_;
 vector<float> jetVtx3DSig_;
-vector<float> jetpfCombinedInclusiveSecondaryVertexV2BJetTags_; // recommended
+vector<float> jetCSV2BJetTags_; // recommended
 vector<float> jetJetProbabilityBJetTags_;
 vector<float> jetpfCombinedMVAV2BJetTags_;
 vector<int>   jetPartonID_;
@@ -139,7 +140,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetLepTrackPt",   &jetLepTrackPt_);
   tree->Branch("jetLepTrackEta",  &jetLepTrackEta_);
   tree->Branch("jetLepTrackPhi",  &jetLepTrackPhi_);
-  tree->Branch("jetpfCombinedInclusiveSecondaryVertexV2BJetTags", &jetpfCombinedInclusiveSecondaryVertexV2BJetTags_);
+  tree->Branch("jetCSV2BJetTags", &jetCSV2BJetTags_);
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVAV2BJetTags", &jetpfCombinedMVAV2BJetTags_);
   if (doGenParticles_){
@@ -167,6 +168,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetNEF",       &jetNEF_);
   tree->Branch("jetNCH",       &jetNCH_);
   tree->Branch("jetNNP",       &jetNNP_);
+  tree->Branch("jetMUF",       &jetMUF_);
   tree->Branch("jetVtxPt",     &jetVtxPt_);
   tree->Branch("jetVtxMass",   &jetVtxMass_);
   tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
@@ -255,11 +257,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetLepTrackPID_                         .clear();
   jetLepTrackEta_                         .clear();
   jetLepTrackPhi_                         .clear();
-  jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.clear();
+  jetCSV2BJetTags_                        .clear();
   jetJetProbabilityBJetTags_              .clear();
-  jetpfCombinedMVAV2BJetTags_               .clear();
+  jetpfCombinedMVAV2BJetTags_             .clear();
   jetPartonID_                            .clear();
-  jetHadFlvr_                           .clear();
+  jetHadFlvr_                             .clear();
   jetPFLooseId_                           .clear();
   jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
@@ -270,6 +272,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetNEF_                                 .clear();
   jetNCH_                                 .clear();
   jetNNP_                                 .clear();
+  jetMUF_                                 .clear();
   jetVtxPt_                               .clear();
   jetVtxMass_                             .clear();
   jetVtxNtrks_                            .clear();
@@ -392,6 +395,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetNHF_.push_back(   iJet->neutralHadronEnergyFraction());
     jetNCH_.push_back(   iJet->chargedMultiplicity());
     jetNNP_.push_back(   iJet->neutralMultiplicity());
+    jetMUF_.push_back(   iJet->muonEnergyFraction());
     if (development_) {
       jetHFHAE_.push_back( iJet->HFHadronEnergy());
       jetHFEME_.push_back( iJet->HFEMEnergy());
@@ -453,8 +457,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
     
     //b-tagging
-    jetpfCombinedInclusiveSecondaryVertexV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-    jetJetProbabilityBJetTags_.push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
+    jetCSV2BJetTags_           .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+    jetJetProbabilityBJetTags_ .push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
     jetpfCombinedMVAV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVAV2BJetTags"));
   
     //parton id
