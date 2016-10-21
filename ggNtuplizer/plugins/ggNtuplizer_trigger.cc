@@ -47,6 +47,25 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleFilters["hltEle25WP60SC4HcalIsoFilter"]     = 1;
     // for HLT_Ele23_WPLoose_Gsf_v and EventTree
     eleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 2;
+    eleFilters["hltL1sSingleEGor"]                                = 3;
+    eleFilters["hltL1sSingleJetAndTauHighPtOr"]                   = 4;
+    eleFilters["hltL1sSingleEGNonIsoOrWithJetAndTau"]             = 5;
+    eleFilters["hltEle27WPTightGsfTrackIsoFilter"]                = 6;
+    eleFilters["hltEle27WPTightGsfTrackIsoL1TauJetSeededFilter"]  = 7;
+    eleFilters["hltEle30WPTightGsfTrackIsoFilter"]                = 8;
+    eleFilters["hltEle32noerWPTightGsfTrackIsoFilter"]            = 9;
+    eleFilters["hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter"]         = 10;
+    //Double electron triggers
+    eleFilters["hltL1sDoubleEG2210IorDoubleEG2512"]                                     = 11;
+    eleFilters["hltEle24Ele22WPLooseGsfleg1TrackIsoFilter"]                             = 12;
+    eleFilters["hltEle24Ele22WPLooseGsfleg2TrackIsoFilter"]                             = 13;
+    eleFilters["hltL1sSingleAndDoubleEGor"]                                             = 14;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1Filter"]                   = 15;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2Filter"]                   = 16;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLDZFilter"]                             = 17;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg1L1TauJetSeededFilter"]     = 18;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2L1TauJetSeededFilter"]     = 19;
+    eleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLDZL1TauJetSeededFilter"]               = 20;
 
     // for HLT_Iso(Tk)Mu20_v
     muFilters["hltL1sSingleMu18"] = 0;
