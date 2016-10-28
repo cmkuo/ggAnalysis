@@ -54,7 +54,7 @@ vector<int>   jetHadFlvr_;
 vector<bool>  jetPFLooseId_;
 vector<float> jetPUidFullDiscriminant_;
 vector<float> jetJECUnc_;
-vector<int>   jetFiredTrgs_;
+vector<UInt_t>   jetFiredTrgs_;
 //gen-info for ak4
 vector<int>   jetGenJetIndex_;
 vector<float> jetGenJetEn_;

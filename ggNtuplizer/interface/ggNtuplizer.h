@@ -46,12 +46,13 @@ class ggNtuplizer : public edm::EDAnalyzer {
   //   virtual void endJob() {};
   
   void initTriggerFilters(const edm::Event&);
-  Int_t matchElectronTriggerFilters(double pt, double eta, double phi);
-  Int_t matchSinglePhotonTriggerFilters(double pt, double eta, double phi);
-  Int_t matchDoublePhotonTriggerFilters(double pt, double eta, double phi);
-  Int_t matchMuonTriggerFilters(double pt, double eta, double phi);
-  Int_t matchJetTriggerFilters(double pt, double eta, double phi);
-  Int_t matchL1TriggerFilters(double pt, double eta, double phi);
+  UInt_t matchSingleElectronTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchDoubleElectronTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchSinglePhotonTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchDoublePhotonTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchMuonTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchJetTriggerFilters(double pt, double eta, double phi);
+  UInt_t matchL1TriggerFilters(double pt, double eta, double phi);
   Double_t deltaPhi(Double_t phi1, Double_t phi2);
   Double_t deltaR(Double_t eta1, Double_t phi1, Double_t eta2, Double_t phi2);
   Double_t getMiniIsolation(edm::Handle<pat::PackedCandidateCollection> pfcands, const reco::Candidate* ptcl,  
