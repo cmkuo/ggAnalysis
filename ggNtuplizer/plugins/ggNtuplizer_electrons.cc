@@ -79,6 +79,7 @@ vector<float>  eleKFHits_;
 vector<float>  eleKFChi2_;
 vector<float>  eleGSFChi2_;
 vector<int>    eleFiredTrgs_;
+vector<int>    eleFiredL1Trgs_;
 
 vector<UShort_t> eleIDbit_;
 
@@ -201,6 +202,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleBCSieip",                  &eleBCSieip_);
   tree->Branch("eleBCSipip",                  &eleBCSipip_);
   tree->Branch("eleFiredTrgs",                &eleFiredTrgs_);
+  tree->Branch("eleFiredL1Trgs",              &eleFiredL1Trgs_);
 
   if (runeleIDVID_) tree->Branch("eleIDbit",  &eleIDbit_);
 
@@ -319,6 +321,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleBCSieip_                 .clear();
   eleBCSipip_                 .clear();
   eleFiredTrgs_               .clear();
+  eleFiredL1Trgs_             .clear();
   eleIDbit_                   .clear();
 
   nEle_ = 0;
@@ -405,6 +408,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleHoverE_          .push_back(iEle->hcalOverEcal());
 
     eleFiredTrgs_       .push_back(matchElectronTriggerFilters(iEle->pt(), iEle->eta(), iEle->phi()));
+    eleFiredL1Trgs_     .push_back(matchL1TriggerFilters(iEle->pt(), iEle->eta(), iEle->phi()));
 
     ///https://cmssdt.cern.ch/SDT/doxygen/CMSSW_7_2_2/doc/html/d8/dac/GsfElectron_8h_source.html
     eleEoverP_          .push_back(iEle->eSuperClusterOverP());

@@ -31,7 +31,8 @@ vector<float>    muPFPhoIso_;
 vector<float>    muPFNeuIso_;
 vector<float>    muPFPUIso_;
 vector<float>    muPFMiniIso_;
-vector<int>      muFiredTrgs_;
+vector<UInt_t>      muFiredTrgs_;
+vector<UInt_t>      muFiredL1Trgs_;
 vector<float>    muInnervalidFraction_;
 vector<float>    musegmentCompatibility_;
 vector<float>    muchi2LocalPosition_;
@@ -68,6 +69,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPFPUIso",     &muPFPUIso_);
   tree->Branch("muPFMiniIso",   &muPFMiniIso_);
   tree->Branch("muFiredTrgs",   &muFiredTrgs_);
+  tree->Branch("muFiredL1Trgs", &muFiredL1Trgs_);
   tree->Branch("muInnervalidFraction",   &muInnervalidFraction_);
   tree->Branch("musegmentCompatibility", &musegmentCompatibility_);
   tree->Branch("muchi2LocalPosition",    &muchi2LocalPosition_);
@@ -105,6 +107,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muPFPUIso_    .clear();
   muPFMiniIso_  .clear();
   muFiredTrgs_  .clear();
+  muFiredL1Trgs_.clear();
   muInnervalidFraction_  .clear();
   musegmentCompatibility_.clear();
   muchi2LocalPosition_   .clear();
@@ -149,6 +152,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muIDbit_.push_back(tmpmuIDbit);
 
     muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
+    muFiredL1Trgs_.push_back(matchL1TriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
 
     muBestTrkPtError_        .push_back(iMu->muonBestTrack()->ptError());
     muBestTrkPt_             .push_back(iMu->muonBestTrack()->pt());
