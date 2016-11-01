@@ -52,67 +52,67 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
 
   // one-time initialization
   if (eleSingleFilters.size() == 0) {
-    eleSingleFilters["hltEle27WPLooseGsfTrackIsoFilter"]                                        							  = 0;
-    eleSingleFilters["hltEle25WP60SC4HcalIsoFilter"]      					                                      		  = 1;
+    eleSingleFilters["hltEle27WPLooseGsfTrackIsoFilter"] = 0;
+    eleSingleFilters["hltEle25WP60SC4HcalIsoFilter"] = 1;
     // for HLT_Ele23_WPLoose_Gsf_v and EventTree
     eleSingleFilters["hltEGL1SingleEG40ORSingleIsoEG22erOrSingleIsoEG24erORSingleIsoEG24OrSingleIsoEG26Filter"] = 2;
     //HLT_Ele22_eta2p1_WPLoose_Gsf_v3
-    eleSingleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] 						                                      = 3;
+    eleSingleFilters["hltSingleEle22WPLooseGsfTrackIsoFilter"] = 3;
     //HLT_Ele24_eta2p1_WPLoose_Gsf_v1
-    eleSingleFilters["hltSingleEle24WPLooseGsfTrackIsoFilter"] 				                                    		  = 4;
+    eleSingleFilters["hltSingleEle24WPLooseGsfTrackIsoFilter"] = 4;
     //HLT_Ele25_WPTight_Gsf_v1
-    eleSingleFilters["hltEle25WPTightGsfTrackIsoFilter"] 							                                          = 5;
+    eleSingleFilters["hltEle25WPTightGsfTrackIsoFilter"] = 5;
     //HLT_Ele25_eta2p1_WPLoose_Gsf_v1
-    eleSingleFilters["hltEle25erWPLooseGsfTrackIsoFilter"]	                                      						  = 6;
+    eleSingleFilters["hltEle25erWPLooseGsfTrackIsoFilter"] = 6;
     //HLT_Ele25_eta2p1_WPTight_Gsf_v1
-    eleSingleFilters["hltEle25erWPTightGsfTrackIsoFilter"]							                                        = 7;
+    eleSingleFilters["hltEle25erWPTightGsfTrackIsoFilter"] = 7;
     //HLT_Ele27_WPLoose_Gsf_v1
-    eleSingleFilters["hltEle27noerWPLooseGsfTrackIsoFilter"] 							                                      = 8;
+    eleSingleFilters["hltEle27noerWPLooseGsfTrackIsoFilter"] = 8;
     //HLT_Ele27_WPLoose_Gsf_v
-    eleSingleFilters["hltEG27L1IsoEG22erORIsoEG24erORIsoEG24ORIsoEG26OREG40EtFilter"]	                          = 9;
+    eleSingleFilters["hltEG27L1IsoEG22erORIsoEG24erORIsoEG24ORIsoEG26OREG40EtFilter"] = 9;
     //HLT_Ele27_eta2p1_WPLoose_Gsf_v2, HLT_Ele27_eta2p1_WPLoose_Gsf_LooseIsoPFTau*                             
-    eleSingleFilters["hltEle27erWPLooseGsfTrackIsoFilter"]                                                      = 10;
+    eleSingleFilters["hltEle27erWPLooseGsfTrackIsoFilter"] = 10;
     //HLT_Ele27_eta2p1_WPTight_Gsf                                                                             
-    eleSingleFilters["hltEle27erWPTightGsfTrackIsoFilter"]                                                      = 11;
+    eleSingleFilters["hltEle27erWPTightGsfTrackIsoFilter"] = 11;
     //HLT_Ele27_WPTight_Gsf                                                                                    
-    eleSingleFilters["hltEle27WPTightGsfTrackIsoFilter"]                                                        = 12;
+    eleSingleFilters["hltEle27WPTightGsfTrackIsoFilter"] = 12;
     //HLT_Ele32_eta2p1_WPTight_Gsf                                                                             
-    eleSingleFilters["hltEle32WPTightGsfTrackIsoFilter"]                                                        = 13;
+    eleSingleFilters["hltEle32WPTightGsfTrackIsoFilter"] = 13;
     //HLT_Ele35_WPLoose_Gsf                                                                                    
-    eleSingleFilters["hltEle35WPLooseGsfTrackIsoFilter"]                                                        = 14;
+    eleSingleFilters["hltEle35WPLooseGsfTrackIsoFilter"] = 14;
     //HLT_Ele45_WPLoose_Gsf                                                                                    
-    eleSingleFilters["hltEle45WPLooseGsfTrackIsoFilter"]                                                        = 15;
+    eleSingleFilters["hltEle45WPLooseGsfTrackIsoFilter"] = 15;
     //HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1 
-    eleSingleFilters["hltEle22WPLooseL1SingleIsoEG20erGsfTrackIsoFilter"]                                       = 16;
+    eleSingleFilters["hltEle22WPLooseL1SingleIsoEG20erGsfTrackIsoFilter"] = 16;
     //HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1                                                    
-    eleSingleFilters["hltOverlapFilterSingleIsoEle22WPLooseGsfLooseIsoPFTau20"]                                 = 17;
+    eleSingleFilters["hltOverlapFilterSingleIsoEle22WPLooseGsfLooseIsoPFTau20"] = 17;
     //HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_SingleL1                                                    
-    eleSingleFilters["hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"]                                       = 18;
+    eleSingleFilters["hltEle24WPLooseL1SingleIsoEG22erGsfTrackIsoFilter"] = 18;
     //HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20                                                             
-    eleSingleFilters["hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter"]                                      = 19;
+    eleSingleFilters["hltEle24WPLooseL1IsoEG22erTau20erGsfTrackIsoFilter"] = 19;
     //HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v1                                                          
-    eleSingleFilters["hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20"]                                       = 20;
+    eleSingleFilters["hltOverlapFilterIsoEle24WPLooseGsfLooseIsoPFTau20"] = 20;
     //HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90                                                   
-    eleSingleFilters["hltEG18Iso60CaloId15b35eHE12R9Id50b80eTrackIsoUnseededLastFilter"]                        = 21;
-    eleSingleFilters["hltEG18R9Id85b90eHE12R9Id50b80eR9UnseededLastFilter"]                                     = 22; 
+    eleSingleFilters["hltEG18Iso60CaloId15b35eHE12R9Id50b80eTrackIsoUnseededLastFilter"] = 21;
+    eleSingleFilters["hltEG18R9Id85b90eHE12R9Id50b80eR9UnseededLastFilter"] = 22; 
     //HLT_DiMu9_Ele9_CaloIdL_TrackIdL                                                                     
-    eleSingleFilters["hltDiMu9Ele9CaloIdLTrackIdLElectronlegDphiFilter"]                                        = 23; 
+    eleSingleFilters["hltDiMu9Ele9CaloIdLTrackIdLElectronlegDphiFilter"] = 23; 
     //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL                                                    
-    eleSingleFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"]	                    = 24;
+    eleSingleFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 24;
     //HLT_Mu8_DiEle12_CaloIdL_TrackIdL 
-    eleSingleFilters["hltMu8DiEle12CaloIdLTrackIdLElectronlegDphiFilter"]                                       = 25;
+    eleSingleFilters["hltMu8DiEle12CaloIdLTrackIdLElectronlegDphiFilter"] = 25;
     //HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL 
-    eleSingleFilters["hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"]                       = 26;
+    eleSingleFilters["hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 26;
     //HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL 
-    eleSingleFilters["hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"]                       = 27;
+    eleSingleFilters["hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 27;
     //HLT_Ele27_WPTight_Gsf_L1JetTauSeeded_v
-    eleSingleFilters["hltEle27WPTightGsfTrackIsoL1TauJetSeededFilter"]                                          = 28;
+    eleSingleFilters["hltEle27WPTightGsfTrackIsoL1TauJetSeededFilter"] = 28;
     //HLT_Ele30_WPTight_Gsf_L1JetTauSeeded_v
-    eleSingleFilters["hltEle30WPTightGsfTrackIsoFilter"]                                                        = 29;
+    eleSingleFilters["hltEle30WPTightGsfTrackIsoFilter"] = 29;
     //HLT_Ele32_WPTight_Gsf_L1JetTauSeeded_v
-    eleSingleFilters["hltEle32noerWPTightGsfTrackIsoFilter"]                                                    = 30;
+    eleSingleFilters["hltEle32noerWPTightGsfTrackIsoFilter"] = 30;
     //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
-    eleSingleFilters["hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter"]                                                 = 31;
+    eleSingleFilters["hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter"] = 31;
 
     //Double electron triggers
     //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
@@ -127,27 +127,27 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleDoubleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLTrackIsoLeg2L1TauJetSeededFilter"] = 6;
     eleDoubleFilters["hltEle23Ele12CaloIdLTrackIdLIsoVLDZL1TauJetSeededFilter"]           = 7;
 
-    muFilters["hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"]       		                   = 0; //HLT_IsoMu22_v2
-    muFilters["hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09"] 		                         = 1; //HLT_IsoMu24_v1
-    muFilters["hltL3fL1sL1Mu5IsoEG18L1f5L2f7L3Filtered17"] 			                                   = 2; //HLT_Mu17_Photon*  muon
-    muFilters["hltDiMu9Ele9CaloIdLTrackIdLMuonlegL3Filtered9"] 			                               = 3; //HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v3 muon
-    muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23"]                   = 4; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL
-    muFilters["hltMu8DiEle12CaloIdLTrackIdLMuonlegL3Filtered8"] 		                               = 5; //LT_Mu8_DiEle12_CaloIdL_TrackIdL_v3 muon
-    muFilters["hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"]                     = 6; //HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL
-    muFilters["hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"]                     = 7; //HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL
-    muFilters["hltDiMuonGlb17Trk8DzFiltered0p2"] 				                                           = 8; //HLT_Mu17_TkMu8_DZ
-    muFilters["hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4"] 			                                     = 9; //HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL
-    muFilters["hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2"] 		                           = 10; //HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ
-    muFilters["hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4"] 			                                     = 11; //HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL
-    muFilters["hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2"]        		                   = 12; //HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ
-    muFilters["hltL3fL1sMu1lqL1f0L2f10L3Filtered17TkIsoFiltered0p4"] 		                           = 13; //HLT_Mu17_TrkIsoVVL
-    muFilters["hltDiMuonGlb27Trk8DzFiltered0p2"] 				                                           = 14; //HLT_Mu27_TkMu8
-    muFilters["hltDiMuonGlb30Trk11DzFiltered0p2"] 				                                         = 15; //HLT_Mu30_TkMu11
+    muFilters["hltL3crIsoL1sMu20L1f0L2f10QL3f22QL3trkIsoFiltered0p09"] = 0; //HLT_IsoMu22_v2
+    muFilters["hltL3crIsoL1sMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p09"] = 1; //HLT_IsoMu24_v1
+    muFilters["hltL3fL1sL1Mu5IsoEG18L1f5L2f7L3Filtered17"] = 2; //HLT_Mu17_Photon*  muon
+    muFilters["hltDiMu9Ele9CaloIdLTrackIdLMuonlegL3Filtered9"] = 3; //HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v3 muon
+    muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered23"] = 4; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL
+    muFilters["hltMu8DiEle12CaloIdLTrackIdLMuonlegL3Filtered8"] = 5; //LT_Mu8_DiEle12_CaloIdL_TrackIdL_v3 muon
+    muFilters["hltMu8TrkIsoVVLEle17CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"] = 6; //HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL
+    muFilters["hltMu8TrkIsoVVLEle23CaloIdLTrackIdLIsoVLMuonlegL3IsoFiltered8"] = 7; //HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL
+    muFilters["hltDiMuonGlb17Trk8DzFiltered0p2"] = 8; //HLT_Mu17_TkMu8_DZ
+    muFilters["hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4"] = 9; //HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL
+    muFilters["hltDiMuonGlb17Glb8RelTrkIsoFiltered0p4DzFiltered0p2"] = 10; //HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ
+    muFilters["hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4"] = 11; //HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL
+    muFilters["hltDiMuonGlb17Trk8RelTrkIsoFiltered0p4DzFiltered0p2"] = 12; //HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ
+    muFilters["hltL3fL1sMu1lqL1f0L2f10L3Filtered17TkIsoFiltered0p4"] = 13; //HLT_Mu17_TrkIsoVVL
+    muFilters["hltDiMuonGlb27Trk8DzFiltered0p2"] = 14; //HLT_Mu27_TkMu8
+    muFilters["hltDiMuonGlb30Trk11DzFiltered0p2"] = 15; //HLT_Mu30_TkMu11
     muFilters["hltL3crIsoL1sDoubleMu125L1f16erL2f10QL3f17QL3Dz0p2L3crIsoRhoFiltered0p15IterTrk02"] = 16; //HLT_DoubleIsoMu17_eta2p1
-    muFilters["hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09"] 	                       = 17; //HLT_IsoMu27
-    muFilters["hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"] 	  		                               = 18; //HLT_IsoTkMu22
-    muFilters["hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09"] 			                                 = 19; //HLT_IsoTkMu24
-    muFilters["hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09"] 		                               = 20; //HLT_IsoTkMu27
+    muFilters["hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p09"] = 17; //HLT_IsoMu27
+    muFilters["hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"] = 18; //HLT_IsoTkMu22
+    muFilters["hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09"] = 19; //HLT_IsoTkMu24
+    muFilters["hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09"] = 20; //HLT_IsoTkMu27
 
     phoSingleFilters["hltEG22HEFilter"]        = 0;
     phoSingleFilters["hltEG30HEFilter"]        = 1;
@@ -216,35 +216,35 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     jetFilters["hltSinglePFJet450"] =  8;
     jetFilters["hltSinglePFJet500"] =  9;
 
-    l1Filters["hltL1sSingleEG26"]    			 		                                                                 = 0;
-    l1Filters["hltL1sSingleEG40"]					                                                                     = 1;
-    l1Filters["hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24er"]																					 = 2;
-    l1Filters["hltL1sSingleIsoEG20erIorSingleIsoEG22erIorSingleEG40"]																					 = 3;
-    l1Filters["hltL1sSingleIsoEG22erIorSingleIsoEG24erIorSingleEG40"]																					 = 4;
-    l1Filters["hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24erIorSingleIsoEG24IorSingleIsoEG26"]          = 5;
-    l1Filters["hltL1sHTT200IorHTT220IorHTT240lorHTT255IorHTT270lorHTT280lorHTT300lorHTT320"]	                 = 6;
-    l1Filters["hltL1sEG27erHTT200IorHTT280IorHTT300"]			                                                     = 7;
-    l1Filters["hltL1sIsoEG22erTau20erdEtaMin0p2"]			                                                         = 8;
-    l1Filters["hltL1sSingleMu18"]					                                                                     = 9;
-    l1Filters["hltL1sSingleMu22"]				                                                                       = 10;
-    l1Filters["hltL1sSingleMu22Or25"]				                                                                	 = 11;
-    l1Filters["hltL1sMu5IsoEG18"]					                                                                     = 12; //HLT_Mu17_Photon*
-    l1Filters["hltL1sMu20EG10"]                   			                                                       = 13; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL,
-    l1Filters["hltL1sDoubleMu7EG7"]              			                                                         = 14; //HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v3
-    l1Filters["hltL1sMu6DoubleEG10"]           				                                                         = 15; //LT_Mu8_DiEle12_CaloIdL_TrackIdL_v3
-    l1Filters["hltL1sMu5EG15"]                   			                                                         = 16; //HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3
-    l1Filters["hltL1sMu5EG20IorMu5IsoEG18"]      			                                                         = 17; //HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3
-    l1Filters["hltL1sDoubleMu114IorDoubleMu125"]			                                                         = 18; //DiMuon
-    l1Filters["hltL1sSingleMu10LowQ"]         				                                                         = 19; //HLT_Mu17_TrkIsoVVL_v2
-    l1Filters["hltL1sL1SingleEG40ORL1SingleEG35ORL1DoubleEG2210ORL1DoubleEG1510"]                              = 20;
-    l1Filters["hltL1sDiPhotonSeeds"]       				                                                             = 21;
-    l1Filters["hltL1sSingleAndDoubleEGor"]                                                                     = 22; //HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v and HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
+    l1Filters["hltL1sSingleEG26"] = 0;
+    l1Filters["hltL1sSingleEG40"] = 1;
+    l1Filters["hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24er"] = 2;
+    l1Filters["hltL1sSingleIsoEG20erIorSingleIsoEG22erIorSingleEG40"] = 3;
+    l1Filters["hltL1sSingleIsoEG22erIorSingleIsoEG24erIorSingleEG40"] = 4;
+    l1Filters["hltL1sSingleEG40IorSingleIsoEG22erIorSingleIsoEG24erIorSingleIsoEG24IorSingleIsoEG26"] = 5;
+    l1Filters["hltL1sHTT200IorHTT220IorHTT240lorHTT255IorHTT270lorHTT280lorHTT300lorHTT320"] = 6;
+    l1Filters["hltL1sEG27erHTT200IorHTT280IorHTT300"] = 7;
+    l1Filters["hltL1sIsoEG22erTau20erdEtaMin0p2"] = 8;
+    l1Filters["hltL1sSingleMu18"] = 9;
+    l1Filters["hltL1sSingleMu22"] = 10;
+    l1Filters["hltL1sSingleMu22Or25"] = 11;
+    l1Filters["hltL1sMu5IsoEG18"] = 12; //HLT_Mu17_Photon*
+    l1Filters["hltL1sMu20EG10"] = 13; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL,
+    l1Filters["hltL1sDoubleMu7EG7"] = 14; //HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v3
+    l1Filters["hltL1sMu6DoubleEG10"] = 15; //LT_Mu8_DiEle12_CaloIdL_TrackIdL_v3
+    l1Filters["hltL1sMu5EG15"] = 16; //HLT_Mu8_TrkIsoVVL_Ele17_CaloIdL_TrackIdL_IsoVL_v3
+    l1Filters["hltL1sMu5EG20IorMu5IsoEG18"] = 17; //HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v3
+    l1Filters["hltL1sDoubleMu114IorDoubleMu125"] = 18; //DiMuon
+    l1Filters["hltL1sSingleMu10LowQ"] = 19; //HLT_Mu17_TrkIsoVVL_v2
+    l1Filters["hltL1sL1SingleEG40ORL1SingleEG35ORL1DoubleEG2210ORL1DoubleEG1510"] = 20;
+    l1Filters["hltL1sDiPhotonSeeds"] = 21;
+    l1Filters["hltL1sSingleAndDoubleEGor"] = 22; //HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v and HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
     l1Filters["hltL1sSingleEG40IorSingleIsoEG26IorSingleIsoEG24IorDoubleEG1510IorDoubleEG2212IorDoubleEG1817"] = 23;
-    l1Filters["hltL1sSingleEGor"]                                                                              = 24; //HLT_Ele27_WPTight_Gsf_v
-    l1Filters["hltL1sSingleJetAndTauHighPtOr"]                                                                 = 25; //HLT_Ele27_WPTight_Gsf_L1JetTauSeeded_v
-    l1Filters["hltL1sSingleEGNonIsoOrWithJetAndTau"]                                                           = 26; //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
-    l1Filters["hltL1sDoubleEG2210IorDoubleEG2512"]                                                             = 27; //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
-    l1Filters["hltL1sSingleEG34IorSingleEG40"]    			 		                                                   = 28; //HLT_Photon90_CaloIdL_PFHT600_v
+    l1Filters["hltL1sSingleEGor"] = 24; //HLT_Ele27_WPTight_Gsf_v
+    l1Filters["hltL1sSingleJetAndTauHighPtOr"] = 25; //HLT_Ele27_WPTight_Gsf_L1JetTauSeeded_v
+    l1Filters["hltL1sSingleEGNonIsoOrWithJetAndTau"] = 26; //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
+    l1Filters["hltL1sDoubleEG2210IorDoubleEG2512"] = 27; //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
+    l1Filters["hltL1sSingleEG34IorSingleEG40"] = 28; //HLT_Photon90_CaloIdL_PFHT600_v
     
   }
   

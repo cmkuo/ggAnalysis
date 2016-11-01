@@ -78,9 +78,9 @@ vector<float>  eleTrkdxy_;
 vector<float>  eleKFHits_;
 vector<float>  eleKFChi2_;
 vector<float>  eleGSFChi2_;
-vector<UInt_t>    eleFiredSingleTrgs_;
-vector<UInt_t>    eleFiredDoubleTrgs_;
-vector<UInt_t>    eleFiredL1Trgs_;
+vector<UInt_t> eleFiredSingleTrgs_;
+vector<UInt_t> eleFiredDoubleTrgs_;
+vector<UInt_t> eleFiredL1Trgs_;
 
 vector<UShort_t> eleIDbit_;
 
