@@ -212,6 +212,19 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_AK8PFJet360_TrimMass30_v")                               != string::npos) bitJet = 21;
     else if (name.find("HLT_PFHT300_PFMET110_v")                                     != string::npos) bitJet = 22;
     else if (name.find("HLT_CaloMHTNoPU90_PFMET90_PFMHT90_IDTight_BTagCSV_p067_v")   != string::npos) bitJet = 23;
+    else if (name.find("HLT_PFMET170_HBHE_BeamHaloCleaned_v")                        != string::npos) bitJet = 24;
+    else if (name.find("HLT_PFMET300_v")                                             != string::npos) bitJet = 25;
+    else if (name.find("HLT_PFMET110_PFMHT110_IDTight_v")                            != string::npos) bitJet = 26;
+    else if (name.find("HLT_PFMET120_PFMHT120_IDTight_v")                            != string::npos) bitJet = 27;
+    else if (name.find("HLT_PFMETNoMu110_PFMHTNoMu110_IDTight_v")                    != string::npos) bitJet = 28;
+    else if (name.find("HLT_PFMETNoMu120_PFMHTNoMu120_IDTight_v")                    != string::npos) bitJet = 29;
+    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu110_PFMHTNoMu110_IDTight_v") != string::npos) bitJet = 30;
+    else if (name.find("HLT_MonoCentralPFJet80_PFMETNoMu120_PFMHTNoMu120_IDTight_v") != string::npos) bitJet = 31;
+    else if (name.find("HLT_PFHT800_v")                                              != string::npos) bitJet = 32;
+    else if (name.find("HLT_PFHT900_v")                                              != string::npos) bitJet = 33;
+    else if (name.find("HLT_PFHT750_4JetPt50_v")                                     != string::npos) bitJet = 34;
+    else if (name.find("HLT_PFHT750_4JetPt70_v")                                     != string::npos) bitJet = 35;
+    else if (name.find("HLT_PFHT800_4JetPt50_v")                                     != string::npos) bitJet = 36;
     
     // indicates prescaling and whether trigger was fired or not
     ULong64_t isPrescaled = (hltCfg.prescaleValue(0, name)!=1) ? 1 : 0;
