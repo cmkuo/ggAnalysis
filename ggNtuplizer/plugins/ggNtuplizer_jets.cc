@@ -40,7 +40,6 @@ vector<float> jetMUF_;
 vector<float> jetHFHAE_;
 vector<float> jetHFEME_;
 vector<int>   jetNConstituents_;
-vector<float> AK8JetMUF_;
 vector<float> jetVtxPt_;
 vector<float> jetVtxMass_;
 vector<float> jetVtxNtrks_;
