@@ -191,6 +191,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   //PFJetIDSelectionFunctor pfLooseId_;
   boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
+  boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
   std::vector<std::string> jecAK8PayloadNames_;
 };
 
