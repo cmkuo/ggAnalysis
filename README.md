@@ -1,6 +1,27 @@
 #### Current production tag : V08_00_11_01
-#### Newest tag for testing : 
+#### Newest tag for testing : master
 #### Note that the current head version can be run with CMSSW_8_0_11
+
+##### To work with CMSSW_8_0_20 and head version (under testing !), you do :
+cd CMSSW_8_0_20/src <br>
+cmsenv <br>
+git cms-init <br>
+git cms-merge-topic emanueledimarco:ecal_smear_fix_80X <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git clone -b ICHEP2016_v2 https://github.com/ECALELFS/ScalesSmearings.git <br>
+cd ../../../ <br>
+git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
+git cms-merge-topic cms-met:METRecipe_8020 <br>
+git cms-merge-topic ikrav:egm_id_80X_v2 <br>
+cd $CMSSW_BASE/external <br>
+cd slc6_amd64_gcc530/ <br>
+git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
+cd data/RecoEgamma/ElectronIdentification/data <br>
+git checkout egm_id_80X_v1 <br>
+cd $CMSSW_BASE/src <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 10 <br>
 
 ##### To work with CMSSW_8_0_11 and V08_00_11_01, you do :
 cd CMSSW_8_0_11/src <br>
