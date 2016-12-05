@@ -13,7 +13,6 @@ cd ../../../ <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
-git cms-merge-topic ikrav:egm_id_80X_v2_photons <br>
 cd $CMSSW_BASE/external <br>
 cd slc6_amd64_gcc530/ <br>
 git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
