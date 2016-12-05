@@ -57,8 +57,8 @@ vector<float>  elePFPUIso_;
 vector<float>  elePFClusEcalIso_;
 vector<float>  elePFClusHcalIso_;
 vector<float>  elePFMiniIso_;
-vector<float>  eleIDMVANonTrg_;
-vector<float>  eleIDMVATrg_;
+vector<float>  eleIDMVA_;
+vector<float>  eleIDMVAHZZ_;
 vector<float>  eledEtaseedAtVtx_;
 vector<float>  eleE1x5_;
 vector<float>  eleE2x5_;
@@ -163,8 +163,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFClusEcalIso",        &elePFClusEcalIso_);
   tree->Branch("elePFClusHcalIso",        &elePFClusHcalIso_);
   tree->Branch("elePFMiniIso",            &elePFMiniIso_);
-  tree->Branch("eleIDMVANonTrg",          &eleIDMVANonTrg_);
-  tree->Branch("eleIDMVATrg",             &eleIDMVATrg_);
+  tree->Branch("eleIDMVA",                &eleIDMVA_);
+  tree->Branch("eleIDMVAHZZ",             &eleIDMVAHZZ_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
   tree->Branch("eleE1x5",                 &eleE1x5_);
   tree->Branch("eleE2x5",                 &eleE2x5_);
@@ -283,8 +283,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFClusEcalIso_           .clear();
   elePFClusHcalIso_           .clear();
   elePFMiniIso_               .clear();
-  eleIDMVANonTrg_             .clear();
-  eleIDMVATrg_                .clear();
+  eleIDMVA_                   .clear();
+  eleIDMVAHZZ_                .clear();
   eledEtaseedAtVtx_           .clear();
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
@@ -353,8 +353,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions; 
   edm::Handle<edm::ValueMap<bool> >  heep_id_decisions;
-  edm::Handle<edm::ValueMap<float> > eleNonTrgMVAValues;
-  edm::Handle<edm::ValueMap<float> > eleTrgMVAValues;
+  edm::Handle<edm::ValueMap<float> > eleMVAValues;
+  edm::Handle<edm::ValueMap<float> > eleMVAHZZValues;
   edm::Handle<edm::ValueMap<float> > elePFClusEcalIsoValues;
   edm::Handle<edm::ValueMap<float> > elePFClusHcalIsoValues;
 
@@ -364,8 +364,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     e.getByToken(eleMediumIdMapToken_,        medium_id_decisions);
     e.getByToken(eleTightIdMapToken_,         tight_id_decisions);
     e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
-    e.getByToken(eleNonTrgMVAValuesMapToken_, eleNonTrgMVAValues);
-    e.getByToken(eleTrgMVAValuesMapToken_,    eleTrgMVAValues);
+    e.getByToken(eleMVAValuesMapToken_,       eleMVAValues);
+    e.getByToken(eleMVAHZZValuesMapToken_,    eleMVAHZZValues);
     e.getByToken(elePFClusEcalIsoToken_,      elePFClusEcalIsoValues);
     e.getByToken(elePFClusHcalIsoToken_,      elePFClusHcalIsoValues);
   }
@@ -709,8 +709,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
         if(isPassHEEP) setbit(tmpeleIDbit, 4);
         //cout<<"isHeep: "<<isPassHEEP<<endl;
 
-        eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el->originalObjectRef()]);
-        eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el->originalObjectRef()]);
+        eleIDMVA_    .push_back((*eleMVAValues)[el->originalObjectRef()]);
+        eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el->originalObjectRef()]);
 
 	elePFClusEcalIso_.push_back((*elePFClusEcalIsoValues)[el->originalObjectRef()]);
 	elePFClusHcalIso_.push_back((*elePFClusHcalIsoValues)[el->originalObjectRef()]);
@@ -738,8 +738,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
         if(isPassHEEP) setbit(tmpeleIDbit, 4);
         //cout<<"isHeep: "<<isPassHEEP<<endl;
 
-        eleIDMVANonTrg_.push_back((*eleNonTrgMVAValues)[el]);
-        eleIDMVATrg_   .push_back((*eleTrgMVAValues)[el]);
+        eleIDMVA_    .push_back((*eleMVAValues)[el]);
+        eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el]);
 
 	elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
 	elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());

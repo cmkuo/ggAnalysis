@@ -38,8 +38,7 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2016B/SingleElectron/MINIAOD/PromptReco-v2/000/273/447/00000/B20D35CE-101C-E611-B915-02163E011C2A.root'
-        #'/store/data/Run2016C/SingleElectron/MINIAOD/PromptReco-v2/000/275/769/00000/349EFD01-373C-E611-B105-02163E0144FD.root'
+        '/store/data/Run2016B/SingleElectron/MINIAOD/23Sep2016-v2/80000/14415255-6B8C-E611-87D3-002590E3A212.root'
         )
                             )
 
@@ -130,8 +129,8 @@ switchOnVIDPhotonIdProducer(process, dataFormat)
 # define which IDs we want to produce
 my_id_modules = ['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Spring15_25ns_V1_cff',
                  'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV60_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_nonTrig_V1_cff',
-                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring15_25ns_Trig_V1_cff']
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_GeneralPurpose_V1_cff',
+                 'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Spring16_HZZ_V1_cff']
 
 #add them to the VID producer
 for idmod in my_id_modules:
