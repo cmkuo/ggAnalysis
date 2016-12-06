@@ -205,8 +205,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleFiredSingleTrgs",          &eleFiredSingleTrgs_);
   tree->Branch("eleFiredDoubleTrgs",          &eleFiredDoubleTrgs_);
   tree->Branch("eleFiredL1Trgs",              &eleFiredL1Trgs_);
-
-  if (runeleIDVID_) tree->Branch("eleIDbit",  &eleIDbit_);
+  tree->Branch("eleIDbit",                    &eleIDbit_);
 
   if (development_) {
     tree->Branch("eleESEnP1Raw",              &eleESEnP1Raw_);
@@ -359,18 +358,16 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::ValueMap<float> > elePFClusEcalIsoValues;
   edm::Handle<edm::ValueMap<float> > elePFClusHcalIsoValues;
 
-  if (runeleIDVID_) {
-    e.getByToken(eleVetoIdMapToken_ ,         veto_id_decisions);
-    e.getByToken(eleLooseIdMapToken_ ,        loose_id_decisions);
-    e.getByToken(eleMediumIdMapToken_,        medium_id_decisions);
-    e.getByToken(eleTightIdMapToken_,         tight_id_decisions);
-    e.getByToken(eleHLTIdMapToken_,           hlt_id_decisions);
-    e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
-    e.getByToken(eleMVAValuesMapToken_,       eleMVAValues);
-    e.getByToken(eleMVAHZZValuesMapToken_,    eleMVAHZZValues);
-    e.getByToken(elePFClusEcalIsoToken_,      elePFClusEcalIsoValues);
-    e.getByToken(elePFClusHcalIsoToken_,      elePFClusHcalIsoValues);
-  }
+  e.getByToken(eleVetoIdMapToken_ ,         veto_id_decisions);
+  e.getByToken(eleLooseIdMapToken_ ,        loose_id_decisions);
+  e.getByToken(eleMediumIdMapToken_,        medium_id_decisions);
+  e.getByToken(eleTightIdMapToken_,         tight_id_decisions);
+  e.getByToken(eleHLTIdMapToken_,           hlt_id_decisions);
+  e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
+  e.getByToken(eleMVAValuesMapToken_,       eleMVAValues);
+  e.getByToken(eleMVAHZZValuesMapToken_,    eleMVAHZZValues);
+  e.getByToken(elePFClusEcalIsoToken_,      elePFClusEcalIsoValues);
+  e.getByToken(elePFClusHcalIsoToken_,      elePFClusHcalIsoValues);
 
   edm::Handle<reco::VertexCollection> recVtxs;
   e.getByToken(vtxLabel_, recVtxs);
@@ -678,46 +675,39 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleESEnE_.push_back(ESE);
     }
 
-    //
-    // Look up and save the ID decisions
-    // 
-    if (runeleIDVID_) {
-      //edm::Ptr<reco::GsfElectron> recoEl(iEle);
-      
-      //const auto el = electrons->ptrAt(nEle_);
-      const auto el = electronHandle->ptrAt(nEle_);
-      
-      UShort_t tmpeleIDbit = 0;
-
-      ///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
-      bool isPassVeto  = (*veto_id_decisions)[el];
-      if (isPassVeto) setbit(tmpeleIDbit, 0);
-      
-      bool isPassLoose  = (*loose_id_decisions)[el];
-      if (isPassLoose) setbit(tmpeleIDbit, 1);
-
-      bool isPassMedium = (*medium_id_decisions)[el];
-      if (isPassMedium) setbit(tmpeleIDbit, 2);
-      
-      bool isPassTight  = (*tight_id_decisions)[el];
-      if (isPassTight) setbit(tmpeleIDbit, 3);
-      
-      bool isPassHEEP = (*heep_id_decisions)[el];
-      if (isPassHEEP) setbit(tmpeleIDbit, 4);
-
-      bool isPassHLT = (*hlt_id_decisions)[el];
-      if (isPassHLT) setbit(tmpeleIDbit, 5);
-      
-      eleIDMVA_    .push_back((*eleMVAValues)[el]);
-      eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el]);
-      
-      elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
-      elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());
-
-      eleIDbit_.push_back(tmpeleIDbit);
-      
-    }
-
+    //edm::Ptr<reco::GsfElectron> recoEl(iEle);      
+    //const auto el = electrons->ptrAt(nEle_);
+    const auto el = electronHandle->ptrAt(nEle_);
+    
+    UShort_t tmpeleIDbit = 0;
+    
+    ///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
+    bool isPassVeto  = (*veto_id_decisions)[el];
+    if (isPassVeto) setbit(tmpeleIDbit, 0);
+    
+    bool isPassLoose  = (*loose_id_decisions)[el];
+    if (isPassLoose) setbit(tmpeleIDbit, 1);
+    
+    bool isPassMedium = (*medium_id_decisions)[el];
+    if (isPassMedium) setbit(tmpeleIDbit, 2);
+    
+    bool isPassTight  = (*tight_id_decisions)[el];
+    if (isPassTight) setbit(tmpeleIDbit, 3);
+    
+    bool isPassHEEP = (*heep_id_decisions)[el];
+    if (isPassHEEP) setbit(tmpeleIDbit, 4);
+    
+    bool isPassHLT = (*hlt_id_decisions)[el];
+    if (isPassHLT) setbit(tmpeleIDbit, 5);
+    
+    eleIDMVA_    .push_back((*eleMVAValues)[el]);
+    eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el]);
+    
+    elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
+    elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());
+    
+    eleIDbit_.push_back(tmpeleIDbit);
+  
     nEle_++;
   }
 

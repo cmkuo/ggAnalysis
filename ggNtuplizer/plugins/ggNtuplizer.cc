@@ -25,12 +25,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   isAOD_                     = ps.getParameter<bool>("isAOD");
-
-  runphoIDVID_               = ps.getParameter<bool>("runphoIDVID");
-  runeleIDVID_               = ps.getParameter<bool>("runeleIDVID");
-  runeleMVAID_               = ps.getParameter<bool>("runeleMVAID");
-  runphoMVAID_               = ps.getParameter<bool>("runphoMVAID");
-
   runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");

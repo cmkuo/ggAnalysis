@@ -353,17 +353,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<std::vector<pat::PackedCandidate>> pfCndHandle; 
   edm::Handle<edm::View<reco::Candidate> > CndHandle; 
   
-  if (runphoIDVID_) {
-    e.getByToken(phoLooseIdMapToken_ ,  loose_id_decisions);
-    e.getByToken(phoMediumIdMapToken_,  medium_id_decisions);
-    e.getByToken(phoTightIdMapToken_ ,  tight_id_decisions);
-    e.getByToken(phoMVAValuesMapToken_, mvaValues);
-
-    e.getByToken(phoChargedIsolationToken_,       phoChargedIsolationMap);
-    e.getByToken(phoNeutralHadronIsolationToken_, phoNeutralHadronIsolationMap);
-    e.getByToken(phoPhotonIsolationToken_,        phoPhotonIsolationMap);
-    e.getByToken(phoWorstChargedIsolationToken_,  phoWorstChargedIsolationMap);
-  }
+  e.getByToken(phoLooseIdMapToken_ ,  loose_id_decisions);
+  e.getByToken(phoMediumIdMapToken_,  medium_id_decisions);
+  e.getByToken(phoTightIdMapToken_ ,  tight_id_decisions);
+  e.getByToken(phoMVAValuesMapToken_, mvaValues);
+  
+  e.getByToken(phoChargedIsolationToken_,       phoChargedIsolationMap);
+  e.getByToken(phoNeutralHadronIsolationToken_, phoNeutralHadronIsolationMap);
+  e.getByToken(phoPhotonIsolationToken_,        phoPhotonIsolationMap);
+  e.getByToken(phoWorstChargedIsolationToken_,  phoWorstChargedIsolationMap);
 
   // Get the isolation maps for CITK
   edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_CITK;

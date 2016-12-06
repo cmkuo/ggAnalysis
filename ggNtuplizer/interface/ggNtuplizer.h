@@ -97,13 +97,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpPDFSystWeight_;
 
   bool isAOD_;
-
-  bool runphoIDVID_;
-  bool runeleIDVID_;
-
-  bool runeleMVAID_;
-  bool runphoMVAID_;
-
   bool runHFElectrons_;
 
   vector<int> newparticles_;
