@@ -6,7 +6,7 @@ Double_t ggNtuplizer::getMiniIsolation(edm::Handle<pat::PackedCandidateCollectio
 					const reco::Candidate* ptcl,  
 					double r_iso_min, double r_iso_max, double kt_scale,
 					bool charged_only) {
- 
+
   if (ptcl->pt()<5.) return 99999.;
 
   double deadcone_nh(0.), deadcone_ch(0.), deadcone_ph(0.), deadcone_pu(0.);
@@ -24,6 +24,7 @@ Double_t ggNtuplizer::getMiniIsolation(edm::Handle<pat::PackedCandidateCollectio
   if (ptcl->isElectron()) ptThresh = 0;
   double r_iso = max(r_iso_min,min(r_iso_max, kt_scale/ptcl->pt()));
   for (const pat::PackedCandidate &pfc : *pfcands) {
+
     if (abs(pfc.pdgId())<7) continue;
     
     double dr = reco::deltaR(pfc, *ptcl);

@@ -172,6 +172,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMET(e, es);
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillElectrons(e, es, pv);
+
   if (runHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv, vtx);
   if (dumpTaus_) fillTaus(e);

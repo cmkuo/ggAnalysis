@@ -211,9 +211,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   //tree->Branch("phoMIPNhitCone",                  &phoMIPNhitCone_);
   //tree->Branch("phoMIPIsHalo",                    &phoMIPIsHalo_);
 
-  tree->Branch("phoxtalBits",                        &phoxtalBits_);
-
-  if (runphoIDVID_) tree->Branch("phoIDbit",      &phoIDbit_);
+  tree->Branch("phoxtalBits", &phoxtalBits_);
+  tree->Branch("phoIDbit",    &phoIDbit_);
 
 }
 
@@ -685,64 +684,33 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     photrkSumPtHollowConeDR03_                    .push_back(iPho->trkSumPtHollowConeDR03());
     photrkSumPtSolidConeDR03_                     .push_back(iPho->trkSumPtSolidConeDR03());
 
-    if (runphoIDVID_) {
-      //Photon ID in VID framwork - 11th may, 2015
-      // Look up and save the ID decisions
-      // 
-      const auto pho = photonHandle->ptrAt(nPho_);
-      
-      UShort_t tmpphoIDbit = 0;
-
-      if (isAOD_) {
-        phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho->originalObjectRef()]);
-        phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho->originalObjectRef()]);
-        phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho->originalObjectRef()]);
-	phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho->originalObjectRef()]);
-
-        //cout<<"Photons "<<endl;
-        bool isPassLoose  = (*loose_id_decisions)[pho->originalObjectRef()];
-        if(isPassLoose) setbit(tmpphoIDbit, 0);
-        //cout<<"isPassLoose "<<isPassLoose<<endl;
-
-        bool isPassMedium = (*medium_id_decisions)[pho->originalObjectRef()];
-        if(isPassMedium) setbit(tmpphoIDbit, 1);
-        //cout<<"isPassMedium "<<isPassMedium<<endl;
-
-        bool isPassTight  = (*tight_id_decisions)[pho->originalObjectRef()];
-        if(isPassTight) setbit(tmpphoIDbit, 2);
-        //cout<<"isPassTight "<<isPassTight<<endl;
-
-        phoIDMVA_.push_back((*mvaValues)[pho->originalObjectRef()]);
-      }
-
-      if (!isAOD_) {
-        phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
-        phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho]);
-        phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
-	phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho]);
-
-	phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
-	phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
-	phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
-	//phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
-	//phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
-	//phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
-
-        bool isPassLoose  = (*loose_id_decisions)[pho];
-        if(isPassLoose) setbit(tmpphoIDbit, 0);
-
-        bool isPassMedium = (*medium_id_decisions)[pho];
-        if(isPassMedium) setbit(tmpphoIDbit, 1);
-
-        bool isPassTight  = (*tight_id_decisions)[pho];
-        if(isPassTight) setbit(tmpphoIDbit, 2);
-
-        phoIDMVA_.push_back((*mvaValues)[pho]);
-      }
-
-      phoIDbit_.push_back(tmpphoIDbit);      
-      //cout<<"tmppho : phoIDbit: "<<tmpphoIDbit<<":"<<phoIDbit_[nPho_]<<endl;
-    }
+    const auto pho = photonHandle->ptrAt(nPho_);
+    
+    UShort_t tmpphoIDbit = 0;
+    
+    phoPFChIso_              .push_back((*phoChargedIsolationMap)[pho]);
+    phoPFPhoIso_             .push_back((*phoPhotonIsolationMap)[pho]);
+    phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
+    phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho]);
+    
+    phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
+    phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
+    phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
+    //phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
+    //phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
+    //phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
+    
+    bool isPassLoose  = (*loose_id_decisions)[pho];
+    if(isPassLoose) setbit(tmpphoIDbit, 0);
+    
+    bool isPassMedium = (*medium_id_decisions)[pho];
+    if(isPassMedium) setbit(tmpphoIDbit, 1);
+    
+    bool isPassTight  = (*tight_id_decisions)[pho];
+    if(isPassTight) setbit(tmpphoIDbit, 2);
+    
+    phoIDMVA_.push_back((*mvaValues)[pho]);  
+    phoIDbit_.push_back(tmpphoIDbit);      
 
     nPho_++;
   }
