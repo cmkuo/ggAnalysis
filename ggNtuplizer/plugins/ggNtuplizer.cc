@@ -107,7 +107,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   phoPhotonIsolationToken_PUPPI_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_PUPPI"));
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_20_00)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_22_00)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);

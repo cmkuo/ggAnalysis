@@ -1,5 +1,5 @@
 #### Current production tag : V08_00_20_00
-#### Newest tag for testing : master
+#### Newest tag for testing : V08_00_22_00
 #### Note that the current head version can be run with CMSSW_8_0_11
 
 ##### To work with CMSSW_8_0_20, you do :
@@ -13,10 +13,17 @@ cd ../../../ <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
+scram b -j 10 <br>
 cd $CMSSW_BASE/external <br>
 cd slc6_amd64_gcc530/ <br>
 git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
 cd data/RecoEgamma/ElectronIdentification/data <br>
+git checkout egm_id_80X_v1 <br>
+cd $CMSSW_BASE/src <br>
+cd $CMSSW_BASE/external <br>
+cd slc6_amd64_gcc530/ <br>
+git clone https://github.com/ikrav/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data <br>
+cd data/RecoEgamma/PhotonIdentification/data <br>
 git checkout egm_id_80X_v1 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
