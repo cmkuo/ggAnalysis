@@ -38,8 +38,8 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        #'/store/data/Run2016H/DoubleMuon/MINIAOD/PromptReco-v3/000/284/036/00000/04DC0281-C89F-E611-81C6-02163E0141E6.root'
-        '/store/data/Run2016B/SingleElectron/MINIAOD/23Sep2016-v2/80000/5A4402F5-638C-E611-A471-0025905A60AA.root'
+        '/store/data/Run2016H/DoubleMuon/MINIAOD/PromptReco-v3/000/284/036/00000/04DC0281-C89F-E611-81C6-02163E0141E6.root'
+        #'/store/data/Run2016B/SingleElectron/MINIAOD/23Sep2016-v2/80000/5A4402F5-638C-E611-A471-0025905A60AA.root'
         )
                             )
 
@@ -84,9 +84,9 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 jecLevels = [
-  'Spring16_25nsV10BCD_DATA_L2Relative_AK8PFchs.txt',
-  'Spring16_25nsV10BCD_DATA_L3Absolute_AK8PFchs.txt',
-  'Spring16_25nsV10BCD_DATA_L2L3Residual_AK8PFchs.txt'
+  'Spring16_25nsV10p2_DATA_L2Relative_AK8PFchs.txt',
+  'Spring16_25nsV10p2_DATA_L3Absolute_AK8PFchs.txt',
+  'Spring16_25nsV10p2_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
