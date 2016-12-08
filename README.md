@@ -1,8 +1,8 @@
-#### Current production tag : V08_00_11_01
+#### Current production tag : V08_00_20_00
 #### Newest tag for testing : master
 #### Note that the current head version can be run with CMSSW_8_0_11
 
-##### To work with CMSSW_8_0_20 and head version (under testing !), you do :
+##### To work with CMSSW_8_0_20, you do :
 cd CMSSW_8_0_20/src <br>
 cmsenv <br>
 git cms-init <br>
@@ -20,7 +20,7 @@ cd data/RecoEgamma/ElectronIdentification/data <br>
 git checkout egm_id_80X_v1 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_20_00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_8_0_11 and V08_00_11_01, you do :
