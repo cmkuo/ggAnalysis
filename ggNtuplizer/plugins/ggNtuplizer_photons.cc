@@ -476,7 +476,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     UShort_t tmpxtalbit = 0;
 
     auto matrix5x5 = lazyTool.matrixDetId(seed,-2,+2,-2,+2);
-    for(auto & deId : matrix5x5 ) {
+    for (auto & deId : matrix5x5 ) {
       /// cout << "matrix " << deId.rawId() << endl;
       auto rh = rechits->find(deId);
       if( rh != rechits->end() ) {
@@ -487,7 +487,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 	nGain6 += rh->checkFlag( EcalRecHit::kHasSwitchToGain6 );
 	nWeired += rh->checkFlag( EcalRecHit::kWeird ) || rh->checkFlag( EcalRecHit::kDiWeird );
 	
-
 	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated){ //this is to fill only once, i.e. only if xtal has this, no need to check for other xtals
 
 	  setbit(tmpxtalbit, 0);
@@ -504,18 +503,12 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 	
       }//if( rh != rechits->end() ) 
        
-      if(nWeired>0)
-	setbit(tmpxtalbit,2);
-      
-      if(nGain6>0)
-	setbit(tmpxtalbit,3); 
+      if (nWeired>0) setbit(tmpxtalbit,2);      
+      if (nGain6>0) setbit(tmpxtalbit,3); 
 
     }//for(auto & deId : matrix5x5 )
   
     phoxtalBits_.push_back(tmpxtalbit);
-
-
-    //////////////////////////////////////////////////////////////
 
     phoFiredSingleTrgs_     .push_back(matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredDoubleTrgs_     .push_back(matchDoublePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));

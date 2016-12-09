@@ -62,7 +62,7 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
 #process.calibratedPatElectrons.isMC = cms.bool(True)
 #process.calibratedPatPhotons.isMC = cms.bool(True)
 process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV1_2016_ele'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
     electrons = cms.InputTag("slimmedElectrons"),
     gbrForestName = cms.string('gedelectron_p4combination_25ns'),
     isMC = cms.bool(True),
@@ -70,7 +70,7 @@ process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRu
 )
 
 process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/80X_ichepV2_2016_pho'),
+    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
     photons = cms.InputTag("slimmedPhotons"),
     isMC = cms.bool(True),
     isSynchronization = cms.bool(False)
@@ -147,7 +147,7 @@ process.p = cms.Path(
     * process.calibratedPatPhotons 
     * process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 
-    * process.ggPhotonIso_CITK_PUPPI_Sequence
+    * process.ggPhotonIso_CITK_Sequence
     * process.ggNtuplizer
     )
 

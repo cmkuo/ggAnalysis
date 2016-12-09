@@ -439,11 +439,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectionUncertainty *AK8jecUnc=0;
   AK8jecUnc = new JetCorrectionUncertainty(AK8JetCorPar);
   
-  
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
     
-    if (isAOD_ && iJet->pt() < 10) continue;
+    if (iJet->pt() < 10) continue;
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
