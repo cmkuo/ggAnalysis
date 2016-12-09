@@ -1,4 +1,4 @@
-#### Current production tag : V08_00_20_00
+#### Current production tag : V08_00_24_00
 #### Newest tag for testing : head
 #### Note that the current head version can be run with CMSSW_8_0_24_patch1
 
@@ -27,7 +27,7 @@ cd data/RecoEgamma/PhotonIdentification/data <br>
 git checkout egm_id_80X_v1 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_24_00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_7_6_3_patch2, you do:
