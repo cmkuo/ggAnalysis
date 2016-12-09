@@ -422,7 +422,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     }
     phoCalibEt_       .push_back(corrPt);
     phoCalibE_        .push_back(corrEn);
-    
+
     phoE_             .push_back(iPho->energy());
     phoEt_            .push_back(iPho->et());
     phoEta_           .push_back(iPho->eta());
