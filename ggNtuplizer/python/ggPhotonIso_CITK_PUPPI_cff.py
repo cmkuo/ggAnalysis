@@ -60,3 +60,7 @@ egmPhotonIsolationMiniAODPUPPI = cms.EDProducer( "CITKPFIsolationSumProducerForP
 ggPhotonIso_CITK_PUPPI_Sequence = cms.Sequence(
     puppi + egmPhotonIsolationMiniAOD + egmPhotonIsolationMiniAODPUPPI
 )
+
+ggPhotonIso_CITK_Sequence = cms.Sequence(
+    egmPhotonIsolationMiniAOD
+)
