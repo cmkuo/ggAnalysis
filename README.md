@@ -8,6 +8,7 @@ cmsenv <br>
 git cms-init <br>
 git cms-merge-topic shervin86:Moriond2017_JEC_energyScales <br>
 cd EgammaAnalysis/ElectronTools/data <br>
+cd ../../../ <br>
 git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 <br>
