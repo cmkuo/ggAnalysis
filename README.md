@@ -1,15 +1,14 @@
 #### Current production tag : V08_00_20_00
-#### Newest tag for testing : V08_00_22_00
-#### Note that the current head version can be run with CMSSW_8_0_11
+#### Newest tag for testing : head
+#### Note that the current head version can be run with CMSSW_8_0_24_patch1
 
-##### To work with CMSSW_8_0_20, you do :
-cd CMSSW_8_0_20/src <br>
+##### To work with CMSSW_8_0_24_patch1, you do :
+cd CMSSW_8_0_24_patch1/src <br>
 cmsenv <br>
 git cms-init <br>
-git cms-merge-topic emanueledimarco:ecal_smear_fix_80X <br>
+git cms-merge-topic shervin86:Moriond2017_JEC_energyScales <br>
 cd EgammaAnalysis/ElectronTools/data <br>
-git clone -b ICHEP2016_v2 https://github.com/ECALELFS/ScalesSmearings.git <br>
-cd ../../../ <br>
+git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
@@ -20,6 +19,7 @@ git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/Re
 cd data/RecoEgamma/ElectronIdentification/data <br>
 git checkout egm_id_80X_v1 <br>
 cd $CMSSW_BASE/src <br>
+git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
 cd $CMSSW_BASE/external <br>
 cd slc6_amd64_gcc530/ <br>
 git clone https://github.com/ikrav/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data <br>
@@ -27,58 +27,7 @@ cd data/RecoEgamma/PhotonIdentification/data <br>
 git checkout egm_id_80X_v1 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_20_00 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_8_0_11 and V08_00_11_01, you do :
-cd CMSSW_8_0_11/src <br>
-cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
-git cms-init <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV3-WithWeightFiles-v1_from-CMSSW_8_0_8_patch1 <br>
-git remote add -f -t ecal_smear_fix_80X emanueledimarco https://github.com/emanueledimarco/cmssw.git <br>
-git cms-addpkg EgammaAnalysis/ElectronTools <br>
-git checkout -b from-52f192a 52f192a <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone -b ICHEP2016_v2 https://github.com/ECALELFS/ScalesSmearings.git <br>
-cd ../../../ <br>
-git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_11_01 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_8_0_11 and V08_00_11_00, you do :
-cd CMSSW_8_0_11/src <br>
-cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
-git cms-init <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV3-WithWeightFiles-v1_from-CMSSW_8_0_8_patch1 <br>
-git remote add -f -t ecal_smear_fix_80X emanueledimarco https://github.com/emanueledimarco/cmssw.git <br>
-git cms-addpkg EgammaAnalysis/ElectronTools <br>
-git checkout -b from-277de3c 277de3c <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone -b ICHEP2016_approval_7p65fb https://github.com/emanueledimarco/ScalesSmearings.git <br>
-cd ../../../ <br>
-git cms-merge-topic -u cms-met:CMSSW_8_0_X-METFilterUpdate <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_11_00 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_8_0_10, you do:
-cd CMSSW_8_0_10/src <br>
-cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
-git cms-init <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic cms-btv-pog:BoostedDoubleSVTaggerV3-WithWeightFiles-v1_from-CMSSW_8_0_8_patch1 <br>
-git cms-merge-topic -u matteosan1:smearer_76X <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_10_00 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_7_6_3_patch2, you do:
@@ -87,17 +36,6 @@ cmsenv <br>
 git cms-merge-topic -u matteosan1:smearer_76X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V07_06_03_01 https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j 10 <br>
-
-##### To work with CMSSW_7_4_16, you do:
-cd CMSSW_7_4_16/src <br>
-cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
-git cms-init <br>
-git cms-merge-topic matteosan1:smearer <br>
-git clone https://github.com/cms-jet/JetToolbox JMEAnalysis/JetToolbox <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07-04-16-02 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
