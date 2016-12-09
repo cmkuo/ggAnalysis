@@ -147,7 +147,6 @@ process.p = cms.Path(
     * process.calibratedPatPhotons 
     * process.egmGsfElectronIDSequence 
     * process.egmPhotonIDSequence 
-    * process.ggPhotonIso_CITK_Sequence
     * process.ggNtuplizer
     )
 
