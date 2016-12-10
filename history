@@ -1,4 +1,7 @@
-*V08-00-24-00
+* V
+   * add a new variable jetID to store loose and tight jet ID
+
+* V08-00-24-00
    * update to EGM Spring16 photon IDs
    * update to newest EGM energy corrections
 

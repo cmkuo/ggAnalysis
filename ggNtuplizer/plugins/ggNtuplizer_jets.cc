@@ -9,63 +9,63 @@
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 
-
 using namespace std;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
-// (local) variables associated with tree branches
-//normal jets (ak4)
-Int_t         nJet_;
-vector<float> jetPt_;
-vector<float> jetEn_;
-vector<float> jetEta_;
-vector<float> jetPhi_;
-vector<float> jetRawPt_;
-vector<float> jetRawEn_;
-vector<float> jetMt_;
-vector<float> jetArea_;
-vector<float> jetLeadTrackPt_;
-vector<float> jetLeadTrackEta_;
-vector<float> jetLeadTrackPhi_;
-vector<int>   jetLepTrackPID_;
-vector<float> jetLepTrackPt_;
-vector<float> jetLepTrackEta_;
-vector<float> jetLepTrackPhi_;
-vector<float> jetCHF_;
-vector<float> jetNHF_;
-vector<float> jetCEF_;
-vector<float> jetNEF_;
-vector<int>   jetNCH_;
-vector<int>   jetNNP_;
-vector<float> jetMUF_;
-vector<float> jetHFHAE_;
-vector<float> jetHFEME_;
-vector<int>   jetNConstituents_;
-vector<float> jetVtxPt_;
-vector<float> jetVtxMass_;
-vector<float> jetVtxNtrks_;
-vector<float> jetVtx3DVal_;
-vector<float> jetVtx3DSig_;
-vector<float> jetCSV2BJetTags_; // recommended
-vector<float> jetJetProbabilityBJetTags_;
-vector<float> jetpfCombinedMVAV2BJetTags_;
-vector<int>   jetPartonID_;
-vector<int>   jetHadFlvr_;
-vector<bool>  jetPFLooseId_;
-vector<float> jetPUidFullDiscriminant_;
-vector<float> jetJECUnc_;
-vector<UInt_t>   jetFiredTrgs_;
+
+// ak4 jets
+Int_t          nJet_;
+vector<float>  jetPt_;
+vector<float>  jetEn_;
+vector<float>  jetEta_;
+vector<float>  jetPhi_;
+vector<float>  jetRawPt_;
+vector<float>  jetRawEn_;
+vector<float>  jetMt_;
+vector<float>  jetArea_;
+vector<float>  jetLeadTrackPt_;
+vector<float>  jetLeadTrackEta_;
+vector<float>  jetLeadTrackPhi_;
+vector<int>    jetLepTrackPID_;
+vector<float>  jetLepTrackPt_;
+vector<float>  jetLepTrackEta_;
+vector<float>  jetLepTrackPhi_;
+vector<float>  jetCHF_;
+vector<float>  jetNHF_;
+vector<float>  jetCEF_;
+vector<float>  jetNEF_;
+vector<int>    jetNCH_;
+vector<int>    jetNNP_;
+vector<float>  jetMUF_;
+vector<float>  jetHFHAE_;
+vector<float>  jetHFEME_;
+vector<int>    jetNConstituents_;
+vector<float>  jetVtxPt_;
+vector<float>  jetVtxMass_;
+vector<float>  jetVtxNtrks_;
+vector<float>  jetVtx3DVal_;
+vector<float>  jetVtx3DSig_;
+vector<float>  jetCSV2BJetTags_; // recommended
+vector<float>  jetJetProbabilityBJetTags_;
+vector<float>  jetpfCombinedMVAV2BJetTags_;
+vector<int>    jetPartonID_;
+vector<int>    jetHadFlvr_;
+vector<bool>   jetPFLooseId_;
+vector<int>    jetID_; 
+vector<float>  jetPUidFullDiscriminant_;
+vector<float>  jetJECUnc_;
+vector<UInt_t> jetFiredTrgs_;
 //gen-info for ak4
-vector<int>   jetGenJetIndex_;
-vector<float> jetGenJetEn_;
-vector<float> jetGenJetPt_;
-vector<float> jetGenJetEta_;
-vector<float> jetGenJetPhi_;
-vector<int>   jetGenPartonID_;
-vector<float> jetGenEn_;
-vector<float> jetGenPt_;
-vector<float> jetGenEta_;
-vector<float> jetGenPhi_;
-vector<int>   jetGenPartonMomID_;
+vector<int>    jetGenJetIndex_;
+vector<float>  jetGenJetEn_;
+vector<float>  jetGenJetPt_;
+vector<float>  jetGenJetEta_;
+vector<float>  jetGenJetPhi_;
+vector<int>    jetGenPartonID_;
+vector<float>  jetGenEn_;
+vector<float>  jetGenPt_;
+vector<float>  jetGenEta_;
+vector<float>  jetGenPhi_;
+vector<int>    jetGenPartonMomID_;
 //fat-jets (ak8)
 Int_t         nAK8Jet_;
 vector<float> AK8JetPt_;
@@ -166,21 +166,22 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
   tree->Branch("jetpfCombinedMVAV2BJetTags", &jetpfCombinedMVAV2BJetTags_);
   if (doGenParticles_){
-    tree->Branch("jetPartonID", &jetPartonID_);
-    tree->Branch("jetHadFlvr", &jetHadFlvr_);
-    tree->Branch("jetGenJetIndex", &jetGenJetIndex_);
-    tree->Branch("jetGenJetEn", &jetGenJetEn_);
-    tree->Branch("jetGenJetPt", &jetGenJetPt_);
-    tree->Branch("jetGenJetEta", &jetGenJetEta_);
-    tree->Branch("jetGenJetPhi", &jetGenJetPhi_);
-    tree->Branch("jetGenPartonID", &jetGenPartonID_);
-    tree->Branch("jetGenEn", &jetGenEn_);
-    tree->Branch("jetGenPt", &jetGenPt_);
-    tree->Branch("jetGenEta", &jetGenEta_);
-    tree->Branch("jetGenPhi", &jetGenPhi_);
+    tree->Branch("jetPartonID",       &jetPartonID_);
+    tree->Branch("jetHadFlvr",        &jetHadFlvr_);
+    tree->Branch("jetGenJetIndex",    &jetGenJetIndex_);
+    tree->Branch("jetGenJetEn",       &jetGenJetEn_);
+    tree->Branch("jetGenJetPt",       &jetGenJetPt_);
+    tree->Branch("jetGenJetEta",      &jetGenJetEta_);
+    tree->Branch("jetGenJetPhi",      &jetGenJetPhi_);
+    tree->Branch("jetGenPartonID",    &jetGenPartonID_);
+    tree->Branch("jetGenEn",          &jetGenEn_);
+    tree->Branch("jetGenPt",          &jetGenPt_);
+    tree->Branch("jetGenEta",         &jetGenEta_);
+    tree->Branch("jetGenPhi",         &jetGenPhi_);
     tree->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
   }  
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
+  tree->Branch("jetID",        &jetID_);
   tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
   tree->Branch("jetJECUnc",    &jetJECUnc_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
@@ -305,6 +306,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetPartonID_                            .clear();
   jetHadFlvr_                             .clear();
   jetPFLooseId_                           .clear();
+  jetID_                                  .clear();
   jetPUidFullDiscriminant_                .clear();
   jetJECUnc_                              .clear();
   jetFiredTrgs_                           .clear();
@@ -528,29 +530,32 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetHadFlvr_.push_back(iJet->hadronFlavour());
 
     //jet PF Loose ID
-    //pat::strbitset retjet = pfLooseId_.getBitTemplate();
-    //jetPFLooseId_.push_back(pfLooseId_(*iJet, retjet));
-    bool jetID = true;
+    double NHF      = iJet->neutralHadronEnergyFraction();
+    double NEMF     = iJet->neutralEmEnergyFraction();
+    double NumConst = iJet->chargedMultiplicity()+iJet->neutralMultiplicity();
+    double CHF      = iJet->chargedHadronEnergyFraction();
+    double CHM      = iJet->chargedMultiplicity();
+    double CEMF     = iJet->chargedEmEnergyFraction();
+    double NNP      = iJet->neutralMultiplicity();
+
+    bool looseJetID = false;    
+    bool tightJetID = false;
     if (fabs(iJet->eta()) <= 2.7) {
-      if (!(iJet->neutralHadronEnergyFraction() < 0.99))                       jetID = false;
-      if (!(iJet->neutralEmEnergyFraction() < 0.99))                           jetID = false;
-      if (!((iJet->chargedMultiplicity() + iJet->neutralMultiplicity()) > 1))  jetID = false;
-      if (fabs(iJet->eta()) <= 2.4) {
-        if (!(iJet->chargedHadronEnergyFraction() > 0))  jetID = false;
-        if (!(iJet->chargedMultiplicity() > 0))          jetID = false;
-        if (!(iJet->chargedEmEnergyFraction() < 0.99))   jetID = false;
-      }
+      looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(iJet->eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(iJet->eta())>2.4);
+      tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((fabs(iJet->eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(iJet->eta())>2.4);
+    } else if (fabs(iJet->eta()) <= 3.0) {
+      looseJetID = (NEMF<0.90 && NNP>2);
+      tightJetID = (NEMF<0.90 && NNP>2);
+    } else {
+      looseJetID = (NEMF<0.90 && NNP>10); 
+      tightJetID = (NEMF<0.90 && NNP>10);
     }
-    else if (fabs(iJet->eta()) > 2.7 && fabs(iJet->eta()) <= 3.0) {
-	if (!(iJet->neutralEmEnergyFraction() < 0.90))  jetID = false;
-	if (!(iJet->neutralMultiplicity() > 2))         jetID = false;
-      }
-    else if (fabs(iJet->eta()) > 3.0) {
-      if (!(iJet->neutralEmEnergyFraction() < 0.90))  jetID = false;
-      if (!(iJet->neutralMultiplicity() > 10))        jetID = false;
-    }
-    jetPFLooseId_.push_back(jetID);
-    
+    jetPFLooseId_.push_back(looseJetID);
+    Int_t jetIDdecision = 0;
+    if (looseJetID) jetIDdecision += pow(2, 1);
+    if (tightJetID) jetIDdecision += pow(2, 2);
+    jetID_.push_back(jetIDdecision);    
+
     //PUJet ID from slimmedJets
     jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
     
