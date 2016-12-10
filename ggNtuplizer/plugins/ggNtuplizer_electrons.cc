@@ -23,6 +23,7 @@ vector<float>  eleESEnP1Raw_;
 vector<float>  eleESEnP2Raw_;
 vector<float>  eleD0_;
 vector<float>  eleDz_;
+vector<float>  eleSIP_;
 vector<float>  elePt_;
 vector<float>  eleEta_;
 vector<float>  elePhi_;
@@ -129,6 +130,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleESEnP2",               &eleESEnP2_);
   tree->Branch("eleD0",                   &eleD0_);
   tree->Branch("eleDz",                   &eleDz_);
+  tree->Branch("eleSIP",                  &eleSIP_);
   tree->Branch("elePt",                   &elePt_);
   tree->Branch("eleEta",                  &eleEta_);
   tree->Branch("elePhi",                  &elePhi_);
@@ -248,6 +250,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleESEnS_                   .clear();
   eleD0_                      .clear();
   eleDz_                      .clear();
+  eleSIP_                     .clear();
   elePt_                      .clear();
   eleEta_                     .clear();
   elePhi_                     .clear();
@@ -394,6 +397,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleEn_              .push_back(iEle->energy());
     eleD0_              .push_back(iEle->gsfTrack()->dxy(pv));
     eleDz_              .push_back(iEle->gsfTrack()->dz(pv));
+    eleSIP_             .push_back(fabs(iEle->dB(pat::Electron::PV3D))/iEle->edB(pat::Electron::PV3D));
     elePt_              .push_back(iEle->pt());
     eleEta_             .push_back(iEle->eta());
     elePhi_             .push_back(iEle->phi());

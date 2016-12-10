@@ -15,6 +15,7 @@ vector<int>      muType_;
 vector<UShort_t> muIDbit_;
 vector<float>    muD0_;
 vector<float>    muDz_;
+vector<float>    muSIP_;
 vector<float>    muChi2NDF_;
 vector<float>    muInnerD0_;
 vector<float>    muInnerDz_;
@@ -52,6 +53,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muIDbit",       &muIDbit_);
   tree->Branch("muD0",          &muD0_);
   tree->Branch("muDz",          &muDz_);
+  tree->Branch("muSIP",         &muSIP_);
   tree->Branch("muChi2NDF",     &muChi2NDF_);
   tree->Branch("muInnerD0",     &muInnerD0_);
   tree->Branch("muInnerDz",     &muInnerDz_);
@@ -90,6 +92,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muIDbit_      .clear();
   muD0_         .clear();
   muDz_         .clear();
+  muSIP_        .clear();
   muChi2NDF_    .clear();
   muInnerD0_    .clear();
   muInnerDz_    .clear();
@@ -141,6 +144,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muType_  .push_back(iMu->type());
     muD0_    .push_back(iMu->muonBestTrack()->dxy(pv));
     muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
+    muSIP_   .push_back(fabs(iMu->dB(pat::Muon::PV3D))/iMu->edB(pat::Muon::PV3D));
 
     UShort_t tmpmuIDbit = 0;
 
