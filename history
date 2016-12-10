@@ -1,5 +1,6 @@
 * V
    * add a new variable jetID to store loose and tight jet ID
+   * add IP3D variable to electrons and muons
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs
