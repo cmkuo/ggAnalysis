@@ -672,6 +672,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       ijetRef++;
       if( ijetAK8->pt() < 30.0 ) continue;
       nAK8Jet_++;
+      AK8JetPt_.push_back( ijetAK8->pt() );
+      AK8JetEn_.push_back( ijetAK8->energy() );
+      AK8JetMass_.push_back( ijetAK8->mass() );
       AK8JetRawPt_.push_back( (*ijetAK8).correctedJet("Uncorrected").pt() );
       AK8JetRawEn_.push_back( (*ijetAK8).correctedJet("Uncorrected").energy() );
       AK8JetEta_.push_back( ijetAK8->eta() );
@@ -738,10 +741,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
       float corr = jecAK8_->getCorrection();
       AK8JetL2L3corr_.push_back(corr);
-
-      AK8JetPt_.push_back( corr*uncorrJet.pt() );
-      AK8JetEn_.push_back( corr*uncorrJet.energy() );
-      AK8JetMass_.push_back( corr*uncorrJet.mass() );
+	    
       AK8JetSoftDropMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass"));
       AK8JetPrunedMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass"));
       AK8JetSoftDropMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")));
