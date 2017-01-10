@@ -148,6 +148,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltL3fL1sMu20L1f0Tkf22QL3trkIsoFiltered0p09"] = 18; //HLT_IsoTkMu22
     muFilters["hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09"] = 19; //HLT_IsoTkMu24
     muFilters["hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09"] = 20; //HLT_IsoTkMu27
+    muFilters["hltL3fL1sL1Mu5IsoEG18ORL1Mu5IsoEG20L1f5L2f7L3Filtered17"] = 21; //HLT_Mu17_Photon*  muon
 
     phoSingleFilters["hltEG22HEFilter"]        = 0;
     phoSingleFilters["hltEG30HEFilter"]        = 1;
@@ -204,6 +205,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoDoubleFilters["hltEG36Iso50T80LCaloId24b40eHE10R9Id65Eta2HcalIsoLastFilter"]                         = 26;
     phoDoubleFilters["hltMu17Photon22CaloIdLL1ISOHEFilter"]                                                 = 27;
     phoDoubleFilters["hltMu17Photon30CaloIdLL1ISOHEFilter"]                                                 = 28;
+    phoDoubleFilters["hltMu17Photon30CaloIdLL1ISOORHEFilter"]                                               = 29;
 
     jetFilters["hltSinglePFJet40"]  =  0;
     jetFilters["hltSinglePFJet60"]  =  1;
