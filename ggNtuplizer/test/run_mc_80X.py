@@ -46,6 +46,12 @@ process.source = cms.Source("PoolSource",
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
+### EGM 80X regression
+#from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+#process = regressionWeights(process)
+#process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+
+### EGM scale and smearing correction         
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
                                                   calibratedPatElectrons = cms.PSet(
     initialSeed = cms.untracked.uint32(12345),
@@ -137,17 +143,24 @@ for idmod in my_id_modules:
 my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff',
                     'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff']
 
+#process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
+#process.electronIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+#process.electronMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+#process.photonIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+#process.photonMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
-    process.ggMETFiltersSequence
-    * process.calibratedPatElectrons 
-    * process.calibratedPatPhotons 
-    * process.egmGsfElectronIDSequence 
-    * process.egmPhotonIDSequence 
-    * process.ggNtuplizer
+    #process.regressionApplication*
+    process.ggMETFiltersSequence*
+    process.calibratedPatElectrons*
+    process.calibratedPatPhotons* 
+    process.egmGsfElectronIDSequence*
+    process.egmPhotonIDSequence*
+    process.ggNtuplizer
     )
 
 #print process.dumpPython()
