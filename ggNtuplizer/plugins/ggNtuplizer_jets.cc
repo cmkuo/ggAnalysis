@@ -544,8 +544,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       looseJetID = (NHF<0.99 && NEMF<0.99 && NumConst>1) && ((fabs(iJet->eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(iJet->eta())>2.4);
       tightJetID = (NHF<0.90 && NEMF<0.90 && NumConst>1) && ((fabs(iJet->eta())<=2.4 && CHF>0 && CHM>0 && CEMF<0.99) || fabs(iJet->eta())>2.4);
     } else if (fabs(iJet->eta()) <= 3.0) {
-      looseJetID = (NEMF<0.90 && NNP>2);
-      tightJetID = (NEMF<0.90 && NNP>2);
+      looseJetID = (NEMF>0.01 && NHF<0.98 && NNP>2);
+      tightJetID = (NEMF>0.01 && NHF<0.98 && NNP>2);
     } else {
       looseJetID = (NEMF<0.90 && NNP>10); 
       tightJetID = (NEMF<0.90 && NNP>10);
