@@ -4,6 +4,7 @@
    * remove unused photon variables for Moriond2017 and add photon seed crystal timing and energy
    * update jetID
    * move to HEEP V70 
+   * update to newest EGM 80X regression 
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs
