@@ -5,6 +5,7 @@
    * update jetID
    * move to HEEP V70 
    * update to newest EGM 80X regression 
+   * add variables for the estimation of EGM scale and smearing systematic uncertainty for electrons and photons
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs

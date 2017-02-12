@@ -4,6 +4,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
+#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
@@ -30,6 +31,11 @@ vector<float>  elePhi_;
 vector<float>  eleR9_;
 vector<float>  eleCalibPt_;
 vector<float>  eleCalibEn_;
+vector<float>  eleScaleSyst_;
+vector<float>  eleSmearRhoUp_;
+vector<float>  eleSmearRhoDo_;
+vector<float>  eleSmearPhiUp_;
+vector<float>  eleSmearPhiDo_;
 vector<float>  eleSCEta_;
 vector<float>  eleSCPhi_;
 vector<float>  eleSCRawEn_;
@@ -136,6 +142,13 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleR9",                   &eleR9_);
   tree->Branch("eleCalibPt",              &eleCalibPt_);
   tree->Branch("eleCalibEn",              &eleCalibEn_);
+  if (doGenParticles_) {
+    tree->Branch("eleScaleSyst",            &eleScaleSyst_);
+    tree->Branch("eleSmearRhoUp",           &eleSmearRhoUp_);
+    tree->Branch("eleSmearRhoDo",           &eleSmearRhoDo_);
+    tree->Branch("eleSmearPhiUp",           &eleSmearPhiUp_);
+    tree->Branch("eleSmearPhiDo",           &eleSmearPhiDo_);
+  }
   tree->Branch("eleSCEta",                &eleSCEta_);
   tree->Branch("eleSCPhi",                &eleSCPhi_);
   tree->Branch("eleSCRawEn",              &eleSCRawEn_);
@@ -256,6 +269,11 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleR9_                      .clear();
   eleCalibPt_                 .clear();
   eleCalibEn_                 .clear();
+  eleScaleSyst_               .clear();
+  eleSmearRhoUp_              .clear(); 
+  eleSmearRhoDo_              .clear(); 
+  eleSmearPhiUp_              .clear(); 
+  eleSmearPhiDo_              .clear(); 
   eleSCEta_                   .clear();
   eleSCPhi_                   .clear();
   eleSCRawEn_                 .clear();
@@ -388,8 +406,17 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	corrEn = iCEle->energy();
       }
     }
-    eleCalibPt_         .push_back(corrPt);
-    eleCalibEn_         .push_back(corrEn);
+    eleCalibPt_        .push_back(corrPt);
+    eleCalibEn_        .push_back(corrEn);
+
+    // systematic uncertainty for scale and smearing correction
+    if (!e.isRealData()) {
+      eleScaleSyst_       .push_back(scaler_->ScaleCorrectionUncertainty(e.id().run(), iEle->isEB(), iEle->full5x5_r9(), iEle->superCluster()->eta(), iEle->et()));
+      eleSmearRhoUp_      .push_back(scaler_->getSmearingSigma(e.id().run(), iEle->isEB(), iEle->full5x5_r9(), iEle->superCluster()->eta(), iEle->et(), 1, 0));
+      eleSmearRhoDo_      .push_back(scaler_->getSmearingSigma(e.id().run(), iEle->isEB(), iEle->full5x5_r9(), iEle->superCluster()->eta(), iEle->et(), -1, 0));
+      eleSmearPhiUp_      .push_back(scaler_->getSmearingSigma(e.id().run(), iEle->isEB(), iEle->full5x5_r9(), iEle->superCluster()->eta(), iEle->et(), 0, 1));
+      eleSmearPhiDo_      .push_back(scaler_->getSmearingSigma(e.id().run(), iEle->isEB(), iEle->full5x5_r9(), iEle->superCluster()->eta(), iEle->et(), 0, -1));
+    }
 
     eleCharge_          .push_back(iEle->charge());
     eleChargeConsistent_.push_back((Int_t)iEle->isGsfCtfScPixChargeConsistent());

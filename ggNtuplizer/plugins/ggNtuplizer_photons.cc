@@ -13,6 +13,11 @@ vector<float>  phoEta_;
 vector<float>  phoPhi_;
 vector<float>  phoCalibE_;
 vector<float>  phoCalibEt_;
+vector<float>  phoScaleSyst_;
+vector<float>  phoSmearRhoUp_;
+vector<float>  phoSmearRhoDo_;
+vector<float>  phoSmearPhiUp_;
+vector<float>  phoSmearPhiDo_;
 vector<float>  phoSCE_;
 vector<float>  phoSCRawE_;
 vector<float>  phoESEn_;
@@ -125,6 +130,13 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPhi",                  &phoPhi_);
   tree->Branch("phoCalibE",               &phoCalibE_);
   tree->Branch("phoCalibEt",              &phoCalibEt_);
+  if (doGenParticles_) {
+    tree->Branch("phoScaleSyst",          &phoScaleSyst_);
+    tree->Branch("phoSmearRhoUp",         &phoSmearRhoUp_);
+    tree->Branch("phoSmearRhoDo",         &phoSmearRhoDo_);
+    tree->Branch("phoSmearPhiUp",         &phoSmearPhiUp_);
+    tree->Branch("phoSmearPhiDo",         &phoSmearPhiDo_);
+  }
   tree->Branch("phoSCE",                  &phoSCE_);
   tree->Branch("phoSCRawE",               &phoSCRawE_);
   tree->Branch("phoESEn",                 &phoESEn_);
@@ -229,6 +241,11 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPhi_               .clear();
   phoCalibE_            .clear();
   phoCalibEt_           .clear();
+  phoScaleSyst_         .clear();
+  phoSmearRhoUp_        .clear(); 
+  phoSmearRhoDo_        .clear(); 
+  phoSmearPhiUp_        .clear(); 
+  phoSmearPhiDo_        .clear(); 
   phoSCE_               .clear();
   phoSCRawE_            .clear();
   phoESEn_              .clear();
@@ -427,6 +444,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     }
     phoCalibEt_       .push_back(corrPt);
     phoCalibE_        .push_back(corrEn);
+    // systematic uncertainty for scale and smearing correction
+    if (!e.isRealData()) {
+      phoScaleSyst_       .push_back(scaler_->ScaleCorrectionUncertainty(e.id().run(), iPho->isEB(), iPho->full5x5_r9(), iPho->superCluster()->eta(), iPho->et()));									
+      phoSmearRhoUp_      .push_back(scaler_->getSmearingSigma(e.id().run(), iPho->isEB(), iPho->full5x5_r9(), iPho->superCluster()->eta(), iPho->et(), 1, 0));
+      phoSmearRhoDo_      .push_back(scaler_->getSmearingSigma(e.id().run(), iPho->isEB(), iPho->full5x5_r9(), iPho->superCluster()->eta(), iPho->et(), -1, 0));
+      phoSmearPhiUp_      .push_back(scaler_->getSmearingSigma(e.id().run(), iPho->isEB(), iPho->full5x5_r9(), iPho->superCluster()->eta(), iPho->et(), 0, 1));
+      phoSmearPhiDo_      .push_back(scaler_->getSmearingSigma(e.id().run(), iPho->isEB(), iPho->full5x5_r9(), iPho->superCluster()->eta(), iPho->et(), 0, -1));
+    }
+
 
     phoE_             .push_back(iPho->energy());
     phoEt_            .push_back(iPho->et());
