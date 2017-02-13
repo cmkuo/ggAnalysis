@@ -22,16 +22,16 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 process.load("CondCore.DBCommon.CondDBCommon_cfi")
 from CondCore.DBCommon.CondDBSetup_cfi import *
 process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
- connect = cms.string('sqlite:Summer16_23Sep2016AllV3_DATA.db'),
+ connect = cms.string('sqlite:Summer16_23Sep2016AllV4_DATA.db'),
  toGet = cms.VPSet(
  cms.PSet(
   record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK4PFchs'),
+  tag = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK4PFchs'),
   label = cms.untracked.string('AK4PFchs')
  ),
  cms.PSet(
   record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV3_DATA_AK8PFchs'),
+  tag = cms.string('JetCorrectorParametersCollection_Summer16_23Sep2016AllV4_DATA_AK8PFchs'),
   label = cms.untracked.string('AK8PFchs')
   )))
 process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
@@ -90,24 +90,43 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 jecLevels = [
-  'Summer16_23Sep2016BCDV3_DATA_L2Relative_AK8PFchs.txt',
-  'Summer16_23Sep2016BCDV3_DATA_L3Absolute_AK8PFchs.txt',
-  'Summer16_23Sep2016BCDV3_DATA_L2L3Residual_AK8PFchs.txt'
+  'Summer16_23Sep2016BCDV4_DATA_L2Relative_AK8PFchs.txt',
+  'Summer16_23Sep2016BCDV4_DATA_L3Absolute_AK8PFchs.txt',
+  'Summer16_23Sep2016BCDV4_DATA_L2L3Residual_AK8PFchs.txt'
 ]
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-updateJetCollection(
-    process,
-    jetSource = cms.InputTag('slimmedJets'),
-    labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
-    )
+#updateJetCollection(
+ #   process,
+  #  jetSource = cms.InputTag('slimmedJets'),
+   #labelName = 'UpdatedJEC',
+    #jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+    #)
 updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJetsAK8'),
     labelName = 'UpdatedJECAK8',
     jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
     )
+
+## Update to latest PU jet ID training
+process.load("RecoJets.JetProducers.PileupJetID_cfi")
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+   jets=cms.InputTag("slimmedJets"),
+   inputIsCorrected=True,
+   applyJec=True,
+   vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
+)
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors, updatedPatJets
+process.patJetCorrFactorsReapplyJEC = updatedPatJetCorrFactors.clone(
+  src = cms.InputTag("slimmedJets"),
+  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+process.updatedJets = updatedPatJets.clone(
+  jetSource = cms.InputTag("slimmedJets"),
+  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+)
+process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
+
 
 # MET correction and uncertainties
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -168,6 +187,7 @@ for idmod in my_phoid_modules:
         process.calibratedPatPhotons*
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
+        * ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets )
         process.ggNtuplizer
         )
     
