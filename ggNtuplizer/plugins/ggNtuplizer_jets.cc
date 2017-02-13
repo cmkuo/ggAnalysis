@@ -557,7 +557,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetID_.push_back(jetIDdecision);    
 
     //PUJet ID from slimmedJets
-    jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
+    jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+//	  jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
 
     // gen jet and parton
     int jetGenPartonID = -99;
