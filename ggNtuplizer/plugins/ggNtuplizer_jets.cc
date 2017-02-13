@@ -558,7 +558,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
     //PUJet ID from slimmedJets
     jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
-    
+
     // gen jet and parton
     int jetGenPartonID = -99;
     int jetGenPartonMomID = -99;
@@ -704,8 +704,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
         }
       }
       else if (fabs(ijetAK8->eta()) > 2.7 && fabs(ijetAK8->eta()) <= 3.0) {
-        if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))  AK8jetID = false;
-        if (!(ijetAK8->neutralMultiplicity() > 2))        AK8jetID = false;
+        if (!(ijetAK8->neutralEmEnergyFraction() > 0.01))     AK8jetID = false;
+	if (!(ijetAK8->neutralHadronEnergyFraction() < 0.98)) AK8jetID = false;
+        if (!(ijetAK8->neutralMultiplicity() > 2))            AK8jetID = false;
       }
       else if (fabs(ijetAK8->eta()) > 3.0) {
         if (!(ijetAK8->neutralEmEnergyFraction() < 0.90))  AK8jetID = false;
