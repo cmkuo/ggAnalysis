@@ -92,18 +92,36 @@ jecLevels = [
 ]
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-updateJetCollection(
-    process,
-    jetSource = cms.InputTag('slimmedJets'),
-    labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
-    )
+#updateJetCollection(
+ #   process,
+  #  jetSource = cms.InputTag('slimmedJets'),
+   # labelName = 'UpdatedJEC',
+    #jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+    #)
 updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJetsAK8'),
     labelName = 'UpdatedJECAK8',
     jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
     )
+
+## Update to latest PU jet ID training
+process.load("RecoJets.JetProducers.PileupJetID_cfi")
+process.pileupJetIdUpdated = process.pileupJetId.clone(
+   jets=cms.InputTag("slimmedJets"),
+   inputIsCorrected=True,
+   applyJec=True,
+   vertexes=cms.InputTag("offlineSlimmedPrimaryVertices")
+)
+from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors, updatedPatJets
+process.patJetCorrFactorsReapplyJEC = updatedPatJetCorrFactors.clone(
+  src = cms.InputTag("slimmedJets"),
+  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+process.updatedJets = updatedPatJets.clone(
+  jetSource = cms.InputTag("slimmedJets"),
+  jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
+)
+process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
 
 # MET correction and uncertainties
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -160,6 +178,7 @@ process.p = cms.Path(
     process.calibratedPatPhotons* 
     process.egmGsfElectronIDSequence*
     process.egmPhotonIDSequence*
+    * ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets )
     process.ggNtuplizer
     )
 
