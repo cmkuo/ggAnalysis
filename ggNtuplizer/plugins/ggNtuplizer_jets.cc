@@ -637,9 +637,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       float jetP4SmearUp = -1.;
       float jetP4SmearDo = -1.;
       if (jetGenJetPt > 0 && deltaR(iJet->eta(), iJet->phi(), jetGenJetEta, jetGenJetPhi) < 0.2 && fabs(iJet->pt()-jetGenJetPt) < 3*jetResolution*iJet->pt()) {
-	jetP4Smear   = (jetGenJetPt + jetResolutionSF  *(iJet->pt() - jetGenJetPt))/iJet->pt();
-	jetP4SmearUp = (jetGenJetPt + jetResolutionSFUp*(iJet->pt() - jetGenJetPt))/iJet->pt();
-	jetP4SmearDo = (jetGenJetPt + jetResolutionSFDo*(iJet->pt() - jetGenJetPt))/iJet->pt();
+	jetP4Smear   = 1. + (jetResolutionSF   - 1.)*(iJet->pt() - jetGenJetPt)/iJet->pt();
+	jetP4SmearUp = 1. + (jetResolutionSFUp - 1.)*(iJet->pt() - jetGenJetPt)/iJet->pt();
+	jetP4SmearDo = 1. + (jetResolutionSFDo - 1.)*(iJet->pt() - jetGenJetPt)/iJet->pt();
       } else {
 	jetP4Smear   = 1. + rnd*sqrt(max(pow(jetResolutionSF,   2)-1, 0.));
         jetP4SmearUp = 1. + rnd*sqrt(max(pow(jetResolutionSFUp, 2)-1, 0.));
