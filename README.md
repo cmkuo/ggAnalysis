@@ -14,6 +14,9 @@ git cms-merge-topic shervin86:Moriond2017_JEC_energyScales <br>
 cd EgammaAnalysis/ElectronTools/data <br>
 git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 cd ../../../ <br>
+git remote add ahinzmann git@github.com:ahinzmann/cmssw.git
+git fetch ahinzmann PUidMiniAODfix80
+git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 <br>
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
@@ -22,6 +25,7 @@ git cms-merge-topic ikrav:egm_id_80X_v2 <br>
 git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone https://github.com/cmkuo/ggAnalysis.git <br>
+
 scram b -j 10 <br>
 
 ##### To work with CMSSW_8_0_24_patch1, you do :
