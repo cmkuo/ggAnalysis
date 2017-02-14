@@ -25,6 +25,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "JetMETCorrections/Modules/interface/JetResolution.h"
 //#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
 
 using namespace std;
@@ -184,6 +185,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   TH1F    *hGenWeight_;
 
   CiCPhotonID    *cicPhotonId_;
+
+  JME::JetResolution            jetResolution_;
+  JME::JetResolutionScaleFactor jetResolutionSF_;
 
   //PFJetIDSelectionFunctor pfLooseId_;
   boost::shared_ptr<FactorizedJetCorrector> jecAK8_;

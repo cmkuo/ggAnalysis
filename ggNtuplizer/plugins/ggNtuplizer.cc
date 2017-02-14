@@ -136,6 +136,9 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
   hEvents_->Fill(0.5);
 
+  jetResolution_   = JME::JetResolution::get(es, "AK4PFchs_pt");
+  jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK4PFchs");
+
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
 
