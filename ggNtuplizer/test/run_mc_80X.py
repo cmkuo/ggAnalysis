@@ -60,6 +60,10 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
                                                   calibratedPatPhotons = cms.PSet(
     initialSeed = cms.untracked.uint32(12345),
     engineName = cms.untracked.string('TRandom3')
+    ),
+                                                   ggNtuplizer  = cms.PSet(
+    initialSeed = cms.untracked.uint32(67890),
+    engineName = cms.untracked.string('TRandom3')
     )
                                                    )
 
