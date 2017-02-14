@@ -7,6 +7,8 @@
    * update to newest EGM 80X regression 
    * update to Summer16_23Sep2016 V4 JEC
    * update jet PF ID 
+   * add JER smearing factors for MC
+   * store MET filter decisions for MC as well
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs
