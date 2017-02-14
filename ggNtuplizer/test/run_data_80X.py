@@ -121,7 +121,7 @@ process.pileupJetIdUpdated = process.pileupJetId.clone(
 from PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff import updatedPatJetCorrFactors, updatedPatJets
 process.patJetCorrFactorsReapplyJEC = updatedPatJetCorrFactors.clone(
   src = cms.InputTag("slimmedJets"),
-  levels = ['L1FastJet', 'L2Relative', 'L3Absolute'] )
+  levels = ['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual'] )
 process.updatedJets = updatedPatJets.clone(
   jetSource = cms.InputTag("slimmedJets"),
   jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
