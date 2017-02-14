@@ -106,7 +106,9 @@ updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJetsAK8'),
     labelName = 'UpdatedJECAK8',
-    jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
+    jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
+    btagDiscriminators = ['pfBoostedDoubleSecondaryVertexAK8BJetTags'],
+    btagPrefix = 'newV4' # optional, in case interested in accessing both the old and new discriminator values
     )
 
 ## Update to latest PU jet ID training
