@@ -8,6 +8,9 @@
 #include "FWCore/Framework/interface/EventSetup.h"
 #include "DataFormats/Math/interface/LorentzVector.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
+#include "FWCore/Utilities/interface/RandomNumberGenerator.h"
+#include "CLHEP/Random/RandomEngine.h"
+#include "CLHEP/Random/RandGauss.h"
 
 using namespace std;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
@@ -53,9 +56,11 @@ vector<bool>   jetPFLooseId_;
 vector<int>    jetID_; 
 vector<float>  jetPUID_;
 vector<float>  jetJECUnc_;
+vector<float>  jetP4Smear_;
+vector<float>  jetP4SmearUp_;
+vector<float>  jetP4SmearDo_;
 vector<UInt_t> jetFiredTrgs_;
 //gen-info for ak4
-vector<int>    jetGenJetIndex_;
 vector<float>  jetGenJetEn_;
 vector<float>  jetGenJetPt_;
 vector<float>  jetGenJetEta_;
@@ -168,7 +173,6 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   if (doGenParticles_){
     tree->Branch("jetPartonID",       &jetPartonID_);
     tree->Branch("jetHadFlvr",        &jetHadFlvr_);
-    tree->Branch("jetGenJetIndex",    &jetGenJetIndex_);
     tree->Branch("jetGenJetEn",       &jetGenJetEn_);
     tree->Branch("jetGenJetPt",       &jetGenJetPt_);
     tree->Branch("jetGenJetEta",      &jetGenJetEta_);
@@ -184,6 +188,9 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetID",        &jetID_);
   tree->Branch("jetPUID",      &jetPUID_);
   tree->Branch("jetJECUnc",    &jetJECUnc_);
+  tree->Branch("jetP4Smear",   &jetP4Smear_);
+  tree->Branch("jetP4SmearUp", &jetP4SmearUp_);
+  tree->Branch("jetP4SmearDo", &jetP4SmearDo_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
   tree->Branch("jetCHF",       &jetCHF_);
   tree->Branch("jetNHF",       &jetNHF_);
@@ -309,6 +316,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetID_                                  .clear();
   jetPUID_                                .clear();
   jetJECUnc_                              .clear();
+  jetP4Smear_                             .clear();
+  jetP4SmearUp_                           .clear();
+  jetP4SmearDo_                           .clear();
   jetFiredTrgs_                           .clear();
   jetCHF_                                 .clear();
   jetNHF_                                 .clear();
@@ -327,7 +337,6 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetHFEME_                               .clear();
     jetNConstituents_                       .clear();
   }
-  jetGenJetIndex_.clear();
   jetGenJetEn_.clear();
   jetGenJetPt_.clear();
   jetGenJetEta_.clear();
@@ -427,6 +436,14 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
+  edm::Handle<double> rhoHandle;
+  e.getByToken(rhoLabel_, rhoHandle);
+  float rho = *(rhoHandle.product());
+  
+  edm::Handle<reco::VertexCollection> vtxHandle;
+  e.getByToken(vtxLabel_, vtxHandle);
+  if (!vtxHandle.isValid()) edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
+  
   // Accessing the JEC uncertainties 
   //ak4  
   edm::ESHandle<JetCorrectorParametersCollection> JetCorParColl;
@@ -444,7 +461,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   //start jets Lvdp
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
     
-    if (iJet->pt() < 10) continue;
+    if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
     jetEn_.push_back(    iJet->energy());
     jetEta_.push_back(   iJet->eta());
@@ -473,7 +490,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     } else {
       jetJECUnc_.push_back(-1.);
     }
-    
+
     jetFiredTrgs_.push_back(matchJetTriggerFilters(iJet->pt(), iJet->eta(), iJet->phi()));    
 
     //Searching for leading track and lepton
@@ -557,17 +574,18 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetID_.push_back(jetIDdecision);    
 
     // PUJet ID from slimmedJets
+    //cout<<iJet->userFloat("pileupJetIdUpdated:fullDiscriminant")<<" "<<iJet->userFloat("pileupJetId:fullDiscriminant")<<endl;
     jetPUID_.push_back( iJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
     //jetPUID_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
 
     // gen jet and parton
-    int jetGenPartonID = -99;
-    int jetGenPartonMomID = -99;
-    float jetGenEn = -999.;
-    float jetGenPt = -999.;
-    float jetGenEta = -999.;
-    float jetGenPhi = -999.;
-    if (doGenParticles_ && genParticlesHandle.isValid() ) {
+    if (doGenParticles_ && genParticlesHandle.isValid()) {
+      int jetGenPartonID    = -99;
+      int jetGenPartonMomID = -99;
+      float jetGenEn        = -999.;
+      float jetGenPt        = -999.;
+      float jetGenEta       = -999.;
+      float jetGenPhi       = -999.;      
       if ((*iJet).genParton()) {
 	jetGenPartonID = (*iJet).genParton()->pdgId();
 	jetGenEn = (*iJet).genParton()->energy();
@@ -578,32 +596,59 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 	  jetGenPartonMomID = (*iJet).genParton()->mother()->pdgId();
 	}
       }
-    }
-    jetGenPartonID_.push_back(jetGenPartonID);
-    jetGenPartonMomID_.push_back(jetGenPartonMomID);
-    jetGenEn_ .push_back(jetGenEn);
-    jetGenPt_ .push_back(jetGenPt);
-    jetGenEta_ .push_back(jetGenEta);
-    jetGenPhi_ .push_back(jetGenPhi);
-    int jetGenJetIndex = -1;
-    float jetGenJetEn = -999.;
-    float jetGenJetPt = -999.;
-    float jetGenJetEta = -999.;
-    float jetGenJetPhi = -999.;
-    if (doGenParticles_ && genParticlesHandle.isValid() ) {
+      
+      jetGenPartonID_.push_back(jetGenPartonID);
+      jetGenPartonMomID_.push_back(jetGenPartonMomID);
+      jetGenEn_ .push_back(jetGenEn);
+      jetGenPt_ .push_back(jetGenPt);
+      jetGenEta_ .push_back(jetGenEta);
+      jetGenPhi_ .push_back(jetGenPhi);
+      
+      float jetGenJetEn  = -999.;
+      float jetGenJetPt  = -999.;
+      float jetGenJetEta = -999.;
+      float jetGenJetPhi = -999.;
       if ((*iJet).genJet()) {
-	jetGenJetIndex = 1;
 	jetGenJetEn = (*iJet).genJet()->energy();
 	jetGenJetPt = (*iJet).genJet()->pt();
 	jetGenJetEta = (*iJet).genJet()->eta();
 	jetGenJetPhi = (*iJet).genJet()->phi();
       }
+      jetGenJetEn_.push_back(jetGenJetEn);
+      jetGenJetPt_.push_back(jetGenJetPt);
+      jetGenJetEta_.push_back(jetGenJetEta);
+      jetGenJetPhi_.push_back(jetGenJetPhi);
+      
+      // access jet resolution       
+      JME::JetParameters parameters;
+      parameters.setJetPt(iJet->pt()).setJetEta(iJet->eta()).setRho(rho);
+      float jetResolution = jetResolution_.getResolution(parameters);
+
+      edm::Service<edm::RandomNumberGenerator> rng;
+      if (!rng.isAvailable()) edm::LogError("JET : random number generator is missing !");
+      CLHEP::HepRandomEngine & engine = rng->getEngine( e.streamID() );
+      float rnd = CLHEP::RandGauss::shoot(&engine, 0., jetResolution);
+
+      float jetResolutionSF   = jetResolutionSF_.getScaleFactor(parameters);
+      float jetResolutionSFUp = jetResolutionSF_.getScaleFactor(parameters, Variation::UP);
+      float jetResolutionSFDo = jetResolutionSF_.getScaleFactor(parameters, Variation::DOWN);
+
+      float jetP4Smear   = -1.;
+      float jetP4SmearUp = -1.;
+      float jetP4SmearDo = -1.;
+      if (jetGenJetPt > 0) {
+	jetP4Smear   = (jetGenJetPt + jetResolutionSF  *(iJet->pt() - jetGenJetPt))/iJet->pt();
+	jetP4SmearUp = (jetGenJetPt + jetResolutionSFUp*(iJet->pt() - jetGenJetPt))/iJet->pt();
+	jetP4SmearDo = (jetGenJetPt + jetResolutionSFDo*(iJet->pt() - jetGenJetPt))/iJet->pt();
+      } else {
+	jetP4Smear   = 1. + rnd*sqrt(max(pow(jetResolutionSF,   2)-1, 0.));
+        jetP4SmearUp = 1. + rnd*sqrt(max(pow(jetResolutionSFUp, 2)-1, 0.));
+	jetP4SmearDo = 1. + rnd*sqrt(max(pow(jetResolutionSFDo, 2)-1, 0.));
+      }
+      jetP4Smear_  .push_back(jetP4Smear);
+      jetP4SmearUp_.push_back(jetP4SmearUp);
+      jetP4SmearDo_.push_back(jetP4SmearDo);
     }
-    jetGenJetIndex_.push_back(jetGenJetIndex);
-    jetGenJetEn_.push_back(jetGenJetEn);
-    jetGenJetPt_.push_back(jetGenJetPt);
-    jetGenJetEta_.push_back(jetGenJetEta);
-    jetGenJetPhi_.push_back(jetGenJetPhi);
     
     nJet_++;
   }
@@ -632,17 +677,8 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     // Make the FactorizedJetCorrector
     jecAK8_ = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vPar) );
     jecAK8pSD_ = boost::shared_ptr<FactorizedJetCorrector> ( new FactorizedJetCorrector(vPar) );
-   
-    edm::Handle<double> rhoHandle;
-    e.getByToken(rhoLabel_, rhoHandle);
-    float rho = *(rhoHandle.product());
-    
-    edm::Handle<reco::VertexCollection> vtxHandle;
-    e.getByToken(vtxLabel_, vtxHandle);
-    if (!vtxHandle.isValid()) edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
-    
-    
-     nAK8Jet_ = 0;
+       
+    nAK8Jet_ = 0;
     //jet substructure
     int nsubjets = 0;
     std::vector<float> vecSDSJcsv ;
