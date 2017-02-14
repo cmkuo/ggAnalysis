@@ -51,7 +51,7 @@ vector<int>    jetPartonID_;
 vector<int>    jetHadFlvr_;
 vector<bool>   jetPFLooseId_;
 vector<int>    jetID_; 
-vector<float>  jetPUidFullDiscriminant_;
+vector<float>  jetPUID_;
 vector<float>  jetJECUnc_;
 vector<UInt_t> jetFiredTrgs_;
 //gen-info for ak4
@@ -182,7 +182,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   }  
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetID",        &jetID_);
-  tree->Branch("jetPUidFullDiscriminant", &jetPUidFullDiscriminant_);
+  tree->Branch("jetPUID",      &jetPUID_);
   tree->Branch("jetJECUnc",    &jetJECUnc_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
   tree->Branch("jetCHF",       &jetCHF_);
@@ -307,7 +307,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetHadFlvr_                             .clear();
   jetPFLooseId_                           .clear();
   jetID_                                  .clear();
-  jetPUidFullDiscriminant_                .clear();
+  jetPUID_                                .clear();
   jetJECUnc_                              .clear();
   jetFiredTrgs_                           .clear();
   jetCHF_                                 .clear();
@@ -556,9 +556,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     if (tightJetID) jetIDdecision += pow(2, 2);
     jetID_.push_back(jetIDdecision);    
 
-    //PUJet ID from slimmedJets
-    jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
-//	  jetPUidFullDiscriminant_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
+    // PUJet ID from slimmedJets
+    jetPUID_.push_back( iJet->userFloat("pileupJetIdUpdated:fullDiscriminant"));
+    //jetPUID_.push_back( iJet->userFloat("pileupJetId:fullDiscriminant"));
 
     // gen jet and parton
     int jetGenPartonID = -99;
