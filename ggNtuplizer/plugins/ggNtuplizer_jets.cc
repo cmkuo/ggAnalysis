@@ -98,6 +98,7 @@ vector<float> AK8JetSoftDropMassCorr_;
 vector<float> AK8JetPrunedMass_;
 vector<float> AK8JetPrunedMassCorr_;
 vector<float> AK8JetpfBoostedDSVBTag_;
+vector<float> AK8JetDSVnewV4_;
 vector<float> AK8JetCSV_;
 vector<float> AK8JetJECUnc_;
 vector<float> AK8JetL2L3corr_;
@@ -238,6 +239,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("AK8JetPrunedMass",      &AK8JetPrunedMass_);
     tree->Branch("AK8JetPrunedMassCorr",      &AK8JetPrunedMassCorr_);
     tree->Branch("AK8JetpfBoostedDSVBTag",   &AK8JetpfBoostedDSVBTag_);
+    tree->Branch("AK8JetDSVnewV4",   &AK8JetDSVnewV4_);
     tree->Branch("AK8JetCSV",        &AK8JetCSV_);
     tree->Branch("AK8JetJECUnc",             &AK8JetJECUnc_);
     tree->Branch("AK8JetL2L3corr",             &AK8JetL2L3corr_);
@@ -374,6 +376,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetPrunedMass_   .clear();
   AK8JetPrunedMassCorr_   .clear();
   AK8JetpfBoostedDSVBTag_  .clear();
+  AK8JetDSVnewV4_  .clear();
   AK8JetCSV_   .clear();
   AK8JetJECUnc_            .clear();
   AK8JetL2L3corr_            .clear();
@@ -766,6 +769,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetPFTightLepVetoId_.push_back(AK8jetIDTightLepVeto);
 
       AK8JetpfBoostedDSVBTag_.push_back(ijetAK8->bDiscriminator("pfBoostedDoubleSecondaryVertexAK8BJetTags"));
+      AK8JetDSVnewV4_.push_back(ijetAK8->bDiscriminator("newV4pfBoostedDoubleSecondaryVertexAK8BJetTags"));
       AK8JetCSV_.push_back(ijetAK8->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
       //AK8JetpfBoostedDSVBTag_.push_back(     (*pfBoostedDoubleSecondaryVertex).value(ijetRef));
 
