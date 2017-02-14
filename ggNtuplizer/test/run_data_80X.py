@@ -97,11 +97,11 @@ jecLevels = [
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 #updateJetCollection(
-#   process,
-#  jetSource = cms.InputTag('slimmedJets'),
-   #labelName = 'UpdatedJEC',
-    #jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
-    #)
+#    process,
+#    jetSource = cms.InputTag('slimmedJets'),
+#    labelName = 'UpdatedJEC',
+#    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+#    )
 updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJetsAK8'),
@@ -126,7 +126,6 @@ process.updatedJets = updatedPatJets.clone(
   jetCorrFactorsSource = cms.VInputTag(cms.InputTag("patJetCorrFactorsReapplyJEC"))
 )
 process.updatedJets.userData.userFloats.src += ['pileupJetIdUpdated:fullDiscriminant']
-
 
 # MET correction and uncertainties
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
@@ -180,7 +179,7 @@ for idmod in my_phoid_modules:
         ###process.reapplyJEC*
         ###process.pfImpactParameterTagInfosAK8 *
         ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-        ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags *
+        ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags *        
         process.ggMETFiltersSequence* 
         process.regressionApplication*
         process.calibratedPatElectrons*
