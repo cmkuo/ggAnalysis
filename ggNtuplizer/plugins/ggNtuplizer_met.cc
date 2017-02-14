@@ -72,7 +72,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 
   metFilters_ = 0;
 
-  if (addFilterInfoMINIAOD_ && e.isRealData()) {
+  if (addFilterInfoMINIAOD_) {
     string filterNamesToCheck[6] = {
       "Flag_HBHENoiseFilter",
       "Flag_HBHENoiseIsoFilter", 
