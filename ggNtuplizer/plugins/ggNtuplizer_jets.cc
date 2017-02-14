@@ -183,14 +183,14 @@ void ggNtuplizer::branchesJets(TTree* tree) {
     tree->Branch("jetGenEta",         &jetGenEta_);
     tree->Branch("jetGenPhi",         &jetGenPhi_);
     tree->Branch("jetGenPartonMomID", &jetGenPartonMomID_);
+    tree->Branch("jetP4Smear",        &jetP4Smear_);
+    tree->Branch("jetP4SmearUp",      &jetP4SmearUp_);
+    tree->Branch("jetP4SmearDo",      &jetP4SmearDo_);
   }  
   tree->Branch("jetPFLooseId", &jetPFLooseId_);
   tree->Branch("jetID",        &jetID_);
   tree->Branch("jetPUID",      &jetPUID_);
   tree->Branch("jetJECUnc",    &jetJECUnc_);
-  tree->Branch("jetP4Smear",   &jetP4Smear_);
-  tree->Branch("jetP4SmearUp", &jetP4SmearUp_);
-  tree->Branch("jetP4SmearDo", &jetP4SmearDo_);
   tree->Branch("jetFiredTrgs", &jetFiredTrgs_);
   tree->Branch("jetCHF",       &jetCHF_);
   tree->Branch("jetNHF",       &jetNHF_);
