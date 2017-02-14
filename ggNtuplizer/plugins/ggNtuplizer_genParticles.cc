@@ -35,7 +35,7 @@ vector<float>    mcMomPt;
 vector<float>    mcMomMass;
 vector<float>    mcMomEta;
 vector<float>    mcMomPhi;
-vector<int>      mcIndex;
+//vector<int>      mcIndex;
 vector<UShort_t> mcStatusFlag;
 vector<int>      mcParentage;
 vector<int>      mcStatus;
@@ -148,7 +148,7 @@ void ggNtuplizer::branchesGenPart(TTree* tree) {
   tree->Branch("mcMomMass",    &mcMomMass);
   tree->Branch("mcMomEta",     &mcMomEta);
   tree->Branch("mcMomPhi",     &mcMomPhi);
-  tree->Branch("mcIndex",      &mcIndex);
+  //tree->Branch("mcIndex",      &mcIndex);
   tree->Branch("mcStatusFlag", &mcStatusFlag); //-999:non W or Z, 1:hardronic, 2:e, 3:mu, 4:tau
   tree->Branch("mcParentage",  &mcParentage);  // 16*lepton + 8*boson + 4*non-prompt + 2*qcd + exotics
   tree->Branch("mcStatus",     &mcStatus);     // status of the particle
@@ -281,7 +281,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
   mcMomMass   .clear();
   mcMomEta    .clear();
   mcMomPhi    .clear();
-  mcIndex     .clear();
+  //mcIndex     .clear();
   mcStatusFlag.clear();
   mcParentage .clear();
   mcStatus    .clear();
@@ -409,7 +409,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
 	mcMomPhi.push_back(mcMomPhi_);
       }
 
-      mcIndex.push_back(genIndex-1);
+      //mcIndex.push_back(genIndex-1);
 
       if (photonOrLepton) {
 	mcCalIsoDR03.push_back( getGenCalIso(genParticlesHandle, ip, 0.3, false, false) );
