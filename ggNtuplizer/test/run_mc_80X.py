@@ -178,7 +178,7 @@ process.p = cms.Path(
     process.calibratedPatPhotons* 
     process.egmGsfElectronIDSequence*
     process.egmPhotonIDSequence*
-    * ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets )
+    ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets )*
     process.ggNtuplizer
     )
 

@@ -97,8 +97,8 @@ jecLevels = [
 
 from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
 #updateJetCollection(
- #   process,
-  #  jetSource = cms.InputTag('slimmedJets'),
+#   process,
+#  jetSource = cms.InputTag('slimmedJets'),
    #labelName = 'UpdatedJEC',
     #jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
     #)
@@ -187,7 +187,7 @@ for idmod in my_phoid_modules:
         process.calibratedPatPhotons*
         process.egmGsfElectronIDSequence*
         process.egmPhotonIDSequence*
-        * ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets )
+        ( process.pileupJetIdUpdated + process.patJetCorrFactorsReapplyJEC + process. updatedJets ) *
         process.ggNtuplizer
         )
     
