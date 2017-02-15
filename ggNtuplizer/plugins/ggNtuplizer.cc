@@ -139,6 +139,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   if (doGenParticles_) {
     jetResolution_   = JME::JetResolution::get(es, "AK4PFchs_pt");
     jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK4PFchs");
+    AK8jetResolution_   = JME::JetResolution::get(es, "AK8PFchs_pt");
+    AK8jetResolutionSF_ = JME::JetResolutionScaleFactor::get(es, "AK8PFchs");
   }
 
   edm::Handle<reco::VertexCollection> vtxHandle;

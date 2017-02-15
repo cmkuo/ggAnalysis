@@ -188,6 +188,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   JME::JetResolution            jetResolution_;
   JME::JetResolutionScaleFactor jetResolutionSF_;
+  JME::JetResolution            AK8jetResolution_;
+  JME::JetResolutionScaleFactor AK8jetResolutionSF_;
 
   //PFJetIDSelectionFunctor pfLooseId_;
   boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
