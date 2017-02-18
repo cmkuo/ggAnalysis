@@ -846,6 +846,35 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
           AK8JetGenJetEta = (*ijetAK8).genJet()->eta();
           AK8JetGenJetPhi = (*ijetAK8).genJet()->phi();
         }
+        // access AK8jet resolution       
+        JME::JetParameters AK8parameters;
+        AK8parameters.setJetPt(ijetAK8->pt()).setJetEta(ijetAK8->eta()).setRho(rho);
+        float AK8jetResolution = AK8jetResolution_.getResolution(AK8parameters);
+
+        edm::Service<edm::RandomNumberGenerator> rng;
+        if (!rng.isAvailable()) edm::LogError("JET : random number generator is missing !");
+        CLHEP::HepRandomEngine & engine = rng->getEngine( e.streamID() );
+        float rnd = CLHEP::RandGauss::shoot(&engine, 0., AK8jetResolution);
+
+        float AK8jetResolutionSF   = AK8jetResolutionSF_.getScaleFactor(AK8parameters);
+        float AK8jetResolutionSFUp = AK8jetResolutionSF_.getScaleFactor(AK8parameters, Variation::UP);
+        float AK8jetResolutionSFDo = AK8jetResolutionSF_.getScaleFactor(AK8parameters, Variation::DOWN);
+
+        float AK8JetP4Smear   = -1.;
+        float AK8JetP4SmearUp = -1.;
+        float AK8JetP4SmearDo = -1.;
+        if (AK8JetGenJetPt > 0 && deltaR(ijetAK8->eta(), ijetAK8->phi(), AK8JetGenJetEta, AK8JetGenJetPhi) < 0.4 && fabs(ijetAK8->pt()-AK8JetGenJetPt) < 3*AK8jetResolution*ijetAK8->pt()) {
+          AK8JetP4Smear   = 1. + (AK8jetResolutionSF   - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
+          AK8JetP4SmearUp = 1. + (AK8jetResolutionSFUp - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
+          AK8JetP4SmearDo = 1. + (AK8jetResolutionSFDo - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
+        } else {
+          AK8JetP4Smear   = 1. + rnd*sqrt(max(pow(AK8jetResolutionSF,   2)-1, 0.));
+          AK8JetP4SmearUp = 1. + rnd*sqrt(max(pow(AK8jetResolutionSFUp, 2)-1, 0.));
+          AK8JetP4SmearDo = 1. + rnd*sqrt(max(pow(AK8jetResolutionSFDo, 2)-1, 0.));
+        }
+        AK8JetP4Smear_  .push_back(AK8JetP4Smear);
+        AK8JetP4SmearUp_.push_back(AK8JetP4SmearUp);
+        AK8JetP4SmearDo_.push_back(AK8JetP4SmearDo);
       }
       AK8JetGenJetIndex_.push_back(AK8JetGenJetIndex);
       AK8JetGenJetEn_.push_back(AK8JetGenJetEn);
@@ -853,37 +882,6 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetGenJetEta_.push_back(AK8JetGenJetEta);
       AK8JetGenJetPhi_.push_back(AK8JetGenJetPhi);
       
-      // access AK8jet resolution       
-      /*
-      JME::JetParameters AK8parameters;
-      AK8parameters.setJetPt(ijetAK8->pt()).setJetEta(ijetAK8->eta()).setRho(rho);
-      float AK8jetResolution = AK8jetResolution_.getResolution(AK8parameters);
-
-      edm::Service<edm::RandomNumberGenerator> rng;
-      if (!rng.isAvailable()) edm::LogError("JET : random number generator is missing !");
-      CLHEP::HepRandomEngine & engine = rng->getEngine( e.streamID() );
-      float rnd = CLHEP::RandGauss::shoot(&engine, 0., AK8jetResolution);
-
-      float AK8jetResolutionSF   = AK8jetResolutionSF_.getScaleFactor(AK8parameters);
-      float AK8jetResolutionSFUp = AK8jetResolutionSF_.getScaleFactor(AK8parameters, Variation::UP);
-      float AK8jetResolutionSFDo = AK8jetResolutionSF_.getScaleFactor(AK8parameters, Variation::DOWN);
-
-      float AK8JetP4Smear   = -1.;
-      float AK8JetP4SmearUp = -1.;
-      float AK8JetP4SmearDo = -1.;
-      if (AK8JetGenJetPt > 0 && deltaR(ijetAK8->eta(), ijetAK8->phi(), AK8JetGenJetEta, AK8JetGenJetPhi) < 0.4 && fabs(ijetAK8->pt()-AK8JetGenJetPt) < 3*AK8jetResolution*ijetAK8->pt()) {
-        AK8JetP4Smear   = 1. + (AK8jetResolutionSF   - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
-        AK8JetP4SmearUp = 1. + (AK8jetResolutionSFUp - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
-        AK8JetP4SmearDo = 1. + (AK8jetResolutionSFDo - 1.)*(ijetAK8->pt() - AK8JetGenJetPt)/ijetAK8->pt();
-      } else {
-        AK8JetP4Smear   = 1. + rnd*sqrt(max(pow(AK8jetResolutionSF,   2)-1, 0.));
-        AK8JetP4SmearUp = 1. + rnd*sqrt(max(pow(AK8jetResolutionSFUp, 2)-1, 0.));
-        AK8JetP4SmearDo = 1. + rnd*sqrt(max(pow(AK8jetResolutionSFDo, 2)-1, 0.));
-      }
-      AK8JetP4Smear_  .push_back(AK8JetP4Smear);
-      AK8JetP4SmearUp_.push_back(AK8JetP4SmearUp);
-      AK8JetP4SmearDo_.push_back(AK8JetP4SmearDo);
-      */
       //save Softdrop subjet info Lvdp
       vecSDSJcsv.clear();
       vecSDSJpt.clear();
