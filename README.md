@@ -15,9 +15,6 @@ cd EgammaAnalysis/ElectronTools/data <br>
 git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 git checkout Moriond17_23Jan_v1 <br>
 cd ../../../ <br>
-git remote add ahinzmann git@github.com:ahinzmann/cmssw.git <br>
-git fetch ahinzmann PUidMiniAODfix80 <br>
-git cherry-pick ca33756e1747aec27d13971bcfd0874b16724e7f <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 -u <br>
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
