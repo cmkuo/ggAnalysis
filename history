@@ -9,6 +9,7 @@
    * update jet PF ID 
    * add JER smearing factors for MC
    * store MET filter decisions for MC as well
+   * move to Moriond17 EGM scale correction and smearing
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs
