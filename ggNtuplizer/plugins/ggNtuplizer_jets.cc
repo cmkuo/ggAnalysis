@@ -854,6 +854,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetGenJetPhi_.push_back(AK8JetGenJetPhi);
       
       // access AK8jet resolution       
+      /*
       JME::JetParameters AK8parameters;
       AK8parameters.setJetPt(ijetAK8->pt()).setJetEta(ijetAK8->eta()).setRho(rho);
       float AK8jetResolution = AK8jetResolution_.getResolution(AK8parameters);
@@ -882,7 +883,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       AK8JetP4Smear_  .push_back(AK8JetP4Smear);
       AK8JetP4SmearUp_.push_back(AK8JetP4SmearUp);
       AK8JetP4SmearDo_.push_back(AK8JetP4SmearDo);
-
+      */
       //save Softdrop subjet info Lvdp
       vecSDSJcsv.clear();
       vecSDSJpt.clear();
