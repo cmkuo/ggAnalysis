@@ -4,7 +4,7 @@
    * remove unused photon variables for Moriond2017 and add photon seed crystal timing and energy
    * update jetID
    * move to HEEP V70 
-   * update to newest EGM 80X regression 
+   * update to newest EGM 80X regression and scale correction and smearing
    * update to Summer16_23Sep2016 V4 JEC
    * update jet PF ID 
    * add JER smearing factors for MC
