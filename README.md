@@ -10,7 +10,7 @@ git cms-init <br>
 git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
 git fetch --tags btv-cmssw <br>
 git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_from-CMSSW_8_0_21 <br>
-git cms-merge-topic shervin86:Moriond17_23Jan <br>
+git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan <br>
 cd EgammaAnalysis/ElectronTools/data <br>
 git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 git checkout Moriond17_23Jan_v1 <br>
