@@ -1,5 +1,5 @@
 #### Current production tag : V08_00_24_00
-#### Newest tag for testing : head
+#### Newest tag for testing : V08_00_26_00
 #### Note that the current head version can be run with CMSSW_8_0_24_patch1
 
 ##### To work with CMSSW_8_0_26_patch1, you do :
