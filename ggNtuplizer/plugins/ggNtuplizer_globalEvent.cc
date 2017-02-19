@@ -6,25 +6,26 @@
 using namespace std;
 
 // (local) variables associated with tree branches
-Int_t     run_;
-Long64_t  event_;
-Int_t     lumis_;
-Bool_t    isData_;
-Int_t     nVtx_;
-Int_t     nGoodVtx_;
-Int_t     nTrksPV_;
-Bool_t    isPVGood_;
-float     vtx_;
-float     vty_;
-float     vtz_;
-float     rho_;
-float     rhoCentral_;
-ULong64_t HLTEleMuX_;
-ULong64_t HLTPho_;
-ULong64_t HLTJet_;
-ULong64_t HLTEleMuXIsPrescaled_;
-ULong64_t HLTPhoIsPrescaled_;
-ULong64_t HLTJetIsPrescaled_;
+Int_t       run_;
+Long64_t    event_;
+Int_t       lumis_;
+Bool_t      isData_;
+Int_t       nVtx_;
+Int_t       nGoodVtx_;
+Int_t       nTrksPV_;
+Bool_t      isPVGood_;
+float       vtx_;
+float       vty_;
+float       vtz_;
+float       rho_;
+float       rhoCentral_;
+ULong64_t   HLTEleMuX_;
+ULong64_t   HLTPho_;
+ULong64_t   HLTJet_;
+ULong64_t   HLTEleMuXIsPrescaled_;
+ULong64_t   HLTPhoIsPrescaled_;
+ULong64_t   HLTJetIsPrescaled_;
+vector<int> phoPrescale_;
 
 void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
@@ -47,10 +48,12 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("HLTEleMuXIsPrescaled", &HLTEleMuXIsPrescaled_);
   tree->Branch("HLTPhoIsPrescaled",    &HLTPhoIsPrescaled_);
   tree->Branch("HLTJetIsPrescaled",    &HLTJetIsPrescaled_);
-
+  tree->Branch("phoPrescale",          &phoPrescale_); 
 }
 
 void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es) {
+
+  phoPrescale_.clear();
 
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
@@ -248,6 +251,16 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
     //if (name.find("HLT_PFJet450_v") == string::npos) 
     //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
+
+    if      (name.find("HLT_Photon22_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon30_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon36_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
+    else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.push_back(hltCfg.prescaleValue(0, name));
 
   }
 
