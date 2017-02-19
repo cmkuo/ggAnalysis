@@ -7,6 +7,7 @@
    * update to newest EGM 80X regression
    * update to Summer16_23Sep2016 V4 JEC
    * update jet PF ID (not needed for Summer16 MC and re-miniAOD data)
+   * move jet pt from 10 to 20 GeV
    * add JER smearing factors for MC
    * store MET filter decisions for MC as well
    * move to Moriond17 EGM scale correction and smearing
