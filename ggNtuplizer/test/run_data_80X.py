@@ -56,22 +56,8 @@ process = regressionWeights(process)
 process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
 ### EGM scale and smearing correction
-#process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-#process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
-process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
-    electrons = cms.InputTag("slimmedElectrons"),
-    gbrForestName = cms.string('gedelectron_p4combination_25ns'),
-    isMC = cms.bool(False),
-    isSynchronization = cms.bool(False)
-)
-
-process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
-    photons = cms.InputTag("slimmedPhotons"),
-    isMC = cms.bool(False),
-    isSynchronization = cms.bool(False)
-)
+process.load('EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi')
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 from PhysicsTools.PatAlgos.tools.coreTools import *

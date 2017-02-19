@@ -47,9 +47,9 @@ process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
 ### EGM 80X regression
-#from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
-#process = regressionWeights(process)
-#process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
+from EgammaAnalysis.ElectronTools.regressionWeights_cfi import regressionWeights
+process = regressionWeights(process)
+process.load('EgammaAnalysis.ElectronTools.regressionApplication_cff')
 
 ### EGM scale and smearing correction         
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
@@ -67,24 +67,10 @@ process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService
     )
                                                    )
 
-#process.load('EgammaAnalysis.ElectronTools.calibratedElectronsRun2_cfi')
-#process.load('EgammaAnalysis.ElectronTools.calibratedPhotonsRun2_cfi')
-#process.calibratedPatElectrons.isMC = cms.bool(True)
-#process.calibratedPatPhotons.isMC = cms.bool(True)
-process.calibratedPatElectrons = cms.EDProducer("CalibratedPatElectronProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
-    electrons = cms.InputTag("slimmedElectrons"),
-    gbrForestName = cms.string('gedelectron_p4combination_25ns'),
-    isMC = cms.bool(True),
-    isSynchronization = cms.bool(False)
-)
-
-process.calibratedPatPhotons = cms.EDProducer("CalibratedPatPhotonProducerRun2",
-    correctionFile = cms.string('EgammaAnalysis/ElectronTools/data/ScalesSmearings/Winter_2016_reReco_v1_ele'),
-    photons = cms.InputTag("slimmedPhotons"),
-    isMC = cms.bool(True),
-    isSynchronization = cms.bool(False)
-)
+process.load('EgammaAnalysis.ElectronTools.calibratedPatElectronsRun2_cfi')
+process.load('EgammaAnalysis.ElectronTools.calibratedPatPhotonsRun2_cfi')
+process.calibratedPatElectrons.isMC = cms.bool(True)
+process.calibratedPatPhotons.isMC = cms.bool(True)
 
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 
@@ -150,18 +136,18 @@ for idmod in my_id_modules:
 my_phoid_modules = ['RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Spring16_V2p2_cff',
                     'RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Spring16_nonTrig_V1_cff']
 
-#process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
-#process.electronIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
-#process.electronMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
-#process.photonIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
-#process.photonMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+process.load("RecoEgamma.ElectronIdentification.ElectronIDValueMapProducer_cfi")
+process.electronIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+process.electronMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons')
+process.photonIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
+process.photonMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
 
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
 
 process.p = cms.Path(
-    #process.regressionApplication*
+    process.regressionApplication*
     process.ggMETFiltersSequence*
     process.calibratedPatElectrons*
     process.calibratedPatPhotons* 
