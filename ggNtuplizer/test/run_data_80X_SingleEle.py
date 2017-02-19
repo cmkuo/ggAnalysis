@@ -104,6 +104,42 @@ runMetCorAndUncFromMiniAOD(process,
                            isData=True                           
                            )
 
+# Now you are creating the e/g corrected MET on top of the bad muon corrected MET (on re-miniaod)
+from PhysicsTools.PatUtils.tools.corMETFromMuonAndEG import corMETFromMuonAndEG
+corMETFromMuonAndEG(process,
+                    pfCandCollection="", #not needed                        
+                    electronCollection="slimmedElectronsBeforeGSFix",
+                    photonCollection="slimmedPhotonsBeforeGSFix",
+                    corElectronCollection="slimmedElectrons",
+                    corPhotonCollection="slimmedPhotons",
+                    allMETEGCorrected=True,
+                    muCorrection=False,
+                    eGCorrection=True,
+                    runOnMiniAOD=True,
+                    postfix="MuEGClean"
+                    )
+process.slimmedMETsMuEGClean = process.slimmedMETs.clone()
+process.slimmedMETsMuEGClean.src = cms.InputTag("patPFMetT1MuEGClean")
+process.slimmedMETsMuEGClean.rawVariation =  cms.InputTag("patPFMetRawMuEGClean")
+process.slimmedMETsMuEGClean.t1Uncertainties = cms.InputTag("patPFMetT1%sMuEGClean")
+del process.slimmedMETsMuEGClean.caloMET
+
+process.egcorrMET = cms.Sequence(
+        process.cleanedPhotonsMuEGClean+process.cleanedCorPhotonsMuEGClean+
+        process.matchedPhotonsMuEGClean + process.matchedElectronsMuEGClean +
+        process.corMETPhotonMuEGClean+process.corMETElectronMuEGClean+
+        process.patPFMetT1MuEGClean+process.patPFMetRawMuEGClean+
+        process.patPFMetT1SmearMuEGClean+process.patPFMetT1TxyMuEGClean+
+        process.patPFMetTxyMuEGClean+process.patPFMetT1JetEnUpMuEGClean+
+        process.patPFMetT1JetResUpMuEGClean+process.patPFMetT1SmearJetResUpMuEGClean+
+        process.patPFMetT1ElectronEnUpMuEGClean+process.patPFMetT1PhotonEnUpMuEGClean+
+        process.patPFMetT1MuonEnUpMuEGClean+process.patPFMetT1TauEnUpMuEGClean+
+        process.patPFMetT1UnclusteredEnUpMuEGClean+process.patPFMetT1JetEnDownMuEGClean+
+        process.patPFMetT1JetResDownMuEGClean+process.patPFMetT1SmearJetResDownMuEGClean+
+        process.patPFMetT1ElectronEnDownMuEGClean+process.patPFMetT1PhotonEnDownMuEGClean+
+        process.patPFMetT1MuonEnDownMuEGClean+process.patPFMetT1TauEnDownMuEGClean+
+        process.patPFMetT1UnclusteredEnDownMuEGClean+process.slimmedMETsMuEGClean)
+
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
@@ -115,6 +151,7 @@ process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
+process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsMuEGClean", "", "ggKit")
 ## the following line is only needed when you run on Feb 2017 re-miniAOD
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "PAT")
 
@@ -156,19 +193,21 @@ process.singleEleHLTFilter = cms.EDFilter("HLTHighLevel",
                                           throw = cms.bool(True) # Tolerate if triggers not available
                                           )
 
-process.p = cms.Path(
-    ###process.reapplyJEC*
-    ###process.pfImpactParameterTagInfosAK8 *
-    ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
-    ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags *        
-    process.singleEleHLTFilter*
-    process.ggMETFiltersSequence* 
-    process.regressionApplication*
-    process.calibratedPatElectrons*
-    process.calibratedPatPhotons*
-    process.egmGsfElectronIDSequence*
-    process.egmPhotonIDSequence*
-    process.ggNtuplizer
-    )
-
+    process.p = cms.Path(
+        ###process.reapplyJEC*
+        ###process.pfImpactParameterTagInfosAK8 *
+        ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
+        ###process.pfBoostedDoubleSecondaryVertexAK8BJetTags *        
+        process.singleEleHLTFilter*
+        process.fullPatMetSequence* 
+        process.egcorrMET*
+        process.ggMETFiltersSequence* 
+        process.regressionApplication*
+        process.calibratedPatElectrons*
+        process.calibratedPatPhotons*
+        process.egmGsfElectronIDSequence*
+        process.egmPhotonIDSequence*
+        process.ggNtuplizer
+        )
+    
 #print process.dumpPython()
