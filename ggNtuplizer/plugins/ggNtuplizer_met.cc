@@ -73,13 +73,16 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
   metFilters_ = 0;
 
   if (addFilterInfoMINIAOD_) {
-    string filterNamesToCheck[6] = {
+    string filterNamesToCheck[9] = {
       "Flag_HBHENoiseFilter",
       "Flag_HBHENoiseIsoFilter", 
       "Flag_globalTightHalo2016Filter",
       "Flag_goodVertices",
       "Flag_eeBadScFilter",
-      "Flag_EcalDeadCellTriggerPrimitiveFilter"
+      "Flag_EcalDeadCellTriggerPrimitiveFilter",
+      "Flag_badMuons",
+      "Flag_duplicateMuons",
+      "Flag_noBadMuons"
     };
 
     edm::Handle<edm::TriggerResults> patFilterResultsHandle;
@@ -102,14 +105,14 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
     }
     */
 
-    for (unsigned iF = 0; iF < 6; ++iF) {
+    for (unsigned iF = 0; iF < 9; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
       if ( index == filterNames.size() ) 
-	edm::LogError("Unknown MET filter label") 
-	  << filterNamesToCheck[iF] << " is missing, exiting";
+	LogDebug("METFilters") << filterNamesToCheck[iF] << " is missing, exiting";
       else {
 	if ( !patFilterResults.accept(index) ) {
-	  metFilters_ += pow(2, iF+1);
+	  if (iF <=5) metFilters_ += pow(2, iF+1);
+	  else metFilters_ += pow(2, iF+3);
 	}
       }
     }
