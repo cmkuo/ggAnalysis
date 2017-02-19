@@ -6,12 +6,13 @@
    * move to HEEP V70 
    * update to newest EGM 80X regression
    * update to Summer16_23Sep2016 V4 JEC
-   * update jet PF ID 
+   * update jet PF ID (not needed for Summer16 MC and re-miniAOD data)
    * add JER smearing factors for MC
    * store MET filter decisions for MC as well
    * move to Moriond17 EGM scale correction and smearing
    * add MET filters for bad muons
    * add pre-scaled values for some single photon triggers
+   * recompute MET with EGM gain switch correction on the fly for re-miniAOD data
 
 * V08-00-24-00
    * update to EGM Spring16 photon IDs

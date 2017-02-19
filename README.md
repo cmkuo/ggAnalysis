@@ -17,6 +17,7 @@ git checkout Moriond17_23Jan_v1 <br>
 cd ../../../ <br>
 git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 -u <br>
+git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
 git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
