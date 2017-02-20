@@ -14,7 +14,6 @@ git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan 
 cd EgammaAnalysis/ElectronTools/data <br>
 git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
 cd ../../../ <br>
-git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
 git cms-merge-topic cms-met:METRecipe_8020 -u <br>
 git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
 git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
