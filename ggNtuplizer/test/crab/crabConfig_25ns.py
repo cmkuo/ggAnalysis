@@ -17,7 +17,7 @@ if __name__ == '__main__':
     config.General.transferLogs = False
     config.JobType.pluginName   = 'Analysis' # PrivateMC
     config.JobType.psetName     = 'run_mc_80X.py'
-    config.JobType.inputFiles   = ['Spring16_25nsV10_MC_L2Relative_AK8PFchs.txt', 'Spring16_25nsV10_MC_L3Absolute_AK8PFchs.txt', 'Spring16_25nsV10_MC.db']
+    config.JobType.inputFiles   = ['Summer16_23Sep2016V4_MC_L2Relative_AK8PFchs.txt', 'Summer16_23Sep2016V4_MC_L3Absolute_AK8PFchs.txt', 'Summer16_23Sep2016V4_MC.db']
     config.JobType.sendExternalFolder = True
     config.Data.inputDBS        = 'global'    
     config.Data.splitting       = 'LumiBased' # EventBased, FileBased, LumiBased (1 lumi ~= 300 events)
