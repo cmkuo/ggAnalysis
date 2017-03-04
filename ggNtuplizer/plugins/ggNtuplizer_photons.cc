@@ -15,7 +15,6 @@ vector<float>  phoCalibE_;
 vector<float>  phoCalibEt_;
 vector<float>  phoSCE_;
 vector<float>  phoSCRawE_;
-vector<float>  phoESEn_;
 vector<float>  phoESEnP1_;
 vector<float>  phoESEnP2_;
 vector<float>  phoSCEta_;
@@ -127,7 +126,6 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoCalibEt",              &phoCalibEt_);
   tree->Branch("phoSCE",                  &phoSCE_);
   tree->Branch("phoSCRawE",               &phoSCRawE_);
-  tree->Branch("phoESEn",                 &phoESEn_);
   tree->Branch("phoESEnP1",               &phoESEnP1_);
   tree->Branch("phoESEnP2",               &phoESEnP2_);
   tree->Branch("phoSCEta",                &phoSCEta_);
@@ -231,7 +229,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoCalibEt_           .clear();
   phoSCE_               .clear();
   phoSCRawE_            .clear();
-  phoESEn_              .clear();
   phoESEnP1_            .clear();
   phoESEnP2_            .clear();
   phoSCEta_             .clear();
@@ -434,7 +431,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoPhi_           .push_back(iPho->phi());
     phoSCE_           .push_back((*iPho).superCluster()->energy());
     phoSCRawE_        .push_back((*iPho).superCluster()->rawEnergy());
-    phoESEn_          .push_back((*iPho).superCluster()->preshowerEnergy());
     phoESEnP1_        .push_back((*iPho).superCluster()->preshowerEnergyPlane1());
     phoESEnP2_        .push_back((*iPho).superCluster()->preshowerEnergyPlane2());
     phoSCEta_         .push_back((*iPho).superCluster()->eta());

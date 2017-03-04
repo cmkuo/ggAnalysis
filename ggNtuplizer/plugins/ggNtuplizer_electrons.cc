@@ -17,7 +17,7 @@ vector<int>    eleCharge_;
 vector<int>    eleChargeConsistent_;
 vector<float>  eleEn_;
 vector<float>  eleSCEn_;
-vector<float>  eleESEn_;
+vector<float>  eleEcalEn_;
 vector<float>  eleESEnP1_;
 vector<float>  eleESEnP2_;
 vector<float>  eleESEnP1Raw_;
@@ -125,7 +125,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleChargeConsistent",     &eleChargeConsistent_);
   tree->Branch("eleEn",                   &eleEn_);
   tree->Branch("eleSCEn",                 &eleSCEn_);
-  tree->Branch("eleESEn",                 &eleESEn_);
+  tree->Branch("eleEcalEn",               &eleEcalEn_);
   tree->Branch("eleESEnP1",               &eleESEnP1_);
   tree->Branch("eleESEnP2",               &eleESEnP2_);
   tree->Branch("eleD0",                   &eleD0_);
@@ -235,7 +235,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleChargeConsistent_        .clear();
   eleEn_                      .clear();
   eleSCEn_                    .clear();
-  eleESEn_                    .clear();
+  eleEcalEn_                  .clear();
   eleESEnP1_                  .clear();
   eleESEnP2_                  .clear();
   eleESEnP1Raw_               .clear();
@@ -403,9 +403,10 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     elePhi_             .push_back(iEle->phi());
     eleR9_              .push_back(iEle->r9());
     eleSCEn_            .push_back(iEle->superCluster()->energy());
-    eleESEn_            .push_back(iEle->superCluster()->preshowerEnergy());
+    eleEcalEn_          .push_back(iEle->ecalEnergy());
     eleESEnP1_          .push_back(iEle->superCluster()->preshowerEnergyPlane1());
     eleESEnP2_          .push_back(iEle->superCluster()->preshowerEnergyPlane2());
+    cout<<iEle->superCluster()->preshowerEnergy()<<" "<<iEle->superCluster()->preshowerEnergyPlane1()<<" "<<iEle->superCluster()->preshowerEnergyPlane2()<<endl;
     eleSCEta_           .push_back(iEle->superCluster()->eta());
     eleSCPhi_           .push_back(iEle->superCluster()->phi());
     eleSCRawEn_         .push_back(iEle->superCluster()->rawEnergy());
