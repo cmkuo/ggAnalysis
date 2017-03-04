@@ -161,6 +161,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele115_CaloIdVT_GsfTrkIdT_v")                     != string::npos) bitEleMuX = 38;
     else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_L1JetTauSeeded_v") != string::npos) bitEleMuX = 39;
     else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")            != string::npos) bitEleMuX = 40;
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")                  != string::npos) bitEleMuX = 41;
+    else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v")                != string::npos) bitEleMuX = 42;
 
     // Photon triggers
     int bitPho    = -1;
