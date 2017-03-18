@@ -127,6 +127,7 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
   hPU_        = fs->make<TH1F>("hPU",        "number of pileup",      200,  0, 200);
   hPUTrue_    = fs->make<TH1F>("hPUTrue",    "number of true pilepu", 1000, 0, 200);
   hGenWeight_ = fs->make<TH1F>("hGenWeight", "Gen weights",           2,    0, 2);
+  hSumGenWeight_ = fs->make<TH1F>("hSumGenWeight", "Sum of Gen weights",1,  0, 1);
 }
 
 void ggNtuplizer::branchesGenPart(TTree* tree) {
@@ -195,6 +196,8 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
     genWeight_ = genEventInfoHandle->weight();
     if (genWeight_ >= 0) hGenWeight_->Fill(0.5);    
     else hGenWeight_->Fill(1.5);
+    if (abs(genWeight_)>1) hSumGenWeight_->Fill(0.5,genWeight_/abs(genWeight_));
+    else hSumGenWeight_->Fill(0.5,genWeight_);
   } else
     edm::LogWarning("ggNtuplizer") << "no GenEventInfoProduct in event";
   
