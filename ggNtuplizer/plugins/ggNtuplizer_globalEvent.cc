@@ -267,7 +267,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(0, name));
       else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(0, name));
       else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon175_v")      != string::npos)  phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(0, name));
       else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(0, name));
     }
 
