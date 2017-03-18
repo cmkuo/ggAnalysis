@@ -406,7 +406,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleEcalEn_          .push_back(iEle->ecalEnergy());
     eleESEnP1_          .push_back(iEle->superCluster()->preshowerEnergyPlane1());
     eleESEnP2_          .push_back(iEle->superCluster()->preshowerEnergyPlane2());
-    cout<<iEle->superCluster()->preshowerEnergy()<<" "<<iEle->superCluster()->preshowerEnergyPlane1()<<" "<<iEle->superCluster()->preshowerEnergyPlane2()<<endl;
     eleSCEta_           .push_back(iEle->superCluster()->eta());
     eleSCPhi_           .push_back(iEle->superCluster()->phi());
     eleSCRawEn_         .push_back(iEle->superCluster()->rawEnergy());
