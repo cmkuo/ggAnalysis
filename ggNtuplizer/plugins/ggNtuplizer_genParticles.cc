@@ -9,6 +9,8 @@ float            pthat_;
 float            processID_;
 float            genWeight_;
 float            genHT_;
+float            genPho1_;
+float            genPho2_;
 TString          EventTag_;
 float            pdfWeight_;     
 vector<float>    pdfSystWeight_;
@@ -113,6 +115,8 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
   tree->Branch("processID",     &processID_);
   tree->Branch("genWeight",     &genWeight_);
   tree->Branch("genHT",         &genHT_);
+  tree->Branch("genPho1",       &genPho1_);
+  tree->Branch("genPho2",       &genPho2_);
   if (dumpPDFSystWeight_) {
     tree->Branch("pdfWeight",     &pdfWeight_);
     tree->Branch("pdfSystWeight", &pdfSystWeight_);
@@ -166,6 +170,8 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   processID_ = -99;
   genWeight_ = -99;
   genHT_     = -99;
+  genPho1_   = -99;
+  genPho2_   = -99;
   nPUInfo_   = 0;
   pdfWeight_ = -99;
   EventTag_  = "";
@@ -205,17 +211,28 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   edm::Handle<LHEEventProduct> lheEventProduct;
   e.getByToken(lheEventLabel_, lheEventProduct);
   
-  double lheHt = 0.;
+  double lheHt   = 0.;
+  double lhePho1 = 0.;
+  double lhePho2 = 0.;
   if (lheEventProduct.isValid()){
     const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
     std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
     size_t numParticles = lheParticles.size();
+    int nMCPho = 0;
     for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
       int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
       int status = lheEvent.ISTUP[idxParticle];
-      if ( status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
+      if (status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
 	lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
       } 
+      if (status == 1 && absPdgId == 22 && nMCPho == 0) { // first photon
+	lhePho1 = TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.));
+	nMCPho++;
+      }
+      if (status == 1 && absPdgId == 22 && nMCPho == 1) { // first photon
+	lhePho2 = TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.));
+	nMCPho++;
+      }
 
       typedef std::vector<std::string>::const_iterator comments_const_iterator;
 
@@ -239,8 +256,10 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
       }
     }
   }
-  genHT_=lheHt;  
-  
+  genHT_   = lheHt;  
+  genPho1_ = lhePho1;  
+  genPho2_ = lhePho2;  
+
   edm::Handle<vector<PileupSummaryInfo> > genPileupHandle;
   e.getByToken(puCollection_, genPileupHandle);
   
