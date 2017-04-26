@@ -4,7 +4,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
+
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
@@ -113,6 +113,18 @@ vector<vector<int> >   eleESEnY_;
 vector<vector<int> >   eleESEnS_;
 vector<vector<float> > eleESEnE_;
 
+vector<float>  eleScale_stat_up_;
+vector<float>  eleScale_stat_dn_;
+vector<float>  eleScale_syst_up_;
+vector<float>  eleScale_syst_dn_;
+vector<float>  eleScale_gain_up_;
+vector<float>  eleScale_gain_dn_;
+vector<float>  eleResol_rho_up_;
+vector<float>  eleResol_rho_dn_;
+vector<float>  eleResol_phi_up_;
+vector<float>  eleResol_phi_dn_;
+
+
 Int_t nGSFTrk_;
 vector<float> gsfPt_;
 vector<float> gsfEta_;
@@ -208,6 +220,18 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleFiredDoubleTrgs",          &eleFiredDoubleTrgs_);
   tree->Branch("eleFiredL1Trgs",              &eleFiredL1Trgs_);
   tree->Branch("eleIDbit",                    &eleIDbit_);
+
+  tree->Branch("eleScale_stat_up",                    &eleScale_stat_up_);
+  tree->Branch("eleScale_stat_dn",                    &eleScale_stat_dn_);
+  tree->Branch("eleScale_syst_up",                    &eleScale_syst_up_);
+  tree->Branch("eleScale_syst_dn",                    &eleScale_syst_dn_);
+  tree->Branch("eleScale_gain_up",                    &eleScale_gain_up_);
+  tree->Branch("eleScale_gain_dn",                    &eleScale_gain_dn_);
+  tree->Branch("eleResol_rho_up",                    &eleResol_rho_up_);
+  tree->Branch("eleResol_rho_dn",                    &eleResol_rho_dn_);
+  tree->Branch("eleResol_phi_up",                    &eleResol_phi_up_);
+  tree->Branch("eleResol_phi_dn",                    &eleResol_phi_dn_);
+
 
   if (development_) {
     tree->Branch("eleESEnP1Raw",              &eleESEnP1Raw_);
@@ -328,6 +352,16 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleFiredDoubleTrgs_         .clear();
   eleFiredL1Trgs_             .clear();
   eleIDbit_                   .clear();
+  eleScale_stat_up_           .clear();
+  eleScale_stat_dn_           .clear();
+  eleScale_syst_up_           .clear();
+  eleScale_syst_dn_           .clear();
+  eleScale_gain_up_           .clear();
+  eleScale_gain_dn_           .clear();
+  eleResol_rho_up_             .clear();
+  eleResol_rho_dn_             .clear();
+  eleResol_phi_up_             .clear();
+  eleResol_phi_dn_             .clear();
 
   nEle_ = 0;
 
@@ -474,6 +508,51 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleDr03HcalDepth2TowerSumEt_.push_back(iEle->dr03HcalDepth2TowerSumEt());
     eleDr03HcalTowerSumEt_      .push_back(iEle->dr03HcalTowerSumEt());
     eleDr03TkSumPt_             .push_back(iEle->dr03TkSumPt());
+
+
+    ////////////////////////SYSTEMATICS/////////////////////
+
+    DetId seedDetId = iEle->superCluster()->seed()->seed();
+    bool isBarrel = seedDetId.subdetId() == EcalBarrel;
+    const EcalRecHitCollection * recHits = (isBarrel?lazyTool.getEcalEBRecHitCollection():lazyTool.getEcalEERecHitCollection());
+
+    float et = iEle->correctedEcalEnergy() / cosh(fabs(iEle->eta()));
+
+
+    EcalRecHitCollection::const_iterator seedRecHit = recHits->find(seedDetId);
+    unsigned int gainSeedSC = 12;
+    if (seedRecHit != recHits->end()) { 
+      if(seedRecHit->checkFlag(EcalRecHit::kHasSwitchToGain6)) gainSeedSC = 6;
+      if(seedRecHit->checkFlag(EcalRecHit::kHasSwitchToGain1)) gainSeedSC = 1;
+    }
+    int runNumber = e.id().run();
+    double scale = correctionRetriever_.ScaleCorrection(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC);  
+    double smear = correctionRetriever_.getSmearingSigma(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 0., 0.);
+  
+    float scale_stat_up = scale + correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 1);
+    float scale_stat_dn = scale - correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 1);
+    float scale_syst_up = scale + correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 2);
+    float scale_syst_dn = scale - correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 2);
+    float scale_gain_up = scale + correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 4);
+    float scale_gain_dn = scale - correctionRetriever_.ScaleCorrectionUncertainty(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 4);
+    float resol_rho_up  = correctionRetriever_.getSmearingSigma(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 1., 0.);
+    float resol_rho_dn  = correctionRetriever_.getSmearingSigma(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, -1., 0.);
+    float resol_phi_up  = correctionRetriever_.getSmearingSigma(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 0., 1.);
+    float resol_phi_dn = correctionRetriever_.getSmearingSigma(runNumber, iEle->isEB(), iEle->full5x5_r9(), fabs(iEle->eta()), et, gainSeedSC, 0., -1.);
+
+    eleScale_stat_up_.push_back(scale_stat_up);
+    eleScale_stat_dn_.push_back(scale_stat_dn);
+    eleScale_syst_up_.push_back(scale_syst_up);
+    eleScale_syst_dn_.push_back(scale_syst_dn);
+    eleScale_gain_up_.push_back(scale_gain_up);
+    eleScale_gain_dn_.push_back(scale_gain_dn);
+    eleResol_rho_up_.push_back(resol_rho_up);
+    eleResol_rho_dn_.push_back(resol_rho_dn);
+    eleResol_phi_up_.push_back(resol_phi_up);
+    eleResol_phi_dn_.push_back(resol_phi_dn);
+    /////////////////////////////////END of energy and scale systematics
+
+
 
     reco::GsfTrackRef gsfTrackRef = iEle->gsfTrack();
     if (iEle->gsfTrack().isNonnull()) {

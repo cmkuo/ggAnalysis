@@ -14,5 +14,5 @@
 <use name="CondFormats/JetMETObjects"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="JetMETCorrections/Modules"/>
-
+<use name="EgammaAnalysis/ElectronTools"/>
 <flags EDM_PLUGIN="1"/>
