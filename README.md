@@ -2,7 +2,31 @@
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_8_0_26_patch1
 
-##### To work with CMSSW_8_0_26_patch1, you do :
+##### To work with CMSSW_8_0_26_patch1 and head version, you do :
+cd CMSSW_8_0_26_patch1/src <br>
+cmsenv <br>
+setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
+git cms-init <br>
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch --tags btv-cmssw <br>
+git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_from-CMSSW_8_0_21 <br>
+git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy <br>
+git cms-merge-topic cms-egamma:EGM_gain_v1 <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git clone -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git <br>
+cd $CMSSW_BASE/src <br>
+git cms-merge-topic cms-met:METRecipe_8020 -u <br>
+git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
+git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
+git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
+git cms-merge-topic ikrav:egm_id_80X_v2 <br>
+git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+
+scram b -j 10 <br>
+
+##### To work with CMSSW_8_0_26_patch1 and V08_00_26_01, you do :
 cd CMSSW_8_0_26_patch1/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
@@ -23,35 +47,6 @@ git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b V08_00_26_01 https://github.com/cmkuo/ggAnalysis.git <br>
 
-scram b -j 10 <br>
-
-##### To work with CMSSW_8_0_24_patch1, you do :
-cd CMSSW_8_0_24_patch1/src <br>
-cmsenv <br>
-git cms-init <br>
-git cms-merge-topic shervin86:Moriond2017_JEC_energyScales <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
-cd ../../../ <br>
-git cms-merge-topic -u cms-met:fromCMSSW_8_0_20_postICHEPfilter <br>
-git cms-merge-topic cms-met:METRecipe_8020 <br>
-git cms-merge-topic ikrav:egm_id_80X_v2 <br>
-scram b -j 10 <br>
-cd $CMSSW_BASE/external <br>
-cd slc6_amd64_gcc530/ <br>
-git clone https://github.com/ikrav/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
-cd data/RecoEgamma/ElectronIdentification/data <br>
-git checkout egm_id_80X_v1 <br>
-cd $CMSSW_BASE/src <br>
-git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
-cd $CMSSW_BASE/external <br>
-cd slc6_amd64_gcc530/ <br>
-git clone https://github.com/ikrav/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data <br>
-cd data/RecoEgamma/PhotonIdentification/data <br>
-git checkout egm_id_80X_v1 <br>
-cd $CMSSW_BASE/src <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_24_00 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 ##### To work with CMSSW_7_6_3_patch2, you do:
