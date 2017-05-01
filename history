@@ -1,7 +1,8 @@
-* V08-00-XX-YY
+* V08-00-26-03
    * remove ES energy variable
    * only store the prescales of photon triggers to data
    * fix the order of prescales of photon triggers
+   * store the systematic uncertainties for EGM scale correction and smearing
 
 * V08-00-26-00
    * add a new variable jetID to store loose and tight jet ID
