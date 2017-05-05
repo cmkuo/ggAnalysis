@@ -117,6 +117,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleSingleFilters["hltEle23CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 32;
     //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
     eleSingleFilters["hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 33;
+    eleSingleFilters["hltEle8CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 34;
+    eleSingleFilters["hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 35;
 
     //Double electron triggers
     //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
@@ -253,6 +255,9 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     l1Filters["hltL1sSingleEGNonIsoOrWithJetAndTau"] = 26; //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
     l1Filters["hltL1sDoubleEG2210IorDoubleEG2512"] = 27; //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
     l1Filters["hltL1sSingleEG34IorSingleEG40"] = 28; //HLT_Photon90_CaloIdL_PFHT600_v
+    l1Filters["hltL1sSingleEG18IorSingleEG24"] = 29;
+    l1Filters["hltL1sSingleEG10IorSingleEG15"] = 30;
+    l1Filters["hltL1sSingleAndDoubleEGNonIsoOrWithEG26WithJetAndTau"] = 31;
     
   }
   
