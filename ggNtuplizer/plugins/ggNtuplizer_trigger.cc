@@ -113,6 +113,12 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleSingleFilters["hltEle32noerWPTightGsfTrackIsoFilter"] = 30;
     //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
     eleSingleFilters["hltEle115CaloIdVTGsfTrkIdTGsfDphiFilter"] = 31;
+    //HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v
+    eleSingleFilters["hltEle23CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 32;
+    //HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v
+    eleSingleFilters["hltEle12CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 33;
+    eleSingleFilters["hltEle8CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 34;
+    eleSingleFilters["hltEle17CaloIdLTrackIdLIsoVLTrackIsoFilter"] = 35;
 
     //Double electron triggers
     //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
@@ -149,6 +155,8 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09"] = 19; //HLT_IsoTkMu24
     muFilters["hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09"] = 20; //HLT_IsoTkMu27
     muFilters["hltL3fL1sL1Mu5IsoEG18ORL1Mu5IsoEG20L1f5L2f7L3Filtered17"] = 21; //HLT_Mu17_Photon*  muon
+    muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"] = 23; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
+    muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 24; //HLT_Mu23_TrkIsoVVL_Ele12*
 
     phoSingleFilters["hltEG22HEFilter"]        = 0;
     phoSingleFilters["hltEG30HEFilter"]        = 1;
@@ -247,6 +255,9 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     l1Filters["hltL1sSingleEGNonIsoOrWithJetAndTau"] = 26; //HLT_Ele115_CaloIdVT_GsfTrkIdT_v
     l1Filters["hltL1sDoubleEG2210IorDoubleEG2512"] = 27; //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
     l1Filters["hltL1sSingleEG34IorSingleEG40"] = 28; //HLT_Photon90_CaloIdL_PFHT600_v
+    l1Filters["hltL1sSingleEG18IorSingleEG24"] = 29;
+    l1Filters["hltL1sSingleEG10IorSingleEG15"] = 30;
+    l1Filters["hltL1sSingleAndDoubleEGNonIsoOrWithEG26WithJetAndTau"] = 31;
     
   }
   
