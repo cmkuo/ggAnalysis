@@ -6,19 +6,19 @@ using namespace std;
 
 // local variables: per-filter per-electron/muon/photon/jet arrays of matched trigger objects
 // NOTE: number of elements in the arrays equals sizeof(Int_t)
-vector<float> trgSingleElePt[32], trgSingleEleEta[32], trgSingleElePhi[32];
-vector<float> trgDoubleElePt[32], trgDoubleEleEta[32], trgDoubleElePhi[32];
-vector<float> trgSinglePhoPt[32], trgSinglePhoEta[32], trgSinglePhoPhi[32];
-vector<float> trgDoublePhoPt[32], trgDoublePhoEta[32], trgDoublePhoPhi[32];
-vector<float> trgMuPt[32],  trgMuEta[32],  trgMuPhi[32];
-vector<float> trgJetPt[32], trgJetEta[32], trgJetPhi[32];
-vector<float> trgL1Eta[32],  trgL1Phi[32];
+vector<float> trgSingleElePt[40], trgSingleEleEta[40], trgSingleElePhi[40];
+vector<float> trgDoubleElePt[40], trgDoubleEleEta[40], trgDoubleElePhi[40];
+vector<float> trgSinglePhoPt[40], trgSinglePhoEta[40], trgSinglePhoPhi[40];
+vector<float> trgDoublePhoPt[40], trgDoublePhoEta[40], trgDoublePhoPhi[40];
+vector<float> trgMuPt[40],  trgMuEta[40],  trgMuPhi[40];
+vector<float> trgJetPt[40], trgJetEta[40], trgJetPhi[40];
+vector<float> trgL1Eta[40],  trgL1Phi[40];
 
 void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
   // Fills the arrays above.
 
   // cleanup from previous execution
-  for (size_t i = 0; i < 32; ++i) {
+  for (size_t i = 0; i < 40; ++i) {
     trgSingleElePt [i].clear();
     trgSingleEleEta[i].clear();
     trgSingleElePhi[i].clear();
@@ -450,7 +450,7 @@ UInt_t ggNtuplizer::matchSingleElectronTriggerFilters(double pt, double eta, dou
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgSingleElePt[f].size(); ++v)
       if (fabs(pt - trgSingleElePt[f][v])/trgSingleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSingleEleEta[f][v], trgSingleElePhi[f][v]) < trgFilterDeltaRCut_) {
@@ -466,7 +466,7 @@ UInt_t ggNtuplizer::matchDoubleElectronTriggerFilters(double pt, double eta, dou
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgDoubleElePt[f].size(); ++v)
       if (fabs(pt - trgDoubleElePt[f][v])/trgDoubleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoubleEleEta[f][v], trgDoubleElePhi[f][v]) < trgFilterDeltaRCut_) {
@@ -482,7 +482,7 @@ UInt_t ggNtuplizer::matchSinglePhotonTriggerFilters(double pt, double eta, doubl
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgSinglePhoPt[f].size(); ++v)
       if (fabs(pt - trgSinglePhoPt[f][v])/trgSinglePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSinglePhoEta[f][v], trgSinglePhoPhi[f][v]) < trgFilterDeltaRCut_) {
@@ -498,7 +498,7 @@ UInt_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, doubl
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgDoublePhoPt[f].size(); ++v)
       if (fabs(pt - trgDoublePhoPt[f][v])/trgDoublePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoublePhoEta[f][v], trgDoublePhoPhi[f][v]) < trgFilterDeltaRCut_) {
@@ -514,7 +514,7 @@ UInt_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta, double phi) {
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgMuPt[f].size(); ++v)
       if (fabs(pt - trgMuPt[f][v])/trgMuPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgMuEta[f][v], trgMuPhi[f][v]) < trgFilterDeltaRCut_) {
@@ -530,7 +530,7 @@ UInt_t ggNtuplizer::matchJetTriggerFilters(double pt, double eta, double phi) {
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgJetPt[f].size(); ++v)
       if (fabs(pt - trgJetPt[f][v])/trgJetPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgJetEta[f][v], trgJetPhi[f][v]) < trgFilterDeltaRCut_) {
@@ -546,7 +546,7 @@ UInt_t ggNtuplizer::matchL1TriggerFilters(double pt, double eta, double phi) {
   // bits in the return value correspond to decisions from filters defined above
   UInt_t result = 0;
 
-  for (size_t f = 0; f < 32; ++f)
+  for (size_t f = 0; f < 40; ++f)
     for (size_t v = 0; v < trgL1Eta[f].size(); ++v)
       if (deltaR(eta, phi, trgL1Eta[f][v], trgL1Phi[f][v]) < trgFilterDeltaRCut_) {
         result |= (1<<f);
