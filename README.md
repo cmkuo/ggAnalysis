@@ -1,4 +1,4 @@
-#### Current production tag : V08_00_26_01
+#### Current production tag : V08_00_26_03
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_8_0_26_patch1
 
@@ -22,7 +22,7 @@ git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
 git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_26_03 https://github.com/cmkuo/ggAnalysis.git <br>
 
 scram b -j 10 <br>
 
