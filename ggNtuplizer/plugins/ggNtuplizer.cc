@@ -24,6 +24,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
+  dumpMuonsPairs_            = ps.getParameter<bool>("dumpMuonsPairs");
   isAOD_                     = ps.getParameter<bool>("isAOD");
   runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
 
@@ -126,6 +127,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   branchesMuons(tree_);
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
+  if (dumpMuonsPairs_) branchesMuonPairs(tree_);
 }
 
 ggNtuplizer::~ggNtuplizer() {
@@ -181,6 +183,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMuons(e, pv, vtx);
   if (dumpTaus_) fillTaus(e);
   if (dumpJets_) fillJets(e,es);
+  if (dumpMuonsPairs_) fillMuonsPairs(e, es, pv, vtx);
 
   hEvents_->Fill(1.5);
   tree_->Fill();

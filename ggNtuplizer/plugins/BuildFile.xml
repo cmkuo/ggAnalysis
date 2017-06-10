@@ -15,5 +15,8 @@
 <use name="CondFormats/JetMETObjects"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="JetMETCorrections/Modules"/>
+<use name="RecoVertex/KalmanVertexFit"/>
+<use name="TrackingTools/Records"/>
+<use name="TrackingTools/TransientTrack"/>
 
 <flags EDM_PLUGIN="1"/>
