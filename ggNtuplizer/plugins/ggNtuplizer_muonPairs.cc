@@ -13,9 +13,9 @@
 using namespace std;
 
 // (local) variables associated with tree branches
-Int_t            nMuPair_;
-vector<int>      muPairIndex1_;
-vector<int>      muPairIndex2_;
+Int_t            ndiMu_;
+vector<int>      diMuIndex1_;
+vector<int>      diMuIndex2_;
 vector<int>      diMuVtxIsValid_;
 vector<float>    diMuVtx_;
 vector<float>    diMuVty_;
@@ -31,9 +31,9 @@ vector<float>    diMu_ctau_; // lifetime
 
 void ggNtuplizer::branchesMuonPairs(TTree* tree) {
 
-  tree->Branch("nMuPair",       &nMuPair_);
-  tree->Branch("muPairIndex1",   &muPairIndex1_);
-  tree->Branch("muPairIndex2",   &muPairIndex2_);
+  tree->Branch("ndiMu",       &ndiMu_);
+  tree->Branch("diMuIndex1",   &diMuIndex1_);
+  tree->Branch("diMuIndex2",   &diMuIndex2_);
   tree->Branch("diMuVtxIsValid",   &diMuVtxIsValid_);
   tree->Branch("diMuVtx",   &diMuVtx_);
   tree->Branch("diMuVty",   &diMuVty_);
@@ -50,8 +50,8 @@ void ggNtuplizer::branchesMuonPairs(TTree* tree) {
 void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es, math::XYZPoint& pv, reco::Vertex vtx) {
 
   // cleanup from previous execution
-  muPairIndex1_.clear();
-  muPairIndex2_.clear();
+  diMuIndex1_.clear();
+  diMuIndex2_.clear();
   diMuVtxIsValid_.clear();
   diMuVtx_.clear();
   diMuVty_.clear();
@@ -63,7 +63,7 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
   diMu_eLxy_.clear();
   diMu_SLxy_.clear();
   diMu_ctau_.clear();
-  nMuPair_ = 0;
+  ndiMu_ = 0;
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
   e.getByToken(muonCollection_, muonHandle);
@@ -97,8 +97,8 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
       if (! (iMu->isPFMuon() || iMu->isGlobalMuon() || iMu->isTrackerMuon())) continue;
       if (! (jMu->isPFMuon() || jMu->isGlobalMuon() || jMu->isTrackerMuon())) continue;
 
-      muPairIndex1_.push_back(tmpMu1);
-      muPairIndex2_.push_back(tmpMu2);
+      diMuIndex1_.push_back(tmpMu1);
+      diMuIndex2_.push_back(tmpMu2);
 
       const reco::TransientTrack &tt2 = transientTrackBuilder->build(jMu->bestTrack());
       vector<reco::TransientTrack> t_tks = {tt1,tt2};
@@ -148,7 +148,7 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
         diMu_ctau_.push_back(-999);
       }
 
-      nMuPair_++;
+      ndiMu_++;
       tmpMu2++;
     }
     tmpMu1++;
