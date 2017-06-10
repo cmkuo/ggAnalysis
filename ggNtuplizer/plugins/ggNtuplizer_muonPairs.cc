@@ -125,7 +125,7 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
         AlgebraicVector3 vmom( dimuCand.Px(), dimuCand.Py(), 0 );
         VertexDistanceXY vdistXY;
         Measurement1D distXY = vdistXY.distance(tmpVertex,vtx);
-        double ctauPV = (100./3.) * distXY.value() * cosAlpha * mass / cmom.Perp(); // unit : pico seconda
+        double ctauPV = (100./3.) * distXY.value() * cosAlpha * mass / cmom.Perp(); // unit : pico second
 
         diMu_CosAlpha_.push_back(cosAlpha);
         diMu_Lxy_.push_back(disp.Dot(cmom) / cmom.Perp());
