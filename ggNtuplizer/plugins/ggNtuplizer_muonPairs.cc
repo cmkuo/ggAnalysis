@@ -16,18 +16,17 @@ using namespace std;
 Int_t            nMuPair_;
 vector<int>      muPairIndex1_;
 vector<int>      muPairIndex2_;
-vector<int>      VtxIsValid_;
-vector<float>   VtxPosX_;
-vector<float>   VtxPosY_;
-vector<float>   VtxPosZ_;
-vector<float>   VtxProb_;
-vector<float>   VtxDistXY_;
-vector<float>   CosAlpha_; //the angle between the reconstructed momentum vector of the dimuon system and the vector from the PV to the dimuon vertex
-vector<float>   Lxy_; // Transverse decay length (Lxy) between the dimuon vertex and the primary vertex
-vector<float>   Rxy_;
-vector<float>   eLxy_;
-vector<float>   SLxy_; // Significance of Lxy ( Lxy divided by its uncertainty )
-vector<float>   ctau_; // lifetime 
+vector<int>      diMuVtxIsValid_;
+vector<float>    diMuVtx_;
+vector<float>    diMuVty_;
+vector<float>    diMuVtz_;
+vector<float>    diMuVtxProb_;
+vector<float>    diMu_CosAlpha_; //the angle between the reconstructed momentum vector of the dimuon system and the vector from the PV to the dimuon vertex
+vector<float>    diMu_Lxy_; // Transverse decay length (Lxy) between the dimuon vertex and the primary vertex
+vector<float>    diMu_Rxy_;
+vector<float>    diMu_eLxy_;
+vector<float>    diMu_SLxy_; // Significance of Lxy ( Lxy divided by its uncertainty )
+vector<float>    diMu_ctau_; // lifetime 
 
 
 void ggNtuplizer::branchesMuonPairs(TTree* tree) {
@@ -35,17 +34,17 @@ void ggNtuplizer::branchesMuonPairs(TTree* tree) {
   tree->Branch("nMuPair",       &nMuPair_);
   tree->Branch("muPairIndex1",   &muPairIndex1_);
   tree->Branch("muPairIndex2",   &muPairIndex2_);
-  tree->Branch("VtxIsValid",   &VtxIsValid_);
-  tree->Branch("VtxPosX",   &VtxPosX_);
-  tree->Branch("VtxPosY",   &VtxPosY_);
-  tree->Branch("VtxPosZ",   &VtxPosZ_);
-  tree->Branch("VtxProb",   &VtxProb_);
-  tree->Branch("CosAlpha",   &CosAlpha_);
-  tree->Branch("Lxy",   &Lxy_);
-  tree->Branch("Rxy",   &Rxy_);
-  tree->Branch("eLxy",   &eLxy_);
-  tree->Branch("SLxy",   &SLxy_);
-  tree->Branch("ctau",   &ctau_);
+  tree->Branch("diMuVtxIsValid",   &diMuVtxIsValid_);
+  tree->Branch("diMuVtx",   &diMuVtx_);
+  tree->Branch("diMuVty",   &diMuVty_);
+  tree->Branch("diMuVtz",   &diMuVtz_);
+  tree->Branch("diMuVtxProb",   &diMuVtxProb_);
+  tree->Branch("diMu_CosAlpha",   &diMu_CosAlpha_);
+  tree->Branch("diMu_Lxy",   &diMu_Lxy_);
+  tree->Branch("diMu_Rxy",   &diMu_Rxy_);
+  tree->Branch("diMu_eLxy",   &diMu_eLxy_);
+  tree->Branch("diMu_SLxy",   &diMu_SLxy_);
+  tree->Branch("diMu_ctau",   &diMu_ctau_);
 }
 
 void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es, math::XYZPoint& pv, reco::Vertex vtx) {
@@ -53,17 +52,17 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
   // cleanup from previous execution
   muPairIndex1_.clear();
   muPairIndex2_.clear();
-  VtxIsValid_.clear();
-  VtxPosX_.clear();
-  VtxPosY_.clear();
-  VtxPosZ_.clear();
-  VtxProb_.clear();
-  CosAlpha_.clear();
-  Lxy_.clear();
-  Rxy_.clear();
-  eLxy_.clear();
-  SLxy_.clear();
-  ctau_.clear();
+  diMuVtxIsValid_.clear();
+  diMuVtx_.clear();
+  diMuVty_.clear();
+  diMuVtz_.clear();
+  diMuVtxProb_.clear();
+  diMu_CosAlpha_.clear();
+  diMu_Lxy_.clear();
+  diMu_Rxy_.clear();
+  diMu_eLxy_.clear();
+  diMu_SLxy_.clear();
+  diMu_ctau_.clear();
   nMuPair_ = 0;
 
   edm::Handle<edm::View<pat::Muon> > muonHandle;
@@ -108,11 +107,11 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
       TransientVertex tmpVertex = fitter.vertex(t_tks);
 
       if(tmpVertex.isValid()){
-        VtxIsValid_.push_back(1);
-        VtxPosX_.push_back(tmpVertex.position().x());
-        VtxPosY_.push_back(tmpVertex.position().y());
-        VtxPosZ_.push_back(tmpVertex.position().z());
-        VtxProb_.push_back(ChiSquaredProbability(tmpVertex.totalChiSquared(), tmpVertex.degreesOfFreedom()));
+        diMuVtxIsValid_.push_back(1);
+        diMuVtx_.push_back(tmpVertex.position().x());
+        diMuVty_.push_back(tmpVertex.position().y());
+        diMuVtz_.push_back(tmpVertex.position().z());
+        diMuVtxProb_.push_back(ChiSquaredProbability(tmpVertex.totalChiSquared(), tmpVertex.degreesOfFreedom()));
 
         // Distance and significance
         TVector3 disp(tmpVertex.position().x() - vtx.x(), tmpVertex.position().y() - vtx.y(), 0);
@@ -128,25 +127,25 @@ void ggNtuplizer::fillMuonsPairs(const edm::Event& e, const edm::EventSetup& es,
         Measurement1D distXY = vdistXY.distance(tmpVertex,vtx);
         double ctauPV = (100./3.) * distXY.value() * cosAlpha * mass / cmom.Perp(); // unit : pico seconda
 
-        CosAlpha_.push_back(cosAlpha);
-        Lxy_.push_back(disp.Dot(cmom) / cmom.Perp());
-        Rxy_.push_back(distXY.value());
-        eLxy_.push_back(distXY.error());
-        SLxy_.push_back(distXY.value() / distXY.error());
-        ctau_.push_back(ctauPV);
+        diMu_CosAlpha_.push_back(cosAlpha);
+        diMu_Lxy_.push_back(disp.Dot(cmom) / cmom.Perp());
+        diMu_Rxy_.push_back(distXY.value());
+        diMu_eLxy_.push_back(distXY.error());
+        diMu_SLxy_.push_back(distXY.value() / distXY.error());
+        diMu_ctau_.push_back(ctauPV);
       }
       else{
-        VtxIsValid_.push_back(0);
-        VtxPosX_.push_back(-999);
-        VtxPosY_.push_back(-999);
-        VtxPosZ_.push_back(-999);
-        VtxProb_.push_back(-999);
-        CosAlpha_.push_back(-999);
-        Lxy_.push_back(-999);
-        Rxy_.push_back(-999);
-        eLxy_.push_back(-999);
-        SLxy_.push_back(-999);
-        ctau_.push_back(-999);
+        diMuVtxIsValid_.push_back(0);
+        diMuVtx_.push_back(-999);
+        diMuVty_.push_back(-999);
+        diMuVtz_.push_back(-999);
+        diMuVtxProb_.push_back(-999);
+        diMu_CosAlpha_.push_back(-999);
+        diMu_Lxy_.push_back(-999);
+        diMu_Rxy_.push_back(-999);
+        diMu_eLxy_.push_back(-999);
+        diMu_SLxy_.push_back(-999);
+        diMu_ctau_.push_back(-999);
       }
 
       nMuPair_++;
