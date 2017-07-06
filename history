@@ -1,3 +1,7 @@
+*V08-00-26-04
+   * add dimuon pairs 
+   * add HZZ->4l muon ID variables
+
 * V08-00-26-03
    * remove ES energy variable
    * only store the prescales of photon triggers to data
