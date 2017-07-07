@@ -1,4 +1,7 @@
-*V08-00-26-04
+* V08-00-26-05 
+   * add muon isolations with cone 0.3
+
+* V08-00-26-04
    * add dimuon pairs 
    * add HZZ->4l muon ID variables
 
