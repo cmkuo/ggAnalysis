@@ -1,3 +1,7 @@
+* V08-00-26-06
+   * add dimuon kinematic fit
+   * add ghost muon cleaning variables
+
 * V08-00-26-05 
    * add muon isolations with cone 0.3
 
