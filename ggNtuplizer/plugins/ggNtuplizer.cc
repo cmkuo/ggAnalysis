@@ -24,6 +24,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
+  dumpGenScaleSystWeights_   = ps.getParameter<bool>("dumpGenScaleSystWeights");
   dumpMuonsPairs_            = ps.getParameter<bool>("dumpMuonsPairs");
   isAOD_                     = ps.getParameter<bool>("isAOD");
   runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");

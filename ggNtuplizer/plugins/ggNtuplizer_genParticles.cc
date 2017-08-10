@@ -14,6 +14,7 @@ float            genPho2_;
 TString          EventTag_;
 float            pdfWeight_;     
 vector<float>    pdfSystWeight_;
+vector<float>    genScaleSystWeights_;
 
 Int_t            nPUInfo_;
 vector<int>      nPU_;
@@ -121,6 +122,9 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
     tree->Branch("pdfWeight",     &pdfWeight_);
     tree->Branch("pdfSystWeight", &pdfSystWeight_);
   }
+  if (dumpGenScaleSystWeights_) {
+    tree->Branch("genScaleSystWeights", &genScaleSystWeights_);
+  }
   tree->Branch("EventTag",      &EventTag_);
 
   tree->Branch("nPUInfo",       &nPUInfo_);
@@ -177,6 +181,7 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   EventTag_  = "";
   pdf_          .clear();
   pdfSystWeight_.clear();
+  genScaleSystWeights_.clear();
   nPU_          .clear();
   puBX_         .clear();
   puTrue_       .clear();
@@ -215,6 +220,17 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   double lhePho1 = 0.;
   double lhePho2 = 0.;
   if (lheEventProduct.isValid()){
+    if (dumpGenScaleSystWeights_) {
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[0].wgt/lheEventProduct->originalXWGTUP()); //id="1001" muR=1 muF=1 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[1].wgt/lheEventProduct->originalXWGTUP());	//id="1002" muR=1 muF=2 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[2].wgt/lheEventProduct->originalXWGTUP());	//id="1003" muR=1 muF=0.5 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[3].wgt/lheEventProduct->originalXWGTUP());	//id="1004" muR=2 muF=1 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[4].wgt/lheEventProduct->originalXWGTUP());	//id="1005" muR=2 muF=2 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[5].wgt/lheEventProduct->originalXWGTUP());	//id="1006" muR=2 muF=0.5 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[6].wgt/lheEventProduct->originalXWGTUP());	//id="1007" muR=0.5 muF=1 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[7].wgt/lheEventProduct->originalXWGTUP());	//id="1008" muR=0.5 muF=2 
+		genScaleSystWeights_.push_back(lheEventProduct->weights()[8].wgt/lheEventProduct->originalXWGTUP());	//id="1009" muR=0.5 muF=0.5 
+	}
     const lhef::HEPEUP& lheEvent = lheEventProduct->hepeup();
     std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
     size_t numParticles = lheParticles.size();
