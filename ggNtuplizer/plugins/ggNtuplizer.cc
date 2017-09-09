@@ -75,7 +75,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   cicPhotonId_ = new CiCPhotonID(ps);
-  egmScaler_   = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
+  //egmScaler_   = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
 
   // electron ID 
   eleVetoIdMapToken_       = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleVetoIdMap"));
@@ -102,10 +102,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   phoChargedIsolationToken_CITK_       = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoChargedIsolation_CITK"));
   phoPhotonIsolationToken_CITK_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_CITK"));
   phoNeutralHadronIsolationToken_CITK_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation_CITK"));
-  
-  phoChargedIsolationToken_PUPPI_       = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoChargedIsolation_PUPPI"));
-  phoNeutralHadronIsolationToken_PUPPI_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation_PUPPI"));
-  phoPhotonIsolationToken_PUPPI_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_PUPPI"));
 
   Service<TFileService> fs;
   tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_26_03)");
@@ -164,8 +160,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   }
 
   initTriggerFilters(e);
-
   fillGlobalEvent(e, es);
+
   if (!e.isRealData()) {
     fillGenInfo(e);
     if (doGenParticles_)

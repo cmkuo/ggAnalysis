@@ -2,6 +2,10 @@
 #define ggNtuplizer_h
 
 #include "TTree.h"
+#include "FWCore/Framework/interface/Event.h"
+#include "FWCore/Framework/interface/EventSetup.h"
+#include "DataFormats/Common/interface/Handle.h"
+#include "FWCore/Framework/interface/ESHandle.h"
 #include "FWCore/Framework/interface/Frameworkfwd.h"
 #include "FWCore/Framework/interface/EDAnalyzer.h"
 #include "FWCore/Framework/interface/MakerMacros.h"
@@ -24,7 +28,7 @@
 #include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/Tau.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
-#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
+//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 //#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
@@ -160,9 +164,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_CITK_;
   edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_CITK_;
   edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_CITK_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_PUPPI_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_PUPPI_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_PUPPI_;
 
   // elecontr ID decisions objects
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_;
@@ -188,7 +189,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   TH1F    *hSumGenWeight_;
 
   CiCPhotonID                 *cicPhotonId_;
-  EnergyScaleCorrection_class *egmScaler_;
+  //EnergyScaleCorrection_class *egmScaler_;
 
   JME::JetResolution            jetResolution_;
   JME::JetResolutionScaleFactor jetResolutionSF_;
