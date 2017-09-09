@@ -14,7 +14,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '80X_mcRun2_asymptotic_2016_Tra
 process.load("Configuration.StandardSequences.MagneticField_cff")
 
 #process.Tracer = cms.Service("Tracer")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 #jec from sqlite
@@ -38,7 +38,8 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'/store/mc/RunIISpring16MiniAODv2/TT_TuneCUETP8M1_13TeV-powheg-pythia8/MINIAODSIM/PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0_ext4-v1/00000/004A0552-3929-E611-BD44-0025905A48F0.root'
-        '/store/mc/RunIISummer16MiniAODv2/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/08E155A9-FAB6-E611-92BF-00259073E45E.root'
+        #'/store/mc/RunIISummer16MiniAODv2/WWTo2L2Nu_13TeV-powheg/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6-v1/80000/08E155A9-FAB6-E611-92BF-00259073E45E.root'
+        '/store/mc/RunIISummer16MiniAODv2/GluGluHToZG_M-125_13TeV_powheg_pythia8/MINIAODSIM/PUMoriond17_80X_mcRun2_asymptotic_2016_TrancheIV_v6_ext1-v1/50000/64FBC2BD-60C7-E611-B23D-02163E012D6B.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -142,6 +143,12 @@ process.electronMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedElectrons'
 process.photonIDValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
 process.photonMVAValueMapProducer.srcMiniAOD = cms.InputTag('slimmedPhotons')
 
+#process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+#                                   src = cms.InputTag("slimmedMuons"),
+#                                   preselection = cms.string("track.isNonnull"),
+#                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+#                                   fractionOfSharedSegments = cms.double(0.499))
+
 #add them to the VID producer
 for idmod in my_phoid_modules:
     setupAllVIDIdsInModule(process,idmod,setupVIDPhotonSelection)
@@ -153,6 +160,7 @@ process.p = cms.Path(
     process.calibratedPatPhotons* 
     process.egmGsfElectronIDSequence*
     process.egmPhotonIDSequence*
+    #process.cleanedMu*
     process.ggNtuplizer
     )
 
