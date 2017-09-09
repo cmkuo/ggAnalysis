@@ -8,7 +8,7 @@ cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b 92X https://github.com/cmkuo/ggAnalysis.git <br>
 
 scram b -j 10 <br>
 
