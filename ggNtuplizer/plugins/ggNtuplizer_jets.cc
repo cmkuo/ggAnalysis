@@ -65,7 +65,7 @@ vector<float>  jetJECUnc_;
 vector<float>  jetP4Smear_;
 vector<float>  jetP4SmearUp_;
 vector<float>  jetP4SmearDo_;
-vector<UInt_t> jetFiredTrgs_;
+vector<ULong64_t> jetFiredTrgs_;
 //gen-info for ak4
 vector<float>  jetGenJetEn_;
 vector<float>  jetGenJetPt_;
