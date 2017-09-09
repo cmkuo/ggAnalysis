@@ -546,11 +546,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetLepTrackPt_  .push_back(lepTrkPt);
     jetLepTrackEta_ .push_back(lepTrkEta);
     jetLepTrackPhi_ .push_back(lepTrkPhi);    
-    jetVtxPt_       .push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
-    jetVtxMass_     .push_back(iJet->userFloat("vtxMass"));
-    jetVtxNtrks_    .push_back(iJet->userFloat("vtxNtracks"));
-    jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
-    jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
+    //jetVtxPt_       .push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
+    //jetVtxMass_     .push_back(iJet->userFloat("vtxMass"));
+    //jetVtxNtrks_    .push_back(iJet->userFloat("vtxNtracks"));
+    //jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
+    //jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
     
     //b-tagging
     jetCSV2BJetTags_           .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
@@ -634,6 +634,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetGenJetPhi_.push_back(jetGenJetPhi);
       
       // access jet resolution       
+      /*
       JME::JetParameters parameters;
       parameters.setJetPt(iJet->pt()).setJetEta(iJet->eta()).setRho(rho);
       float jetResolution = jetResolution_.getResolution(parameters);
@@ -662,6 +663,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetP4Smear_  .push_back(jetP4Smear);
       jetP4SmearUp_.push_back(jetP4SmearUp);
       jetP4SmearDo_.push_back(jetP4SmearDo);
+      */
     }
     
     nJet_++;

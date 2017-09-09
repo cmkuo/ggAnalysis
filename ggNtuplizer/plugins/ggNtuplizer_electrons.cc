@@ -4,7 +4,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
-#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
+//#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
@@ -504,7 +504,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleDr03HcalDepth2TowerSumEt_.push_back(iEle->dr03HcalDepth2TowerSumEt());
     eleDr03HcalTowerSumEt_      .push_back(iEle->dr03HcalTowerSumEt());
     eleDr03TkSumPt_             .push_back(iEle->dr03TkSumPt());
-
+    /*
     // systematic uncertainties for energy scale and resolution 
     DetId seedDetId = iEle->superCluster()->seed()->seed();
     bool isBarrel = seedDetId.subdetId() == EcalBarrel;
@@ -544,7 +544,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleResol_phi_up_.push_back(resol_phi_up);
     eleResol_phi_dn_.push_back(resol_phi_dn);
     ///////////////////////////////// END of energy and scale systematics
-
+    */
     reco::GsfTrackRef gsfTrackRef = iEle->gsfTrack();
     if (iEle->gsfTrack().isNonnull()) {
       eleGSFChi2_.push_back(gsfTrackRef->normalizedChi2());
@@ -756,6 +756,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     UShort_t tmpeleIDbit = 0;
     
     ///el->electronID("cutBasedElectronID-PHYS14-PU20bx25-V2-standalone-veto") also works
+
     bool isPassVeto  = (*veto_id_decisions)[el];
     if (isPassVeto) setbit(tmpeleIDbit, 0);
     
@@ -776,7 +777,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     
     eleIDMVA_    .push_back((*eleMVAValues)[el]);
     eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el]);
-    
+
     elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
     elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());
     

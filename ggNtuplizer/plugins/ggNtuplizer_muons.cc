@@ -31,6 +31,10 @@ vector<float>    muPFChIso_;
 vector<float>    muPFPhoIso_;
 vector<float>    muPFNeuIso_;
 vector<float>    muPFPUIso_;
+vector<float>    muPFChIso03_;
+vector<float>    muPFPhoIso03_;
+vector<float>    muPFNeuIso03_;
+vector<float>    muPFPUIso03_;
 vector<float>    muPFMiniIso_;
 vector<UInt_t>   muFiredTrgs_;
 vector<UInt_t>   muFiredL1Trgs_;
@@ -40,6 +44,7 @@ vector<float>    muchi2LocalPosition_;
 vector<float>    mutrkKink_;
 vector<float>    muBestTrkPtError_;
 vector<float>    muBestTrkPt_;
+vector<int>      muBestTrkType_;
 
 void ggNtuplizer::branchesMuons(TTree* tree) {
 
@@ -69,6 +74,10 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
   tree->Branch("muPFPUIso",     &muPFPUIso_);
+  tree->Branch("muPFChIso03",   &muPFChIso03_);
+  tree->Branch("muPFPhoIso03",  &muPFPhoIso03_);
+  tree->Branch("muPFNeuIso03",  &muPFNeuIso03_);
+  tree->Branch("muPFPUIso03",   &muPFPUIso03_);
   tree->Branch("muPFMiniIso",   &muPFMiniIso_);
   tree->Branch("muFiredTrgs",   &muFiredTrgs_);
   tree->Branch("muFiredL1Trgs", &muFiredL1Trgs_);
@@ -78,45 +87,51 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("mutrkKink",              &mutrkKink_);
   tree->Branch("muBestTrkPtError",       &muBestTrkPtError_);
   tree->Branch("muBestTrkPt",            &muBestTrkPt_);
+  tree->Branch("muBestTrkType",          &muBestTrkType_);
 }
 
 void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Vertex vtx) {
 
   // cleanup from previous execution
-  muPt_         .clear();
-  muEn_         .clear();
-  muEta_        .clear();
-  muPhi_        .clear();
-  muCharge_     .clear();
-  muType_       .clear();
-  muIDbit_      .clear();
-  muD0_         .clear();
-  muDz_         .clear();
-  muSIP_        .clear();
-  muChi2NDF_    .clear();
-  muInnerD0_    .clear();
-  muInnerDz_    .clear();
-  muTrkLayers_  .clear();
-  muPixelLayers_.clear();
-  muPixelHits_  .clear();
-  muMuonHits_   .clear();
-  muStations_   .clear();
-  muMatches_    .clear();
-  muTrkQuality_ .clear();
-  muIsoTrk_     .clear();
-  muPFChIso_    .clear();
-  muPFPhoIso_   .clear();
-  muPFNeuIso_   .clear();
-  muPFPUIso_    .clear();
-  muPFMiniIso_  .clear();
-  muFiredTrgs_  .clear();
-  muFiredL1Trgs_.clear();
+  muPt_                  .clear();
+  muEn_                  .clear();
+  muEta_                 .clear();
+  muPhi_                 .clear();
+  muCharge_              .clear();
+  muType_                .clear();
+  muIDbit_               .clear();
+  muD0_                  .clear();
+  muDz_                  .clear();
+  muSIP_                 .clear();
+  muChi2NDF_             .clear();
+  muInnerD0_             .clear();
+  muInnerDz_             .clear();
+  muTrkLayers_           .clear();
+  muPixelLayers_         .clear();
+  muPixelHits_           .clear();
+  muMuonHits_            .clear();
+  muStations_            .clear();
+  muMatches_             .clear();
+  muTrkQuality_          .clear();
+  muIsoTrk_              .clear();
+  muPFChIso_             .clear();
+  muPFPhoIso_            .clear();
+  muPFNeuIso_            .clear();
+  muPFPUIso_             .clear();
+  muPFChIso03_           .clear();
+  muPFPhoIso03_          .clear();
+  muPFNeuIso03_          .clear();
+  muPFPUIso03_           .clear();
+  muPFMiniIso_           .clear();
+  muFiredTrgs_           .clear();
+  muFiredL1Trgs_         .clear();
   muInnervalidFraction_  .clear();
   musegmentCompatibility_.clear();
   muchi2LocalPosition_   .clear();
   mutrkKink_             .clear();
   muBestTrkPtError_      .clear();
   muBestTrkPt_           .clear();
+  muBestTrkType_         .clear();
 
   nMu_ = 0;
 
@@ -155,11 +170,12 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     if (iMu->isHighPtMuon(vtx)) setbit(tmpmuIDbit, 4);
     muIDbit_.push_back(tmpmuIDbit);
 
-    muFiredTrgs_.push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
+    muFiredTrgs_  .push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
     muFiredL1Trgs_.push_back(matchL1TriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
 
     muBestTrkPtError_        .push_back(iMu->muonBestTrack()->ptError());
     muBestTrkPt_             .push_back(iMu->muonBestTrack()->pt());
+    muBestTrkType_           .push_back(iMu->muonBestTrackType());
     musegmentCompatibility_  .push_back(iMu->segmentCompatibility());
     muchi2LocalPosition_     .push_back(iMu->combinedQuality().chi2LocalPosition);
     mutrkKink_               .push_back(iMu->combinedQuality().trkKink);
@@ -195,14 +211,18 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
       muInnervalidFraction_ .push_back(innmu->validFraction());
     }
 
-    muStations_ .push_back(iMu->numberOfMatchedStations());
-    muMatches_  .push_back(iMu->numberOfMatches());
-    muIsoTrk_   .push_back(iMu->trackIso());
-    muPFChIso_  .push_back(iMu->pfIsolationR04().sumChargedHadronPt);
-    muPFPhoIso_ .push_back(iMu->pfIsolationR04().sumPhotonEt);
-    muPFNeuIso_ .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
-    muPFPUIso_  .push_back(iMu->pfIsolationR04().sumPUPt);
-    muPFMiniIso_.push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iMu)), 0.05, 0.2, 10., false));
+    muStations_   .push_back(iMu->numberOfMatchedStations());
+    muMatches_    .push_back(iMu->numberOfMatches());
+    muIsoTrk_     .push_back(iMu->trackIso());
+    muPFChIso_    .push_back(iMu->pfIsolationR04().sumChargedHadronPt);
+    muPFPhoIso_   .push_back(iMu->pfIsolationR04().sumPhotonEt);
+    muPFNeuIso_   .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
+    muPFPUIso_    .push_back(iMu->pfIsolationR04().sumPUPt);
+    muPFChIso03_  .push_back(iMu->pfIsolationR03().sumChargedHadronPt);
+    muPFPhoIso03_ .push_back(iMu->pfIsolationR03().sumPhotonEt);
+    muPFNeuIso03_ .push_back(iMu->pfIsolationR03().sumNeutralHadronEt);
+    muPFPUIso03_  .push_back(iMu->pfIsolationR03().sumPUPt);
+    muPFMiniIso_  .push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iMu)), 0.05, 0.2, 10., false));
 
     nMu_++;
   }

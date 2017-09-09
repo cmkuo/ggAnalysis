@@ -158,21 +158,21 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"] = 23; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
     muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 24; //HLT_Mu23_TrkIsoVVL_Ele12*
 
-    phoSingleFilters["hltEG22HEFilter"]        = 0;
-    phoSingleFilters["hltEG30HEFilter"]        = 1;
-    phoSingleFilters["hltEG36HEFilter"]        = 2;
-    phoSingleFilters["hltEG50HEFilter"]        = 3;
-    phoSingleFilters["hltEG75HEFilter"]        = 4;
-    phoSingleFilters["hltEG90HEFilter"]        = 5;
-    phoSingleFilters["hltEG120HEFilter"]       = 6;
-    phoSingleFilters["hltEG135HEFilter"]       = 7; //HLT_Photon135_PFMET100_v
-    phoSingleFilters["hltEG165HE10Filter"]     = 8;
-    phoSingleFilters["hltEG175HEFilter"]       = 9;
-    phoSingleFilters["hltEG250erEtFilter"]     = 10;
-    phoSingleFilters["hltEG300erEtFilter"]     = 11;
-    phoSingleFilters["hltEG500HEFilter"]       = 12;
-    phoSingleFilters["hltEG600HEFilter"]       = 13;
-    phoSingleFilters["hltEG90CaloIdLHEFilter"] = 14; //HLT_Photon90_CaloIdL_PFHT600_v
+    phoSingleFilters["hltEG33L1EG26HEFilter"]                = 0;
+    phoSingleFilters["hltEG50HEFilter"]                      = 1;
+    phoSingleFilters["hltEG75HEFilter"]                      = 2;
+    phoSingleFilters["hltEG90HEFilter"]                      = 3;
+    phoSingleFilters["hltEG120HEFilter"]                     = 4;
+    phoSingleFilters["hltEG150HEFilter"]                     = 5;
+    phoSingleFilters["hltEG175HEFilter"]                     = 6;
+    phoSingleFilters["hltEG200HEFilter"]                     = 7; 
+    phoSingleFilters["hltEG300erEtFilter"]                   = 8;
+    phoSingleFilters["hltHtEcal800"]                         = 9;
+    phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 10;
+    phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 11;
+    phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 12;
+    phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 13;
+    phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 14;
 
     //L1 seed for diphoton triggers  
     phoDoubleFilters["hltSingleEGL1SingleEG40ORL1SingleEG25ORL1DoubleEG2210ORL1DoubleEG1510Filter"]         = 0;
@@ -260,134 +260,28 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     l1Filters["hltL1sSingleAndDoubleEGNonIsoOrWithEG26WithJetAndTau"] = 31;
     
   }
-  
-  // AOD vs miniAOD
-  if (isAOD_) {
-    edm::Handle<trigger::TriggerEvent> triggerHandle;
-    e.getByToken(trgEventLabel_, triggerHandle);
-
-    const trigger::TriggerObjectCollection& trgObjects = triggerHandle->getObjects();
-
-    // loop over particular filters (and not over full HLTs)
-    for (trigger::size_type iF = 0; iF != triggerHandle->sizeFilters(); ++iF) {
-      // full filter name and its keys each corresponding to a matched (pt, eta, phi, ...) object
-      string const&        label = triggerHandle->filterTag(iF).label();
-      const trigger::Keys& keys  = triggerHandle->filterKeys(iF);
-
-      std::map<string,size_t>::iterator idxEleSingle = eleSingleFilters.find(label);
-      std::map<string,size_t>::iterator idxEleDouble = eleDoubleFilters.find(label);
-      std::map<string,size_t>::iterator idxPhoSingle = phoSingleFilters.find(label);
-      std::map<string,size_t>::iterator idxPhoDouble = phoDoubleFilters.find(label);
-      std::map<string,size_t>::iterator idxMu  = muFilters.find(label);
-      std::map<string,size_t>::iterator idxJet = jetFilters.find(label);
-      std::map<string,size_t>::iterator idxL1  = l1Filters.find(label);
-
-      // single electron filters
-      if (idxEleSingle != eleSingleFilters.end()) {
-        size_t idx = idxEleSingle->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgSingleElePt [idx].push_back(trgV.pt());
-          trgSingleEleEta[idx].push_back(trgV.eta());
-          trgSingleElePhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // double electron filters
-      if (idxEleDouble != eleDoubleFilters.end()) {
-        size_t idx = idxEleDouble->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgDoubleElePt [idx].push_back(trgV.pt());
-          trgDoubleEleEta[idx].push_back(trgV.eta());
-          trgDoubleElePhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // single photon filters
-      if (idxPhoSingle != phoSingleFilters.end()) {
-        size_t idx = idxPhoSingle->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgSinglePhoPt [idx].push_back(trgV.pt());
-          trgSinglePhoEta[idx].push_back(trgV.eta());
-          trgSinglePhoPhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // double photon filters
-      if (idxPhoDouble != phoDoubleFilters.end()) {
-        size_t idx = idxPhoDouble->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgDoublePhoPt [idx].push_back(trgV.pt());
-          trgDoublePhoEta[idx].push_back(trgV.eta());
-          trgDoublePhoPhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // muon filters
-      if (idxMu != muFilters.end()) {
-        size_t idx = idxMu->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgMuPt [idx].push_back(trgV.pt());
-          trgMuEta[idx].push_back(trgV.eta());
-          trgMuPhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // jet filters
-      if (idxJet != jetFilters.end()) {
-        size_t idx = idxJet->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-	  //cout<<"key : "<<label<<" "<<iK<<" "<<keys[iK]<<" "<<trgV.pt()<<" "<<trgV.eta()<<" "<<trgV.phi()<<endl;
-          trgJetPt [idx].push_back(trgV.pt());
-          trgJetEta[idx].push_back(trgV.eta());
-          trgJetPhi[idx].push_back(trgV.phi());
-        }
-      }
-
-      // L1 filters
-      if (idxL1 != l1Filters.end()) {
-        size_t idx = idxL1->second;
-
-        for (size_t iK = 0; iK < keys.size(); ++iK) {
-          const trigger::TriggerObject& trgV = trgObjects.at(keys[iK]);
-          trgL1Eta[idx].push_back(trgV.eta());
-          trgL1Phi[idx].push_back(trgV.phi());
-        }
-      }
-    } // HLT filter loop
-
-    return;
-  } // if AOD
-
-  //
-  // miniAOD treatment
-  //
-
+ 
   edm::Handle<pat::TriggerObjectStandAloneCollection> triggerHandleMiniAOD;
   e.getByToken(triggerObjectsLabel_, triggerHandleMiniAOD);
 
   edm::Handle<edm::TriggerResults> trgResultsHandle;
   e.getByToken(trgResultsLabel_, trgResultsHandle);
 
-  const edm::TriggerNames &names = e.triggerNames(*trgResultsHandle);
+  edm::Handle<std::string> filterLabels_;
+  e.getByLabel("slimmedPatTrigger:filterLabels", filterLabels_);
+
+  //const edm::TriggerNames &names = e.triggerNames(*trgResultsHandle);
 
   for (pat::TriggerObjectStandAlone obj : *triggerHandleMiniAOD) {
-    obj.unpackPathNames(names);
+    //obj.unpackPathNames(names);
+    //obj.unpackPathNames(e);
+    obj.unpackFilterLabels(e, *trgResultsHandle);
 
-    // loop over filters
+    // loop over filters    
     for (size_t iF = 0; iF < obj.filterLabels().size(); ++iF) {
       string label = obj.filterLabels()[iF];
+
+      //cout<<"label : "<<iF<<" "<<label<<endl;
 
       std::map<string,size_t>::iterator idxEleSingle = eleSingleFilters.find(label);
       std::map<string,size_t>::iterator idxEleDouble = eleDoubleFilters.find(label);
@@ -403,6 +297,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
         trgSingleElePt [idx].push_back(obj.pt());
         trgSingleEleEta[idx].push_back(obj.eta());
         trgSingleElePhi[idx].push_back(obj.phi());
+	//cout<<idx<<" "<<obj.pt()<<" "<<obj.eta()<<" "<<obj.phi()<<endl;
       }
 
       // double electron filters

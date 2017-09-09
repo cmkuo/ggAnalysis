@@ -75,9 +75,6 @@ vector<float>  phoPFNeuIsoFrix8_;
 vector<float>  phoCITKChIso_;
 vector<float>  phoCITKPhoIso_;
 vector<float>  phoCITKNeuIso_;
-//vector<float>  phoPUPPIChIso_;
-//vector<float>  phoPUPPIPhoIso_;
-//vector<float>  phoPUPPINeuIso_;
 //vector<float>  phoSeedBCE_;
 //vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
@@ -198,9 +195,6 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoCITKChIso",            &phoCITKChIso_);
   tree->Branch("phoCITKPhoIso",           &phoCITKPhoIso_);
   tree->Branch("phoCITKNeuIso",           &phoCITKNeuIso_);
-  //tree->Branch("phoPUPPIChIso",           &phoPUPPIChIso_);
-  //tree->Branch("phoPUPPIPhoIso",          &phoPUPPIPhoIso_);
-  //tree->Branch("phoPUPPINeuIso",          &phoPUPPINeuIso_);
   //tree->Branch("phoEcalRecHitSumEtConeDR03",      &phoEcalRecHitSumEtConeDR03_);
   //tree->Branch("phohcalDepth1TowerSumEtConeDR03", &phohcalDepth1TowerSumEtConeDR03_);
   //tree->Branch("phohcalDepth2TowerSumEtConeDR03", &phohcalDepth2TowerSumEtConeDR03_);
@@ -307,9 +301,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoCITKChIso_         .clear();
   phoCITKPhoIso_        .clear();
   phoCITKNeuIso_        .clear();
-  //phoPUPPIChIso_        .clear();
-  //phoPUPPIPhoIso_       .clear();
-  //phoPUPPINeuIso_       .clear();
   //phoSeedBCE_           .clear();
   //phoSeedBCEta_         .clear();
   phoIDMVA_             .clear();
@@ -394,20 +385,12 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   e.getByToken(phoWorstChargedIsolationToken_,  phoWorstChargedIsolationMap);
 
   // Get the isolation maps for CITK
-  edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_CITK;
-  e.getByToken(phoChargedIsolationToken_CITK_, phoChargedIsolationMap_CITK);
-  edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_CITK;
-  e.getByToken(phoPhotonIsolationToken_CITK_, phoPhotonIsolationMap_CITK);
-  edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_CITK;
-  e.getByToken(phoNeutralHadronIsolationToken_CITK_, phoNeutralHadronIsolationMap_CITK);
-
-  // Get the isolation maps for PUPPI
-  //edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_PUPPI;
-  //e.getByToken(phoChargedIsolationToken_PUPPI_, phoChargedIsolationMap_PUPPI);
-  //edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_PUPPI;
-  //e.getByToken(phoPhotonIsolationToken_PUPPI_, phoPhotonIsolationMap_PUPPI);
-  //edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_PUPPI;
-  //e.getByToken(phoNeutralHadronIsolationToken_PUPPI_, phoNeutralHadronIsolationMap_PUPPI);
+  //edm::Handle<edm::ValueMap<float> > phoChargedIsolationMap_CITK;
+  //e.getByToken(phoChargedIsolationToken_CITK_, phoChargedIsolationMap_CITK);
+  //edm::Handle<edm::ValueMap<float> > phoPhotonIsolationMap_CITK;
+  //e.getByToken(phoPhotonIsolationToken_CITK_, phoPhotonIsolationMap_CITK);
+  //edm::Handle<edm::ValueMap<float> > phoNeutralHadronIsolationMap_CITK;
+  //e.getByToken(phoNeutralHadronIsolationToken_CITK_, phoNeutralHadronIsolationMap_CITK);
 
   EcalClusterLazyTools       lazyTool    (e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
   noZS::EcalClusterLazyTools lazyToolnoZS(e, es, ebReducedRecHitCollection_, eeReducedRecHitCollection_, esReducedRecHitCollection_);
@@ -499,7 +482,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       phoSeedTime_  .push_back(-99.);
       phoSeedEnergy_.push_back(-99.);
     }
-
+    /*
     // ECAL scale correction and smearing
     float et = iPho->et();
     unsigned int gainSeedSC = 12;
@@ -533,7 +516,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoResol_phi_up_.push_back(resol_phi_up);
     phoResol_phi_dn_.push_back(resol_phi_dn);
     /////////////////////////////////END of energy and scale systematics
-    
+    */
     /// if( isBarrel ) {
     ///     EBDetId ebId(seed);
     ///     cout << "seed barrel " << ebId.ieta() << " " << ebId.iphi() << endl;
@@ -757,12 +740,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoPFNeuIso_             .push_back((*phoNeutralHadronIsolationMap)[pho]);
     phoPFChWorstIso_         .push_back((*phoWorstChargedIsolationMap)[pho]);
     
-    phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
-    phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
-    phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
-    //phoPUPPIChIso_           .push_back((*phoChargedIsolationMap_PUPPI)[pho]);
-    //phoPUPPIPhoIso_          .push_back((*phoPhotonIsolationMap_PUPPI)[pho]);
-    //phoPUPPINeuIso_          .push_back((*phoNeutralHadronIsolationMap_PUPPI)[pho]);
+    //phoCITKChIso_            .push_back((*phoChargedIsolationMap_CITK)[pho]);
+    //phoCITKPhoIso_           .push_back((*phoPhotonIsolationMap_CITK)[pho]);
+    //phoCITKNeuIso_           .push_back((*phoNeutralHadronIsolationMap_CITK)[pho]);
     
     bool isPassLoose  = (*loose_id_decisions)[pho];
     if(isPassLoose) setbit(tmpphoIDbit, 0);
@@ -775,7 +755,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     
     phoIDMVA_.push_back((*mvaValues)[pho]);  
     phoIDbit_.push_back(tmpphoIDbit);      
-
+    
     nPho_++;
   }
 

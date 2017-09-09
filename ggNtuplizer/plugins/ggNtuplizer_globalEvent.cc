@@ -125,70 +125,70 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     // HLT name => bit correspondence
     // Electron or Muon or Cross triggers
     int bitEleMuX = -1;
-    if      (name.find("HLT_Ele25_eta2p1_WPTight_Gsf_v")                      != string::npos) bitEleMuX =  0;
-    else if (name.find("HLT_Ele27_eta2p1_WPTight_Gsf_v")                      != string::npos) bitEleMuX =  1; 
-    else if (name.find("HLT_Ele27_eta2p1_WPLoose_Gsf_v")                      != string::npos) bitEleMuX =  2;
-    else if (name.find("HLT_Ele32_eta2p1_WPTight_Gsf_v")                      != string::npos) bitEleMuX =  3; 
-    else if (name.find("HLT_Ele27_WPTight_Gsf_v")                             != string::npos) bitEleMuX =  4; 
-    else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")         != string::npos) bitEleMuX =  5; 
-    else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")             != string::npos) bitEleMuX =  6; 
-    else if (name.find("HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v")           != string::npos) bitEleMuX =  7; 
-    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v")                   != string::npos) bitEleMuX =  8; 
-    else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v")                   != string::npos) bitEleMuX =  9; 
-    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v")             != string::npos) bitEleMuX = 10;
-    else if (name.find("HLT_DoubleEle33_CaloIdL_MW_v")                        != string::npos) bitEleMuX = 11;
-    else if (name.find("HLT_DoubleEle37_Ele27_CaloIdL_GsfTrkIdVL_v")          != string::npos) bitEleMuX = 12;
-    else if (name.find("HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v")             != string::npos) bitEleMuX = 13;
-    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")               != string::npos) bitEleMuX = 14;
-    else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")             != string::npos) bitEleMuX = 15;
-    else if (name.find("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")           != string::npos) bitEleMuX = 16;
-    else if (name.find("HLT_Mu30_TkMu11_v")                                   != string::npos) bitEleMuX = 17;
-    else if (name.find("HLT_DoubleIsoMu17_eta2p1_noDzCut_v")                  != string::npos) bitEleMuX = 18;
-    else if (name.find("HLT_IsoMu24_v")                                       != string::npos) bitEleMuX = 19;
-    else if (name.find("HLT_IsoTkMu24_v")                                     != string::npos) bitEleMuX = 20;
-    else if (name.find("HLT_Mu50_v")                                          != string::npos) bitEleMuX = 21;
-    else if (name.find("HLT_TripleMu_12_10_5_v")                              != string::npos) bitEleMuX = 22;
-    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")    != string::npos) bitEleMuX = 23;
-    else if (name.find("HLT_Mu8_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != string::npos) bitEleMuX = 24;
-    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v")    != string::npos) bitEleMuX = 25;
-    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v") != string::npos) bitEleMuX = 26;
-    else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")                  != string::npos) bitEleMuX = 27;
-    else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v")                   != string::npos) bitEleMuX = 28;
-    else if (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v")      != string::npos) bitEleMuX = 29;
-    else if (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v")      != string::npos) bitEleMuX = 30;
-    else if (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v")                != string::npos) bitEleMuX = 31;
-    else if (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v")                != string::npos) bitEleMuX = 32;
-    else if (name.find("HLT_Ele17_Ele12_CaloId_TrackId_Iso_DZ_v")             != string::npos) bitEleMuX = 33;
-    else if (name.find("HLT_DoubleEle33_CaloId_GsfTrackIdVL_v")               != string::npos) bitEleMuX = 34;
-    else if (name.find("HLT_Ele27_WPTight_Gsf_L1JetTauSeeded_v")              != string::npos) bitEleMuX = 35; 
-    else if (name.find("HLT_Ele30_WPTight_Gsf_L1JetTauSeeded_v")              != string::npos) bitEleMuX = 36; 
-    else if (name.find("HLT_Ele32_WPTight_Gsf_L1JetTauSeeded_v")              != string::npos) bitEleMuX = 37; 
-    else if (name.find("HLT_Ele115_CaloIdVT_GsfTrkIdT_v")                     != string::npos) bitEleMuX = 38;
+    if      (name.find("HLT_DoubleMu20_7_Mass0to30_L1_DM4_v")                  != string::npos) bitEleMuX =  0; // 2017
+    else if (name.find("HLT_DoubleMu20_7_Mass0to30_Photon23_v")                != string::npos) bitEleMuX =  1; // 2017
+    else if (name.find("HLT_Ele27_eta2p1_WPLoose_Gsf_v")                       != string::npos) bitEleMuX =  2;
+    else if (name.find("HLT_Ele35_WPTight_Gsf_v")                              != string::npos) bitEleMuX =  3; // 2017
+    else if (name.find("HLT_Ele27_WPTight_Gsf_v")                              != string::npos) bitEleMuX =  4; // 2017
+    else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")          != string::npos) bitEleMuX =  5; // 2017
+    else if (name.find("HLT_Ele16_Ele12_Ele8_CaloIdL_TrackIdL_v")              != string::npos) bitEleMuX =  6; // 2017
+    else if (name.find("HLT_Ele8_CaloIdL_TrackIdL_IsoVL_PFJet30_v")            != string::npos) bitEleMuX =  7; 
+    else if (name.find("HLT_Mu17_Photon30_CaloIdL_L1ISO_v")                    != string::npos) bitEleMuX =  8; 
+    else if (name.find("HLT_Mu17_Photon35_CaloIdL_L1ISO_v")                    != string::npos) bitEleMuX =  9; 
+    else if (name.find("HLT_DoubleEle33_CaloIdL_GsfTrkIdVL_MW_v")              != string::npos) bitEleMuX = 10;
+    else if (name.find("HLT_DoubleEle33_CaloIdL_MW_v")                         != string::npos) bitEleMuX = 11; // 2017
+    else if (name.find("HLT_DoubleEle37_Ele27_CaloIdL_GsfTrkIdVL_v")           != string::npos) bitEleMuX = 12;
+    else if (name.find("HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v")              != string::npos) bitEleMuX = 13;
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass8_v")          != string::npos) bitEleMuX = 14; // 2017
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_Mass3p8_v")        != string::npos) bitEleMuX = 15; // 2017
+    else if (name.find("HLT_TkMu17_TrkIsoVVL_TkMu8_TrkIsoVVL_DZ_v")            != string::npos) bitEleMuX = 16;
+    else if (name.find("HLT_TripleMu_10_5_5_DZ_v")                             != string::npos) bitEleMuX = 17; // 2017
+    else if (name.find("HLT_DoubleIsoMu20_eta2p1_v")                           != string::npos) bitEleMuX = 18; // 2017
+    else if (name.find("HLT_IsoMu27_v")                                        != string::npos) bitEleMuX = 19; // 2017
+    else if (name.find("HLT_IsoTkMu24_v")                                      != string::npos) bitEleMuX = 20; // 2017
+    else if (name.find("HLT_Mu50_v")                                           != string::npos) bitEleMuX = 21; // 2017
+    else if (name.find("HLT_TripleMu_12_10_5_v")                               != string::npos) bitEleMuX = 22; // 2017
+    else if (name.find("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v")    != string::npos) bitEleMuX = 23; // 2017*
+    else if (name.find("HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ_v") != string::npos) bitEleMuX = 24; // 2017
+    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_v")     != string::npos) bitEleMuX = 25; 
+    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele8_CaloIdL_TrackIdL_IsoVL_DZ_v")  != string::npos) bitEleMuX = 26;
+    else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_v")                   != string::npos) bitEleMuX = 27; // 2017
+    else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_v")                    != string::npos) bitEleMuX = 28; // 2017
+    else if (name.find("HLT_Ele22_eta2p1_WPLoose_Gsf_LooseIsoPFTau20_v")       != string::npos) bitEleMuX = 29;
+    else if (name.find("HLT_Ele24_eta2p1_WPLoose_Gsf_LooseIsoPFTau30_v")       != string::npos) bitEleMuX = 30;
+    else if (name.find("HLT_IsoMu17_eta2p1_LooseIsoPFTau20_v")                 != string::npos) bitEleMuX = 31;
+    else if (name.find("HLT_IsoMu19_eta2p1_LooseIsoPFTau20_v")                 != string::npos) bitEleMuX = 32;
+    else if (name.find("HLT_Ele17_Ele12_CaloId_TrackId_Iso_DZ_v")              != string::npos) bitEleMuX = 33;
+    else if (name.find("HLT_DoubleEle33_CaloId_GsfTrackIdVL_v")                != string::npos) bitEleMuX = 34;
+    else if (name.find("HLT_Ele27_WPTight_Gsf_L1JetTauSeeded_v")               != string::npos) bitEleMuX = 35; 
+    else if (name.find("HLT_Ele30_WPTight_Gsf_L1JetTauSeeded_v")               != string::npos) bitEleMuX = 36; 
+    else if (name.find("HLT_Ele32_WPTight_Gsf_L1JetTauSeeded_v")               != string::npos) bitEleMuX = 37; 
+    else if (name.find("HLT_Ele115_CaloIdVT_GsfTrkIdT_v")                      != string::npos) bitEleMuX = 38; // 2017
     else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_L1JetTauSeeded_v") != string::npos) bitEleMuX = 39;
-    else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")            != string::npos) bitEleMuX = 40;
-    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")                  != string::npos) bitEleMuX = 41;
-    else if (name.find("HLT_Mu17_TrkIsoVVL_TkMu8_TrkIsoVVL_v")                != string::npos) bitEleMuX = 42;
-    else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")                  != string::npos) bitEleMuX = 43;
-    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")                  != string::npos) bitEleMuX = 44;
-    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")   != string::npos) bitEleMuX = 45;
-    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v")!= string::npos) bitEleMuX = 46;
-    else if (name.find("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")                  != string::npos) bitEleMuX = 47;
-    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 48;
-    else if (name.find("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 49;
-    else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 50;
+    else if (name.find("HLT_Ele23_Ele12_CaloIdL_TrackIdL_IsoVL_v")             != string::npos) bitEleMuX = 40; // 2017
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_v")                   != string::npos) bitEleMuX = 41; // 2017*
+    else if (name.find("HLT_Mu17_TrkIsoVVL_Mu8_TrkIsoVVL_DZ_v")                != string::npos) bitEleMuX = 42; // 2017*
+    else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_v")                   != string::npos) bitEleMuX = 43;
+    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_v")                   != string::npos) bitEleMuX = 44;
+    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_v")    != string::npos) bitEleMuX = 45; // 2017
+    else if (name.find("HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v") != string::npos) bitEleMuX = 46; // 2017
+    else if (name.find("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_v")                   != string::npos) bitEleMuX = 47;
+    else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")           != string::npos) bitEleMuX = 48;
+    else if (name.find("HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v")                 != string::npos) bitEleMuX = 49; // 2017
+    else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")           != string::npos) bitEleMuX = 50; // 2017
 
     // Photon triggers
     int bitPho    = -1;
     if      (name.find("HLT_Photon22_v")                    != string::npos) bitPho =  0; //bit0(lowest)
     else if (name.find("HLT_Photon30_v")                    != string::npos) bitPho =  1; 
-    else if (name.find("HLT_Photon36_v")                    != string::npos) bitPho =  2; 
-    else if (name.find("HLT_Photon50_v")                    != string::npos) bitPho =  3; 
-    else if (name.find("HLT_Photon75_v")                    != string::npos) bitPho =  4; 
-    else if (name.find("HLT_Photon90_v")                    != string::npos) bitPho =  5; 
-    else if (name.find("HLT_Photon120_v")                   != string::npos) bitPho =  6; 
-    else if (name.find("HLT_Photon175_v")                   != string::npos) bitPho =  7; 
-    else if (name.find("HLT_Photon250_NoHE_v")              != string::npos) bitPho =  8; 
-    else if (name.find("HLT_Photon300_NoHE_v")              != string::npos) bitPho =  9; 
+    else if (name.find("HLT_Photon33_v")                    != string::npos) bitPho =  2; // 2017
+    else if (name.find("HLT_Photon50_v")                    != string::npos) bitPho =  3; // 2017
+    else if (name.find("HLT_Photon75_v")                    != string::npos) bitPho =  4; // 2017
+    else if (name.find("HLT_Photon90_v")                    != string::npos) bitPho =  5; // 2017
+    else if (name.find("HLT_Photon120_v")                   != string::npos) bitPho =  6; // 2017
+    else if (name.find("HLT_Photon175_v")                   != string::npos) bitPho =  7; // 2017
+    else if (name.find("HLT_Photon250_v")                   != string::npos) bitPho =  8; // 2017
+    else if (name.find("HLT_Photon300_NoHE_v")              != string::npos) bitPho =  9; // 2017
     else if (name.find("HLT_Photon500_v")                   != string::npos) bitPho = 10; 
     else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
     else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
@@ -201,8 +201,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 19;
     else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")       != string::npos) bitPho = 20;
     else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                    != string::npos) bitPho = 21;
-    else if (name.find("HLT_DoublePhoton60_v")                              != string::npos) bitPho = 22;
-    else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23;
+    else if (name.find("HLT_DoublePhoton70_v")                              != string::npos) bitPho = 22; // 2017
+    else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23; // 2017
     else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 24;
 
     // Jet triggers
@@ -268,15 +268,15 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
     if (!doGenParticles_) {
-      if      (name.find("HLT_Photon22_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon30_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+1,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon36_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+2,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+3,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(0, name));
+      if      (name.find("HLT_Photon33_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+1,hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+2,hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+3,hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon120_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(0, name));
+      else if (name.find("HLT_Photon150_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(0, name));
+      //else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(0, name));
+      //else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(0, name));
+      //else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(0, name));
     }
 
   }
