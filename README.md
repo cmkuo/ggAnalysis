@@ -1,60 +1,15 @@
-#### Current production tag : V08_00_26_03
+#### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_8_0_26_patch1
+#### Note that the current head version can be run with CMSSW_9_2_4
 
-##### To work with CMSSW_8_0_26_patch1 and head version, you do :
-cd CMSSW_8_0_26_patch1/src <br>
+##### To work with CMSSW_9_2_4 and head version, you do :
+cd CMSSW_9_2_4/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_from-CMSSW_8_0_21 <br>
-git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy <br>
-git cms-merge-topic cms-egamma:EGM_gain_v1 <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git <br>
-cd $CMSSW_BASE/src <br>
-git cms-merge-topic cms-met:METRecipe_8020 -u <br>
-git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
-git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
-git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
-git cms-merge-topic ikrav:egm_id_80X_v2 <br>
-git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_26_03 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
 
-scram b -j 10 <br>
-
-##### To work with CMSSW_8_0_26_patch1 and V08_00_26_01, you do :
-cd CMSSW_8_0_26_patch1/src <br>
-cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
-git cms-init <br>
-git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
-git fetch --tags btv-cmssw <br>
-git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_from-CMSSW_8_0_21 <br>
-git cms-merge-topic rafaellopesdesa:EgammaAnalysis80_EGMSmearer_Moriond17_23Jan <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone git@github.com:ECALELFS/ScalesSmearings.git <br>
-cd ../../../ <br>
-git cms-merge-topic cms-met:METRecipe_8020 -u <br>
-git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
-git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
-git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
-git cms-merge-topic ikrav:egm_id_80X_v2 <br>
-git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_26_01 https://github.com/cmkuo/ggAnalysis.git <br>
-
-scram b -j 10 <br>
-
-##### To work with CMSSW_7_6_3_patch2, you do:
-cd CMSSW_7_6_3_patch2/src <br>
-cmsenv <br>
-git cms-merge-topic -u matteosan1:smearer_76X <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V07_06_03_01 https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 10 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
