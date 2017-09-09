@@ -25,6 +25,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   dumpMuonsPairs_            = ps.getParameter<bool>("dumpMuonsPairs");
+  dumpZPairs_                = ps.getParameter<bool>("dumpZPairs");
   isAOD_                     = ps.getParameter<bool>("isAOD");
   runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
 
@@ -121,13 +122,14 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
 
   branchesMET(tree_);
   branchesPhotons(tree_);
-  if (dumpPhotons_) branchesPFPhotons(tree_);
   branchesElectrons(tree_);
-  if (runHFElectrons_) branchesHFElectrons(tree_);
   branchesMuons(tree_);
-  if (dumpTaus_) branchesTaus(tree_);
-  if (dumpJets_) branchesJets(tree_);
+  if (dumpPhotons_)    branchesPFPhotons(tree_);
+  if (runHFElectrons_) branchesHFElectrons(tree_);
+  if (dumpTaus_)       branchesTaus(tree_);
+  if (dumpJets_)       branchesJets(tree_);
   if (dumpMuonsPairs_) branchesMuonPairs(tree_);
+  if (dumpZPairs_)     branchesZPairs(tree_);
 }
 
 ggNtuplizer::~ggNtuplizer() {
@@ -178,12 +180,13 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
   fillPFPhotons(e, es);
   fillElectrons(e, es, pv);
+  fillMuons(e, pv, vtx);
 
   if (runHFElectrons_ ) fillHFElectrons(e);
-  fillMuons(e, pv, vtx);
-  if (dumpTaus_) fillTaus(e);
-  if (dumpJets_) fillJets(e,es);
-  if (dumpMuonsPairs_) fillMuonsPairs(e, es, pv, vtx);
+  if (dumpTaus_)        fillTaus(e);
+  if (dumpJets_)        fillJets(e,es);
+  if (dumpMuonsPairs_)  fillMuonsPairs(e, es, pv, vtx);
+  if (dumpZPairs_)      fillZPairs(e, es, pv, vtx);
 
   hEvents_->Fill(1.5);
   tree_->Fill();
