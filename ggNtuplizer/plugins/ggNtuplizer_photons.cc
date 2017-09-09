@@ -4,6 +4,8 @@
 #include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
+#include "TRandom3.h"
+
 using namespace std;
 
 Int_t          nPho_;
@@ -47,6 +49,7 @@ vector<float>  phoR9Full5x5_;
 vector<float>  phoPFChIso_;
 vector<float>  phoPFPhoIso_;
 vector<float>  phoPFNeuIso_;
+vector<float>  phoPFRandConeChIso_;
 vector<float>  phoPFChWorstIso_;
 vector<float>  phoPFChIsoFrix1_;
 vector<float>  phoPFChIsoFrix2_;
@@ -123,6 +126,59 @@ bool isInFootprint(const T& thefootprint, const U& theCandidate) {
   return false;
 }
 
+
+TRandom3 generator = TRandom3(0);
+
+double randomConeIso(double eta, edm::Handle<std::vector<pat::PackedCandidate>>& pfcands, const reco::Vertex& vertex,
+					 edm::Handle<edm::View<pat::Electron>>& electrons, edm::Handle<edm::View<pat::Muon>>& muons,
+					 edm::Handle<edm::View<pat::Jet>>& jets, edm::Handle<edm::View<pat::Photon>>& photons){
+	
+	// First, find random phi direction which does not overlap with jets, photons or leptons
+	bool overlap   = true;
+	int attempt    = 0;
+	double randomPhi;
+
+	while(overlap and attempt<40){
+		randomPhi = generator.Uniform(-TMath::Pi(),TMath::Pi());
+		overlap = false;
+		for (edm::View<pat::Photon>::const_iterator p = photons->begin(); p != photons->end(); ++p) {
+			if(p->pt() > 10 and deltaR(eta, randomPhi, p->eta(), p->phi()) < 0.6) overlap = true;
+		}
+		for (edm::View<pat::Electron>::const_iterator p = electrons->begin(); p != electrons->end(); ++p) {
+			if(p->pt() > 10 and deltaR(eta, randomPhi, p->eta(), p->phi()) < 0.6) overlap = true;
+		}
+		for (edm::View<pat::Muon>::const_iterator p = muons->begin(); p != muons->end(); ++p) {
+			if(p->pt() > 10 and deltaR(eta, randomPhi, p->eta(), p->phi()) < 0.6) overlap = true;
+		}
+		for (edm::View<pat::Jet>::const_iterator p = jets->begin(); p != jets->end(); ++p) {
+			if(p->pt() > 20 and deltaR(eta, randomPhi, p->eta(), p->phi()) < 0.6) overlap = true;
+		}
+		// for(auto& p : *electrons) if(p.pt() > 10 and deltaR(eta, randomPhi, p.eta(), p.phi()) < 0.6) overlap = true;
+		// for(auto& p : *muons)     if(p.pt() > 10 and deltaR(eta, randomPhi, p.eta(), p.phi()) < 0.6) overlap = true;
+		// for(auto& p : *jets)      if(p.pt() > 20 and deltaR(eta, randomPhi, p.eta(), p.phi()) < 0.6) overlap = true;
+		// for(auto& p : *photons)   if(p.pt() > 10 and deltaR(eta, randomPhi, p.eta(), p.phi()) < 0.6) overlap = true;
+		++attempt;
+	}
+	if(overlap) return -1.;
+
+	// Calculate chargedIsolation
+	float chargedIsoSum = 0;
+	for(auto& iCand : *pfcands){
+
+		if(deltaR(eta, randomPhi, iCand.eta(), iCand.phi()) > 0.3) continue;
+		if(abs(iCand.pdgId()) != 211) continue;
+
+		float dxy = iCand.pseudoTrack().dxy(vertex.position());
+		float dz  = iCand.pseudoTrack().dz(vertex.position());
+		if(fabs(dxy) > 0.1) continue;
+		if(fabs(dz) > 0.2)  continue;
+
+		chargedIsoSum += iCand.pt();
+	}
+	return chargedIsoSum;
+}
+
+
 void ggNtuplizer::branchesPhotons(TTree* tree) {
   
   tree->Branch("nPho",                    &nPho_);
@@ -169,6 +225,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPFPhoIso",             &phoPFPhoIso_);
   tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
   tree->Branch("phoPFChWorstIso",         &phoPFChWorstIso_);
+  tree->Branch("phoPFRandConeChIso",      &phoPFRandConeChIso_);
   /*
   tree->Branch("phoPFChIsoFrix1",         &phoPFChIsoFrix1_);
   tree->Branch("phoPFChIsoFrix2",         &phoPFChIsoFrix2_);
@@ -280,6 +337,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPFPhoIso_          .clear();
   phoPFNeuIso_          .clear();
   phoPFChWorstIso_      .clear();
+  phoPFRandConeChIso_   .clear();
   phoPFChIsoFrix1_      .clear();
   phoPFChIsoFrix2_      .clear();
   phoPFChIsoFrix3_      .clear();
@@ -432,6 +490,18 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   e.getByToken(rhoLabel_, rhoHandle);
   double rho    = *(rhoHandle.product());
 
+
+  edm::Handle<edm::View<pat::Muon> > muonHandle;
+  e.getByToken(muonCollection_, muonHandle);
+
+  edm::Handle<edm::View<pat::Electron> > electronHandle;
+  e.getByToken(electronCollection_, electronHandle);
+
+  edm::Handle<edm::View<pat::Jet> > jetHandle;
+  e.getByToken(jetsAK4Label_, jetHandle);
+
+  e.getByToken(pckPFCdsLabel_, pfCndHandle); 
+
   if (isAOD_) {
     edm::Handle<reco::PFCandidateCollection> pfAllCandidates;
     e.getByToken(pfAllParticles_, pfAllCandidates);
@@ -483,6 +553,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     //phoPFPhoIso_      .push_back(iPho->photonIso());
     //phoPFNeuIso_      .push_back(iPho->neutralHadronIso());
 
+	phoPFRandConeChIso_.push_back(randomConeIso((*iPho).superCluster()->eta(), pfCndHandle, *(recVtxs->begin()), electronHandle, muonHandle, jetHandle, photonHandle));
 
     ///////////////////////////////SATURATED/UNSATURATED ///from ggFlash////
     DetId seed = (iPho->superCluster()->seed()->hitsAndFractions())[0].first;

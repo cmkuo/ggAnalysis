@@ -103,6 +103,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpSubJets_;
   bool dumpSoftDrop_;
   bool dumpPDFSystWeight_;
+  bool dumpGenScaleSystWeights_;
   bool dumpMuonsPairs_;
   bool dumpZPairs_;
 

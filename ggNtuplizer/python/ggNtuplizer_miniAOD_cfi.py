@@ -15,6 +15,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpMuonsPairs       = cms.bool(False),
                              dumpZPairs           = cms.bool(False),
                              dumpPDFSystWeight    = cms.bool(False),
+                             dumpGenScaleSystWeights = cms.bool(False),
                              isAOD                = cms.bool(False), #### actually configured through run_data_74x.py
                              runHFElectrons       = cms.bool(True),
                              development          = cms.bool(False),

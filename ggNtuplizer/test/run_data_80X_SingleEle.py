@@ -87,7 +87,8 @@ updateJetCollection(
     process,
     jetSource = cms.InputTag('slimmedJets'),
     labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None')
+    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute','L2L3Residual']), 'None'),
+    btagDiscriminators = ['deepFlavourJetTags:probudsg', 'deepFlavourJetTags:probb', 'deepFlavourJetTags:probc', 'deepFlavourJetTags:probbb', 'deepFlavourJetTags:probcc']
     )
 updateJetCollection(
     process,
@@ -193,7 +194,7 @@ process.singleEleHLTFilter = cms.EDFilter("HLTHighLevel",
                                           throw = cms.bool(True) # Tolerate if triggers not available
                                           )
 
-    process.p = cms.Path(
+process.p = cms.Path(
         ###process.reapplyJEC*
         ###process.pfImpactParameterTagInfosAK8 *
         ###process.pfInclusiveSecondaryVertexFinderTagInfosAK8 *
