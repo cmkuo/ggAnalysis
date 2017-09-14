@@ -7,6 +7,8 @@ cd CMSSW_9_2_4/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
+git cms-addpkg RecoEgamma/EgammaIsolationAlgos
+git cms-merge-topic rgoldouz:TrkIsoFix -u
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b 92X https://github.com/cmkuo/ggAnalysis.git <br>
 
