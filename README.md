@@ -1,9 +1,9 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_9_2_4
+#### Note that the current head version can be run with CMSSW_9_2_9
 
-##### To work with CMSSW_9_2_4 and head version, you do :
-cd CMSSW_9_2_4/src <br>
+##### To work with CMSSW_9_2_9 and head version, you do :
+cd CMSSW_9_2_9/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
