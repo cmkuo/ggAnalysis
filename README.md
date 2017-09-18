@@ -1,4 +1,4 @@
-#### Current production tag : V08_00_26_06
+#### Current production tag : V08_00_26_07
 #### Newest tag for testing : 
 #### Note that the current head version can be run with CMSSW_8_0_26_patch1
 
@@ -21,8 +21,13 @@ git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
 git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
 git cms-merge-topic ikrav:egm_id_80X_v2 <br>
 git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
+git cms-merge-topic -u mverzett:DeepFlavour-from-CMSSW_8_0_21 <br>
+mkdir RecoBTag/DeepFlavour/data/ <br>
+cd RecoBTag/DeepFlavour/data/ <br>
+wget http://home.fnal.gov/~verzetti//DeepFlavour/training/DeepFlavourNoSL.json <br>
+cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b V08_00_26_06 https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b V08_00_26_07 https://github.com/cmkuo/ggAnalysis.git <br>
 
 scram b -j 10 <br>
 
