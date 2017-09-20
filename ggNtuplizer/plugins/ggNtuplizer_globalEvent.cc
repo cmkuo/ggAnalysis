@@ -176,6 +176,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")           != string::npos) bitEleMuX = 48;
     else if (name.find("HLT_Ele17_CaloIdM_TrackIdM_PFJet30_v")                 != string::npos) bitEleMuX = 49; // 2017
     else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")           != string::npos) bitEleMuX = 50; // 2017
+    else if (name.find("HLT_DiMu9_Ele9_CaloIdL_TrackIdL_DZ_v")                 != string::npos) bitEleMuX = 51; // 2017
+    else if (name.find("HLT_Mu8_DiEle12_CaloIdL_TrackIdL_DZ_v")                != string::npos) bitEleMuX = 52; // 2017
+    else if (name.find("HLT_Mu12_DoublePhoton20_v")                            != string::npos) bitEleMuX = 53; // 2017
 
     // Photon triggers
     int bitPho    = -1;
@@ -204,6 +207,11 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_DoublePhoton70_v")                              != string::npos) bitPho = 22; // 2017
     else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23; // 2017
     else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 24;
+    else if (name.find("HLT_TriplePhoton_20_20_20_CaloIdLV2_v")             != string::npos) bitPho = 25; //2017
+    else if (name.find("HLT_TriplePhoton_20_20_20_CaloIdLV2_R9IdVL_v")      != string::npos) bitPho = 26; //2017
+    else if (name.find("HLT_TriplePhoton_30_30_10_CaloIdLV2_v")             != string::npos) bitPho = 27; //2017
+    else if (name.find("HLT_TriplePhoton_30_30_10_CaloIdLV2_R9IdVL_v")      != string::npos) bitPho = 28; //2017
+    else if (name.find("HLT_TriplePhoton_35_35_5_CaloIdLV2_R9IdVL_v")       != string::npos) bitPho = 29; //2017
 
     // Jet triggers
     int bitJet    = -1;
