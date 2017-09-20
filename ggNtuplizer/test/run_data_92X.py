@@ -15,7 +15,7 @@ process.GlobalTag = GlobalTag(process.GlobalTag, '92X_dataRun2_Prompt_v8')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(10000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 #jec from sqlite
@@ -38,7 +38,8 @@ process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        '/store/data/Run2017B/DoubleEG/MINIAOD/PromptReco-v1/000/297/675/00000/1A36D9B2-6D5E-E711-85F9-02163E011A03.root'
+        #'/store/data/Run2017B/DoubleEG/MINIAOD/PromptReco-v1/000/297/675/00000/1A36D9B2-6D5E-E711-85F9-02163E011A03.root'
+        '/store/data/Run2017D/DoubleEG/MINIAOD/PromptReco-v1/000/302/031/00000/008329E5-368F-E711-A1CD-02163E01A21D.root'
         )
                             )
 
