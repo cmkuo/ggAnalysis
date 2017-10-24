@@ -73,6 +73,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesJets       (TTree*);
   void branchesMuonPairs  (TTree*);
   void branchesZPairs     (TTree*);
+  void branchesIsoTracks  (TTree*);
 
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
@@ -87,6 +88,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&, const edm::EventSetup&);
   void fillMuonsPairs (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillZPairs     (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
+  void fillIsoTracks  (const edm::Event&, math::XYZPoint&, const reco::Vertex);
 
   void cleanupPhotons();
 
@@ -106,6 +108,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpGenScaleSystWeights_;
   bool dumpMuonsPairs_;
   bool dumpZPairs_;
+  bool dumpIsoTracks_;
 
   bool isAOD_;
   bool runHFElectrons_;
@@ -114,6 +117,16 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   double trgFilterDeltaPtCut_;
   double trgFilterDeltaRCut_;
+  
+  double isoPtLeptoncut_;
+  double isoPtcut_;
+  double isoPtcutnoIso_;
+  double isoDRcut_;
+  double isoDZcut_;
+  double isoD0cut_;
+  vector<double >isoMiniIsoParams_;
+  double isoChIsocut_;
+  double isoChRelIsocut_;
 
   edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>         vtxBSLabel_;

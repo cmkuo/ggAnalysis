@@ -14,6 +14,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpTaus             = cms.bool(False),
                              dumpMuonsPairs       = cms.bool(False),
                              dumpZPairs           = cms.bool(False),
+                             dumpIsoTrakcs        = cms.bool(False),
                              dumpPDFSystWeight    = cms.bool(False),
                              dumpGenScaleSystWeights = cms.bool(False),
                              isAOD                = cms.bool(False), #### actually configured through run_data_74x.py
@@ -87,5 +88,15 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              elePFClusEcalIsoProducer = cms.InputTag("electronEcalPFClusterIsolationProducer"),
                              elePFClusHcalIsoProducer = cms.InputTag("electronHcalPFClusterIsolationProducer"),
                              BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
-                             BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter")
+                             BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter"),
+                             #IsoTrack cut variables
+                             isoPtLeptoncut = cms.double(5),
+                             isoPtcut = cms.double(10),
+                             isoPtcutnoIso = cms.double(20),
+                             isoDRcut = cms.double(0.3),
+                             isoDZcut = cms.double(0.1),
+                             isoD0cut = cms.double(0.2),
+                             isoMiniIsoParams = cms.vdouble(0.05,0.2,10),#(minDR,maxDR,kT)
+                             isoChIsocut = cms.double(5),
+                             isoChRelIsocut = cms.double(0.2)
 )
