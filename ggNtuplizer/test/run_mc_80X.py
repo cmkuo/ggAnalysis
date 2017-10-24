@@ -116,7 +116,7 @@ process.ggNtuplizer.doGenParticles=cms.bool(True)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
-process.ggNtuplizer.dumpIsoTrakcs=cms.bool(False)
+process.ggNtuplizer.dumpIsoTracks=cms.bool(False)
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "PAT")
 
 #####VID framework####################

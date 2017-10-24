@@ -88,7 +88,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&, const edm::EventSetup&);
   void fillMuonsPairs (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
   void fillZPairs     (const edm::Event&, const edm::EventSetup&, math::XYZPoint&, const reco::Vertex);
-  void fillIsoTracks  (const edm::Event&, math::XYZPoint&, const reco::Vertex);
+  void fillIsoTracks  (const edm::Event&);
 
   void cleanupPhotons();
 
@@ -122,11 +122,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
   double isoPtcut_;
   double isoPtcutnoIso_;
   double isoDRcut_;
-  double isoDZcut_;
-  double isoD0cut_;
+  double isoIsoDZcut_;
   vector<double >isoMiniIsoParams_;
   double isoChIsocut_;
-  double isoChRelIsocut_;
+  double isoLepOverlapDR_;
+  double isoOverlapPtMin_;
 
   edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>         vtxBSLabel_;

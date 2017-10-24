@@ -38,12 +38,12 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
   isoPtcut_                  = ps.getParameter<double>("isoPtcut");
   isoPtcutnoIso_             = ps.getParameter<double>("isoPtcutnoIso");
   isoDRcut_                  = ps.getParameter<double>("isoDRcut");
-  isoDZcut_                  = ps.getParameter<double>("isoDZcut");
-  isoD0cut_                  = ps.getParameter<double>("isoD0cut");
+  isoIsoDZcut_               = ps.getParameter<double>("isoIsoDZcut");
   isoMiniIsoParams_          = ps.getParameter<vector<double>>("isoMiniIsoParams");
   if (isoMiniIsoParams_.size() != 3) throw cms::Exception("ParameterError") << "isoMiniIsoParams must have exactly 3 elements.\n";
   isoChIsocut_               = ps.getParameter<double>("isoChIsocut");
-  isoChRelIsocut_            = ps.getParameter<double>("isoChRelIsocut");
+  isoLepOverlapDR_           = ps.getParameter<double>("isoLepOverlapDR");
+  isoOverlapPtMin_           = ps.getParameter<double>("isoOverlapPtMin");
 
   vtxLabel_                  = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxBSLabel"));
@@ -201,7 +201,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   if (dumpJets_)        fillJets(e,es);
   if (dumpMuonsPairs_)  fillMuonsPairs(e, es, pv, vtx);
   if (dumpZPairs_)      fillZPairs(e, es, pv, vtx);
-  if (dumpIsoTracks_)   fillIsoTracks(e, pv, vtx);
+  if (dumpIsoTracks_)   fillIsoTracks(e);
 
   hEvents_->Fill(1.5);
   tree_->Fill();

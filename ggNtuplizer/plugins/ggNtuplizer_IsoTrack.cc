@@ -1,5 +1,4 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
-#include "CommonTools/ParticleFlow/interface/PFPileUpAlgo.h" //kell?
 
 #include "DataFormats/PatCandidates/interface/PackedCandidate.h"
 #include "DataFormats/Math/interface/deltaR.h"
@@ -17,6 +16,7 @@ vector<float>  isoDz_;
 vector<float>  isoCharge_;
 vector<int>    isoFromPV_;
 vector<int>    isoPdgID_;
+vector<bool>   isoLeptonOverlap_;
 vector<float>  isoChIso_;
 vector<float>  isoChRelIso_;
 vector<float>  isoChMiniIso_;
@@ -32,13 +32,14 @@ void ggNtuplizer::branchesIsoTracks(TTree* tree) {
   tree->Branch("isoCharge",                       &isoCharge_);
   tree->Branch("isoFromPV",                       &isoFromPV_);
   tree->Branch("isoPdgID",                         &isoPdgID_);
+  tree->Branch("isoLeptonOverlap",         &isoLeptonOverlap_);
   tree->Branch("isoChIso",                         &isoChIso_);
   tree->Branch("isoChRelIso",                   &isoChRelIso_);
   tree->Branch("isoChMiniIso",                 &isoChMiniIso_);
   tree->Branch("isoChRelMiniIso",           &isoChRelMiniIso_);
 }
 
-void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::Vertex vtx) {
+void ggNtuplizer::fillIsoTracks(const edm::Event& e) {
   
   // cleanup from previous execution
   isoPt_               .clear();
@@ -49,6 +50,7 @@ void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::V
   isoCharge_           .clear();
   isoFromPV_           .clear();
   isoPdgID_            .clear();
+  isoLeptonOverlap_    .clear();
   isoChIso_            .clear();
   isoChRelIso_         .clear();
   isoChMiniIso_        .clear();
@@ -69,9 +71,6 @@ void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::V
     bool isPFLep = (fabs(pf_it->pdgId()) == 11 || fabs(pf_it->pdgId()) == 13);
     if (isPFLep && pf_it->pt() < isoPtLeptoncut_) continue;
     if (!isPFLep && pf_it->pt() < isoPtcut_) continue;
-    //if (pf_it->eta() > 2.5) continue;
-    if (fabs(pf_it->dz()) > isoDZcut_) continue;
-    if (fabs(pf_it->dxy()) > isoD0cut_) continue;
 
     //calculate isolation from other pfcandidates
     float chIso = 0, chMiniIso = 0;
@@ -80,7 +79,7 @@ void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::V
       if (iso_it == pf_it) continue;//don't use the pfcand we are calculating isolation for
       if (iso_it->charge() == 0) continue;
       int id = iso_it->pdgId();
-      bool fromPV = (iso_it->fromPV()>1 || fabs(iso_it->dz())<0.1);
+      bool fromPV = (iso_it->fromPV()>1 || fabs(iso_it->dz())<isoIsoDZcut_);
       float dR = deltaR(iso_it->eta(), iso_it->phi(), pf_it->eta(), pf_it->phi());
       float miniDR = std::max(isoMiniIsoParams_.at(0), std::min(isoMiniIsoParams_.at(1),isoMiniIsoParams_.at(2)/pf_it->pt()));
 
@@ -89,6 +88,30 @@ void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::V
     }
 
     if (pf_it->pt() < isoPtcutnoIso_ && chIso > isoChIsocut_) continue;
+
+    //calculate overlap with pf leptons
+    bool isOverlap = false;
+    float dr_min = isoLepOverlapDR_;
+    int id_drmin = 0;
+    for (pat::PackedCandidateCollection::const_iterator overlap_it = pfcands->begin(); overlap_it != pfcands->end(); overlap_it++) {
+      int id = std::abs(overlap_it->pdgId());
+      int charge = std::abs(overlap_it->charge());
+      bool fromPV = (overlap_it->fromPV()>1 || std::abs(overlap_it->dz()) < isoIsoDZcut_);
+      float pt = overlap_it->pt();
+      if(charge==0) continue; // exclude neutral candidates
+      if(!(fromPV)) continue; // exclude candidates not from PV
+      if(pt < isoOverlapPtMin_) continue; // exclude pf candidates w/ pT below threshold
+
+      float dr = deltaR(overlap_it->eta(), overlap_it->phi(), pf_it->eta(), pf_it->phi());
+      if(dr > isoLepOverlapDR_)  continue; // exclude pf candidates far from isolated track
+
+      if(dr < dr_min){
+        dr_min = dr;
+        id_drmin = id;
+      }
+    }
+
+    if(dr_min<isoLepOverlapDR_ && (id_drmin==11 || id_drmin==13)) isOverlap = true;
 
     isoChIso_.push_back(chIso);
     isoChRelIso_.push_back(chIso/pf_it->pt());
@@ -102,6 +125,7 @@ void ggNtuplizer::fillIsoTracks(const edm::Event& e, math::XYZPoint& pv, reco::V
     isoCharge_.push_back(pf_it->charge());
     isoFromPV_.push_back(pf_it->fromPV());
     isoPdgID_.push_back(pf_it->pdgId());
+    isoLeptonOverlap_.push_back(isOverlap);
 
     nIsoTrack_++;
   }
