@@ -402,6 +402,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
           else if (abs(dp->pdgId())==15 || abs(dp->pdgId())==16) setbit(tmpStatusFlag, 7);
         }
       }
+      if (ip->isLastCopy())  setbit(tmpStatusFlag, 8);
       mcStatusFlag.push_back(tmpStatusFlag);
 
       int mcGMomPID_ = -999;
