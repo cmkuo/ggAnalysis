@@ -152,6 +152,7 @@ process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpSubJets=cms.bool(True)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
+process.ggNtuplizer.dumpIsoTracks=cms.bool(False)
 process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsMuEGClean", "", "ggKit")
 ## the following line is only needed when you run on Feb 2017 re-miniAOD
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "PAT")
