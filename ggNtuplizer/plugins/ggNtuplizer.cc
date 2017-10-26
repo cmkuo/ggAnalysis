@@ -8,7 +8,9 @@ void setbit(UShort_t& x, UShort_t bit) {
   x |= (a << bit);
 }
 
-ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) {
+ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
+  hltPrescaleProvider_(ps, consumesCollector(), *this)
+{
 
   development_               = ps.getParameter<bool>("development");
   addFilterInfoAOD_          = ps.getParameter<bool>("addFilterInfoAOD");

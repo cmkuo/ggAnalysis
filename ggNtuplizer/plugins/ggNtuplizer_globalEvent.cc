@@ -21,6 +21,7 @@ float       rho_;
 float       rhoCentral_;
 ULong64_t   HLTEleMuX_;
 ULong64_t   HLTPho_;
+ULong64_t   HLTPhoRejectedByPS_;
 ULong64_t   HLTJet_;
 ULong64_t   HLTEleMuXIsPrescaled_;
 ULong64_t   HLTPhoIsPrescaled_;
@@ -44,6 +45,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("rhoCentral",           &rhoCentral_);
   tree->Branch("HLTEleMuX",            &HLTEleMuX_);
   tree->Branch("HLTPho",               &HLTPho_);
+  tree->Branch("HLTPhoRejectedByPS",   &HLTPhoRejectedByPS_);
   tree->Branch("HLTJet",               &HLTJet_);
   tree->Branch("HLTEleMuXIsPrescaled", &HLTEleMuXIsPrescaled_);
   tree->Branch("HLTPhoIsPrescaled",    &HLTPhoIsPrescaled_);
@@ -105,6 +107,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   // HLT treatment
   HLTEleMuX_            = 0;
   HLTPho_               = 0;
+  HLTPhoRejectedByPS_   = 0;
   HLTJet_               = 0;
   HLTEleMuXIsPrescaled_ = 0;
   HLTPhoIsPrescaled_    = 0;
@@ -114,8 +117,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   e.getByToken(trgResultsLabel_, trgResultsHandle);
 
   bool cfg_changed = true;
-  HLTConfigProvider hltCfg;
-  hltCfg.init(e.getRun(), es, trgResultsProcess_, cfg_changed);
+  hltPrescaleProvider_.init(e.getRun(), es, trgResultsProcess_, cfg_changed);
+  HLTConfigProvider const&  hltCfg = hltPrescaleProvider_.hltConfigProvider();
+  const int prescaleSet = hltPrescaleProvider_.prescaleSet(e,es);
 
   const edm::TriggerNames &trgNames = e.triggerNames(*trgResultsHandle);
 
@@ -204,6 +208,12 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_DoublePhoton60_v")                              != string::npos) bitPho = 22;
     else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23;
     else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 24;
+    else if (name.find("HLT_Photon50_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 25;
+    else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 26;
+    else if (name.find("HLT_Photon90_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 27;
+    else if (name.find("HLT_Photon120_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 28;
+    else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 29;
+    else if (name.find("HLT_ECALHT800_v")                                   != string::npos) bitPho = 30;
 
     // Jet triggers
     int bitJet    = -1;
@@ -246,8 +256,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     else if (name.find("HLT_PFHT800_4JetPt50_v")                                     != string::npos) bitJet = 36;
     
     // indicates prescaling and whether trigger was fired or not
-    ULong64_t isPrescaled = (hltCfg.prescaleValue(0, name)!=1) ? 1 : 0;
+    ULong64_t isPrescaled = (hltCfg.prescaleValue(prescaleSet, name)!=1) ? 1 : 0;
     ULong64_t isFired     = (trgResultsHandle->accept(i)) ? 1 : 0;
+    ULong64_t isrejectedByHLTPS = (hltCfg.moduleType(hltCfg.moduleLabel(i,trgResultsHandle->index(i)))=="HLTPrescaler") ? 1: 0;
 
     if (bitEleMuX >= 0) {
       HLTEleMuX_            |= (isFired << bitEleMuX);
@@ -257,6 +268,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     if (bitPho >= 0) {
       HLTPho_            |= (isFired << bitPho);
       HLTPhoIsPrescaled_ |= (isPrescaled << bitPho);
+      HLTPhoRejectedByPS_|= (isrejectedByHLTPS << bitPho);
     }
 
     if (bitJet >= 0) {
@@ -268,15 +280,15 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
     if (!doGenParticles_) {
-      if      (name.find("HLT_Photon22_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon30_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+1,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon36_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+2,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+3,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(0, name));
-      else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(0, name));
+      if      (name.find("HLT_Photon22_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon30_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+1,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon36_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+2,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+3,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(prescaleSet, name));
     }
 
   }

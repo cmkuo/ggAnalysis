@@ -28,6 +28,7 @@
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
 #include "JetMETCorrections/Modules/interface/JetResolution.h"
 //#include "PhysicsTools/SelectorUtils/interface/PFJetIDSelectionFunctor.h"
+#include "HLTrigger/HLTcore/interface/HLTPrescaleProvider.h"
 
 using namespace std;
 
@@ -219,6 +220,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
   boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
   std::vector<std::string> jecAK8PayloadNames_;
+  HLTPrescaleProvider hltPrescaleProvider_;
 };
 
 #endif
