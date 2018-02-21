@@ -198,9 +198,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   JME::JetResolutionScaleFactor AK8jetResolutionSF_;
 
   //PFJetIDSelectionFunctor pfLooseId_;
-  boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
-  boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
-  std::vector<std::string> jecAK8PayloadNames_;
+  //boost::shared_ptr<FactorizedJetCorrector> jecAK8_;
+  //boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
+  //std::vector<std::string> jecAK8PayloadNames_;
   HLTPrescaleProvider hltPrescaleProvider_;
 };
 
