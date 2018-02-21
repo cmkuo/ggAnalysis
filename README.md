@@ -25,7 +25,7 @@ cd ScalesSmearings/ <br>
 git checkout Run2017_17Nov2017_v1 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-cp -r /afs/cern.ch/user/c/cmkuo/public/ggNtuplizer/94X . <br>
+git clone -b 94X https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
