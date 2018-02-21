@@ -1,18 +1,32 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_9_2_9
+#### Note that the current head version can be run with CMSSW_9_4_4
 
-##### To work with CMSSW_9_2_9 and head version, you do :
-cd CMSSW_9_2_9/src <br>
+##### To work with CMSSW_9_4_4 and head version, you do :
+cd CMSSW_9_4_4/src <br>
 cmsenv <br>
-setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
 git cms-init <br>
-git cms-addpkg RecoEgamma/EgammaIsolationAlgos
-git cms-merge-topic rgoldouz:TrkIsoFix -u
+git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP <br>
+git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3 <br>
+scram b -j8 <br>
+cd $CMSSW_BASE/external/slc6_amd64_gcc630 <br>
+git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data <br>
+cd data/RecoEgamma/PhotonIdentification/data <br>
+git checkout CMSSW_9_4_0_pre3_TnP <br>
+cd $CMSSW_BASE/external/slc6_amd64_gcc630/ <br>
+git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
+cd data/RecoEgamma/ElectronIdentification/data <br>
+git checkout CMSSW_9_4_0_pre3_TnP <br>
+cd $CMSSW_BASE/src <br>
+git cms-merge-topic cms-egamma:EGM_94X_v1 <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git clone https://github.com/ECALELFS/ScalesSmearings.git <br>
+cd ScalesSmearings/ <br>
+git checkout Run2017_17Nov2017_v1 <br>
+cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b 92X https://github.com/cmkuo/ggAnalysis.git <br>
-
-scram b -j 10 <br>
+cp -r /afs/cern.ch/user/c/cmkuo/public/ggNtuplizer/94X . <br>
+scram b -j8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
 for ELECRON ID: 5 IDs (Veto, Loose, Medium, Tight and HEEP) so only 5 bits are imp for us (59 bits of this integer  we are not using so may be we can change that to 16 bit integer later)<br>

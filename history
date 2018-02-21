@@ -1,3 +1,7 @@
+* 94X
+   * newest EGM ID and energy correction for 2017 data
+   * new JEC for Fall17 MC
+
 * V08-00-26-03
    * remove ES energy variable
    * only store the prescales of photon triggers to data
