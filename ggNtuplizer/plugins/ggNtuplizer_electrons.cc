@@ -59,8 +59,8 @@ vector<float>  elePFPUIso_;
 vector<float>  elePFClusEcalIso_;
 vector<float>  elePFClusHcalIso_;
 vector<float>  elePFMiniIso_;
-vector<float>  eleIDMVA_;
-vector<float>  eleIDMVAHZZ_;
+vector<float>  eleIDMVAIso_;
+vector<float>  eleIDMVANoIso_;
 vector<float>  eledEtaseedAtVtx_;
 vector<float>  eleE1x5_;
 vector<float>  eleE2x5_;
@@ -175,8 +175,8 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("elePFClusEcalIso",        &elePFClusEcalIso_);
   tree->Branch("elePFClusHcalIso",        &elePFClusHcalIso_);
   tree->Branch("elePFMiniIso",            &elePFMiniIso_);
-  tree->Branch("eleIDMVA",                &eleIDMVA_);
-  tree->Branch("eleIDMVAHZZ",             &eleIDMVAHZZ_);
+  tree->Branch("eleIDMVAIso",             &eleIDMVAIso_);
+  tree->Branch("eleIDMVANoIso",           &eleIDMVANoIso_);
   tree->Branch("eledEtaseedAtVtx",        &eledEtaseedAtVtx_);
   tree->Branch("eleE1x5",                 &eleE1x5_);
   tree->Branch("eleE2x5",                 &eleE2x5_);
@@ -305,8 +305,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   elePFClusEcalIso_           .clear();
   elePFClusHcalIso_           .clear();
   elePFMiniIso_               .clear();
-  eleIDMVA_                   .clear();
-  eleIDMVAHZZ_                .clear();
+  eleIDMVAIso_                .clear();
+  eleIDMVANoIso_              .clear();
   eledEtaseedAtVtx_           .clear();
   eleE1x5_                    .clear();
   eleE2x5_                    .clear();
@@ -384,10 +384,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   edm::Handle<edm::ValueMap<bool> >  loose_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  medium_id_decisions;
   edm::Handle<edm::ValueMap<bool> >  tight_id_decisions;
-  edm::Handle<edm::ValueMap<bool> >  hlt_id_decisions; 
   edm::Handle<edm::ValueMap<bool> >  heep_id_decisions;
-  edm::Handle<edm::ValueMap<float> > eleMVAValues;
-  edm::Handle<edm::ValueMap<float> > eleMVAHZZValues;
+  edm::Handle<edm::ValueMap<float> > eleMVAIsoValues;
+  edm::Handle<edm::ValueMap<float> > eleMVANoIsoValues;
   edm::Handle<edm::ValueMap<float> > elePFClusEcalIsoValues;
   edm::Handle<edm::ValueMap<float> > elePFClusHcalIsoValues;
 
@@ -395,10 +394,9 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   e.getByToken(eleLooseIdMapToken_ ,        loose_id_decisions);
   e.getByToken(eleMediumIdMapToken_,        medium_id_decisions);
   e.getByToken(eleTightIdMapToken_,         tight_id_decisions);
-  e.getByToken(eleHLTIdMapToken_,           hlt_id_decisions);
   e.getByToken(eleHEEPIdMapToken_ ,         heep_id_decisions);
-  e.getByToken(eleMVAValuesMapToken_,       eleMVAValues);
-  e.getByToken(eleMVAHZZValuesMapToken_,    eleMVAHZZValues);
+  e.getByToken(eleMVAIsoValuesMapToken_,    eleMVAIsoValues);
+  e.getByToken(eleMVANoIsoValuesMapToken_,  eleMVANoIsoValues);
   e.getByToken(elePFClusEcalIsoToken_,      elePFClusEcalIsoValues);
   e.getByToken(elePFClusHcalIsoToken_,      elePFClusHcalIsoValues);
 
@@ -458,7 +456,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     //eleSigmaIEtaIPhi_   .push_back(iEle->sigmaIetaIphi());
     //eleSigmaIPhiIPhi_   .push_back(iEle->sigmaIphiIphi());
     eleConvVeto_        .push_back((Int_t)iEle->passConversionVeto()); // ConvVtxFit || missHit == 0
-    eleMissHits_        .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+    eleMissHits_        .push_back(iEle->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
     eleESEffSigmaRR_    .push_back(lazyTool.eseffsirir(*((*iEle).superCluster())));
 
     // VID calculation of (1/E - 1/p)
@@ -591,7 +589,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
       eleGSFPhi       .push_back(iEle->gsfTrack()->phi());
       eleGSFCharge    .push_back(iEle->gsfTrack()->charge());
       eleGSFHits      .push_back(iEle->gsfTrack()->hitPattern().trackerLayersWithMeasurement());
-      eleGSFMissHits  .push_back(iEle->gsfTrack()->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+      eleGSFMissHits  .push_back(iEle->gsfTrack()->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
       
       int   nHitsMax = -99;
       float lxyBS    = -99.;
@@ -631,7 +629,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 	eleGSFPhi       .push_back((*igsf)->phi());
 	eleGSFCharge    .push_back((*igsf)->charge());
 	eleGSFHits      .push_back((*igsf)->hitPattern().trackerLayersWithMeasurement());
-	eleGSFMissHits  .push_back((*igsf)->hitPattern().numberOfHits(reco::HitPattern::MISSING_INNER_HITS));
+	eleGSFMissHits  .push_back((*igsf)->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
 
 	nHitsMax = -99;
 	lxyBS    = -99.;
@@ -772,11 +770,8 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     bool isPassHEEP = (*heep_id_decisions)[el];
     if (isPassHEEP) setbit(tmpeleIDbit, 4);
     
-    bool isPassHLT = (*hlt_id_decisions)[el];
-    if (isPassHLT) setbit(tmpeleIDbit, 5);
-    
-    eleIDMVA_    .push_back((*eleMVAValues)[el]);
-    eleIDMVAHZZ_ .push_back((*eleMVAHZZValues)[el]);
+    eleIDMVAIso_  .push_back((*eleMVAIsoValues)[el]);
+    eleIDMVANoIso_.push_back((*eleMVANoIsoValues)[el]);
 
     elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
     elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());

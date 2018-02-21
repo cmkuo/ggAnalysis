@@ -80,9 +80,9 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       "Flag_goodVertices",
       "Flag_eeBadScFilter",
       "Flag_EcalDeadCellTriggerPrimitiveFilter",
-      "Flag_badMuons",
-      "Flag_duplicateMuons",
-      "Flag_noBadMuons"
+      "Flag_BadPFMuonFilter",
+      "Flag_ecalBadCalibFilter",
+      "Flag_BadChargedCandidateFilter"
     };
 
     edm::Handle<edm::TriggerResults> patFilterResultsHandle;
@@ -111,25 +111,11 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 	LogDebug("METFilters") << filterNamesToCheck[iF] << " is missing, exiting";
       else {
 	if ( !patFilterResults.accept(index) ) {
-	  if (iF <=5) metFilters_ += pow(2, iF+1);
-	  else metFilters_ += pow(2, iF+3);
+	  metFilters_ += pow(2, iF+1);
 	}
       }
     }
-  }
-  
-  if (addFilterInfoMINIAOD_) {
-    edm::Handle<bool> ifilterbadChCand;
-    e.getByToken(BadChCandFilterToken_, ifilterbadChCand);
-    bool filterbadChCandidate_ = *ifilterbadChCand;
-    
-    edm::Handle<bool> ifilterbadPFMuon;
-    e.getByToken(BadPFMuonFilterToken_, ifilterbadPFMuon);
-    bool filterbadPFMuon_ = *ifilterbadPFMuon;
-    
-    if ( !filterbadPFMuon_      ) metFilters_ += pow(2, 7);
-    if ( !filterbadChCandidate_ ) metFilters_ += pow(2, 8);
-  }
+  } 
   
   edm::Handle<edm::View<pat::MET> > pfMETHandle;
   e.getByToken(pfMETlabel_, pfMETHandle);

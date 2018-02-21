@@ -172,10 +172,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleLooseIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleMediumIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleHLTIdMapToken_;
   edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > eleMVAValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > eleMVAHZZValuesMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > eleMVAIsoValuesMapToken_;
+  edm::EDGetTokenT<edm::ValueMap<float> > eleMVANoIsoValuesMapToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusEcalIsoToken_;
   edm::EDGetTokenT<edm::ValueMap<float> > elePFClusHcalIsoToken_;
   edm::EDGetTokenT<reco::PFCandidateCollection> pfCandidateCollection_;

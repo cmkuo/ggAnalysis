@@ -285,7 +285,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
 
     //if (name.find("HLT_PFJet450_v") == string::npos) 
-    //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
+    cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
     if (!doGenParticles_) {
       if      (name.find("HLT_Photon33_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(prescaleSet, name));
