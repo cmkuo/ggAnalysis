@@ -17,24 +17,6 @@ process.load("Configuration.StandardSequences.MagneticField_cff")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
-#jec from sqlite
-process.load("CondCore.DBCommon.CondDBCommon_cfi")
-from CondCore.DBCommon.CondDBSetup_cfi import *
-process.jec = cms.ESSource("PoolDBESSource",CondDBSetup,
- connect = cms.string('sqlite:Fall17_17Nov2017_V4_MC.db'),
- toGet = cms.VPSet(
- cms.PSet(
-  record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V4_MC_AK4PFchs'),
-  label = cms.untracked.string('AK4PFchs')
- ),
- cms.PSet(
-  record = cms.string('JetCorrectionsRecord'),
-  tag = cms.string('JetCorrectorParametersCollection_Fall17_17Nov2017_V4_MC_AK8PFchs'),
-  label = cms.untracked.string('AK8PFchs')
-  )))
-process.es_prefer_jec = cms.ESPrefer('PoolDBESSource','jec')
-
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
         #'file:/data4/cmkuo/testfiles/DYJetsToLL_M-50_RunIIFall17.root'        
@@ -71,27 +53,6 @@ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cf
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
-jecLevels = [
-  'Fall17_17Nov2017_V4_MC_L2Relative_AK8PFchs.txt',
-  'Fall17_17Nov2017_V4_MC_L3Absolute_AK8PFchs.txt'
-]
-
-from PhysicsTools.PatAlgos.tools.jetTools import updateJetCollection
-updateJetCollection(
-    process,
-    jetSource = cms.InputTag('slimmedJets'),
-    labelName = 'UpdatedJEC',
-    jetCorrections = ('AK4PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None')
-    )
-updateJetCollection(
-    process,
-    jetSource = cms.InputTag('slimmedJetsAK8'),
-    labelName = 'UpdatedJECAK8',
-    jetCorrections = ('AK8PFchs', cms.vstring(['L1FastJet', 'L2Relative', 'L3Absolute']), 'None'),
-    btagDiscriminators = ['pfBoostedDoubleSecondaryVertexAK8BJetTags'],
-    btagPrefix = 'newV4' # optional, in case interested in accessing both the old and new discriminator values
-    )
-
 # MET correction and uncertainties
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD(process,
@@ -101,11 +62,10 @@ runMetCorAndUncFromMiniAOD(process,
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
-process.ggNtuplizer.jecAK8PayloadNames=cms.vstring(jecLevels)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(False)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
-process.ggNtuplizer.dumpSubJets=cms.bool(True)
+process.ggNtuplizer.dumpSubJets=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "PAT")
