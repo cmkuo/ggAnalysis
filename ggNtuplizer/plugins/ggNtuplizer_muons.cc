@@ -27,6 +27,7 @@ vector<int>      muStations_;
 vector<int>      muMatches_;
 vector<int>      muTrkQuality_;
 vector<float>    muIsoTrk_;
+vector<float>    muCorrIsoTrk_;
 vector<float>    muPFChIso_;
 vector<float>    muPFPhoIso_;
 vector<float>    muPFNeuIso_;
@@ -70,6 +71,7 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muMatches",     &muMatches_);
   tree->Branch("muTrkQuality",  &muTrkQuality_);
   tree->Branch("muIsoTrk",      &muIsoTrk_);
+  tree->Branch("muCorrIsoTrk",  &muCorrIsoTrk_);
   tree->Branch("muPFChIso",     &muPFChIso_);
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
@@ -114,6 +116,7 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muMatches_             .clear();
   muTrkQuality_          .clear();
   muIsoTrk_              .clear();
+  muCorrIsoTrk_          .clear();
   muPFChIso_             .clear();
   muPFPhoIso_            .clear();
   muPFNeuIso_            .clear();
@@ -223,6 +226,24 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muPFNeuIso03_ .push_back(iMu->pfIsolationR03().sumNeutralHadronEt);
     muPFPUIso03_  .push_back(iMu->pfIsolationR03().sumPUPt);
     muPFMiniIso_  .push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iMu)), 0.05, 0.2, 10., false));
+
+    // to get corrected track iso - subtract muon pt if there is 2nd muon inside the cone dR = 0.3
+    muCorrIsoTrk_ .push_back (iMu->trackIso());
+    for (edm::View<pat::Muon>::const_iterator jMu = muonHandle->begin(); jMu != muonHandle->end(); ++jMu) {
+      if (jMu == iMu) continue;
+      if (deltaR(iMu->eta(), iMu->phi(), jMu->eta(), jMu->phi()) > 0.3) continue;
+      const reco::TrackRef innmu1 = iMu->innerTrack();
+      const reco::TrackRef innmu2 = jMu->innerTrack();
+      if (!innmu1.isNull() && !innmu2.isNull()) {
+        if ( (iMu->trackIso() - jMu->innerTrack()->pt()) < -0.1*(iMu->innerTrack()->pt()) ) continue;
+        muCorrIsoTrk_ .push_back ( TMath::Max(0., (iMu->trackIso() - jMu->innerTrack()->pt()) ));
+      }
+      else {
+        if ( (iMu->trackIso() - jMu->pt()) < -0.1*(iMu->pt()) ) continue;
+        muCorrIsoTrk_ .push_back ( TMath::Max(0., (iMu->trackIso() - jMu->pt()) ));
+      }
+      }
+
 
     nMu_++;
   }

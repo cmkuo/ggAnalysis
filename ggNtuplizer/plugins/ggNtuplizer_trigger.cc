@@ -81,7 +81,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleSingleFilters["hltEle27erWPTightGsfTrackIsoFilter"] = 11;
     //HLT_Ele27_WPTight_Gsf                                                                                    
     eleSingleFilters["hltEle27WPTightGsfTrackIsoFilter"] = 12;
-    //HLT_Ele32_eta2p1_WPTight_Gsf                                                                             
+    //HLT_Ele32_eta2p1_WPTight_Gsf and HLT_Ele32_WPTight_Gsf (2017)
     eleSingleFilters["hltEle32WPTightGsfTrackIsoFilter"] = 13;
     //HLT_Ele35_WPLoose_Gsf                                                                                    
     eleSingleFilters["hltEle35WPLooseGsfTrackIsoFilter"] = 14;
@@ -128,6 +128,10 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleSingleFilters["hltMu8Ele12DZFilter"] = 37;
     //HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v
     eleSingleFilters["hltMu12TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 38;
+    //HLT_Ele35_WPTight_Gsf_v
+    eleSingleFilters["hltEle35noerWPTightGsfTrackIsoFilter"] = 39; 
+    // HLT_Ele32_WPTight_Gsf_L1DoubleEG_v7
+    eleSingleFilters["hltEle32L1DoubleEGWPTightGsfTrackIsoFilter"] = 40;
 
     //Double electron triggers
     //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
@@ -262,6 +266,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     phoTripleFilters["hltEG5CaloIdLV2R9IdVLR9IdUnseededFilter"]              = 13; //1st leg UnSeeded_5 of TriplePho35_35_5_Calo_R9
     phoTripleFilters["hltDiEG35CaloIdLV2R9IdVLEtUnseededFilter"]             = 14; //2nd leg UnSeeded_35 of TriplePho35_35_5_Calo_R9
     phoTripleFilters["hltDiEG35TriEG5CaloIdLV2R9IdVLEtUnseededFilter"]       = 15; //3 legs of TriplePho35_35_5_Calo_R9 (last filter)
+    phoTripleFilters["hltDiEG30TriEG10CaloIdLV2R9IdVLEtUnseededFilter"]      = 16; //3 legs of TriplePho30_30_10_Calo_R9 (last filter) from v3.1 
     
     jetFilters["hltSinglePFJet40"]  =  0;
     jetFilters["hltSinglePFJet60"]  =  1;
@@ -417,10 +422,9 @@ ULong64_t ggNtuplizer::matchSingleElectronTriggerFilters(double pt, double eta, 
     for (size_t v = 0; v < trgSingleElePt[f].size(); ++v)
       if (fabs(pt - trgSingleElePt[f][v])/trgSingleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSingleEleEta[f][v], trgSingleElePhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
-
   return result;
 }
 
@@ -433,7 +437,7 @@ ULong64_t ggNtuplizer::matchDoubleElectronTriggerFilters(double pt, double eta, 
     for (size_t v = 0; v < trgDoubleElePt[f].size(); ++v)
       if (fabs(pt - trgDoubleElePt[f][v])/trgDoubleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoubleEleEta[f][v], trgDoubleElePhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -449,7 +453,7 @@ ULong64_t ggNtuplizer::matchSinglePhotonTriggerFilters(double pt, double eta, do
     for (size_t v = 0; v < trgSinglePhoPt[f].size(); ++v)
       if (fabs(pt - trgSinglePhoPt[f][v])/trgSinglePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSinglePhoEta[f][v], trgSinglePhoPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -465,7 +469,7 @@ ULong64_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, do
     for (size_t v = 0; v < trgDoublePhoPt[f].size(); ++v)
       if (fabs(pt - trgDoublePhoPt[f][v])/trgDoublePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoublePhoEta[f][v], trgDoublePhoPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -481,7 +485,7 @@ ULong64_t ggNtuplizer::matchTriplePhotonTriggerFilters(double pt, double eta, do
     for (size_t v = 0; v < trgTriplePhoPt[f].size(); ++v)
       if (fabs(pt - trgTriplePhoPt[f][v])/trgTriplePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgTriplePhoEta[f][v], trgTriplePhoPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -499,7 +503,7 @@ ULong64_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta, double phi
     for (size_t v = 0; v < trgMuPt[f].size(); ++v)
       if (fabs(pt - trgMuPt[f][v])/trgMuPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgMuEta[f][v], trgMuPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -515,7 +519,7 @@ ULong64_t ggNtuplizer::matchJetTriggerFilters(double pt, double eta, double phi)
     for (size_t v = 0; v < trgJetPt[f].size(); ++v)
       if (fabs(pt - trgJetPt[f][v])/trgJetPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgJetEta[f][v], trgJetPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -530,7 +534,7 @@ ULong64_t ggNtuplizer::matchL1TriggerFilters(double pt, double eta, double phi) 
   for (size_t f = 0; f < 64; ++f)
     for (size_t v = 0; v < trgL1Eta[f].size(); ++v)
       if (deltaR(eta, phi, trgL1Eta[f][v], trgL1Phi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
