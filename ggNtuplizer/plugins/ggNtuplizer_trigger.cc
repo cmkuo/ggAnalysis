@@ -465,7 +465,7 @@ ULong64_t ggNtuplizer::matchSingleElectronTriggerFilters(double pt, double eta, 
     for (size_t v = 0; v < trgSingleElePt[f].size(); ++v)
       if (fabs(pt - trgSingleElePt[f][v])/trgSingleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSingleEleEta[f][v], trgSingleElePhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -481,7 +481,7 @@ ULong64_t ggNtuplizer::matchDoubleElectronTriggerFilters(double pt, double eta, 
     for (size_t v = 0; v < trgDoubleElePt[f].size(); ++v)
       if (fabs(pt - trgDoubleElePt[f][v])/trgDoubleElePt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoubleEleEta[f][v], trgDoubleElePhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -497,7 +497,7 @@ ULong64_t ggNtuplizer::matchSinglePhotonTriggerFilters(double pt, double eta, do
     for (size_t v = 0; v < trgSinglePhoPt[f].size(); ++v)
       if (fabs(pt - trgSinglePhoPt[f][v])/trgSinglePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgSinglePhoEta[f][v], trgSinglePhoPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -513,7 +513,7 @@ ULong64_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, do
     for (size_t v = 0; v < trgDoublePhoPt[f].size(); ++v)
       if (fabs(pt - trgDoublePhoPt[f][v])/trgDoublePhoPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgDoublePhoEta[f][v], trgDoublePhoPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -529,7 +529,7 @@ ULong64_t ggNtuplizer::matchMuonTriggerFilters(double pt, double eta, double phi
     for (size_t v = 0; v < trgMuPt[f].size(); ++v)
       if (fabs(pt - trgMuPt[f][v])/trgMuPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgMuEta[f][v], trgMuPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -545,7 +545,7 @@ ULong64_t ggNtuplizer::matchJetTriggerFilters(double pt, double eta, double phi)
     for (size_t v = 0; v < trgJetPt[f].size(); ++v)
       if (fabs(pt - trgJetPt[f][v])/trgJetPt[f][v] < trgFilterDeltaPtCut_ &&
           deltaR(eta, phi, trgJetEta[f][v], trgJetPhi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
@@ -560,7 +560,7 @@ ULong64_t ggNtuplizer::matchL1TriggerFilters(double pt, double eta, double phi) 
   for (size_t f = 0; f < 64; ++f)
     for (size_t v = 0; v < trgL1Eta[f].size(); ++v)
       if (deltaR(eta, phi, trgL1Eta[f][v], trgL1Phi[f][v]) < trgFilterDeltaRCut_) {
-        result |= (1<<f);
+        result |= (1ULL<<f);
         break;
       }
 
