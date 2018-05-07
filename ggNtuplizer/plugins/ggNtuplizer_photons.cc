@@ -10,6 +10,7 @@ using namespace std;
 
 Int_t          nPho_;
 vector<float>  phoE_;
+vector<float>  phoSigmaE_;
 vector<float>  phoEt_;
 vector<float>  phoEta_;
 vector<float>  phoPhi_;
@@ -183,6 +184,7 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   
   tree->Branch("nPho",                    &nPho_);
   tree->Branch("phoE",                    &phoE_);
+  tree->Branch("phoSigmaE",               &phoSigmaE_);
   tree->Branch("phoEt",                   &phoEt_);
   tree->Branch("phoEta",                  &phoEta_);
   tree->Branch("phoPhi",                  &phoPhi_);
@@ -297,6 +299,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   
   // cleanup from previous execution
   phoE_                 .clear();
+  phoSigmaE_            .clear();
   phoEt_                .clear();
   phoEta_               .clear();
   phoPhi_               .clear();
@@ -524,6 +527,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoCalibE_        .push_back(corrEn);
 
     phoE_             .push_back(iPho->energy());
+    phoSigmaE_        .push_back(iPho->getCorrectedEnergyError(iPho->getCandidateP4type()));
     phoEt_            .push_back(iPho->et());
     phoEta_           .push_back(iPho->eta());
     phoPhi_           .push_back(iPho->phi());
