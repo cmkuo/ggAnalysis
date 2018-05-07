@@ -31,7 +31,7 @@ git clone https://github.com/cmkuo/ggAnalysis.git <br>
 
 scram b -j 10 <br>
 
-##### To work with CMSSW_8_0_26_patch1 and head version for 2016 re-reco, you do :
+##### To work with CMSSW_8_0_26_patch1 and head version for 2016 re-reco (Moriond17), you do :
 cd CMSSW_8_0_26_patch1/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
@@ -42,7 +42,8 @@ git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_fr
 git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy <br>
 git cms-merge-topic cms-egamma:EGM_gain_v1 <br>
 cd EgammaAnalysis/ElectronTools/data <br>
-git clone -b Moriond17_gainSwitch_unc https://github.com/ECALELFS/ScalesSmearings.git <br>
+git clone https://github.com/ECALELFS/ScalesSmearings.git <br>
+git checkout Moriond17_23Jan_v2 <br>
 cd $CMSSW_BASE/src <br>
 git cms-merge-topic cms-met:METRecipe_8020 -u <br>
 git cms-merge-topic cms-met:METRecipe_80X_part2 -u <br>
