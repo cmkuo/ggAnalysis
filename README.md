@@ -1,8 +1,37 @@
 #### Current production tag : V08_00_26_07
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_8_0_26_patch1
+#### Note that the current head version can be run with CMSSW_8_0_26_patch1 or CMSSW_8_0_29
 
-##### To work with CMSSW_8_0_26_patch1 and head version, you do :
+##### To work with CMSSW_8_0_29 and head version for 2016 legacy re-reco, you do :
+cd CMSSW_8_0_29/src <br>
+cmsenv <br>
+setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
+git cms-init <br>
+git remote add btv-cmssw https://github.com/cms-btv-pog/cmssw.git <br>
+git fetch --tags btv-cmssw <br>
+git cms-merge-topic -u cms-btv-pog:BoostedDoubleSVTaggerV4-WithWeightFiles-v1_from-CMSSW_8_0_21 <br>
+git cms-merge-topic rafaellopesdesa:RegressionCheckNegEnergy <br>
+git cms-merge-topic cms-egamma:EGM_gain_v1 <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git clone https://github.com/ECALELFS/ScalesSmearings.git <br>
+git checkout Legacy2016_v1 <br>
+cd $CMSSW_BASE/src <br>
+git cms-merge-topic cms-met:METRecipe_8020_for80Xintegration <br>
+git cms-merge-topic Sam-Harper:HEEPV70VID_8010_ReducedCheckout <br>
+git cms-merge-topic Sam-Harper:PackedCandNoPuppi <br>
+git cms-merge-topic ikrav:egm_id_80X_v2 <br>
+git cms-merge-topic ikrav:egm_id_80X_v3_photons <br>
+git-cms-addpkg RecoBTag/DeepFlavour <br>
+mkdir -p RecoBTag/DeepFlavour/data
+wget http://home.fnal.gov/~verzetti//DeepFlavour/training/DeepFlavourNoSL.json -O  RecoBTag/DeepFlavour/data/DeepFlavourNoSL.json <br>
+wget http://mon.iihe.ac.be/~smoortga/DeepFlavour/CMSSW_implementation_DeepCMVA/Model_DeepCMVA.json -O RecoBTag/DeepFlavour/data/Model_DeepCMVA.json <br>
+cd $CMSSW_BASE/src <br>
+git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
+git clone https://github.com/cmkuo/ggAnalysis.git <br>
+
+scram b -j 10 <br>
+
+##### To work with CMSSW_8_0_26_patch1 and head version for 2016 re-reco, you do :
 cd CMSSW_8_0_26_patch1/src <br>
 cmsenv <br>
 setenv CMSSW_GIT_REFERENCE /cvmfs/cms.cern.ch/cmssw.git.daily <br>
