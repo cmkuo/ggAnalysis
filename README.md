@@ -1,28 +1,16 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_9_4_4
+#### Note that the current head version can be run with CMSSW_9_4_9
 
-##### To work with CMSSW_9_4_4 and head version, you do :
-cd CMSSW_9_4_4/src <br>
+##### To work with CMSSW_9_4_9 and head version, you do :
+cmsrel CMSSW_9_4_9_cand2 <br>
+cd CMSSW_9_4_9_cand2/src <br>
 cmsenv <br>
 git cms-init <br>
-git cms-merge-topic lsoffi:CMSSW_9_4_0_pre3_TnP <br>
-git cms-merge-topic guitargeek:ElectronID_MVA2017_940pre3 <br>
-scram b -j8 <br>
-cd $CMSSW_BASE/external/slc6_amd64_gcc630 <br>
-git clone https://github.com/lsoffi/RecoEgamma-PhotonIdentification.git data/RecoEgamma/PhotonIdentification/data <br>
-cd data/RecoEgamma/PhotonIdentification/data <br>
-git checkout CMSSW_9_4_0_pre3_TnP <br>
-cd $CMSSW_BASE/external/slc6_amd64_gcc630/ <br>
-git clone https://github.com/lsoffi/RecoEgamma-ElectronIdentification.git data/RecoEgamma/ElectronIdentification/data <br>
-cd data/RecoEgamma/ElectronIdentification/data <br>
-git checkout CMSSW_9_4_0_pre3_TnP <br>
-cd $CMSSW_BASE/src <br>
-git cms-merge-topic cms-egamma:EGM_94X_v1 <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git clone https://github.com/ECALELFS/ScalesSmearings.git <br>
-cd ScalesSmearings/ <br>
-git checkout Run2017_17Nov2017_v1 <br>
+git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 <br>
+scram b -j 8 <br>
+git cms-merge-topic cms-met:METFixEE2017_949 <br>
+scram b -j 8 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b 94X https://github.com/cmkuo/ggAnalysis.git <br>

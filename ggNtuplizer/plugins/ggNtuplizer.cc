@@ -26,8 +26,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
-  isAOD_                     = ps.getParameter<bool>("isAOD");
-  runHFElectrons_            = ps.getParameter<bool>("runHFElectrons");
+  dumpHFElectrons_           = ps.getParameter<bool>("dumpHFElectrons");
+  year_                      = ps.getParameter<int>("year");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
   trgFilterDeltaRCut_        = ps.getParameter<double>("trgFilterDeltaRCut");
@@ -47,14 +47,12 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   genParticlesCollection_    = consumes<vector<reco::GenParticle> >    (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >               (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >          (ps.getParameter<InputTag>("electronSrc"));
-  calibelectronCollection_   = consumes<View<pat::Electron> >          (ps.getParameter<InputTag>("calibelectronSrc"));
   gsfTracks_                 = consumes<View<reco::GsfTrack>>          (ps.getParameter<InputTag>("gsfTrackSrc"));
 
   BadChCandFilterToken_      = consumes<bool>                          (ps.getParameter<InputTag>("BadChargedCandidateFilter"));
   BadPFMuonFilterToken_      = consumes<bool>                          (ps.getParameter<edm::InputTag>("BadPFMuonFilter"));
 
   photonCollection_          = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("photonSrc"));
-  calibphotonCollection_     = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("calibphotonSrc"));
   muonCollection_            = consumes<View<pat::Muon> >              (ps.getParameter<InputTag>("muonSrc"));
   ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>          (ps.getParameter<InputTag>("ebReducedRecHitCollection"));
   eeReducedRecHitCollection_ = consumes<EcalRecHitCollection>          (ps.getParameter<InputTag>("eeReducedRecHitCollection"));
@@ -77,35 +75,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   cicPhotonId_ = new CiCPhotonID(ps);
-  //egmScaler_   = new EnergyScaleCorrection_class("EgammaAnalysis/ElectronTools/data/ScalesSmearings/Moriond17_23Jan_ele");
-
-  // electron ID 
-  eleVetoIdMapToken_         = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleVetoIdMap"));
-  eleLooseIdMapToken_        = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleLooseIdMap"));
-  eleMediumIdMapToken_       = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleMediumIdMap"));
-  eleTightIdMapToken_        = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleTightIdMap"));
-  eleHEEPIdMapToken_         = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("eleHEEPIdMap"));
-  eleMVAIsoValuesMapToken_   = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleMVAIsoValuesMap"));
-  eleMVANoIsoValuesMapToken_ = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("eleMVANoIsoValuesMap"));
-  elePFClusEcalIsoToken_     = mayConsume<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("elePFClusEcalIsoProducer"));
-  elePFClusHcalIsoToken_     = mayConsume<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("elePFClusHcalIsoProducer"));
-
-  // Photon ID in VID framwork 
-  phoLooseIdMapToken_             = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoLooseIdMap"));
-  phoMediumIdMapToken_            = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoMediumIdMap"));
-  phoTightIdMapToken_             = consumes<edm::ValueMap<bool> >(ps.getParameter<edm::InputTag>("phoTightIdMap"));
-  phoMVAValuesMapToken_           = consumes<edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoMVAValuesMap")); 
-  phoChargedIsolationToken_       = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoChargedIsolation"));
-  phoNeutralHadronIsolationToken_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation"));
-  phoPhotonIsolationToken_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation"));
-  phoWorstChargedIsolationToken_  = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoWorstChargedIsolation"));
-
-  phoChargedIsolationToken_CITK_       = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoChargedIsolation_CITK"));
-  phoPhotonIsolationToken_CITK_        = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoPhotonIsolation_CITK"));
-  phoNeutralHadronIsolationToken_CITK_ = consumes <edm::ValueMap<float> >(ps.getParameter<edm::InputTag>("phoNeutralHadronIsolation_CITK"));
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V08_00_26_03)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V09_04_09_00)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
@@ -119,7 +91,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   branchesPhotons(tree_);
   if (dumpPhotons_) branchesPFPhotons(tree_);
   branchesElectrons(tree_);
-  if (runHFElectrons_) branchesHFElectrons(tree_);
+  if (dumpHFElectrons_) branchesHFElectrons(tree_);
   branchesMuons(tree_);
   if (dumpTaus_) branchesTaus(tree_);
   if (dumpJets_) branchesJets(tree_);
@@ -151,7 +123,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   for (vector<reco::Vertex>::const_iterator v = vtxHandle->begin(); v != vtxHandle->end(); ++v) {
     // replace isFake() for miniAOD since it requires tracks while miniAOD vertices don't have tracks:
     // Vertex.h: bool isFake() const {return (chi2_==0 && ndof_==0 && tracks_.empty());}
-    bool isFake = isAOD_ ? v->isFake() : (v->chi2() == 0 && v->ndof() == 0);
+    bool isFake = (v->chi2() == 0 && v->ndof() == 0);
 
     if (!isFake) {
       pv.SetXYZ(v->x(), v->y(), v->z());
@@ -174,7 +146,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillPFPhotons(e, es);
   fillElectrons(e, es, pv);
 
-  if (runHFElectrons_ ) fillHFElectrons(e);
+  if (dumpHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv, vtx);
   if (dumpTaus_) fillTaus(e);
   if (dumpJets_) fillJets(e,es);
@@ -183,7 +155,6 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   tree_->Fill();
 
 }
-
 
 // void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 // {

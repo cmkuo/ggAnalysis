@@ -105,9 +105,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpSubJets_;
   bool dumpSoftDrop_;
   bool dumpPDFSystWeight_;
-
-  bool isAOD_;
-  bool runHFElectrons_;
+  bool dumpHFElectrons_;
+  int  year_;
 
   vector<int> newparticles_;
 
@@ -129,9 +128,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<reco::GenParticle> >     genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >           pfMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >      electronCollection_;
-  edm::EDGetTokenT<edm::View<pat::Electron> >      calibelectronCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >        photonCollection_;
-  edm::EDGetTokenT<edm::View<pat::Photon> >        calibphotonCollection_;
   edm::EDGetTokenT<edm::View<pat::Muon> >          muonCollection_;
   edm::EDGetTokenT<vector<pat::Tau> >              tauCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>           ebReducedRecHitCollection_;
@@ -152,32 +149,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
   // for MET filters
   edm::EDGetTokenT<bool> BadChCandFilterToken_;
   edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
-
-  ///Photon ID in VID framework - 11th May, 2015
-  // photon ID decision objects and isolations
-  edm::EDGetTokenT<edm::ValueMap<bool> >  phoLooseIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  phoMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  phoTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoMVAValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_; 
-  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_; 
-  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_; 
-  edm::EDGetTokenT<edm::ValueMap<float> > phoWorstChargedIsolationToken_; 
-  edm::EDGetTokenT<edm::ValueMap<float> > phoChargedIsolationToken_CITK_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoNeutralHadronIsolationToken_CITK_;
-  edm::EDGetTokenT<edm::ValueMap<float> > phoPhotonIsolationToken_CITK_;
-
-  // elecontr ID decisions objects
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleVetoIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleLooseIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleMediumIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleTightIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<bool> >  eleHEEPIdMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > eleMVAIsoValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > eleMVANoIsoValuesMapToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > elePFClusEcalIsoToken_;
-  edm::EDGetTokenT<edm::ValueMap<float> > elePFClusHcalIsoToken_;
-  edm::EDGetTokenT<reco::PFCandidateCollection> pfCandidateCollection_;
 
   //check
   edm::EDGetToken gsfEle_;
