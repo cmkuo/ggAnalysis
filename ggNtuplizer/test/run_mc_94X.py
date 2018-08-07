@@ -60,7 +60,6 @@ runMetCorAndUncFromMiniAOD(process,
                            )
 
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-process.load("ggAnalysis.ggNtuplizer.ggPhotonIso_CITK_PUPPI_cff")
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.runHFElectrons=cms.bool(True)
 process.ggNtuplizer.isAOD=cms.bool(False)
