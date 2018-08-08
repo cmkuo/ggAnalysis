@@ -77,6 +77,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesMuons      (TTree*);
   void branchesTaus       (TTree*);
   void branchesJets       (TTree*);
+  void branchesAK8Jets    (TTree*);
 
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
@@ -89,6 +90,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillMuons      (const edm::Event&, math::XYZPoint&, const reco::Vertex);
   void fillTaus       (const edm::Event&);
   void fillJets       (const edm::Event&, const edm::EventSetup&);
+  void fillAK8Jets    (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
 
@@ -99,10 +101,10 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool doGenParticles_;
   bool runOnParticleGun_;
   bool runOnSherpa_;
-  bool dumpPhotons_;
+  bool dumpPFPhotons_;
   bool dumpTaus_;
   bool dumpJets_;
-  bool dumpSubJets_;
+  bool dumpAK8Jets_;
   bool dumpSoftDrop_;
   bool dumpPDFSystWeight_;
   bool dumpHFElectrons_;

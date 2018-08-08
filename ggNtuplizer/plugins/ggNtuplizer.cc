@@ -20,9 +20,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
   runOnSherpa_               = ps.getParameter<bool>("runOnSherpa");
-  dumpPhotons_               = ps.getParameter<bool>("dumpPhotons");
+  dumpPFPhotons_             = ps.getParameter<bool>("dumpPFPhotons");
   dumpJets_                  = ps.getParameter<bool>("dumpJets");
-  dumpSubJets_               = ps.getParameter<bool>("dumpSubJets");
+  dumpAK8Jets_               = ps.getParameter<bool>("dumpAK8Jets");
   dumpSoftDrop_              = ps.getParameter<bool>("dumpSoftDrop");
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
@@ -89,12 +89,13 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 
   branchesMET(tree_);
   branchesPhotons(tree_);
-  if (dumpPhotons_) branchesPFPhotons(tree_);
   branchesElectrons(tree_);
-  if (dumpHFElectrons_) branchesHFElectrons(tree_);
   branchesMuons(tree_);
-  if (dumpTaus_) branchesTaus(tree_);
-  if (dumpJets_) branchesJets(tree_);
+  if (dumpPFPhotons_)   branchesPFPhotons(tree_);
+  if (dumpHFElectrons_) branchesHFElectrons(tree_);
+  if (dumpTaus_)        branchesTaus(tree_);
+  if (dumpJets_)        branchesJets(tree_);
+  if (dumpAK8Jets_)     branchesAK8Jets(tree_);
 }
 
 ggNtuplizer::~ggNtuplizer() {
@@ -142,14 +143,14 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   }
 
   fillMET(e, es);
-  fillPhotons(e, es); // FIXME: photons have different vertex (not pv)
-  fillPFPhotons(e, es);
   fillElectrons(e, es, pv);
-
-  if (dumpHFElectrons_ ) fillHFElectrons(e);
   fillMuons(e, pv, vtx);
-  if (dumpTaus_) fillTaus(e);
-  if (dumpJets_) fillJets(e,es);
+  fillPhotons(e, es); 
+  if (dumpPFPhotons_)    fillPFPhotons(e, es);
+  if (dumpHFElectrons_ ) fillHFElectrons(e);
+  if (dumpTaus_)         fillTaus(e);
+  if (dumpJets_)         fillJets(e,es);
+  if (dumpAK8Jets_)      fillAK8Jets(e,es);
 
   hEvents_->Fill(1.5);
   tree_->Fill();
