@@ -12,7 +12,7 @@ vector<float>    muEta_;
 vector<float>    muPhi_;
 vector<int>      muCharge_;
 vector<int>      muType_;
-vector<UShort_t> muIDbit_;
+vector<int>      muIDbit_;
 vector<float>    muD0_;
 vector<float>    muDz_;
 vector<float>    muSIP_;
@@ -31,11 +31,6 @@ vector<float>    muPFChIso_;
 vector<float>    muPFPhoIso_;
 vector<float>    muPFNeuIso_;
 vector<float>    muPFPUIso_;
-vector<float>    muPFChIso03_;
-vector<float>    muPFPhoIso03_;
-vector<float>    muPFNeuIso03_;
-vector<float>    muPFPUIso03_;
-vector<float>    muPFMiniIso_;
 vector<ULong64_t> muFiredTrgs_;
 vector<ULong64_t> muFiredL1Trgs_;
 vector<float>    muInnervalidFraction_;
@@ -74,11 +69,6 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
   tree->Branch("muPFPUIso",     &muPFPUIso_);
-  tree->Branch("muPFChIso03",   &muPFChIso03_);
-  tree->Branch("muPFPhoIso03",  &muPFPhoIso03_);
-  tree->Branch("muPFNeuIso03",  &muPFNeuIso03_);
-  tree->Branch("muPFPUIso03",   &muPFPUIso03_);
-  tree->Branch("muPFMiniIso",   &muPFMiniIso_);
   tree->Branch("muFiredTrgs",   &muFiredTrgs_);
   tree->Branch("muFiredL1Trgs", &muFiredL1Trgs_);
   tree->Branch("muInnervalidFraction",   &muInnervalidFraction_);
@@ -118,11 +108,6 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muPFPhoIso_            .clear();
   muPFNeuIso_            .clear();
   muPFPUIso_             .clear();
-  muPFChIso03_           .clear();
-  muPFPhoIso03_          .clear();
-  muPFNeuIso03_          .clear();
-  muPFPUIso03_           .clear();
-  muPFMiniIso_           .clear();
   muFiredTrgs_           .clear();
   muFiredL1Trgs_         .clear();
   muInnervalidFraction_  .clear();
@@ -161,13 +146,29 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muDz_    .push_back(iMu->muonBestTrack()->dz(pv));
     muSIP_   .push_back(fabs(iMu->dB(pat::Muon::PV3D))/iMu->edB(pat::Muon::PV3D));
 
-    UShort_t tmpmuIDbit = 0;
-
-    if (iMu->isLooseMuon())     setbit(tmpmuIDbit, 0);
-    if (iMu->isMediumMuon())    setbit(tmpmuIDbit, 1);
-    if (iMu->isTightMuon(vtx))  setbit(tmpmuIDbit, 2);
-    if (iMu->isSoftMuon(vtx))   setbit(tmpmuIDbit, 3);
-    if (iMu->isHighPtMuon(vtx)) setbit(tmpmuIDbit, 4);
+    int tmpmuIDbit = 0;
+    if (iMu->passed(reco::Muon::CutBasedIdLoose))        tmpmuIDbit += pow(2,  0);
+    if (iMu->passed(reco::Muon::CutBasedIdMedium))       tmpmuIDbit += pow(2,  1);
+    if (iMu->passed(reco::Muon::CutBasedIdMediumPrompt)) tmpmuIDbit += pow(2,  2);
+    if (iMu->passed(reco::Muon::CutBasedIdTight))        tmpmuIDbit += pow(2,  3);
+    if (iMu->passed(reco::Muon::CutBasedIdGlobalHighPt)) tmpmuIDbit += pow(2,  4);
+    if (iMu->passed(reco::Muon::CutBasedIdTrkHighPt))    tmpmuIDbit += pow(2,  5);
+    if (iMu->passed(reco::Muon::PFIsoVeryLoose))         tmpmuIDbit += pow(2,  6);
+    if (iMu->passed(reco::Muon::PFIsoLoose))             tmpmuIDbit += pow(2,  7);
+    if (iMu->passed(reco::Muon::PFIsoMedium))            tmpmuIDbit += pow(2,  8);
+    if (iMu->passed(reco::Muon::PFIsoTight))             tmpmuIDbit += pow(2,  9);
+    if (iMu->passed(reco::Muon::PFIsoVeryTight))         tmpmuIDbit += pow(2, 10);
+    if (iMu->passed(reco::Muon::TkIsoLoose))             tmpmuIDbit += pow(2, 11);
+    if (iMu->passed(reco::Muon::TkIsoTight))             tmpmuIDbit += pow(2, 12);
+    if (iMu->passed(reco::Muon::SoftCutBasedId))         tmpmuIDbit += pow(2, 13);
+    if (iMu->passed(reco::Muon::SoftMvaId))              tmpmuIDbit += pow(2, 14);
+    if (iMu->passed(reco::Muon::MvaLoose))               tmpmuIDbit += pow(2, 15);
+    if (iMu->passed(reco::Muon::MvaMedium))              tmpmuIDbit += pow(2, 16);
+    if (iMu->passed(reco::Muon::MvaTight))               tmpmuIDbit += pow(2, 17);
+    if (iMu->passed(reco::Muon::MiniIsoLoose))           tmpmuIDbit += pow(2, 18);
+    if (iMu->passed(reco::Muon::MiniIsoMedium))          tmpmuIDbit += pow(2, 19);
+    if (iMu->passed(reco::Muon::MiniIsoTight))           tmpmuIDbit += pow(2, 20);
+    if (iMu->passed(reco::Muon::MiniIsoVeryTight))       tmpmuIDbit += pow(2, 21);
     muIDbit_.push_back(tmpmuIDbit);
 
     muFiredTrgs_  .push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
@@ -213,16 +214,11 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
 
     muStations_   .push_back(iMu->numberOfMatchedStations());
     muMatches_    .push_back(iMu->numberOfMatches());
-    muIsoTrk_     .push_back(iMu->trackIso());
+    muIsoTrk_     .push_back(iMu->isolationR03().sumPt);
     muPFChIso_    .push_back(iMu->pfIsolationR04().sumChargedHadronPt);
     muPFPhoIso_   .push_back(iMu->pfIsolationR04().sumPhotonEt);
     muPFNeuIso_   .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
     muPFPUIso_    .push_back(iMu->pfIsolationR04().sumPUPt);
-    muPFChIso03_  .push_back(iMu->pfIsolationR03().sumChargedHadronPt);
-    muPFPhoIso03_ .push_back(iMu->pfIsolationR03().sumPhotonEt);
-    muPFNeuIso03_ .push_back(iMu->pfIsolationR03().sumNeutralHadronEt);
-    muPFPUIso03_  .push_back(iMu->pfIsolationR03().sumPUPt);
-    muPFMiniIso_  .push_back(getMiniIsolation(pfcands, dynamic_cast<const reco::Candidate *>(&(*iMu)), 0.05, 0.2, 10., false));
 
     nMu_++;
   }
