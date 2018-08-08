@@ -46,9 +46,11 @@ vector<float>  jetVtxMass_;
 vector<float>  jetVtxNtrks_;
 vector<float>  jetVtx3DVal_;
 vector<float>  jetVtx3DSig_;
-vector<float>  jetCSV2BJetTags_; // recommended
-vector<float>  jetJetProbabilityBJetTags_;
-vector<float>  jetpfCombinedMVAV2BJetTags_;
+vector<float>  jetCSV2BJetTags_;
+vector<float>  jetDeepCSVTags_b_;
+vector<float>  jetDeepCSVTags_bb_;
+vector<float>  jetDeepCSVTags_c_;
+vector<float>  jetDeepCSVTags_udsg_;
 vector<int>    jetPartonID_;
 vector<int>    jetHadFlvr_;
 vector<bool>   jetPFLooseId_;
@@ -74,25 +76,27 @@ vector<int>    jetGenPartonMomID_;
 
 void ggNtuplizer::branchesJets(TTree* tree) {
   
-  tree->Branch("nJet",            &nJet_);
-  tree->Branch("jetPt",           &jetPt_);
-  tree->Branch("jetEn",           &jetEn_);
-  tree->Branch("jetEta",          &jetEta_);
-  tree->Branch("jetPhi",          &jetPhi_);
-  tree->Branch("jetRawPt",        &jetRawPt_);
-  tree->Branch("jetRawEn",        &jetRawEn_);
-  tree->Branch("jetMt",           &jetMt_);
-  tree->Branch("jetArea",         &jetArea_);
-  tree->Branch("jetLeadTrackPt",  &jetLeadTrackPt_);
-  tree->Branch("jetLeadTrackEta", &jetLeadTrackEta_);
-  tree->Branch("jetLeadTrackPhi", &jetLeadTrackPhi_);
-  tree->Branch("jetLepTrackPID",  &jetLepTrackPID_);
-  tree->Branch("jetLepTrackPt",   &jetLepTrackPt_);
-  tree->Branch("jetLepTrackEta",  &jetLepTrackEta_);
-  tree->Branch("jetLepTrackPhi",  &jetLepTrackPhi_);
-  tree->Branch("jetCSV2BJetTags", &jetCSV2BJetTags_);
-  tree->Branch("jetJetProbabilityBJetTags", &jetJetProbabilityBJetTags_);
-  tree->Branch("jetpfCombinedMVAV2BJetTags", &jetpfCombinedMVAV2BJetTags_);
+  tree->Branch("nJet",                &nJet_);
+  tree->Branch("jetPt",               &jetPt_);
+  tree->Branch("jetEn",               &jetEn_);
+  tree->Branch("jetEta",              &jetEta_);
+  tree->Branch("jetPhi",              &jetPhi_);
+  tree->Branch("jetRawPt",            &jetRawPt_);
+  tree->Branch("jetRawEn",            &jetRawEn_);
+  tree->Branch("jetMt",               &jetMt_);
+  tree->Branch("jetArea",             &jetArea_);
+  tree->Branch("jetLeadTrackPt",      &jetLeadTrackPt_);
+  tree->Branch("jetLeadTrackEta",     &jetLeadTrackEta_);
+  tree->Branch("jetLeadTrackPhi",     &jetLeadTrackPhi_);
+  tree->Branch("jetLepTrackPID",      &jetLepTrackPID_);
+  tree->Branch("jetLepTrackPt",       &jetLepTrackPt_);
+  tree->Branch("jetLepTrackEta",      &jetLepTrackEta_);
+  tree->Branch("jetLepTrackPhi",      &jetLepTrackPhi_);
+  tree->Branch("jetCSV2BJetTags",     &jetCSV2BJetTags_);
+  tree->Branch("jetDeepCSVTags_b",    &jetDeepCSVTags_b_);
+  tree->Branch("jetDeepCSVTags_bb",   &jetDeepCSVTags_bb_);
+  tree->Branch("jetDeepCSVTags_c",    &jetDeepCSVTags_c_);
+  tree->Branch("jetDeepCSVTags_udsg", &jetDeepCSVTags_udsg_);
   if (doGenParticles_){
     tree->Branch("jetPartonID",       &jetPartonID_);
     tree->Branch("jetHadFlvr",        &jetHadFlvr_);
@@ -154,8 +158,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetLepTrackEta_                         .clear();
   jetLepTrackPhi_                         .clear();
   jetCSV2BJetTags_                        .clear();
-  jetJetProbabilityBJetTags_              .clear();
-  jetpfCombinedMVAV2BJetTags_             .clear();
+  jetDeepCSVTags_b_                       .clear();
+  jetDeepCSVTags_bb_                      .clear();
+  jetDeepCSVTags_c_                       .clear();
+  jetDeepCSVTags_udsg_                    .clear();
   jetPartonID_                            .clear();
   jetHadFlvr_                             .clear();
   jetPFLooseId_                           .clear();
@@ -208,9 +214,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
-  edm::Handle<double> rhoHandle;
-  e.getByToken(rhoLabel_, rhoHandle);
-  float rho = *(rhoHandle.product());
+  //edm::Handle<double> rhoHandle;
+  //e.getByToken(rhoLabel_, rhoHandle);
+  //float rho = *(rhoHandle.product());
   
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
@@ -301,10 +307,12 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
     //jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
     
-    //b-tagging
-    jetCSV2BJetTags_           .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
-    jetJetProbabilityBJetTags_ .push_back(iJet->bDiscriminator("pfJetProbabilityBJetTags"));
-    jetpfCombinedMVAV2BJetTags_.push_back(iJet->bDiscriminator("pfCombinedMVAV2BJetTags"));
+    //b/c-tagging
+    jetCSV2BJetTags_    .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
+    jetDeepCSVTags_b_   .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probb"));
+    jetDeepCSVTags_bb_  .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probbb"));
+    jetDeepCSVTags_c_   .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probc"));
+    jetDeepCSVTags_udsg_.push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probudsg"));
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
