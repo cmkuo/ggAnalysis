@@ -480,24 +480,22 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   }
 
   if (development_) {
-
+    
     edm::Handle<edm::View<reco::GsfTrack> > GsfTrackHandle;
     e.getByToken(gsfTracks_, GsfTrackHandle);
-
+    
     nGSFTrk_ = 0;
     gsfPt_ .clear();
     gsfEta_.clear();
     gsfPhi_.clear();
-
+    
     for (edm::View<reco::GsfTrack>::const_iterator ig = GsfTrackHandle->begin(); ig != GsfTrackHandle->end(); ++ig) {
       gsfPt_ .push_back(ig->pt());
       gsfEta_.push_back(ig->eta());
       gsfPhi_.push_back(ig->phi());
       nGSFTrk_++;
     }
-
-
-
+    
   }
-
+  
 }
