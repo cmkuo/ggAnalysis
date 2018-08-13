@@ -76,7 +76,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
-  
+
   nVtx_     = -1;
   nGoodVtx_ = -1;
   if (vtxHandle.isValid()) {
@@ -414,12 +414,14 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     //cout<<"HLT : "<<i<<" "<<name<<" "<<isPrescaled<<" "<<isFired<<endl;
 
     if (!doGenParticles_) {
+      /* to be fixed as this only works for 2017
       if      (name.find("HLT_Photon33_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin(),hltCfg.prescaleValue(prescaleSet, name));
       else if (name.find("HLT_Photon50_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+1,hltCfg.prescaleValue(prescaleSet, name));
       else if (name.find("HLT_Photon75_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+2,hltCfg.prescaleValue(prescaleSet, name));
       else if (name.find("HLT_Photon90_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+3,hltCfg.prescaleValue(prescaleSet, name));
       else if (name.find("HLT_Photon120_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+4,hltCfg.prescaleValue(prescaleSet, name));
-      else if (name.find("HLT_Photon150_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(prescaleSet, name));
+      else if (name.find("HLT_Photon150_v")       != string::npos) phoPrescale_.insert(phoPrescale_.begin()+5,hltCfg.prescaleValue(prescaleSet, name));      
+      */
       //else if (name.find("HLT_Photon120_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+6,hltCfg.prescaleValue(prescaleSet, name));
       //else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(prescaleSet, name));
       //else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(prescaleSet, name));
