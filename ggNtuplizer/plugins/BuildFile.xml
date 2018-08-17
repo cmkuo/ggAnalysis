@@ -12,6 +12,7 @@
 <use name="HiggsAnalysis/HiggsTo2photons"/>
 <use name="RecoEcal/EgammaCoreTools"/>
 <use name="RecoEgamma/PhotonIdentification"/>
+<use name="RecoParticleFlow/PFClusterTools"/>
 <use name="CondFormats/JetMETObjects"/>
 <use name="JetMETCorrections/Objects"/>
 <use name="JetMETCorrections/Modules"/>
