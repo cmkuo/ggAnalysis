@@ -78,6 +78,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesTaus       (TTree*);
   void branchesJets       (TTree*);
   void branchesAK8Jets    (TTree*);
+  void branchesGenJetPart    (TTree*);
 
   void fillGlobalEvent(const edm::Event&, const edm::EventSetup&);
   void fillGenInfo    (const edm::Event&);
@@ -92,6 +93,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillJets       (const edm::Event&, const edm::EventSetup&);
   void fillAK8Jets    (const edm::Event&, const edm::EventSetup&);
 
+  void fillGenJetInfo    (const edm::Event&);
+  
   void cleanupPhotons();
 
   bool development_;
@@ -99,6 +102,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool addFilterInfoMINIAOD_;  
   bool doNoHFMET_;
   bool doGenParticles_;
+
+  bool doGenJets_;
+
   bool runOnParticleGun_;
   bool runOnSherpa_;
   bool dumpPFPhotons_;
@@ -148,6 +154,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::JetTagCollection>         boostedDoubleSVLabel_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
+  edm::EDGetTokenT<std::vector<reco::GenJet> >      GenJetLabel_;
+  
   // for MET filters
   edm::EDGetTokenT<bool> BadChCandFilterToken_;
   edm::EDGetTokenT<bool> BadPFMuonFilterToken_;

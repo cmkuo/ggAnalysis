@@ -69,6 +69,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   jetsAK4Label_              = consumes<View<pat::Jet> >               (ps.getParameter<InputTag>("ak4JetSrc"));
   jetsAK8Label_              = consumes<View<pat::Jet> >               (ps.getParameter<InputTag>("ak8JetSrc"));
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
+
+  GenJetLabel_              = consumes<std::vector<reco::GenJet> >               (ps.getParameter<InputTag>("GenJetLabel"));
+
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
 
@@ -86,6 +89,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
     branchesGenInfo(tree_, fs);
     branchesGenPart(tree_);
   }
+
+  if( doGenJets_)
+    branchesGenJetPart(tree_);
 
   branchesMET(tree_);
   branchesPhotons(tree_);
@@ -141,6 +147,11 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
     if (doGenParticles_)
       fillGenPart(e);
   }
+
+  if (!e.isRealData()) 
+    if(doGenJets_) fillGenJetInfo(e);
+
+
 
   fillMET(e, es);
   fillElectrons(e, es, pv);

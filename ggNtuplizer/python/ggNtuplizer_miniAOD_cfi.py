@@ -19,13 +19,16 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              addFilterInfoMINIAOD = cms.bool(False),
                              doNoHFMET            = cms.bool(False),
 
+                             doGenJets            = cms.bool(True),
+
                              year                 = cms.int32(2017), 
 
                              trgFilterDeltaPtCut  = cms.double(0.5),
                              trgFilterDeltaRCut   = cms.double(0.3),
-
+                             
                              triggerEvent         = cms.InputTag("slimmedPatTrigger", "", ""),
                              triggerResults       = cms.InputTag("TriggerResults", "", "HLT"),
+                             GenJetLabel          = cms.InputTag("slimmedGenJets"),
                              patTriggerResults    = cms.InputTag("TriggerResults", "", "PAT"),
                              #patTriggerResults    = cms.InputTag("TriggerResults", "", "RECO"),
                              genParticleSrc       = cms.InputTag("prunedGenParticles"),

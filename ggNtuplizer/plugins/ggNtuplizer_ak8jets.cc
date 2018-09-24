@@ -62,6 +62,12 @@ vector<int>   AK8JetGenPartonMomID_;
 vector<float> AK8JetP4Smear_;
 vector<float> AK8JetP4SmearUp_;
 vector<float> AK8JetP4SmearDo_;
+
+vector<float>  AK8Jetnb1ecf2_;
+vector<float>  AK8Jetnb1ecf3_;
+vector<float>  AK8Jetnb2ecf2_;
+vector<float>  AK8Jetnb2ecf3_;
+
 //soft drop subjets
 vector<int>             nAK8SDSJ_ ;
 vector< vector<float> > AK8SDSJPt_ ;
@@ -73,13 +79,17 @@ vector< vector<int > >  AK8SDSJCharge_ ;
 vector< vector<int > >  AK8SDSJFlavour_;
 vector< vector<float> > AK8SDSJCSV_ ;
 //puppi
-vector<float> AK8puppiPt_;
-vector<float> AK8puppiMass_;
-vector<float> AK8puppiEta_;
-vector<float> AK8puppiPhi_;
-//vector<float> AK8puppiTau1_;
-//vector<float> AK8puppiTau2_;
-//vector<float> AK8puppiTau3_;
+vector<float> AK8chsPt_;
+vector<float> AK8chsMass_;
+vector<float> AK8chsEta_;
+vector<float> AK8chsPhi_;
+vector<float> AK8chsTau1_;
+vector<float> AK8chsTau2_;
+vector<float> AK8chsTau3_;
+
+//vector<float> AK8chsTau1_;
+//vector<float> AK8chsTau2_;
+//vector<float> AK8chsTau3_;
 vector<float> AK8puppiSDL2L3corr_;
 vector<float> AK8puppiSDMass_;
 vector<float> AK8puppiSDMassL2L3Corr_;
@@ -93,6 +103,11 @@ vector< vector<float> > AK8puppiSDSJE_ ;
 vector< vector<int > >  AK8puppiSDSJCharge_ ;
 vector< vector<int > >  AK8puppiSDSJFlavour_;
 vector< vector<float> > AK8puppiSDSJCSV_ ;
+
+vector< vector<float> > AK8puppiSDSJnb1ecf2_;
+vector< vector<float> > AK8puppiSDSJnb1ecf3_;
+vector< vector<float> > AK8puppiSDSJnb2ecf2_;
+vector< vector<float> > AK8puppiSDSJnb2ecf3_;
 
 void ggNtuplizer::branchesAK8Jets(TTree* tree) {
   
@@ -126,16 +141,22 @@ void ggNtuplizer::branchesAK8Jets(TTree* tree) {
   tree->Branch("AK8JetCSV",                &AK8JetCSV_);
   tree->Branch("AK8JetJECUnc",             &AK8JetJECUnc_);
   tree->Branch("AK8JetL2L3corr",           &AK8JetL2L3corr_);
-  tree->Branch("AK8puppiPt",               &AK8puppiPt_);
-  tree->Branch("AK8puppiMass",             &AK8puppiMass_);
-  tree->Branch("AK8puppiEta",              &AK8puppiEta_);
-  tree->Branch("AK8puppiPhi",              &AK8puppiPhi_);
-  //tree->Branch("AK8puppiTau1",             &AK8puppiTau1_);
-  //tree->Branch("AK8puppiTau2",             &AK8puppiTau2_);
-  //tree->Branch("AK8puppiTau3",             &AK8puppiTau3_);
+  tree->Branch("AK8chsPt",               &AK8chsPt_);
+  tree->Branch("AK8chsMass",             &AK8chsMass_);
+  tree->Branch("AK8chsEta",              &AK8chsEta_);
+  tree->Branch("AK8chsPhi",              &AK8chsPhi_);
+  tree->Branch("AK8chsTau1",             &AK8chsTau1_);
+  tree->Branch("AK8chsTau2",             &AK8chsTau2_);
+  tree->Branch("AK8chsTau3",             &AK8chsTau3_);
+  
   tree->Branch("AK8puppiSDL2L3corr",       &AK8puppiSDL2L3corr_);
   tree->Branch("AK8puppiSDMass",           &AK8puppiSDMass_);
   tree->Branch("AK8puppiSDMassL2L3Corr",   &AK8puppiSDMassL2L3Corr_);
+  
+  tree->Branch("AK8Jetnb1ecf2",  &AK8Jetnb1ecf2_);
+  tree->Branch("AK8Jetnb1ecf3",  &AK8Jetnb1ecf3_);
+  tree->Branch("AK8Jetnb2ecf2",  &AK8Jetnb2ecf2_);
+  tree->Branch("AK8Jetnb2ecf3",  &AK8Jetnb2ecf3_);
   
   if (doGenParticles_){
     tree->Branch("AK8JetPartonID",       &AK8JetPartonID_);
@@ -173,6 +194,12 @@ void ggNtuplizer::branchesAK8Jets(TTree* tree) {
   tree->Branch("AK8puppiSDSJCharge",  &AK8puppiSDSJCharge_);
   tree->Branch("AK8puppiSDSJFlavour", &AK8puppiSDSJFlavour_);
   tree->Branch("AK8puppiSDSJCSV",     &AK8puppiSDSJCSV_);
+
+  tree->Branch("AK8puppiSDSJnb1ecf2",     &AK8puppiSDSJnb1ecf2_);
+  tree->Branch("AK8puppiSDSJnb1ecf3",     &AK8puppiSDSJnb1ecf3_);
+  tree->Branch("AK8puppiSDSJnb2ecf2",     &AK8puppiSDSJnb2ecf2_);
+  tree->Branch("AK8puppiSDSJnb2ecf3",     &AK8puppiSDSJnb2ecf3_);
+  
 }
 
 void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
@@ -206,16 +233,23 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
   AK8JetCSV_             .clear();
   AK8JetJECUnc_          .clear();
   AK8JetL2L3corr_        .clear();
-  AK8puppiPt_            .clear();
-  AK8puppiMass_          .clear();
-  AK8puppiEta_           .clear();
-  AK8puppiPhi_           .clear();
-  //AK8puppiTau1_          .clear();
-  //AK8puppiTau2_          .clear();
-  //AK8puppiTau3_          .clear();
+
+  AK8chsPt_            .clear();
+  AK8chsMass_          .clear();
+  AK8chsEta_           .clear();
+  AK8chsPhi_           .clear();
+  AK8chsTau1_          .clear();
+  AK8chsTau2_          .clear();
+  AK8chsTau3_          .clear();
   AK8puppiSDL2L3corr_    .clear();
   AK8puppiSDMass_        .clear();
   AK8puppiSDMassL2L3Corr_.clear();
+
+  AK8Jetnb1ecf2_                             .clear();
+  AK8Jetnb1ecf3_                             .clear();
+  AK8Jetnb2ecf2_                             .clear();
+  AK8Jetnb2ecf3_                             .clear();
+
 
   AK8JetPartonID_      .clear();
   AK8JetHadFlvr_       .clear();
@@ -253,6 +287,11 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
   AK8puppiSDSJE_      .clear();
   AK8puppiSDSJFlavour_.clear();
   AK8puppiSDSJCSV_    .clear();
+
+  AK8puppiSDSJnb1ecf2_.clear();
+  AK8puppiSDSJnb1ecf3_.clear();
+  AK8puppiSDSJnb2ecf2_.clear();
+  AK8puppiSDSJnb2ecf3_.clear();
 
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
@@ -313,6 +352,11 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
   std::vector<int > vecPuppiSDSJcharge ;
   std::vector<int > vecPuppiSDSJflavour;
   
+  std::vector<float> vecPuppiSDSJnb1ecf2;
+  std::vector<float> vecPuppiSDSJnb1ecf3;
+  std::vector<float> vecPuppiSDSJnb2ecf2;
+  std::vector<float> vecPuppiSDSJnb2ecf3;
+  
   edm::View<pat::Jet>::const_iterator beginAK8 = jetsAK8->begin();
   edm::View<pat::Jet>::const_iterator endAK8 = jetsAK8->end();
   edm::View<pat::Jet>::const_iterator ijetAK8 = beginAK8;
@@ -320,7 +364,8 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
   // Loop over the "hard" jets
   for (ijetAK8 = beginAK8; ijetAK8 != endAK8; ++ijetAK8 ) {
     ijetRef++;
-    if( ijetAK8->pt() < 30.0 ) continue;
+    //if( ijetAK8->pt() < 30.0 ) continue;
+    if( ijetAK8->pt() < 100.0 ) continue; ////https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017
     nAK8Jet_++;
     AK8JetPt_.push_back( ijetAK8->pt() );
     AK8JetEn_.push_back( ijetAK8->energy() );
@@ -329,9 +374,22 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
     AK8JetRawEn_.push_back( (*ijetAK8).correctedJet("Uncorrected").energy() );
     AK8JetEta_.push_back( ijetAK8->eta() );
     AK8JetPhi_.push_back( ijetAK8->phi() );
-    AK8Jet_tau1_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
-    AK8Jet_tau2_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
-    AK8Jet_tau3_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
+    //AK8Jet_tau1_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1") );
+    //AK8Jet_tau2_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2") );
+    //AK8Jet_tau3_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3") );
+
+    ///SJ
+    AK8Jet_tau1_.push_back( ijetAK8->userFloat("NjettinessAK8Puppi:tau1") );
+    AK8Jet_tau2_.push_back( ijetAK8->userFloat("NjettinessAK8Puppi:tau2") );
+    AK8Jet_tau3_.push_back( ijetAK8->userFloat("NjettinessAK8Puppi:tau3") );
+    
+    ///Jet ECF - SJ
+    AK8Jetnb1ecf2_.push_back(ijetAK8->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN2"));
+    AK8Jetnb1ecf3_.push_back(ijetAK8->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb1AK8PuppiSoftDropN3"));
+    AK8Jetnb2ecf2_.push_back(ijetAK8->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN2"));
+    AK8Jetnb2ecf3_.push_back(ijetAK8->userFloat("ak8PFJetsPuppiSoftDropValueMap:nb2AK8PuppiSoftDropN3"));
+    ///
+
     AK8JetCHF_.push_back( ijetAK8->chargedHadronEnergyFraction()); // 0.0
     AK8JetNHF_.push_back( ijetAK8->neutralHadronEnergyFraction()); //0.99
     AK8JetCEF_.push_back( ijetAK8->chargedEmEnergyFraction()); //0.99
@@ -392,8 +450,13 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
     //float corr = jecAK8_->getCorrection();
     //AK8JetL2L3corr_.push_back(corr);
     
-    AK8JetSoftDropMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass"));
-    AK8JetPrunedMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass"));
+    ///SJ
+    //AK8JetSoftDropMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass"));
+    AK8JetSoftDropMass_.push_back(ijetAK8->userFloat("ak8PFJetsPuppiSoftDropMass"));
+    //AK8JetPrunedMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass"));
+    AK8JetPrunedMass_.push_back(ijetAK8->userFloat("ak8PFJetsCHSValueMap:ak8PFJetsCHSPrunedMass"));
+    ///SJ
+
     //AK8JetSoftDropMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSSoftDropMass")));
     //AK8JetPrunedMassCorr_.push_back(corr*(ijetAK8->userFloat("ak8PFJetsCHSPrunedMass")));
     
@@ -494,7 +557,8 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
     vecSDSJflavour.clear();
     nsubjets = 0;
     if (dumpSoftDrop_) {
-      auto const & sdSubjets = ijetAK8->subjets("SoftDrop");
+      //auto const & sdSubjets = ijetAK8->subjets("SoftDrop");
+      auto const & sdSubjets = ijetAK8->subjets("SoftDropPuppi"); //SJ
       for ( auto const & SDSJ : sdSubjets ) {
 	nsubjets++;
 	vecSDSJpt.push_back(SDSJ->pt());
@@ -518,10 +582,23 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
     AK8SDSJCSV_.push_back(vecSDSJcsv);
     
     //for some r&d on puppi + softdrop
-    AK8puppiPt_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:pt"));
+    /*AK8puppiPt_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:pt"));
     AK8puppiMass_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:mass"));
     AK8puppiEta_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:eta"));
     AK8puppiPhi_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:phi"));
+    */
+    //SJ
+    ///by default it is PUPPI, to store the CHS, do this: 
+    AK8chsPt_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:pt"));
+    AK8chsMass_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:mass"));
+    AK8chsEta_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:eta"));
+    AK8chsPhi_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:phi"));
+
+    ///SJ - by default PUPPI is stored so we need to store this
+    AK8chsTau1_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau1"));
+    AK8chsTau2_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau2"));
+    AK8chsTau3_.push_back( ijetAK8->userFloat("ak8PFJetsCHSValueMap:NjettinessAK8CHSTau3"));
+
     //AK8puppiTau1_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau1"));
     //AK8puppiTau2_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau2"));
     //AK8puppiTau3_.push_back( ijetAK8->userFloat("ak8PFJetsPuppiValueMap:NjettinessAK8PuppiTau3"));
@@ -535,6 +612,12 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
     vecPuppiSDSJe.clear();
     vecPuppiSDSJcharge.clear();
     vecPuppiSDSJflavour.clear();
+
+    vecPuppiSDSJnb1ecf2.clear();
+    vecPuppiSDSJnb1ecf3.clear();
+    vecPuppiSDSJnb2ecf2.clear();
+    vecPuppiSDSJnb2ecf3.clear();
+    
     nPuppiSJs = 0;
     
     TLorentzVector puppi_softdrop, puppi_softdrop_subjet;
@@ -552,6 +635,15 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
       
       puppi_softdrop_subjet.SetPtEtaPhiM(puppiSDSJ->correctedP4(0).pt(),puppiSDSJ->correctedP4(0).eta(),puppiSDSJ->correctedP4(0).phi(),puppiSDSJ->correctedP4(0).mass());
       puppi_softdrop+=puppi_softdrop_subjet;
+
+
+	///SJ
+	vecPuppiSDSJnb1ecf2.push_back(puppiSDSJ->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN2"));
+      
+	vecPuppiSDSJnb1ecf3.push_back(puppiSDSJ->userFloat("nb1AK8PuppiSoftDropSubjets:ecfN3"));
+	vecPuppiSDSJnb2ecf2.push_back(puppiSDSJ->userFloat("nb2AK8PuppiSoftDropSubjets:ecfN2"));
+	vecPuppiSDSJnb2ecf3.push_back(puppiSDSJ->userFloat("nb2AK8PuppiSoftDropSubjets:ecfN3"));
+
     }
     //fir L2L3 corrections
     //jecAK8pSD_->setJetEta( puppi_softdrop.Eta() );
