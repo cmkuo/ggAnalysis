@@ -365,7 +365,7 @@ void ggNtuplizer::fillAK8Jets(const edm::Event& e, const edm::EventSetup& es) {
   for (ijetAK8 = beginAK8; ijetAK8 != endAK8; ++ijetAK8 ) {
     ijetRef++;
     //if( ijetAK8->pt() < 30.0 ) continue;
-    if( ijetAK8->pt() < 100.0 ) continue; ////https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017
+    if( ijetAK8->pt() < 170.0 ) continue; ////https://twiki.cern.ch/twiki/bin/view/CMSPublic/WorkBookMiniAOD2017
     nAK8Jet_++;
     AK8JetPt_.push_back( ijetAK8->pt() );
     AK8JetEn_.push_back( ijetAK8->energy() );
