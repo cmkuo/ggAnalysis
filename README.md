@@ -1,15 +1,15 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_9_4_9
+#### Note that the current head version can be run with CMSSW_9_4_13
 
-##### To work with CMSSW_9_4_9 and head version, you do :
-cmsrel CMSSW_9_4_9_cand2 <br>
-cd CMSSW_9_4_9_cand2/src <br>
+##### To work with CMSSW_9_4_13 and head version, you do :
+cmsrel CMSSW_9_4_13 <br>
+cd CMSSW_9_4_13/src <br>
 cmsenv <br>
 git cms-init <br>
-git cms-merge-topic cms-egamma:EgammaPostRecoTools_940 <br>
+git cms-merge-topic cms-egamma:EgammaPostRecoTools <br>
 scram b -j 8 <br>
-git cms-merge-topic cms-met:METFixEE2017_949 <br>
+git cms-merge-topic cms-met:METFixEE2017_949_v2 <br>
 scram b -j 8 <br>
 cd $CMSSW_BASE/src <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
