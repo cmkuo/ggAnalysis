@@ -87,14 +87,6 @@ vector<vector<int> >   eleGSFNHitsMax_;
 vector<vector<float> > eleGSFVtxProb_;
 vector<vector<float> > eleGSFlxyPV_;
 vector<vector<float> > eleGSFlxyBS_;
-vector<vector<float> > eleBCEn_;
-vector<vector<float> > eleBCEta_;
-vector<vector<float> > eleBCPhi_;
-vector<vector<float> > eleBCS25_;
-vector<vector<float> > eleBCS15_;
-vector<vector<float> > eleBCSieie_;
-vector<vector<float> > eleBCSieip_;
-vector<vector<float> > eleBCSipip_;
 
 vector<vector<float> > eleESEnEta_;
 vector<vector<float> > eleESEnPhi_;
@@ -171,14 +163,6 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleGSFVtxProb",               &eleGSFVtxProb_);
   tree->Branch("eleGSFlxyPV",                 &eleGSFlxyPV_);
   tree->Branch("eleGSFlxyBS",                 &eleGSFlxyBS_);
-  tree->Branch("eleBCEn",                     &eleBCEn_);
-  tree->Branch("eleBCEta",                    &eleBCEta_);
-  tree->Branch("eleBCPhi",                    &eleBCPhi_);
-  tree->Branch("eleBCS25",                    &eleBCS25_);
-  tree->Branch("eleBCS15",                    &eleBCS15_);
-  tree->Branch("eleBCSieie",                  &eleBCSieie_);
-  tree->Branch("eleBCSieip",                  &eleBCSieip_);
-  tree->Branch("eleBCSipip",                  &eleBCSipip_);
   tree->Branch("eleFiredSingleTrgs",          &eleFiredSingleTrgs_);
   tree->Branch("eleFiredDoubleTrgs",          &eleFiredDoubleTrgs_);
   tree->Branch("eleFiredL1Trgs",              &eleFiredL1Trgs_);
@@ -284,14 +268,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleGSFVtxProb_              .clear();
   eleGSFlxyPV_                .clear();
   eleGSFlxyBS_                .clear();
-  eleBCEn_                    .clear();
-  eleBCEta_                   .clear();
-  eleBCPhi_                   .clear();
-  eleBCS25_                   .clear();
-  eleBCS15_                   .clear();
-  eleBCSieie_                 .clear();
-  eleBCSieip_                 .clear();
-  eleBCSipip_                 .clear();
   eleFiredSingleTrgs_         .clear();
   eleFiredDoubleTrgs_         .clear();
   eleFiredL1Trgs_             .clear();
@@ -457,19 +433,19 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
     // VID decisions 
     UShort_t tmpeleIDbit = 0;   
-    bool isPassVeto   = iEle->electronID("cutBasedElectronID-Fall17-94X-V1-veto");
+    bool isPassVeto   = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-veto");
     if (isPassVeto)   setbit(tmpeleIDbit, 0);    
-    bool isPassLoose  = iEle->electronID("cutBasedElectronID-Fall17-94X-V1-loose");
+    bool isPassLoose  = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-loose");
     if (isPassLoose)  setbit(tmpeleIDbit, 1);   
-    bool isPassMedium = iEle->electronID("cutBasedElectronID-Fall17-94X-V1-medium");
+    bool isPassMedium = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
     if (isPassMedium) setbit(tmpeleIDbit, 2);    
-    bool isPassTight  = iEle->electronID("cutBasedElectronID-Fall17-94X-V1-tight");
+    bool isPassTight  = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
     if (isPassTight)  setbit(tmpeleIDbit, 3);    
     bool isPassHEEP   = iEle->electronID("heepElectronID-HEEPV70");
     if (isPassHEEP)   setbit(tmpeleIDbit, 4);
     
-    eleIDMVAIso_  .push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17IsoV1Values"));
-    eleIDMVANoIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV1Values"));
+    eleIDMVAIso_  .push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values"));
+    eleIDMVANoIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values"));
 
     elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
     elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());

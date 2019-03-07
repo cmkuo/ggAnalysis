@@ -252,15 +252,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoPFPhoIso_      .push_back(iPho->userFloat("phoPhotonIsolation"));
     phoPFNeuIso_      .push_back(iPho->userFloat("phoNeutralHadronIsolation"));
     phoPFChWorstIso_  .push_back(iPho->userFloat("phoWorstChargedIsolation"));
-    phoIDMVA_         .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v1Values"));  
+    phoIDMVA_         .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
 
     // VID decisions     
     UShort_t tmpphoIDbit = 0;        
-    bool isPassLoose  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V1-loose");
+    bool isPassLoose  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
     if (isPassLoose)  setbit(tmpphoIDbit, 0);   
-    bool isPassMedium = iPho->photonID("cutBasedPhotonID-Fall17-94X-V1-medium");
+    bool isPassMedium = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
     if (isPassMedium) setbit(tmpphoIDbit, 1);    
-    bool isPassTight  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V1-tight");
+    bool isPassTight  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
     if (isPassTight)  setbit(tmpphoIDbit, 2);
     
     phoIDbit_.push_back(tmpphoIDbit);      
