@@ -1,20 +1,27 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_9_4_13
+#### Note that the current head version can be run with CMSSW_10_2_10
 
-##### To work with CMSSW_9_4_13 and head version, you do :
-cmsrel CMSSW_9_4_13 <br>
-cd CMSSW_9_4_13/src <br>
+##### To work with CMSSW_10_2_10 and head version, you do :
+
+cmsrel CMSSW_10_2_10 <br>	
+cd CMSSW_10_2_10/src <br>
 cmsenv <br>
 git cms-init <br>
 git cms-merge-topic cms-egamma:EgammaPostRecoTools <br>
 scram b -j 8 <br>
-git cms-merge-topic cms-met:METFixEE2017_949_v2 <br>
+git cms-addpkg EgammaAnalysis/ElectronTools <br>
+rm EgammaAnalysis/ElectronTools/data -rf <br>
+git clone https://github.com/cms-egamma/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data <br>
+cd EgammaAnalysis/ElectronTools/data <br>
+git checkout ScalesSmearing2018_Dev <br>
+cd - <br>
+git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev <br>
 scram b -j 8 <br>
-cd $CMSSW_BASE/src <br>
+git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b 94X https://github.com/cmkuo/ggAnalysis.git <br>
-scram b -j8 <br>
+git clone -b 102X https://github.com/cmkuo/ggAnalysis.git <br>
+scram b -j 8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
 for ELECRON ID: 5 IDs (Veto, Loose, Medium, Tight and HEEP) so only 5 bits are imp for us (59 bits of this integer  we are not using so may be we can change that to 16 bit integer later)<br>
