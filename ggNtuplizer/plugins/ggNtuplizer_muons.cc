@@ -31,6 +31,10 @@ vector<float>     muPFChIso_;
 vector<float>     muPFPhoIso_;
 vector<float>     muPFNeuIso_;
 vector<float>     muPFPUIso_;
+vector<float>     muPFChIso03_;
+vector<float>     muPFPhoIso03_;
+vector<float>     muPFNeuIso03_;
+vector<float>     muPFPUIso03_;
 vector<ULong64_t> muFiredTrgs_;
 vector<ULong64_t> muFiredL1Trgs_;
 vector<float>     muInnervalidFraction_;
@@ -69,6 +73,10 @@ void ggNtuplizer::branchesMuons(TTree* tree) {
   tree->Branch("muPFPhoIso",    &muPFPhoIso_);
   tree->Branch("muPFNeuIso",    &muPFNeuIso_);
   tree->Branch("muPFPUIso",     &muPFPUIso_);
+  tree->Branch("muPFChIso03",   &muPFChIso03_);
+  tree->Branch("muPFPhoIso03",  &muPFPhoIso03_);
+  tree->Branch("muPFNeuIso03",  &muPFNeuIso03_);
+  tree->Branch("muPFPUIso03",   &muPFPUIso03_);
   tree->Branch("muFiredTrgs",   &muFiredTrgs_);
   tree->Branch("muFiredL1Trgs", &muFiredL1Trgs_);
   tree->Branch("muInnervalidFraction",   &muInnervalidFraction_);
@@ -108,6 +116,10 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
   muPFPhoIso_            .clear();
   muPFNeuIso_            .clear();
   muPFPUIso_             .clear();
+  muPFChIso03_           .clear();
+  muPFPhoIso03_          .clear();
+  muPFNeuIso03_          .clear();
+  muPFPUIso03_           .clear();
   muFiredTrgs_           .clear();
   muFiredL1Trgs_         .clear();
   muInnervalidFraction_  .clear();
@@ -219,6 +231,10 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     muPFPhoIso_   .push_back(iMu->pfIsolationR04().sumPhotonEt);
     muPFNeuIso_   .push_back(iMu->pfIsolationR04().sumNeutralHadronEt);
     muPFPUIso_    .push_back(iMu->pfIsolationR04().sumPUPt);
+    muPFChIso03_  .push_back(iMu->pfIsolationR03().sumChargedHadronPt);
+    muPFPhoIso03_ .push_back(iMu->pfIsolationR03().sumPhotonEt);
+    muPFNeuIso03_ .push_back(iMu->pfIsolationR03().sumNeutralHadronEt);
+    muPFPUIso03_  .push_back(iMu->pfIsolationR03().sumPUPt);
 
     nMu_++;
   }
