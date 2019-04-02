@@ -3,18 +3,20 @@
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "ggAnalysis/ggNtuplizer/interface/GEDPhoIDTools.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
+#include "RecoParticleFlow/PFClusterTools/interface/PFEnergyResolution.h"
 
 using namespace std;
 
-Int_t          npfPho_;
-vector<float>  pfPhoEt_;
-vector<float>  pfPhoEta_;
-vector<float>  pfPhoPhi_;
-vector<float>  pfPhoChIso_;
-vector<float>  pfPhoPhoIso_;
-vector<float>  pfPhoNeuIso_;
-vector<int>    pfPhoEleIndex_;
-vector<int>    pfPhoPhoIndex_;
+Int_t         npfPho_;
+vector<float> pfPhoEt_;
+vector<float> pfPhoEta_;
+vector<float> pfPhoPhi_;
+vector<float> pfPhoEtErr_;
+vector<float> pfPhoChIso_;
+vector<float> pfPhoPhoIso_;
+vector<float> pfPhoNeuIso_;
+vector<int>   pfPhoEleIndex_;
+vector<int>   pfPhoPhoIndex_;
 
 void ggNtuplizer::branchesPFPhotons(TTree* tree) {
   
@@ -22,6 +24,7 @@ void ggNtuplizer::branchesPFPhotons(TTree* tree) {
   tree->Branch("pfPhoEt",       &pfPhoEt_);
   tree->Branch("pfPhoEta",      &pfPhoEta_);
   tree->Branch("pfPhoPhi",      &pfPhoPhi_);
+  tree->Branch("pfPhoEtErr",    &pfPhoEtErr_);
   tree->Branch("pfPhoChIso",    &pfPhoChIso_);
   tree->Branch("pfPhoPhoIso",   &pfPhoPhoIso_);
   tree->Branch("pfPhoNeuIso",   &pfPhoNeuIso_);
@@ -35,6 +38,7 @@ void ggNtuplizer::fillPFPhotons(const edm::Event& e, const edm::EventSetup& es) 
   pfPhoEt_      .clear();
   pfPhoEta_     .clear();
   pfPhoPhi_     .clear();
+  pfPhoEtErr_   .clear();
   pfPhoChIso_   .clear();
   pfPhoPhoIso_  .clear();
   pfPhoNeuIso_  .clear();
@@ -103,6 +107,7 @@ void ggNtuplizer::fillPFPhotons(const edm::Event& e, const edm::EventSetup& es) 
       pfPhoEt_      .push_back(pf.pt());
       pfPhoEta_     .push_back(pf.eta());
       pfPhoPhi_     .push_back(pf.phi());
+      pfPhoEtErr_   .push_back(PFEnergyResolution().getEnergyResolutionEm(pf.energy(), pf.eta())*pf.pt()/pf.p());
       pfPhoChIso_   .push_back(chiso_);
       pfPhoPhoIso_  .push_back(phoiso_);
       pfPhoNeuIso_  .push_back(neuiso_);

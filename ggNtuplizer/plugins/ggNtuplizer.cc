@@ -77,7 +77,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_02_10_00)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_02_10_01)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
@@ -86,7 +86,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
     branchesGenInfo(tree_, fs);
     branchesGenPart(tree_);
   }
-
+  
   branchesMET(tree_);
   branchesPhotons(tree_);
   branchesElectrons(tree_);
@@ -96,6 +96,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   if (dumpTaus_)        branchesTaus(tree_);
   if (dumpJets_)        branchesJets(tree_);
   if (dumpAK8Jets_)     branchesAK8Jets(tree_);
+
 }
 
 ggNtuplizer::~ggNtuplizer() {
