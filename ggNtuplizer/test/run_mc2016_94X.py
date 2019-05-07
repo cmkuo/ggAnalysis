@@ -11,15 +11,15 @@ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cf
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_v12')
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mcRun2_asymptotic_v3')
 
 #process.Tracer = cms.Service("Tracer")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:/data4/cmkuo/testfiles/DYJetsToLL_M-50_TuneCUETP8M1_13TeV-amcatnloFXFX-pythia8_RunIISummer16MiniAODv2.root'
+        'file:/data4/cmkuo/testfiles/ggHZg_RunIISummer16MiniAODv3.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -41,17 +41,25 @@ runMetCorAndUncFromMiniAOD(process,
                            isData=False
                            )
 
+# random generator for jet smearing
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                                                   ggNtuplizer  = cms.PSet(
+        initialSeed = cms.untracked.uint32(201678),
+        engineName = cms.untracked.string('TRandom3')
+        )
+                                                   )
+
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2016)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
-process.ggNtuplizer.dumpPFPhotons=cms.bool(False)
+process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "PAT")
-process.ggNtuplizer.triggerEvent=cms.InputTag("selectedPatTrigger", "", "")
+process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "")
 
 process.p = cms.Path(
     process.ggNtuplizer

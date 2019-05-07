@@ -214,9 +214,9 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
-  //edm::Handle<double> rhoHandle;
-  //e.getByToken(rhoLabel_, rhoHandle);
-  //float rho = *(rhoHandle.product());
+  edm::Handle<double> rhoHandle;
+  e.getByToken(rhoLabel_, rhoHandle);
+  float rho = *(rhoHandle.product());
   
   edm::Handle<reco::VertexCollection> vtxHandle;
   e.getByToken(vtxLabel_, vtxHandle);
@@ -390,8 +390,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       jetGenJetEta_.push_back(jetGenJetEta);
       jetGenJetPhi_.push_back(jetGenJetPhi);
       
-      // access jet resolution       
-      /*
+      // access jet resolution             
       JME::JetParameters parameters;
       parameters.setJetPt(iJet->pt()).setJetEta(iJet->eta()).setRho(rho);
       float jetResolution = jetResolution_.getResolution(parameters);
@@ -419,8 +418,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
       }
       jetP4Smear_  .push_back(jetP4Smear);
       jetP4SmearUp_.push_back(jetP4SmearUp);
-      jetP4SmearDo_.push_back(jetP4SmearDo);
-      */
+      jetP4SmearDo_.push_back(jetP4SmearDo);      
     }
     
     nJet_++;

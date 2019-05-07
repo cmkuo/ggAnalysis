@@ -11,11 +11,11 @@ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cf
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 #process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_data', '')
-process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_ReReco_EOY17_v6')
+process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_v10')
 
 #process.Tracer = cms.Service("Tracer")
 
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
@@ -34,7 +34,8 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=False,
-                       era='2016-Legacy') 
+                       era='2016-Legacy'
+                       ) 
 
 #from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
@@ -53,7 +54,7 @@ runMetCorAndUncFromMiniAOD (
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2016)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
-process.ggNtuplizer.dumpPFPhotons=cms.bool(False)
+process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
