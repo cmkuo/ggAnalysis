@@ -52,6 +52,14 @@ runMetCorAndUncFromMiniAOD (
         postfix = "ModifiedMET"
 )
 
+# random generator for jet smearing
+process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
+                                                   ggNtuplizer  = cms.PSet(
+        initialSeed = cms.untracked.uint32(201678),
+        engineName = cms.untracked.string('TRandom3')
+        )
+                                                   )
+
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2017)
 process.ggNtuplizer.doGenParticles=cms.bool(True)
