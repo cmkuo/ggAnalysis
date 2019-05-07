@@ -20,7 +20,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:/data4/cmkuo/testfiles/DoubleMuon_Run2018C_17Sep2018.root'
+        #'file:/data4/cmkuo/testfiles/DoubleMuon_Run2018C_17Sep2018.root'
+        'file:/data4/cmkuo/testfiles/DoubleMuon_Run2018D_PR.root'
         )
                             )
 
@@ -64,7 +65,7 @@ runMetCorAndUncFromMiniAOD (
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2017)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
-process.ggNtuplizer.dumpPFPhotons=cms.bool(False)
+process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
