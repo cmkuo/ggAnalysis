@@ -252,16 +252,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoPFPhoIso_      .push_back(iPho->userFloat("phoPhotonIsolation"));
     phoPFNeuIso_      .push_back(iPho->userFloat("phoNeutralHadronIsolation"));
     phoPFChWorstIso_  .push_back(iPho->userFloat("phoWorstChargedIsolation"));
-    if (year_ == 2016) phoIDMVA_.push_back(iPho->userFloat("PhotonMVAEstimatorRun2Spring16NonTrigV1Values"));
-    else               phoIDMVA_.push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
+    phoIDMVA_         .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
 
     // VID decisions     
-    UShort_t tmpphoIDbit = 0;        
-    bool isPassLoose  = (year_ == 2016) ? iPho->photonID("cutBasedPhotonID-Spring16-V2p2-loose") : iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
+    UShort_t tmpphoIDbit = 0;      
+    bool isPassLoose  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-loose");
     if (isPassLoose)  setbit(tmpphoIDbit, 0);   
-    bool isPassMedium = (year_ == 2016) ? iPho->photonID("cutBasedPhotonID-Spring16-V2p2-medium") : iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
+    bool isPassMedium = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-medium");
     if (isPassMedium) setbit(tmpphoIDbit, 1);    
-    bool isPassTight  = (year_ == 2016) ? iPho->photonID("cutBasedPhotonID-Spring16-V2p2-tight") : iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
+    bool isPassTight  = iPho->photonID("cutBasedPhotonID-Fall17-94X-V2-tight");
     if (isPassTight)  setbit(tmpphoIDbit, 2);
     
     phoIDbit_.push_back(tmpphoIDbit);      

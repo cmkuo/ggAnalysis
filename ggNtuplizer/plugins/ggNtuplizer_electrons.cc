@@ -433,21 +433,19 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
 
     // VID decisions 
     UShort_t tmpeleIDbit = 0;   
-    bool isPassVeto   = (year_ == 2016) ? iEle->electronID("cutBasedElectronID-Summer16-80X-V1-veto") : iEle->electronID("cutBasedElectronID-Fall17-94X-V2-veto");
+    bool isPassVeto   = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-veto");
     if (isPassVeto)   setbit(tmpeleIDbit, 0);    
-    bool isPassLoose  = (year_ == 2016) ? iEle->electronID("cutBasedElectronID-Summer16-80X-V1-loose") : iEle->electronID("cutBasedElectronID-Fall17-94X-V2-loose");
+    bool isPassLoose  = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-loose");
     if (isPassLoose)  setbit(tmpeleIDbit, 1);   
-    bool isPassMedium = (year_ == 2016) ? iEle->electronID("cutBasedElectronID-Summer16-80X-V1-medium") : iEle->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
+    bool isPassMedium = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-medium");
     if (isPassMedium) setbit(tmpeleIDbit, 2);    
-    bool isPassTight  = (year_ == 2016) ? iEle->electronID("cutBasedElectronID-Summer16-80X-V1-tight") : iEle->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
+    bool isPassTight  = iEle->electronID("cutBasedElectronID-Fall17-94X-V2-tight");
     if (isPassTight)  setbit(tmpeleIDbit, 3);    
     bool isPassHEEP   = iEle->electronID("heepElectronID-HEEPV70");
     if (isPassHEEP)   setbit(tmpeleIDbit, 4);
     
-    if (year_ == 2016) eleIDMVAIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Spring16GeneralPurposeV1Values"));
-    else               eleIDMVAIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values"));
-    if (year_ == 2016) eleIDMVANoIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Spring16HZZV1Values"));
-    else               eleIDMVANoIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values"));
+    eleIDMVAIso_  .push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17IsoV2Values"));
+    eleIDMVANoIso_.push_back(iEle->userFloat("ElectronMVAEstimatorRun2Fall17NoIsoV2Values"));
 
     elePFClusEcalIso_.push_back(iEle->ecalPFClusterIso());
     elePFClusHcalIso_.push_back(iEle->hcalPFClusterIso());
