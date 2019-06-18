@@ -8,15 +8,13 @@ cmsrel CMSSW_10_2_10 <br>
 cd CMSSW_10_2_10/src <br>
 cmsenv <br>
 git cms-init <br>
+
 git cms-merge-topic cms-egamma:EgammaPostRecoTools <br>
-scram b -j 8 <br>
+git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 <br>
+git cms-merge-topic cms-egamma:slava77-btvDictFix_10210 <br>
 git cms-addpkg EgammaAnalysis/ElectronTools <br>
 rm EgammaAnalysis/ElectronTools/data -rf <br>
-git clone https://github.com/cms-egamma/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data <br>
-cd EgammaAnalysis/ElectronTools/data <br>
-git checkout ScalesSmearing2018_Dev <br>
-cd - <br>
-git cms-merge-topic cms-egamma:EgammaPostRecoTools_dev <br>
+git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data <br>
 scram b -j 8 <br>
 git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
