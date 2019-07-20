@@ -72,10 +72,13 @@ process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
+process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 
 process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
+    process.ggMETFiltersSequence *
     process.ggNtuplizer
     )
 

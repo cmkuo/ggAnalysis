@@ -16,7 +16,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpHFElectrons      = cms.bool(True),
                              development          = cms.bool(False),
                              addFilterInfoAOD     = cms.bool(False),
-                             addFilterInfoMINIAOD = cms.bool(True),
+                             addFilterInfoMINIAOD = cms.bool(False),
                              doNoHFMET            = cms.bool(False),
 
                              year                 = cms.int32(2017), 
@@ -65,6 +65,5 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              packedPFCands             = cms.InputTag("packedPFCandidates"),
                              elePFClusEcalIsoProducer  = cms.InputTag("electronEcalPFClusterIsolationProducer"),
                              elePFClusHcalIsoProducer  = cms.InputTag("electronHcalPFClusterIsolationProducer"),
-                             BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
-                             BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter")
+                             ecalBadCalibReducedMINIAODFilter = cms.InputTag("ecalBadCalibReducedMINIAODFilter")
 )

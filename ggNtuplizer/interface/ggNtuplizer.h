@@ -149,8 +149,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
   // for MET filters
-  edm::EDGetTokenT<bool> BadChCandFilterToken_;
-  edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
+  edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_token_;
 
   //check
   edm::EDGetToken gsfEle_;
