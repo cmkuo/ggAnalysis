@@ -75,7 +75,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       "Flag_eeBadScFilter",
       "Flag_EcalDeadCellTriggerPrimitiveFilter",
       "Flag_BadPFMuonFilter",
-      "Flag_ecalBadCalibFilter",
+      "Flag_ecalBadCalibReducedMINIAODFilter",
       "Flag_BadChargedCandidateFilter"
     };
 
@@ -96,9 +96,9 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 	  
 	std::cout << " triggerName = " << (*triggerName) << " " << triggerDecision << std::endl;
       }
-    }
+    }    
     */
-
+    
     for (unsigned iF = 0; iF < 9; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
       if ( index == filterNames.size() ) 
