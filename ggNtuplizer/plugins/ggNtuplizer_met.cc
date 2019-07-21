@@ -75,7 +75,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       "Flag_eeBadScFilter",
       "Flag_EcalDeadCellTriggerPrimitiveFilter",
       "Flag_BadPFMuonFilter",
-      "Flag_ecalBadCalibFilter",
+      "Flag_ecalBadCalibReducedMINIAODFilter",
       "Flag_BadChargedCandidateFilter"
     };
 
@@ -101,9 +101,17 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 
     for (unsigned iF = 0; iF < 9; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
-      if ( index == filterNames.size() ) 
-	LogDebug("METFilters") << filterNamesToCheck[iF] << " is missing, exiting";
-      else {
+      if ( index == filterNames.size() ) {
+	//std::cout<<filterNamesToCheck[iF] << " is missing, exiting"<<std::endl;
+
+	if (year_ == 2017) {
+	  edm::Handle<bool> passecalBadCalibFilterUpdate;
+	  e.getByToken(ecalBadCalibFilterUpdate_, passecalBadCalibFilterUpdate);
+	  bool passecalBadCalibFilterUpdate_ = (*passecalBadCalibFilterUpdate);	
+	  if (passecalBadCalibFilterUpdate_) metFilters_ += pow(2, iF+1);
+	}
+	
+      } else {
 	if ( !patFilterResults.accept(index) ) {
 	  metFilters_ += pow(2, iF+1);
 	}

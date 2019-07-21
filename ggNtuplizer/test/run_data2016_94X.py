@@ -67,9 +67,17 @@ process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "DQM")
+process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
+
+process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+                                   src = cms.InputTag("slimmedMuons"),
+                                   preselection = cms.string("track.isNonnull"),
+                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+                                   fractionOfSharedSegments = cms.double(0.499))
 
 process.p = cms.Path(
     process.egammaPostRecoSeq *
+    process.cleanedMu *
     process.ggNtuplizer
     )
 

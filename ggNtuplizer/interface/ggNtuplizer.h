@@ -95,7 +95,6 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void cleanupPhotons();
 
   bool development_;
-  bool addFilterInfoAOD_;  
   bool addFilterInfoMINIAOD_;  
   bool doNoHFMET_;
   bool doGenParticles_;
@@ -149,8 +148,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
   // for MET filters
-  edm::EDGetTokenT<bool> BadChCandFilterToken_;
-  edm::EDGetTokenT<bool> BadPFMuonFilterToken_;
+  edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_;
 
   //check
   edm::EDGetToken gsfEle_;

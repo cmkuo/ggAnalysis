@@ -15,7 +15,6 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              dumpPDFSystWeight    = cms.bool(False),
                              dumpHFElectrons      = cms.bool(True),
                              development          = cms.bool(False),
-                             addFilterInfoAOD     = cms.bool(False),
                              addFilterInfoMINIAOD = cms.bool(False),
                              doNoHFMET            = cms.bool(False),
 
@@ -45,6 +44,7 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              #calibphotonSrc       = cms.InputTag("calibratedPatPhotons"),
                              calibphotonSrc       = cms.InputTag("slimmedPhotons"),
                              muonSrc              = cms.InputTag("slimmedMuons"),
+                             #muonSrc              = cms.InputTag("cleanedMu"),
                              gsfTrackSrc          = cms.InputTag("reducedEgamma", "reducedGsfTracks"),
                              ebReducedRecHitCollection = cms.InputTag("reducedEgamma", "reducedEBRecHits"),
                              eeReducedRecHitCollection = cms.InputTag("reducedEgamma", "reducedEERecHits"),
@@ -65,6 +65,5 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              packedPFCands             = cms.InputTag("packedPFCandidates"),
                              elePFClusEcalIsoProducer  = cms.InputTag("electronEcalPFClusterIsolationProducer"),
                              elePFClusHcalIsoProducer  = cms.InputTag("electronHcalPFClusterIsolationProducer"),
-                             BadChargedCandidateFilter = cms.InputTag("BadChargedCandidateFilter"),
-                             BadPFMuonFilter           = cms.InputTag("BadPFMuonFilter")
+                             ecalBadCalibReducedMINIAODFilter = cms.InputTag("ecalBadCalibReducedMINIAODFilter")
 )
