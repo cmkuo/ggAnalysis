@@ -105,7 +105,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 	//std::cout<<filterNamesToCheck[iF] << " is missing, exiting"<<std::endl;
 
 	edm::Handle<bool> passecalBadCalibFilterUpdate;
-	e.getByToken(ecalBadCalibFilterUpdate_token_, passecalBadCalibFilterUpdate);
+	e.getByToken(ecalBadCalibFilterUpdate_, passecalBadCalibFilterUpdate);
 	bool passecalBadCalibFilterUpdate_ = (*passecalBadCalibFilterUpdate);	
 	if (passecalBadCalibFilterUpdate_) metFilters_ += pow(2, iF+1);
 	
