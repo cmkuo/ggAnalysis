@@ -74,9 +74,16 @@ process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
 process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
 process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 
+process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+                                   src = cms.InputTag("slimmedMuons"),
+                                   preselection = cms.string("track.isNonnull"),
+                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+                                   fractionOfSharedSegments = cms.double(0.499))
+
 process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
+    process.cleanedMu *
     process.ggMETFiltersSequence *
     process.ggNtuplizer
     )
