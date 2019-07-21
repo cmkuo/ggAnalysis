@@ -71,9 +71,16 @@ process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "PAT")
 
+process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+                                   src = cms.InputTag("slimmedMuons"),
+                                   preselection = cms.string("track.isNonnull"),
+                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+                                   fractionOfSharedSegments = cms.double(0.499))
+
 process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
+    process.cleanedMu *
     process.ggNtuplizer
     )
 

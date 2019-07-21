@@ -14,7 +14,7 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mcRun2_asymptotic_v3')
 
 #process.Tracer = cms.Service("Tracer")
-process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
@@ -30,8 +30,15 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 ### fix a bug in the ECAL-Tracker momentum combination when applying the scale and smearing
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
-                       runVID=False, 
-                       era='2016-Legacy')  
+                       runVID=True, 
+                       era='2016-Legacy',
+                       eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
+                                     'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
+                                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
+                                     'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff'],
+                       phoIDModules=['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
+                                     'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
+                       )  
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
@@ -61,7 +68,15 @@ process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "PAT")
 process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "")
 
+process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
+                                   src = cms.InputTag("slimmedMuons"),
+                                   preselection = cms.string("track.isNonnull"),
+                                   passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
+                                   fractionOfSharedSegments = cms.double(0.499))
+
 process.p = cms.Path(
+    process.egammaPostRecoSeq *
+    process.cleanedMu *
     process.ggNtuplizer
     )
 
