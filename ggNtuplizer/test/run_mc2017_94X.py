@@ -10,7 +10,6 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-#process.GlobalTag = GlobalTag(process.GlobalTag, 'auto:run2_mc')
 process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mc2017_realistic_v17')
 
 #process.Tracer = cms.Service("Tracer")
@@ -42,6 +41,18 @@ setupEgammaPostRecoSeq(process,
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
 
+### update JEC
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.jetCorrFactors = process.updatedPatJetCorrFactors.clone(
+    src = cms.InputTag("slimmedJets"),
+    levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+    payload = 'AK4PFchs') 
+
+process.slimmedJetsJEC = process.updatedPatJets.clone(
+    jetSource = cms.InputTag("slimmedJets"),
+    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("jetCorrFactors"))
+    )
+
 ### reduce effect of high eta EE noise on the PF MET measurement
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD (
@@ -70,6 +81,8 @@ process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "PAT")
+process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
+process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
 
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("slimmedMuons"),
@@ -81,6 +94,8 @@ process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
     process.cleanedMu *
+    process.jetCorrFactors *
+    process.slimmedJetsJEC *
     process.ggNtuplizer
     )
 
