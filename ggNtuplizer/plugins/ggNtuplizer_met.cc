@@ -36,7 +36,8 @@ void ggNtuplizer::branchesMET(TTree* tree) {
     tree->Branch("genMET",      &genMET_);
     tree->Branch("genMETPhi",   &genMETPhi_);
   }
-  tree->Branch("metFilters",       &metFilters_);
+  if (addFilterInfoMINIAOD_)
+    tree->Branch("metFilters",       &metFilters_);
   tree->Branch("pfMET",            &pfMET_);
   tree->Branch("pfMETPhi",         &pfMETPhi_);
   tree->Branch("pfMET_T1JERUp",    &pfMET_T1JERUp_);
