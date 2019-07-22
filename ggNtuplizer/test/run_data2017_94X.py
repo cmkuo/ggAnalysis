@@ -11,7 +11,6 @@ process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cf
 process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_v11', '')
-#process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_ReReco_EOY17_v6')
 
 #process.Tracer = cms.Service("Tracer")
 
@@ -51,11 +50,23 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
+### update JEC
+process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
+process.jetCorrFactors = process.updatedPatJetCorrFactors.clone(
+    src = cms.InputTag("slimmedJets"),
+    levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
+    payload = 'AK4PFchs') 
+
+process.slimmedJetsJEC = process.updatedPatJets.clone(
+    jetSource = cms.InputTag("slimmedJets"),
+    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("jetCorrFactors"))
+    )
+
 ### reduce effect of high eta EE noise on the PF MET measurement
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD (
         process,
-        isData = True, # false for MC
+        isData = True, # false for MC    
         fixEE2017 = True,
         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
@@ -70,6 +81,7 @@ process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
+process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
 process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
 process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
 process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
@@ -85,6 +97,8 @@ process.p = cms.Path(
     process.egammaPostRecoSeq *
     process.cleanedMu *
     process.ggMETFiltersSequence *
+    process.jetCorrFactors *
+    process.slimmedJetsJEC *
     process.ggNtuplizer
     )
 
