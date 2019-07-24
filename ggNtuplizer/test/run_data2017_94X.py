@@ -75,7 +75,7 @@ runMetCorAndUncFromMiniAOD (
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2017)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
-process.ggNtuplizer.dumpPFPhotons=cms.bool(False)
+process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
