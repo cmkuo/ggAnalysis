@@ -14,6 +14,12 @@ float            genPho2_;
 TString          EventTag_;
 float            pdfWeight_;     
 vector<float>    pdfSystWeight_;
+Int_t            nLHE_;
+vector<int>      lhePID;
+vector<float>    lhePx;
+vector<float>    lhePy;
+vector<float>    lhePz; 
+vector<float>    lheE;
 
 Int_t            nPUInfo_;
 vector<int>      nPU_;
@@ -128,6 +134,13 @@ void ggNtuplizer::branchesGenInfo(TTree* tree, edm::Service<TFileService> &fs) {
   tree->Branch("puBX",          &puBX_);
   tree->Branch("puTrue",        &puTrue_);
 
+  tree->Branch("nLHE",          &nLHE_);
+  tree->Branch("lhePID",        &lhePID);
+  tree->Branch("lhePx",         &lhePx);
+  tree->Branch("lhePy",         &lhePy); 
+  tree->Branch("lhePz",         &lhePz); 
+  tree->Branch("lheE",          &lheE); 
+
   hPU_        = fs->make<TH1F>("hPU",        "number of pileup",      200,  0, 200);
   hPUTrue_    = fs->make<TH1F>("hPUTrue",    "number of true pilepu", 1000, 0, 200);
   hGenWeight_ = fs->make<TH1F>("hGenWeight", "Gen weights",           2,    0, 2);
@@ -180,6 +193,11 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   nPU_          .clear();
   puBX_         .clear();
   puTrue_       .clear();
+  lhePID        .clear();
+  lhePx         .clear();
+  lhePy         .clear();
+  lhePz         .clear();
+  lheE          .clear();
 
   edm::Handle<GenEventInfoProduct> genEventInfoHandle;
   e.getByToken(generatorLabel_, genEventInfoHandle);
@@ -210,7 +228,8 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
   // access generator level HT  
   edm::Handle<LHEEventProduct> lheEventProduct;
   e.getByToken(lheEventLabel_, lheEventProduct);
-  
+
+  nLHE_ = 0;  
   double lheHt   = 0.;
   double lhePho1 = 0.;
   double lhePho2 = 0.;
@@ -219,9 +238,20 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
     std::vector<lhef::HEPEUP::FiveVector> lheParticles = lheEvent.PUP;
     size_t numParticles = lheParticles.size();
     int nMCPho = 0;
+
     for ( size_t idxParticle = 0; idxParticle < numParticles; ++idxParticle ) {
       int absPdgId = TMath::Abs(lheEvent.IDUP[idxParticle]);
       int status = lheEvent.ISTUP[idxParticle];
+
+      if (status == 1) {	
+	lhePID.push_back(lheEvent.IDUP[idxParticle]);
+	lhePx .push_back(lheParticles[idxParticle][0]);
+	lhePy .push_back(lheParticles[idxParticle][1]);
+	lhePz .push_back(lheParticles[idxParticle][2]);
+	lheE  .push_back(lheParticles[idxParticle][3]);
+	nLHE_++;
+      } 
+
       if (status == 1 && ((absPdgId >= 1 && absPdgId <= 6) || absPdgId == 21) ) { // quarks and gluons
 	lheHt += TMath::Sqrt(TMath::Power(lheParticles[idxParticle][0], 2.) + TMath::Power(lheParticles[idxParticle][1], 2.)); // first entry is px, second py
       } 
@@ -284,9 +314,6 @@ void ggNtuplizer::fillGenInfo(const edm::Event& e) {
 
 void ggNtuplizer::fillGenPart(const edm::Event& e) {
 
-  // Fills tree branches with generated particle info.
-
-  // cleanup from previous execution
   mcPID       .clear();
   mcVtx       .clear();
   mcVty       .clear();
@@ -330,7 +357,7 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
     int status = ip->status();
     //bool stableFinalStateParticle = status == 1 && ip->pt() > 5.0;
     
-    bool quarks = abs(ip->pdgId())<7;
+    //bool quarks = abs(ip->pdgId())<7;
 
     // keep non-FSR photons with pT > 5.0 and all leptons with pT > 3.0;
     bool photonOrLepton =
@@ -354,7 +381,8 @@ void ggNtuplizer::fillGenPart(const edm::Event& e) {
       if (abs(ip->pdgId()) == newparticles_[inp]) newParticle = true;
     }
     
-    if ( heavyParticle || photonOrLepton || quarks || newParticle ) {
+    //if ( heavyParticle || photonOrLepton || quarks || newParticle ) {
+    if ( heavyParticle || photonOrLepton || newParticle ) {
       
       const reco::Candidate *p = (const reco::Candidate*)&(*ip);
       if (!runOnParticleGun_ && !p->mother()) continue;

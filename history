@@ -1,6 +1,8 @@
 * 94X
    * newest EGM ID and energy correction for 2017 data
    * new JEC for Fall17 MC
+   * add L1 ECAL prefiring
+   * add LHE information
 
 * V08-00-26-03
    * remove ES energy variable

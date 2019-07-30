@@ -26,6 +26,14 @@ process.source = cms.Source("PoolSource",
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
+### L1 ECAL prefiring
+from PhysicsTools.PatUtils.l1ECALPrefiringWeightProducer_cfi import l1ECALPrefiringWeightProducer
+process.prefiringweight = l1ECALPrefiringWeightProducer.clone(
+    DataEra = cms.string("2016BtoH"), 
+    UseJetEMPt = cms.bool(False),
+    PrefiringRateSystematicUncty = cms.double(0.2),
+    SkipWarnings = False)
+
 ### fix a bug in the ECAL-Tracker momentum combination when applying the scale and smearing
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
@@ -94,6 +102,7 @@ process.p = cms.Path(
     process.cleanedMu *
     process.jetCorrFactors *
     process.slimmedJetsJEC *
+    process.prefiringweight *
     process.ggNtuplizer
     )
 

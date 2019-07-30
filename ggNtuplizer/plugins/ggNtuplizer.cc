@@ -19,6 +19,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   doGenParticles_            = ps.getParameter<bool>("doGenParticles");
   runOnParticleGun_          = ps.getParameter<bool>("runOnParticleGun");
   runOnSherpa_               = ps.getParameter<bool>("runOnSherpa");
+  runL1ECALPrefire_          = ps.getParameter<bool>("runL1ECALPrefire");
   dumpPFPhotons_             = ps.getParameter<bool>("dumpPFPhotons");
   dumpJets_                  = ps.getParameter<bool>("dumpJets");
   dumpAK8Jets_               = ps.getParameter<bool>("dumpAK8Jets");
@@ -72,10 +73,14 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
+  prefweight_token_          = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProb"));
+  prefweightup_token_        = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProbUp"));
+  prefweightdown_token_      = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProbDown"));
+
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V09_04_13_03)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V09_04_13_04)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
