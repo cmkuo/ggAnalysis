@@ -100,6 +100,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool doGenParticles_;
   bool runOnParticleGun_;
   bool runOnSherpa_;
+  bool runL1ECALPrefire_;
   bool dumpPFPhotons_;
   bool dumpTaus_;
   bool dumpJets_;
@@ -152,6 +153,11 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   //check
   edm::EDGetToken gsfEle_;
+
+  // L1 ECAL prefiring
+  edm::EDGetTokenT<double> prefweight_token_;
+  edm::EDGetTokenT<double> prefweightup_token_;
+  edm::EDGetTokenT<double> prefweightdown_token_;
 
   TTree   *tree_;
   TH1F    *hEvents_;

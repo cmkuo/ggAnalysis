@@ -18,6 +18,9 @@ float       vty_;
 float       vtz_;
 float       rho_;
 float       rhoCentral_;
+double      L1ECALPrefire_;
+double      L1ECALPrefireUp_;
+double      L1ECALPrefireDown_;
 ULong64_t   HLTEleMuX_;
 ULong64_t   HLTPho_;
 ULong64_t   HLTPhoRejectedByPS_;
@@ -29,10 +32,10 @@ vector<int> phoPrescale_;
 
 void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
-  tree->Branch("run",     &run_);
-  tree->Branch("event",   &event_);
-  tree->Branch("lumis",   &lumis_);
-  tree->Branch("isData",  &isData_);
+  tree->Branch("run",                  &run_);
+  tree->Branch("event",                &event_);
+  tree->Branch("lumis",                &lumis_);
+  tree->Branch("isData",               &isData_);
   tree->Branch("nVtx",                 &nVtx_);
   tree->Branch("nGoodVtx",             &nGoodVtx_);
   tree->Branch("isPVGood",             &isPVGood_);
@@ -41,6 +44,9 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vtz",                  &vtz_); 
   tree->Branch("rho",                  &rho_);
   tree->Branch("rhoCentral",           &rhoCentral_);
+  tree->Branch("L1ECALPrefire",        &L1ECALPrefire_);
+  tree->Branch("L1ECALPrefireUp",      &L1ECALPrefireUp_);
+  tree->Branch("L1ECALPrefireDown",    &L1ECALPrefireDown_);
   tree->Branch("HLTEleMuX",            &HLTEleMuX_);
   tree->Branch("HLTPho",               &HLTPho_);
   tree->Branch("HLTPhoRejectedByPS",   &HLTPhoRejectedByPS_);
@@ -100,6 +106,25 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
     }
   } else
     edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
+
+  // L1 ECAL prefiring
+  L1ECALPrefire_     = 1;
+  L1ECALPrefireUp_   = 1;
+  L1ECALPrefireDown_ = 1;
+
+  if (runL1ECALPrefire_) {
+    edm::Handle<double> theprefweight;
+    e.getByToken(prefweight_token_, theprefweight);
+    L1ECALPrefire_    = (*theprefweight);
+
+    edm::Handle<double> theprefweightup;
+    e.getByToken(prefweightup_token_, theprefweightup);
+    L1ECALPrefireUp_   = (*theprefweightup);
+
+    edm::Handle< double > theprefweightdown;
+    e.getByToken(prefweightdown_token_, theprefweightdown);
+    L1ECALPrefireDown_ = (*theprefweightdown);
+  } 
 
   // HLT treatment
   HLTEleMuX_            = 0;
