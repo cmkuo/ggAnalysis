@@ -107,9 +107,11 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 
 	edm::Handle<bool> passecalBadCalibFilterUpdate;
 	e.getByToken(ecalBadCalibFilterUpdate_, passecalBadCalibFilterUpdate);
-	bool passecalBadCalibFilterUpdate_ = (*passecalBadCalibFilterUpdate);	
-	if (passecalBadCalibFilterUpdate_) metFilters_ += pow(2, iF+1);
-	
+	if (passecalBadCalibFilterUpdate.isValid()) {
+	  bool passecalBadCalibFilterUpdate_ = (*passecalBadCalibFilterUpdate);	
+	  if (passecalBadCalibFilterUpdate_) metFilters_ += pow(2, iF+1);
+	}
+
       } else {
 	if ( !patFilterResults.accept(index) ) {
 	  metFilters_ += pow(2, iF+1);
