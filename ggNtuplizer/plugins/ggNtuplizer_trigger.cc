@@ -128,6 +128,9 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     eleSingleFilters["hltMu8Ele12DZFilter"] = 37;
     //HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_v
     eleSingleFilters["hltMu12TrkIsoVVLEle23CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 38;
+    eleSingleFilters["hltEG32L1SingleEGOrEtFilter"] = 39;
+    eleSingleFilters["hltEG32L1SingleAndDoubleEGEtFilter"] = 40;
+    eleSingleFilters["hltL1sSingleEG"] = 41;
 
     //Double electron triggers
     //HLT_DoubleEle24_22_eta2p1_WPLoose_Gsf_v
