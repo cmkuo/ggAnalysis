@@ -205,6 +205,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Ele12_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 48;
       else if (name.find("HLT_Ele17_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 49;
       else if (name.find("HLT_Ele23_CaloIdL_TrackIdL_IsoVL_PFJet30_v")          != string::npos) bitEleMuX = 50;
+      else if (name.find("HLT_Ele32_WPTight_Gsf_L1DoubleEG_v")                  != string::npos) bitEleMuX = 51;
+      else if (name.find("HLT_Ele32_WPTight_Gsf_v")                             != string::npos) bitEleMuX = 52;
 
       // Photon triggers
       if      (name.find("HLT_Photon22_v")                    != string::npos) bitPho =  0; //bit0(lowest)
@@ -225,19 +227,22 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v")        != string::npos) bitPho = 15; // exist
       else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")        != string::npos) bitPho = 16; // used
       else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")         != string::npos) bitPho = 17; // used
-      else if (name.find("HLT_Photon135_PFMET100_v")                          != string::npos) bitPho = 18; 
-      else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 19;
-      else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")       != string::npos) bitPho = 20;
-      else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                    != string::npos) bitPho = 21;
-      else if (name.find("HLT_DoublePhoton60_v")                              != string::npos) bitPho = 22;
-      else if (name.find("HLT_DoublePhoton85_v")                              != string::npos) bitPho = 23;
-      else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 24;
-      else if (name.find("HLT_Photon50_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 25;
-      else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 26;
-      else if (name.find("HLT_Photon90_R9Id90_HE10_IsoM_v")                   != string::npos) bitPho = 27;
-      else if (name.find("HLT_Photon120_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 28;
-      else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v")                  != string::npos) bitPho = 29;
-      else if (name.find("HLT_ECALHT800_v")                                   != string::npos) bitPho = 30;
+      else if (name.find("HLT_Photon135_PFMET100_v")                                 != string::npos) bitPho = 18; 
+      else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")         != string::npos) bitPho = 19;
+      else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")              != string::npos) bitPho = 20;
+      else if (name.find("HLT_Photon90_CaloIdL_PFHT600_v")                           != string::npos) bitPho = 21;
+      else if (name.find("HLT_DoublePhoton60_v")                                     != string::npos) bitPho = 22;
+      else if (name.find("HLT_DoublePhoton85_v")                                     != string::npos) bitPho = 23;
+      else if (name.find("HLT_Photon22_R9Id90_HE10_IsoM_v")                          != string::npos) bitPho = 24;
+      else if (name.find("HLT_Photon50_R9Id90_HE10_IsoM_v")                          != string::npos) bitPho = 25;
+      else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_v")                          != string::npos) bitPho = 26;
+      else if (name.find("HLT_Photon90_R9Id90_HE10_IsoM_v")                          != string::npos) bitPho = 27;
+      else if (name.find("HLT_Photon120_R9Id90_HE10_IsoM_v")                         != string::npos) bitPho = 28;
+      else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v")                         != string::npos) bitPho = 29;
+      else if (name.find("HLT_ECALHT800_v")                                          != string::npos) bitPho = 30;
+      else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_VBF_v")             != string::npos) bitPho = 31;
+      else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_EBOnly_PFJetsMJJ300DEta3_v") != string::npos) bitPho = 32; 
+      else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_EBOnly_PFJetsMJJ600DEta3_v") != string::npos) bitPho = 33;
 
       // Jet triggers
       if      (name.find("HLT_QuadPFJet_BTagCSV_p016_VBF_Mqq460_v")                    != string::npos) bitJet =  0;
