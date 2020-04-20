@@ -1,24 +1,16 @@
 #### Current production tag : 
 #### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_10_2_10
+#### Note that the current head version can be run with CMSSW_11_0_1
 
-##### To work with CMSSW_10_2_10 and head version, you do :
+##### To work with CMSSW_11_0_1 and head version, you do :
 
-cmsrel CMSSW_10_2_10 <br>	
-cd CMSSW_10_2_10/src <br>
+cmsrel CMSSW_11_0_1 <br>	
+cd CMSSW_11_0_1/src <br>
 cmsenv <br>
 git cms-init <br>
-
 git cms-merge-topic cms-egamma:EgammaPostRecoTools <br>
-git cms-merge-topic cms-egamma:PhotonIDValueMapSpeedup1029 <br>
-git cms-merge-topic cms-egamma:slava77-btvDictFix_10210 <br>
-git cms-addpkg EgammaAnalysis/ElectronTools <br>
-rm EgammaAnalysis/ElectronTools/data -rf <br>
-git clone https://github.com/cms-data/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data <br>
-scram b -j 8 <br>
-git cms-merge-topic cms-met:METFixEE2017_949_v2_backport_to_102X <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b 102X https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b 110X https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
