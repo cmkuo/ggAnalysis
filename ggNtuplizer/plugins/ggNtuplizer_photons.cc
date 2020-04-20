@@ -228,10 +228,10 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
 
     phoE_             .push_back(iPho->energy());
-    phoCalibE_        .push_back(iPho->userFloat("ecalEnergyPostCorr"));
+    //phoCalibE_        .push_back(iPho->userFloat("ecalEnergyPostCorr"));
     phoEt_            .push_back(iPho->et());
-    phoCalibEt_       .push_back(iPho->et()*iPho->userFloat("ecalEnergyPostCorr")/iPho->energy());
-    phoSigmaE_        .push_back(iPho->userFloat("ecalEnergyErrPostCorr"));
+    //phoCalibEt_       .push_back(iPho->et()*iPho->userFloat("ecalEnergyPostCorr")/iPho->energy());
+    //phoSigmaE_        .push_back(iPho->userFloat("ecalEnergyErrPostCorr"));
     phoEta_           .push_back(iPho->eta());
     phoPhi_           .push_back(iPho->phi());
     phoSCE_           .push_back((*iPho).superCluster()->energy());
@@ -248,10 +248,10 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoR9_            .push_back(iPho->r9());
     phoHoverE_        .push_back(iPho->hadTowOverEm());
     phoESEffSigmaRR_  .push_back(lazyTool.eseffsirir(*((*iPho).superCluster())));
-    phoPFChIso_       .push_back(iPho->userFloat("phoChargedIsolation"));
-    phoPFPhoIso_      .push_back(iPho->userFloat("phoPhotonIsolation"));
-    phoPFNeuIso_      .push_back(iPho->userFloat("phoNeutralHadronIsolation"));
-    phoPFChWorstIso_  .push_back(iPho->userFloat("phoWorstChargedIsolation"));
+    //phoPFChIso_       .push_back(iPho->userFloat("phoChargedIsolation"));
+    //phoPFPhoIso_      .push_back(iPho->userFloat("phoPhotonIsolation"));
+    //phoPFNeuIso_      .push_back(iPho->userFloat("phoNeutralHadronIsolation"));
+    //phoPFChWorstIso_  .push_back(iPho->userFloat("phoWorstChargedIsolation"));
     phoIDMVA_         .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
 
     // VID decisions     
@@ -266,6 +266,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoIDbit_.push_back(tmpphoIDbit);      
 
     // systematics for energy scale and resolution
+    /*
     phoScale_stat_up_.push_back(iPho->userFloat("energyScaleStatUp"));
     phoScale_stat_dn_.push_back(iPho->userFloat("energyScaleStatDown"));
     phoScale_syst_up_.push_back(iPho->userFloat("energyScaleSystUp"));
@@ -276,7 +277,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoResol_rho_dn_ .push_back(iPho->userFloat("energySigmaRhoDown"));
     phoResol_phi_up_ .push_back(iPho->userFloat("energySigmaPhiUp"));
     phoResol_phi_dn_ .push_back(iPho->userFloat("energySigmaPhiDown"));
-
+    */
     ///////////////////////////////SATURATED/UNSATURATED ///from ggFlash////
     DetId seed = (iPho->superCluster()->seed()->hitsAndFractions())[0].first;
     bool isBarrel = seed.subdetId() == EcalBarrel;
@@ -292,7 +293,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       phoSeedTime_  .push_back(-99.);
       phoSeedEnergy_.push_back(-99.);
     }
-    
+    /*
     unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
     int isSaturated       = 0;
     int isSaturated_gain6 = 0;
@@ -333,7 +334,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     }//for(auto & deId : matrix5x5 )
   
     phoxtalBits_.push_back(tmpxtalbit);
-
+    */
     phoFiredSingleTrgs_     .push_back(matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredDoubleTrgs_     .push_back(matchDoublePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredTripleTrgs_     .push_back(matchTriplePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
