@@ -307,13 +307,13 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleCharge_          .push_back(iEle->charge());
     eleChargeConsistent_.push_back((Int_t)iEle->isGsfCtfScPixChargeConsistent());
     eleEn_              .push_back(iEle->energy());
-    //eleCalibEn_         .push_back(iEle->userFloat("ecalEnergyPostCorr"));
+    eleCalibEn_         .push_back(iEle->userFloat("ecalEnergyPostCorr"));
     eleD0_              .push_back(iEle->gsfTrack()->dxy(pv));
     eleDz_              .push_back(iEle->gsfTrack()->dz(pv));
     eleSIP_             .push_back(fabs(iEle->dB(pat::Electron::PV3D))/iEle->edB(pat::Electron::PV3D));
     elePt_              .push_back(iEle->pt());
-    //eleCalibPt_         .push_back(iEle->userFloat("ecalTrkEnergyPostCorr")*iEle->pt()/iEle->p());
-    //elePtError_         .push_back(iEle->userFloat("ecalTrkEnergyErrPostCorr")*iEle->pt()/iEle->p());
+    eleCalibPt_         .push_back(iEle->userFloat("ecalTrkEnergyPostCorr")*iEle->pt()/iEle->p());
+    elePtError_         .push_back(iEle->userFloat("ecalTrkEnergyErrPostCorr")*iEle->pt()/iEle->p());
     eleEta_             .push_back(iEle->eta());
     elePhi_             .push_back(iEle->phi());
     eleR9_              .push_back(iEle->r9());
@@ -357,7 +357,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleSigmaIPhiIPhiFull5x5_.push_back(iEle->full5x5_sigmaIphiIphi());
     eleR9Full5x5_           .push_back(iEle->full5x5_r9());
     eleEcalDrivenSeed_      .push_back(iEle->ecalDrivenSeed());
-    /*
+    
     eleScale_stat_up_.push_back(iEle->userFloat("energyScaleStatUp"));
     eleScale_stat_dn_.push_back(iEle->userFloat("energyScaleStatDown"));
     eleScale_syst_up_.push_back(iEle->userFloat("energyScaleSystUp"));
@@ -368,7 +368,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleResol_rho_dn_ .push_back(iEle->userFloat("energySigmaRhoDown"));
     eleResol_phi_up_ .push_back(iEle->userFloat("energySigmaPhiUp"));
     eleResol_phi_dn_ .push_back(iEle->userFloat("energySigmaPhiDown"));
-    */
+
     reco::GsfTrackRef gsfTrackRef = iEle->gsfTrack();
     if (iEle->gsfTrack().isNonnull()) {
       eleGSFChi2_.push_back(gsfTrackRef->normalizedChi2());
