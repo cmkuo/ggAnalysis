@@ -14,7 +14,7 @@ mv EgammaPostRecoTools/python/EgammaPostRecoTools.py RecoEgamma/EgammaTools/pyth
 git clone https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git -b UL2017SSV2 EgammaAnalysis/ElectronTools/data/ <br>
 scram b -j 8 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b 110X https://github.com/cmkuo/ggAnalysis.git <br>
+git clone -b 106X https://github.com/cmkuo/ggAnalysis.git <br>
 scram b -j 8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
