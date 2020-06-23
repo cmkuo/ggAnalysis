@@ -193,15 +193,13 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoxtalBits_            .clear();
   phoSeedTime_            .clear();
   phoSeedEnergy_          .clear();
-  phoMIPTotEnergy_        .clear();
-  /*
-  phoSeedTimeFull5x5_   .clear();
+  phoMIPTotEnergy_        .clear();  
+  //phoSeedTimeFull5x5_   .clear();
   phoMIPChi2_           .clear();
   phoMIPSlope_          .clear();
   phoMIPIntercept_      .clear();
   phoMIPNhitCone_       .clear();
   phoMIPIsHalo_         .clear();
-  */
 
   phoIDbit_        .clear();
   phoScale_stat_up_.clear();
