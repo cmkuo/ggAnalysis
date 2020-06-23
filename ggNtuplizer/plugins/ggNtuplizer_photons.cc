@@ -39,6 +39,8 @@ vector<float>  phoPFPhoIso_;
 vector<float>  phoPFNeuIso_;
 vector<float>  phoPFChWorstVetoIso_;
 vector<float>  phoPFChWorstIso_;
+vector<float>  phoEcalPFClusterIso_;
+vector<float>  phoHcalPFClusterIso_;
 //vector<float>  phoSeedBCE_;
 //vector<float>  phoSeedBCEta_;
 vector<float>  phoIDMVA_;
@@ -117,6 +119,8 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
   tree->Branch("phoPFChWorstIso",         &phoPFChWorstIso_);
   tree->Branch("phoPFChWorstVetoIso",     &phoPFChWorstVetoIso_);
+  tree->Branch("phoEcalPFClusterIso",     &phoEcalPFClusterIso_);
+  tree->Branch("phoHcalPFClusterIso",     &phoHcalPFClusterIso_);
   tree->Branch("phoIDMVA",                &phoIDMVA_);
   tree->Branch("phoFiredSingleTrgs",      &phoFiredSingleTrgs_);
   tree->Branch("phoFiredDoubleTrgs",      &phoFiredDoubleTrgs_);
@@ -183,6 +187,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPFNeuIso_            .clear();
   phoPFChWorstVetoIso_    .clear();
   phoPFChWorstIso_        .clear();
+  phoEcalPFClusterIso_    .clear();
+  phoHcalPFClusterIso_    .clear();
   //phoSeedBCE_           .clear();
   //phoSeedBCEta_         .clear();
   phoIDMVA_               .clear();
@@ -258,6 +264,8 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoPFNeuIso_        .push_back(iPho->neutralHadronIso());
     phoPFChWorstIso_    .push_back(iPho->chargedHadronWorstVtxIso()); 
     phoPFChWorstVetoIso_.push_back(iPho->chargedHadronWorstVtxGeomVetoIso());
+    phoEcalPFClusterIso_.push_back(iPho->ecalPFClusterIso());
+    phoHcalPFClusterIso_.push_back(iPho->hcalPFClusterIso());
     phoIDMVA_           .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
 
     // VID decisions     
