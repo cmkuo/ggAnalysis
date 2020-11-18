@@ -11,6 +11,7 @@ void setbit(UShort_t& x, UShort_t bit) {
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
+  nanoUpdatedUserJetsLabel_  = consumes<edm::View<pat::Jet>> (ps.getParameter<edm::InputTag>("nanoUpdatedUserJetsLabel"));
 
   development_               = ps.getParameter<bool>("development");
   addFilterInfoMINIAOD_      = ps.getParameter<bool>("addFilterInfoMINIAOD");

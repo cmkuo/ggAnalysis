@@ -46,6 +46,13 @@ vector<float>  jetVtxMass_;
 vector<float>  jetVtxNtrks_;
 vector<float>  jetVtx3DVal_;
 vector<float>  jetVtx3DSig_;
+
+vector<float>  jetSubVtxPt_;
+vector<float>  jetSubVtxMass_;
+vector<int  >  jetSubVtxNtrks_;
+vector<float>  jetSubVtx3DVal_;
+vector<float>  jetSubVtx3DSig_;
+
 vector<float>  jetCSV2BJetTags_;
 vector<float>  jetDeepCSVTags_b_;
 vector<float>  jetDeepCSVTags_bb_;
@@ -127,11 +134,18 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetNCH",       &jetNCH_);
   tree->Branch("jetNNP",       &jetNNP_);
   tree->Branch("jetMUF",       &jetMUF_);
-  tree->Branch("jetVtxPt",     &jetVtxPt_);
-  tree->Branch("jetVtxMass",   &jetVtxMass_);
-  tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
-  tree->Branch("jetVtx3DVal",  &jetVtx3DVal_);
-  tree->Branch("jetVtx3DSig",  &jetVtx3DSig_);
+//  tree->Branch("jetVtxPt",     &jetVtxPt_);
+//  tree->Branch("jetVtxMass",   &jetVtxMass_);
+//  tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
+//  tree->Branch("jetVtx3DVal",  &jetVtx3DVal_);
+//  tree->Branch("jetVtx3DSig",  &jetVtx3DSig_);
+
+  tree->Branch("jetSubVtxPt",     &jetSubVtxPt_);
+  tree->Branch("jetSubVtxMass",   &jetSubVtxMass_);
+  tree->Branch("jetSubVtxNtrks",  &jetSubVtxNtrks_);
+  tree->Branch("jetSubVtx3DVal",  &jetSubVtx3DVal_);
+  tree->Branch("jetSubVtx3DSig",  &jetSubVtx3DSig_);
+
   if (development_) {
     tree->Branch("jetHFHAE",         &jetHFHAE_);
     tree->Branch("jetHFEME",         &jetHFEME_);
@@ -185,6 +199,13 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetVtxNtrks_                            .clear();
   jetVtx3DVal_                            .clear();
   jetVtx3DSig_                            .clear();
+
+  jetSubVtxPt_                               .clear();
+  jetSubVtxMass_                             .clear();
+  jetSubVtxNtrks_                            .clear();
+  jetSubVtx3DVal_                            .clear();
+  jetSubVtx3DSig_                            .clear();
+
   if (development_) {
     jetHFHAE_                               .clear();
     jetHFEME_                               .clear();
@@ -205,6 +226,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
   edm::Handle<edm::View<pat::Jet> > jetHandle;
   e.getByToken(jetsAK4Label_, jetHandle);
+
+  edm::Handle<edm::View<pat::Jet> > nanoUpdatedJetHandle;
+  e.getByToken(nanoUpdatedUserJetsLabel_, nanoUpdatedJetHandle);
+  if (!nanoUpdatedJetHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; return; }
 
   if (!jetHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK4) in event";
@@ -229,7 +254,12 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
+  edm::View<pat::Jet>::const_iterator UJetIter = nanoUpdatedJetHandle->begin();
+  bool itersSynced=false;
+
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
+      if (itersSynced) ++UJetIter; itersSynced=true;
+      
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
@@ -306,7 +336,16 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     //jetVtxNtrks_    .push_back(iJet->userFloat("vtxNtracks"));
     //jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
     //jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
-    
+    const pat::Jet& nanoUpdatedJet = *UJetIter;
+    if ( nanoUpdatedJet.hasUserFloat("vtxMass") )
+    {
+        jetSubVtxPt_       .push_back(nanoUpdatedJet.userFloat("vtxPt"));
+        jetSubVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
+        jetSubVtxNtrks_    .push_back(nanoUpdatedJet.userInt("vtxNtrk"));
+        jetSubVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
+        jetSubVtx3DSig_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
+    }
+        
     //b/c-tagging
     jetCSV2BJetTags_    .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
     jetDeepCSVTags_b_   .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probb"));

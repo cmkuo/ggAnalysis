@@ -115,6 +115,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   double trgFilterDeltaPtCut_;
   double trgFilterDeltaRCut_;
 
+  edm::EDGetTokenT<edm::View<pat::Jet>>            nanoUpdatedUserJetsLabel_;
+
   edm::EDGetTokenT<reco::VertexCollection>         vtxLabel_;
   edm::EDGetTokenT<reco::VertexCollection>         vtxBSLabel_;
   edm::EDGetTokenT<double>                         rhoLabel_;
