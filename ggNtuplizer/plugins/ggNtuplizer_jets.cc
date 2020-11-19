@@ -51,7 +51,7 @@ vector<float>  jetSubVtxPt_;
 vector<float>  jetSubVtxMass_;
 vector<int  >  jetSubVtxNtrks_;
 vector<float>  jetSubVtx3DVal_;
-vector<float>  jetSubVtx3DSig_;
+vector<float>  jetSubVtx3DErr_;
 
 vector<float>  jetCSV2BJetTags_;
 vector<float>  jetDeepCSVTags_b_;
@@ -144,7 +144,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetSubVtxMass",   &jetSubVtxMass_);
   tree->Branch("jetSubVtxNtrks",  &jetSubVtxNtrks_);
   tree->Branch("jetSubVtx3DVal",  &jetSubVtx3DVal_);
-  tree->Branch("jetSubVtx3DSig",  &jetSubVtx3DSig_);
+  tree->Branch("jetSubVtx3DErr",  &jetSubVtx3DErr_);
 
   if (development_) {
     tree->Branch("jetHFHAE",         &jetHFHAE_);
@@ -204,7 +204,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetSubVtxMass_                             .clear();
   jetSubVtxNtrks_                            .clear();
   jetSubVtx3DVal_                            .clear();
-  jetSubVtx3DSig_                            .clear();
+  jetSubVtx3DErr_                            .clear();
 
   if (development_) {
     jetHFHAE_                               .clear();
@@ -343,7 +343,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
         jetSubVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
         jetSubVtxNtrks_    .push_back(nanoUpdatedJet.userInt("vtxNtrk"));
         jetSubVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
-        jetSubVtx3DSig_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
+        jetSubVtx3DErr_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
     }
         
     //b/c-tagging
