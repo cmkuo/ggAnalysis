@@ -1,0 +1,27 @@
+# General C++ exclusion
+*.o
+*.so
+
+# General Python exclusion
+*.pyc
+
+# Swap files
+*.swp
+
+# General data file exclusions
+*.txt
+*.root
+*.log
+log*
+.remote-sync.json
+
+*.png
+*.pdf
+*.eps
+__init__.py
+
+# Specific file exclusion
+# [relative/path/to/file]
+
+# Specific file inclusion
+# ![relative/path/to/file]

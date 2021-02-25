@@ -70,7 +70,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
-
+  std::cout << "p1 \n";
+  nanoUpdatedUserJetsLabel_ = consumes<View<pat::Jet>>                 (ps.getParameter<InputTag>("nanoUpdatedUserJetsLabel"));
+  std::cout << "p2 \n";
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   prefweight_token_          = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProb"));
