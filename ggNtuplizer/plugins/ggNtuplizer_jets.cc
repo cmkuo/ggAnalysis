@@ -206,13 +206,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   edm::Handle<edm::View<pat::Jet> > jetHandle;
   e.getByToken(jetsAK4Label_, jetHandle);
 
-  //std::cerr << "k01 \n";
   edm::Handle<edm::View<pat::Jet> > nanoUpdatedJetsHandle;
   e.getByToken(nanoUpdatedUserJetsLabel_, nanoUpdatedJetsHandle);
   
-  // std::cerr << "k02 two jet handle sizes are equal ? " << (nanoUpdatedJetsHandle->size() == jetHandle->size() )<< "  \n";
-  if ( !nanoUpdatedJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cout << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; return; }
-  //std::cerr << "k03 \n";
+  if ( !nanoUpdatedJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; return; }
 
 
   if (!jetHandle.isValid()) {
@@ -316,50 +313,32 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetLepTrackEta_ .push_back(lepTrkEta);
     jetLepTrackPhi_ .push_back(lepTrkPhi);    
 
-  //std::cerr << "k04 \n";
     const pat::Jet& nanoUpdatedJet = *UJetIter;
 
 
-  //std::cerr << "k05 \n";
-  // auto a = nanoUpdatedJet.hasUserData("vtxMass");
-  //std::cerr << "k05-\n";
   if ( UJetIter != nanoUpdatedJetsHandle->end() )
   {
-  // if ( a )
     if ( nanoUpdatedJet.hasUserFloat("vtxMass") )
     {
-  //std::cerr << "k051\n";
        jetSecVtxPt_       .push_back(nanoUpdatedJet.userFloat("vtxPt"));
-  //std::cerr << "k052\n";
        jetSecVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
-  //std::cerr << "k053\n";
        jetSecVtxNtrks_    .push_back(nanoUpdatedJet.userInt("vtxNtrk"));
-  //std::cerr << "k054\n";
        jetSecVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
-  //std::cerr << "k055\n";
        jetSecVtx3DErr_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
-  //std::cerr << "k056\n";
     }
     else
     {
-  //std::cerr << "k151\n";
        jetSecVtxPt_       .push_back(0);
-  //std::cerr << "k152\n";
        jetSecVtxMass_     .push_back(0);
-  //std::cerr << "k153\n";
        jetSecVtxNtrks_    .push_back(0);
-  //std::cerr << "k154\n";
        jetSecVtx3DVal_    .push_back(0);
-  //std::cerr << "k155\n";
        jetSecVtx3DErr_    .push_back(0);
-  //std::cerr << "k156\n";
     }
-  //std::cerr << "k06 \n";
   }
   else { std::cerr << " nanoAOD jet not found!!!!\n"; }
-  if ( iJet->pt() != nanoUpdatedJet.pt() ) std::cerr << " iJet and nanoJet are not the same (1)\n";
-  if ( iJet->bDiscriminator("pfDeepCSVJetTags:probb") != nanoUpdatedJet.bDiscriminator("pfDeepCSVJetTags:probb") ) std::cerr << " iJet and nanoJet are not the same (2)\n";
-  if ( iJet->phi()!= nanoUpdatedJet.phi()) std::cerr << " iJet and nanoJet are not the same (3)\n";
+  if ( iJet->pt() != nanoUpdatedJet.pt() ) std::cerr << " iJet and nanoJet are not the same (1) -- different pt\n";
+  if ( iJet->bDiscriminator("pfDeepCSVJetTags:probb") != nanoUpdatedJet.bDiscriminator("pfDeepCSVJetTags:probb") ) std::cerr << " iJet and nanoJet are not the same (2) -- different bDiscrininator\n";
+  if ( iJet->phi()!= nanoUpdatedJet.phi()) std::cerr << " iJet and nanoJet are not the same (3) -- different eta\n";
     
     //b/c-tagging
     jetCSV2BJetTags_    .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));
