@@ -18,7 +18,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-        'file:/data4/cmkuo/testfiles/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8_RunIIFall17MiniAODv2.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIIFall17MiniAODv2/ZGToLLG_01J_5f_lowMLL_lowGPt_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PU2017_12Apr2018_94X_mc2017_realistic_v14-v1/100000/0C7EFFD7-DA2C-EA11-81B5-14187733AD89.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
