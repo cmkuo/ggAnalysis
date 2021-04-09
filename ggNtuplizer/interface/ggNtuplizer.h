@@ -181,6 +181,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   //boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
   //std::vector<std::string> jecAK8PayloadNames_;
   HLTPrescaleProvider hltPrescaleProvider_;
+
+
+  ULong64_t tester;
 };
 
 #endif

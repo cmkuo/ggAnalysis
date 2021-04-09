@@ -12,6 +12,13 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
 
+   // testing
+   std::cout << " ulong64_t testing\n";
+   for ( int i=0; i<64; ++i )
+   { std::cout << (1ULL<<i) << std::endl; }
+   tester = 0;
+   // tested
+
   development_               = ps.getParameter<bool>("development");
   addFilterInfoMINIAOD_      = ps.getParameter<bool>("addFilterInfoMINIAOD");
   doNoHFMET_                 = ps.getParameter<bool>("doNoHFMET");
@@ -105,6 +112,13 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 }
 
 ggNtuplizer::~ggNtuplizer() {
+   // testing
+   std::cout << "recorded photon trigger\n";
+   for ( int i=0; i<64; ++i )
+      if ( tester & (1ULL<<i) )
+         std::cout << i << std::endl;
+   std::cout << std::hex << tester << std::endl;
+   // tested
   cleanupPhotons();
   delete cicPhotonId_;
 }
