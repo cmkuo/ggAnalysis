@@ -173,6 +173,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltL3fL1sMu22L1f0Tkf24QL3trkIsoFiltered0p09"] = 19; //HLT_IsoTkMu24
     muFilters["hltL3fL1sMu22Or25L1f0Tkf27QL3trkIsoFiltered0p09"] = 20; //HLT_IsoTkMu27
     muFilters["hltL3fL1sL1Mu5IsoEG18ORL1Mu5IsoEG20L1f5L2f7L3Filtered17"] = 21; //HLT_Mu17_Photon*  muon
+    muFilters["hltL3fL1sMu12Diphoton20L1f0L2f8QL3Filtered12"] = 22; //HLTMu12_DIPho20 (2017)
     muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLDZFilter"] = 23; //HLT_Mu23_TrkIsoVVL_Ele12_CaloIdL_TrackIdL_IsoVL_DZ_v
     muFilters["hltMu23TrkIsoVVLEle12CaloIdLTrackIdLIsoVLElectronlegTrackIsoFilter"] = 24; //HLT_Mu23_TrkIsoVVL_Ele12*
     muFilters["hltMu12TrkIsoVVLEle23CaloIdLTrackIdLIsoVLDZFilter"] = 25; //DZ of HLT_Mu12_TrkIsoVVL_Ele23_CaloIdL_TrackIdL_IsoVL_DZ
@@ -182,7 +183,6 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltDoubleMu207Mass0to30Photon23L3Filtered"] = 29;  //filter of DoubleMu20_Pho23 (2017)
     muFilters["hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07"] = 30; //HLT_IsoMu24 (2017)
     muFilters["hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07"] = 31; //HLT_IsoMu27 (2017)
-    muFilters["hltL3fL1sMu12Diphoton20L1f0L2f8QL3Filtered12"] = 32; //HLTMu12_DIPho20 (2017)
 
     phoSingleFilters["hltEG33L1EG26HEFilter"]                = 0;
     phoSingleFilters["hltEG50HEFilter"]                      = 1;
@@ -478,7 +478,7 @@ ULong64_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, do
 ULong64_t ggNtuplizer::matchTriplePhotonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above 
-  UInt_t result = 0;
+  ULong64_t result = 0;
 
   for (size_t f = 0; f < 64; ++f)
     for (size_t v = 0; v < trgTriplePhoPt[f].size(); ++v)

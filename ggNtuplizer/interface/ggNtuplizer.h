@@ -15,18 +15,21 @@
 #include "SimDataFormats/PileupSummaryInfo/interface/PileupSummaryInfo.h"
 #include "SimDataFormats/GeneratorProducts/interface/GenEventInfoProduct.h"
 #include "SimDataFormats/GeneratorProducts/interface/LHEEventProduct.h"
+#include "DataFormats/BeamSpot/interface/BeamSpot.h"
+#include "DataFormats/CaloRecHit/interface/CaloCluster.h"
+#include "DataFormats/CaloRecHit/interface/CaloClusterFwd.h"
+#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
 #include "DataFormats/HLTReco/interface/TriggerEvent.h"
-#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
-#include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/PatCandidates/interface/Electron.h"
+#include "DataFormats/PatCandidates/interface/Jet.h"
 #include "DataFormats/PatCandidates/interface/MET.h"
 #include "DataFormats/PatCandidates/interface/Muon.h"
 #include "DataFormats/PatCandidates/interface/Photon.h"
+#include "DataFormats/PatCandidates/interface/Tau.h"
+#include "DataFormats/PatCandidates/interface/TriggerObjectStandAlone.h"
 #include "DataFormats/RecoCandidate/interface/RecoEcalCandidate.h"
 #include "DataFormats/VertexReco/interface/Vertex.h"
-#include "DataFormats/PatCandidates/interface/Jet.h"
-#include "DataFormats/PatCandidates/interface/Tau.h"
 #include "CondFormats/JetMETObjects/interface/FactorizedJetCorrector.h"
 //#include "EgammaAnalysis/ElectronTools/interface/EnergyScaleCorrection_class.h"
 #include "HiggsAnalysis/HiggsTo2photons/interface/CiCPhotonID.h"
@@ -136,10 +139,13 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<EcalRecHitCollection>           ebReducedRecHitCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>           eeReducedRecHitCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>           esReducedRecHitCollection_; 
+  edm::EDGetTokenT<reco::CaloClusterCollection>    basicClusters_;
   edm::EDGetTokenT<reco::PhotonCollection>         recophotonCollection_;
   edm::EDGetTokenT<reco::TrackCollection>          tracklabel_;
   edm::EDGetTokenT<reco::GsfElectronCollection>    gsfElectronlabel_;
   edm::EDGetTokenT<edm::View<reco::GsfTrack> >     gsfTracks_;
+  edm::EDGetTokenT<reco::ConversionCollection>     conversionsCollection_;
+  edm::EDGetTokenT<reco::BeamSpot>                 beamSpot_;
   edm::EDGetTokenT<reco::PFCandidateCollection>    pfAllParticles_;
   edm::EDGetTokenT<vector<pat::PackedCandidate> >  pckPFCdsLabel_;
   edm::EDGetTokenT<edm::View<reco::Candidate> >    recoCdsLabel_;

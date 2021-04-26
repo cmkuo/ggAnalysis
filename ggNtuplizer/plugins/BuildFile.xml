@@ -1,4 +1,5 @@
 <use name="fastjet"/>
+<use name="CommonTools/Egamma"/>
 <use name="CommonTools/Utils"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="FWCore/Framework"/>
