@@ -54,7 +54,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   genParticlesCollection_    = consumes<vector<reco::GenParticle> >    (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >               (ps.getParameter<InputTag>("pfMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >          (ps.getParameter<InputTag>("electronSrc"));
-  gsfTracks_                 = consumes<View<reco::GsfTrack>>          (ps.getParameter<InputTag>("gsfTrackSrc"));
+  basicClusters_             = consumes<reco::CaloClusterCollection>   (ps.getParameter<InputTag>("basicClustersSrc"));
+  gsfTracks_                 = consumes<View<reco::GsfTrack> >         (ps.getParameter<InputTag>("gsfTrackSrc"));
+  conversionsCollection_     = consumes<reco::ConversionCollection>    (ps.getParameter<InputTag>("conversionsSrc"));
+  beamSpot_                  = consumes<reco::BeamSpot>                (ps.getParameter<edm::InputTag>("beamSpotSrc"));
 
   ecalBadCalibFilterUpdate_  = consumes<bool>                          (ps.getParameter<InputTag>("ecalBadCalibReducedMINIAODFilter"));
 
@@ -89,7 +92,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_02_10_04)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_02_10_05)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
