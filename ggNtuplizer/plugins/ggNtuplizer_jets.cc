@@ -11,6 +11,7 @@
 #include "FWCore/Utilities/interface/RandomNumberGenerator.h"
 #include "CLHEP/Random/RandomEngine.h"
 #include "CLHEP/Random/RandGauss.h"
+#include "DataFormats/Candidate/interface/VertexCompositeCandidate.h"
 
 using namespace std;
 typedef ROOT::Math::LorentzVector<ROOT::Math::PxPyPzE4D<double> > LorentzVector;
@@ -127,7 +128,6 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetNCH",       &jetNCH_);
   tree->Branch("jetNNP",       &jetNNP_);
   tree->Branch("jetMUF",       &jetMUF_);
-//  std::cerr << "branch jeting 01\n";
   if ( hasSecJet() ) {
       tree->Branch("jetSecVtxPt"   ,  &jetSecVtxPt_   );
       tree->Branch("jetSecVtxMass" ,  &jetSecVtxMass_ );
@@ -135,7 +135,6 @@ void ggNtuplizer::branchesJets(TTree* tree) {
       tree->Branch("jetSecVtx3DVal",  &jetSecVtx3DVal_);
       tree->Branch("jetSecVtx3DSig",  &jetSecVtx3DSig_);
   }
-//  std::cerr << "branch jeting 02\n";
   if (development_) {
     tree->Branch("jetHFHAE",         &jetHFHAE_);
     tree->Branch("jetHFEME",         &jetHFEME_);
@@ -145,7 +144,6 @@ void ggNtuplizer::branchesJets(TTree* tree) {
 }
 
 void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
-//   std::cerr << "start fill jet\n";
 
   jetPt_                                  .clear();
   jetEn_                                  .clear();
@@ -216,14 +214,12 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     return;
   }
 
-// std::cerr << "hi -00\n";
   edm::Handle<edm::View<pat::Jet> > nanoUpdatedUserJetsHandle;
   if ( hasSecJet() )
   {
       e.getByToken(nanoUpdatedUserJetsToken_, nanoUpdatedUserJetsHandle);
-      if ( !nanoUpdatedUserJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
+      if ( !nanoUpdatedUserJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cout << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
   }
-// std::cerr << "hi -00.1\n";
 
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
@@ -247,9 +243,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   for ( unsigned int iI = 0; iI < jetHandle->size(); ++iI ) {
     edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin() + iI;
     edm::View<pat::Jet>::const_iterator UJetIter;
-// std::cerr << "hi -01\n";
     if ( hasSecJet() ) UJetIter = nanoUpdatedUserJetsHandle->begin() + iI;
-// std::cerr << "hi -02\n";
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
@@ -322,30 +316,24 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetLepTrackEta_ .push_back(lepTrkEta);
     jetLepTrackPhi_ .push_back(lepTrkPhi);    
 
-// std::cerr << "hi -03\n";
     if ( hasSecJet() )
     {
-// std::cerr << "hi -03.l\n";
         const pat::Jet& nanoUpdatedJet = *UJetIter;
         if ( nanoUpdatedJet.hasUserFloat("vtxMass") )
         {
-// std::cerr << "hi -03.1.l\n";
             jetSecVtxPt_       .push_back(nanoUpdatedJet.userFloat("vtxPt"));
             jetSecVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
             jetSecVtxNtrks_    .push_back(nanoUpdatedJet.userInt  ("vtxNtrk"));
             jetSecVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
             jetSecVtx3DSig_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
-// std::cerr << "hi -03.1.2\n";
         }
         else
         {
-// std::cerr << "hi -03.2.l\n";
             jetSecVtxPt_       .push_back(0);
             jetSecVtxMass_     .push_back(0);
             jetSecVtxNtrks_    .push_back(0);
             jetSecVtx3DVal_    .push_back(0);
             jetSecVtx3DSig_    .push_back(0);
-// std::cerr << "hi -03.2.2\n";
         }
     }
     
@@ -466,7 +454,6 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     nJet_++;
   }
 
-// std::cerr << "hi -ENDDDDD\n";
   
   delete jecUnc;
 }
