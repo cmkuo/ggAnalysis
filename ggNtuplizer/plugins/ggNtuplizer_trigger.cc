@@ -203,7 +203,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG175HEFilter"]     =13;
        phoSingleFilters["hltEG300erEtFilter"]   =14;
     }
-    else if ( year_ = 2017 )
+    else if ( year_ == 2017 )
     {
        phoSingleFilters["hltEG25L1EG18HEFilter"]= 6;
        phoSingleFilters["hltEG33L1EG26HEFilter"]= 7;
@@ -216,7 +216,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG200HEFilter"]     =14;
        phoSingleFilters["hltEG300erFilter"]     =15;
     }
-    else if ( year_ = 2018 )
+    else if ( year_ == 2018 )
     {
        phoSingleFilters["hltEG33L1EG26HEFilter"]= 6;
        phoSingleFilters["hltEG50HEFilter"]      = 7;

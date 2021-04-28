@@ -74,8 +74,11 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
+
+   std::cerr << " construction 01" << nanoUpdatedUserJetsLabel << "\n";
   if ( hasSecJet() )
       nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(edm::InputTag(nanoUpdatedUserJetsLabel));
+   std::cerr << " construction end\n";
 
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
@@ -169,10 +172,12 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
 void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 {
+   std::cerr << " filling desc 01\n";
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
     desc.add<std::string>("nanoUpdatedUserJetsLabel", "");
+   std::cerr << " filling desc end\n";
     
     desc.setUnknown();
     descriptions.addDefault(desc);
