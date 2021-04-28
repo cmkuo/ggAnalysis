@@ -1,5 +1,4 @@
 <use name="fastjet"/>
-<use anme='asdfklj'/>
 <use name="CommonTools/Utils"/>
 <use name="CommonTools/UtilAlgos"/>
 <use name="FWCore/Framework"/>
