@@ -155,7 +155,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::JetTagCollection>         boostedDoubleSVLabel_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
-  std::string nanoUpdatedUserJets;
+  std::string nanoUpdatedUserJetsLabel;
   edm::EDGetTokenT<edm::View<pat::Jet>>            nanoUpdatedUserJetsToken_;
 
   // for MET filters

@@ -177,6 +177,6 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
     desc.setUnknown();
     descriptions.addDefault(desc);
 }
-bool ggNtuplizer::hasSecJet() { return (nanoUpdatedUserJetsLabel != ""); }
+bool ggNtuplizer::hasSecJet() const { return (nanoUpdatedUserJetsLabel != ""); }
 
 DEFINE_FWK_MODULE(ggNtuplizer);

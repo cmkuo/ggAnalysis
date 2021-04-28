@@ -217,7 +217,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   if ( hasSecJet() )
   {
       e.getByToken(nanoUpdatedUserJetsToken_, nanoUpdatedUserJetsHandle);
-      if ( !nanoUpdatedJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
+      if ( !nanoUpdatedUserJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
   }
 
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
@@ -239,10 +239,10 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
   // for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
-  for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
+  for ( unsigned int iI = 0; iI < jetHandle->size(); ++iI ) {
     edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin() + iI;
     edm::View<pat::Jet>::const_iterator UJetIter;
-    if ( hasSecJet() ) UJIter = nanoUpdatedJetsHandle->begin() + iI;
+    if ( hasSecJet() ) UJetIter = nanoUpdatedUserJetsHandle->begin() + iI;
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
