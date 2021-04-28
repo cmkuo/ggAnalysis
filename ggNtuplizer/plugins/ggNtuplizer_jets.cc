@@ -41,11 +41,11 @@ vector<float>  jetMUF_;
 vector<float>  jetHFHAE_;
 vector<float>  jetHFEME_;
 vector<int>    jetNConstituents_;
-vector<float>  jetVtxPt_;
-vector<float>  jetVtxMass_;
-vector<float>  jetVtxNtrks_;
-vector<float>  jetVtx3DVal_;
-vector<float>  jetVtx3DSig_;
+vector<float>  jetSecVtxPt_;
+vector<float>  jetSecVtxMass_;
+vector<int  >  jetSecVtxNtrks_;
+vector<float>  jetSecVtx3DVal_;
+vector<float>  jetSecVtx3DSig_;
 vector<float>  jetCSV2BJetTags_;
 vector<float>  jetDeepCSVTags_b_;
 vector<float>  jetDeepCSVTags_bb_;
@@ -127,11 +127,13 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetNCH",       &jetNCH_);
   tree->Branch("jetNNP",       &jetNNP_);
   tree->Branch("jetMUF",       &jetMUF_);
-  tree->Branch("jetVtxPt",     &jetVtxPt_);
-  tree->Branch("jetVtxMass",   &jetVtxMass_);
-  tree->Branch("jetVtxNtrks",  &jetVtxNtrks_);
-  tree->Branch("jetVtx3DVal",  &jetVtx3DVal_);
-  tree->Branch("jetVtx3DSig",  &jetVtx3DSig_);
+  if ( hasSecJet() ) {
+      tree->Branch("jetSecVtxPt"   ,  &jetSecVtxPt_   );
+      tree->Branch("jetSecVtxMass" ,  &jetSecVtxMass_ );
+      tree->Branch("jetSecVtxNtrks",  &jetSecVtxNtrks_);
+      tree->Branch("jetSecVtx3DVal",  &jetSecVtx3DVal_);
+      tree->Branch("jetSecVtx3DSig",  &jetSecVtx3DSig_);
+  }
   if (development_) {
     tree->Branch("jetHFHAE",         &jetHFHAE_);
     tree->Branch("jetHFEME",         &jetHFEME_);
@@ -180,11 +182,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetNCH_                                 .clear();
   jetNNP_                                 .clear();
   jetMUF_                                 .clear();
-  jetVtxPt_                               .clear();
-  jetVtxMass_                             .clear();
-  jetVtxNtrks_                            .clear();
-  jetVtx3DVal_                            .clear();
-  jetVtx3DSig_                            .clear();
+  jetSecVtxPt_                            .clear();
+  jetSecVtxMass_                          .clear();
+  jetSecVtxNtrks_                         .clear();
+  jetSecVtx3DVal_                         .clear();
+  jetSecVtx3DSig_                         .clear();
   if (development_) {
     jetHFHAE_                               .clear();
     jetHFEME_                               .clear();
@@ -211,6 +213,13 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     return;
   }
 
+  edm::Handle<edm::View<pat::Jet> > nanoUpdatedUserJetsHandle;
+  if ( hasSecJet() )
+  {
+      e.getByToken(nanoUpdatedUserJetsToken_, nanoUpdatedUserJetsHandle);
+      if ( !nanoUpdatedJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
+  }
+
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
   
@@ -229,7 +238,11 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
+  // for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
   for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
+    edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin() + iI;
+    edm::View<pat::Jet>::const_iterator UJetIter;
+    if ( hasSecJet() ) UJIter = nanoUpdatedJetsHandle->begin() + iI;
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
@@ -301,11 +314,27 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetLepTrackPt_  .push_back(lepTrkPt);
     jetLepTrackEta_ .push_back(lepTrkEta);
     jetLepTrackPhi_ .push_back(lepTrkPhi);    
-    //jetVtxPt_       .push_back(sqrt(pow(iJet->userFloat("vtxPx"),2)+pow(iJet->userFloat("vtxPy"),2)));
-    //jetVtxMass_     .push_back(iJet->userFloat("vtxMass"));
-    //jetVtxNtrks_    .push_back(iJet->userFloat("vtxNtracks"));
-    //jetVtx3DVal_    .push_back(iJet->userFloat("vtx3DVal"));
-    //jetVtx3DSig_    .push_back(iJet->userFloat("vtx3DSig"));
+
+    if ( hasSecJet() )
+    {
+        const pat::Jet& nanoUpdatedJet = *UJetIter;
+        if ( nanoUpdatedJet.hasUserFloat("vtxMass") )
+        {
+            jetSecVtxPt_       .push_back(nanoUpdatedJet.userFloat("vtxPt"));
+            jetSecVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
+            jetSecVtxNtrks_    .push_back(nanoUpdatedJet.userInt  ("vtxNtrk"));
+            jetSecVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
+            jetSecVtx3DSig_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
+        }
+        else
+        {
+            jetSecVtxPt_       .push_back(0);
+            jetSecVtxMass_     .push_back(0);
+            jetSecVtxNtrks_    .push_back(0);
+            jetSecVtx3DVal_    .push_back(0);
+            jetSecVtx3DSig_    .push_back(0);
+        }
+    }
     
     //b/c-tagging
     jetCSV2BJetTags_    .push_back(iJet->bDiscriminator("pfCombinedInclusiveSecondaryVertexV2BJetTags"));

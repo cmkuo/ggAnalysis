@@ -47,7 +47,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   explicit ggNtuplizer(const edm::ParameterSet&);
   ~ggNtuplizer();
   
-  //   static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
+  static void fillDescriptions(edm::ConfigurationDescriptions& descriptions);
   
  private:
   
@@ -96,6 +96,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillAK8Jets    (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
+  bool hasSecJet() const;
 
   bool development_;
   bool addFilterInfoMINIAOD_;  
@@ -153,6 +154,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::View<pat::Jet> >           jetsAK8Label_;
   edm::EDGetTokenT<reco::JetTagCollection>         boostedDoubleSVLabel_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
+
+  std::string nanoUpdatedUserJets;
+  edm::EDGetTokenT<edm::View<pat::Jet>>            nanoUpdatedUserJetsToken_;
 
   // for MET filters
   edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_;
