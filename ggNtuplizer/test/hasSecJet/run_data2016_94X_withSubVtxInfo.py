@@ -6,21 +6,22 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-#process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+#process.load("Configuration.Geometry.GeometryIdeal_cff" )
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff" )
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '94X_dataRun2_v10')
 
 #process.Tracer = cms.Service("Tracer")
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
+
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
 'file:data16_94X.root'
-        ))
+        )
+                            )
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
@@ -28,11 +29,10 @@ process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
 process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
-
 ### fix a bug in the ECAL-Tracker momentum combination when applying the scale and smearing
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
-                       runVID=True, 
+                       runVID=True,
                        era='2016-Legacy',
                        eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
                                      'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
@@ -40,9 +40,9 @@ setupEgammaPostRecoSeq(process,
                                      'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_noIso_V2_cff'],
                        phoIDModules=['RecoEgamma.PhotonIdentification.Identification.mvaPhotonID_Fall17_94X_V2_cff',
                                      'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
-                       )  
+                       ) 
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
+#from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
 from PhysicsTools.PatAlgos.tools.coreTools import *
 runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outputModules = [] )
 #runOnData( process, outputModules = [] )
@@ -62,13 +62,12 @@ process.slimmedJetsJEC = process.updatedPatJets.clone(
     jetCorrFactorsSource = cms.VInputTag(cms.InputTag("jetCorrFactors"))
     )
 
-# MET correction and uncertainties
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD(process,
-                           isData=True,
-                           postfix = "ModifiedMET"
-                           )
-
+runMetCorAndUncFromMiniAOD (
+        process,
+        isData = True,
+        postfix = "ModifiedMET"
+)
 
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2016)
@@ -90,39 +89,7 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
 
-from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import patJetCorrFactors
-process.jetCorrFactorsNano = patJetCorrFactors.clone(src='slimmedJets',
-    levels = cms.vstring('L1FastJet',
-        'L2Relative',
-        'L3Absolute',
-	'L2L3Residual'),
-    primaryVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-)
-from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import updatedPatJets
-process.updatedJets = updatedPatJets.clone(
-	addBTagInfo=False,
-	jetSource='slimmedJets',
-	jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsNano") ),
-)
-process.bJetVars = cms.EDProducer("JetRegressionVarProducer",
-    pvsrc = cms.InputTag("offlineSlimmedPrimaryVertices"),
-    src = cms.InputTag("updatedJets"),
-    svsrc = cms.InputTag("slimmedSecondaryVertices"),
-    gpsrc = cms.InputTag("prunedGenParticles"),
-)
-process.updatedJetsWithUserData = cms.EDProducer("PATJetUserDataEmbedder",
-        src = cms.InputTag("updatedJets"),
-        userFloats = cms.PSet(
-            vtxPt = cms.InputTag("bJetVars:vtxPt"),
-            vtxMass = cms.InputTag("bJetVars:vtxMass"),
-            vtx3dL = cms.InputTag("bJetVars:vtx3dL"),
-            vtx3deL = cms.InputTag("bJetVars:vtx3deL"),
-            ),
-        userInts = cms.PSet(
-            vtxNtrk = cms.InputTag("bJetVars:vtxNtrk"),
-            ),
-        )
-process.jetSequence = cms.Sequence(process.jetCorrFactorsNano+process.updatedJets+process.bJetVars+process.updatedJetsWithUserData)
+process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
 process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.string('updatedJetsWithUserData')
 
 process.p = cms.Path(
@@ -131,6 +98,8 @@ process.p = cms.Path(
     process.cleanedMu *
     process.jetCorrFactors *
     process.slimmedJetsJEC *
-    process.jetSequence*
+    process.jetSecInfoUpdateSequence*
     process.ggNtuplizer
     )
+
+#print process.dumpPython()
