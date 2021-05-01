@@ -207,19 +207,17 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   nJet_ = 0;
 
   edm::Handle<edm::View<pat::Jet> > jetHandle;
-  e.getByToken(jetsAK4Label_, jetHandle);
+  if (hasSecJet() ) {
+    e.getByToken(nanoUpdatedUserJetsToken_, jetHandle);
+  } else {
+    e.getByToken(jetsAK4Label_, jetHandle);
+  }
 
   if (!jetHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK4) in event";
     return;
   }
 
-  edm::Handle<edm::View<pat::Jet> > nanoUpdatedUserJetsHandle;
-  if ( hasSecJet() )
-  {
-      e.getByToken(nanoUpdatedUserJetsToken_, nanoUpdatedUserJetsHandle);
-      if ( !nanoUpdatedUserJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cout << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; exit(1); }
-  }
 
   edm::Handle<vector<reco::GenParticle> > genParticlesHandle;
   if(doGenParticles_)e.getByToken(genParticlesCollection_, genParticlesHandle);
@@ -239,11 +237,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
-  // for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
-  for ( unsigned int iI = 0; iI < jetHandle->size(); ++iI ) {
-    edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin() + iI;
-    edm::View<pat::Jet>::const_iterator UJetIter;
-    if ( hasSecJet() ) UJetIter = nanoUpdatedUserJetsHandle->begin() + iI;
+  for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
@@ -318,14 +312,13 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
 
     if ( hasSecJet() )
     {
-        const pat::Jet& nanoUpdatedJet = *UJetIter;
-        if ( nanoUpdatedJet.hasUserFloat("vtxMass") )
+        if ( iJet->hasUserFloat("vtxMass") )
         {
-            jetSecVtxPt_       .push_back(nanoUpdatedJet.userFloat("vtxPt"));
-            jetSecVtxMass_     .push_back(nanoUpdatedJet.userFloat("vtxMass"));
-            jetSecVtxNtrks_    .push_back(nanoUpdatedJet.userInt  ("vtxNtrk"));
-            jetSecVtx3DVal_    .push_back(nanoUpdatedJet.userFloat("vtx3dL"));
-            jetSecVtx3DSig_    .push_back(nanoUpdatedJet.userFloat("vtx3deL"));
+            jetSecVtxPt_       .push_back(iJet->userFloat("vtxPt"));
+            jetSecVtxMass_     .push_back(iJet->userFloat("vtxMass"));
+            jetSecVtxNtrks_    .push_back(iJet->userInt  ("vtxNtrk"));
+            jetSecVtx3DVal_    .push_back(iJet->userFloat("vtx3dL"));
+            jetSecVtx3DSig_    .push_back(iJet->userFloat("vtx3deL"));
         }
         else
         {
