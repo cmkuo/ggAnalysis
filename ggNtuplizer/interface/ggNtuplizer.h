@@ -96,7 +96,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillAK8Jets    (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
-  bool hasSecJet() const;
+  bool UpdatedJet_secvtx() const;
 
   bool development_;
   bool addFilterInfoMINIAOD_;  
@@ -155,7 +155,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::JetTagCollection>         boostedDoubleSVLabel_;
   edm::EDGetTokenT<pat::PackedCandidateCollection> pckPFCandidateCollection_;
 
-  std::string nanoUpdatedUserJetsLabel;
+  edm::InputTag   nanoUpdatedUserJetsLabel;
   edm::EDGetTokenT<edm::View<pat::Jet>>            nanoUpdatedUserJetsToken_;
 
   // for MET filters

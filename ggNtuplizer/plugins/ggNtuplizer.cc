@@ -9,7 +9,7 @@ void setbit(UShort_t& x, UShort_t bit) {
 }
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
-  nanoUpdatedUserJetsLabel(ps.getParameter<std::string>("nanoUpdatedUserJetsLabel")),
+  nanoUpdatedUserJetsLabel(ps.getParameter<edm::InputTag>("nanoUpdatedUserJetsLabel")),
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
 
@@ -75,11 +75,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
 
-   std::cerr << " construction 01" << nanoUpdatedUserJetsLabel << "\n";
-   std::cerr << " label = " << edm::InputTag(nanoUpdatedUserJetsLabel).label() << "\n";
   if ( UpdatedJet_secvtx() )
-      nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(edm::InputTag(nanoUpdatedUserJetsLabel));
-   std::cerr << " construction end\n";
+      nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(nanoUpdatedUserJetsLabel);
 
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
@@ -181,6 +178,6 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
     descriptions.addDefault(desc);
 }
 //bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
-bool ggNtuplizer::UpdatedJet_secvtx() const { return (edm::InputTag(nanoUpdatedUserJetsLabel).label() != ""); }
+bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
 
 DEFINE_FWK_MODULE(ggNtuplizer);

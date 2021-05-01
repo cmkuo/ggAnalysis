@@ -90,7 +90,7 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    fractionOfSharedSegments = cms.double(0.499))
 
 process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
-process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.string('updatedJetsWithUserData')
+process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.InputTag('updatedJetsWithUserData')
 
 process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
