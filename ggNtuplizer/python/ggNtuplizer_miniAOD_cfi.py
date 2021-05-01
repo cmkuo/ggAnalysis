@@ -69,5 +69,6 @@ ggNtuplizer = cms.EDAnalyzer("ggNtuplizer",
                              packedPFCands             = cms.InputTag("packedPFCandidates"),
                              elePFClusEcalIsoProducer  = cms.InputTag("electronEcalPFClusterIsolationProducer"),
                              elePFClusHcalIsoProducer  = cms.InputTag("electronHcalPFClusterIsolationProducer"),
-                             ecalBadCalibReducedMINIAODFilter = cms.InputTag("ecalBadCalibReducedMINIAODFilter")
+                             ecalBadCalibReducedMINIAODFilter = cms.InputTag("ecalBadCalibReducedMINIAODFilter"),
+                             nanoUpdatedUserJetsLabel = cms.string(''),
 )
