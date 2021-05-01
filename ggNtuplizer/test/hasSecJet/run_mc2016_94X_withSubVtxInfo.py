@@ -13,14 +13,12 @@ from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
 process.GlobalTag = GlobalTag(process.GlobalTag, '94X_mcRun2_asymptotic_v3')
 
 #process.Tracer = cms.Service("Tracer")
-#process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                #'root://cms-xrd-global.cern.ch//store/mc/RunIISummer16MiniAODv3/G1Jet_Pt-50To100_TuneCUETP8M1_13TeV-amcatnlo-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3_ext1-v1/100000/10B383CB-F7C9-E811-904C-0CC47A00AA80.root'
-'file:/afs/cern.ch/user/l/ltsai/ReceivedFile/DATA/94X/amc/CE941BBB-CE25-E911-AF13-0CC47AA992D0.root'
+        'root://cmsxrootd.fnal.gov//store/mc/RunIISummer16MiniAODv3/ZGToLLG_01J_5f_lowMLL_lowGPt_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/PUMoriond17_94X_mcRun2_asymptotic_v3-v1/100000/0A79D580-6F2F-EA11-A848-AC1F6B56762A.root'
         ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -99,62 +97,7 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
 
-from  PhysicsTools.PatAlgos.recoLayer0.jetCorrFactors_cfi import patJetCorrFactors
-process.jetCorrFactorsNano = patJetCorrFactors.clone(src='slimmedJets',
-    levels = cms.vstring('L1FastJet',
-        'L2Relative',
-        'L3Absolute',
-	'L2L3Residual'),
-    primaryVertices = cms.InputTag("offlineSlimmedPrimaryVertices"),
-)
-from  PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cfi import updatedPatJets
-process.updatedJets = updatedPatJets.clone(
-	addBTagInfo=False,
-	jetSource='slimmedJets',
-	jetCorrFactorsSource=cms.VInputTag(cms.InputTag("jetCorrFactorsNano") ),
-)
-process.bJetVars = cms.EDProducer("JetRegressionVarProducer",
-    pvsrc = cms.InputTag("offlineSlimmedPrimaryVertices"),
-    src = cms.InputTag("updatedJets"),
-    svsrc = cms.InputTag("slimmedSecondaryVertices"),
-    gpsrc = cms.InputTag("prunedGenParticles"),
-    #musrc = cms.InputTag("slimmedMuons"),
-    #elesrc = cms.InputTag("slimmedElectrons")
-)
-process.updatedJetsWithUserData = cms.EDProducer("PATJetUserDataEmbedder",
-        src = cms.InputTag("updatedJets"),
-        userFloats = cms.PSet(
-            #leadTrackPt = cms.InputTag("bJetVars:leadTrackPt"),
-            #leptonPtRel = cms.InputTag("bJetVars:leptonPtRel"),
-            #leptonPtRatio = cms.InputTag("bJetVars:leptonPtRatio"),
-            #leptonPtRelInv = cms.InputTag("bJetVars:leptonPtRelInv"),
-            #leptonPtRelv0 = cms.InputTag("bJetVars:leptonPtRelv0"),
-            #leptonPtRatiov0 = cms.InputTag("bJetVars:leptonPtRatiov0"),
-            #leptonPtRelInvv0 = cms.InputTag("bJetVars:leptonPtRelInvv0"),
-            #leptonDeltaR = cms.InputTag("bJetVars:leptonDeltaR"),
-            #leptonPt = cms.InputTag("bJetVars:leptonPt"),
-            vtxPt = cms.InputTag("bJetVars:vtxPt"),
-            vtxMass = cms.InputTag("bJetVars:vtxMass"),
-            vtx3dL = cms.InputTag("bJetVars:vtx3dL"),
-            vtx3deL = cms.InputTag("bJetVars:vtx3deL"),
-            #ptD = cms.InputTag("bJetVars:ptD"),
-            #genPtwNu = cms.InputTag("bJetVars:genPtwNu"),
-            #qgl = cms.InputTag('qgtagger:qgLikelihood'),
-            #puId94XDisc = cms.InputTag('pileupJetId94X:fullDiscriminant'),
-            #puId102XDisc = cms.InputTag('pileupJetId102X:fullDiscriminant'),
-            #chFPV0EF = cms.InputTag("jercVars:chargedFromPV0EnergyFraction"),
-            #chFPV1EF = cms.InputTag("jercVars:chargedFromPV1EnergyFraction"),
-            #chFPV2EF = cms.InputTag("jercVars:chargedFromPV2EnergyFraction"),
-            #chFPV3EF = cms.InputTag("jercVars:chargedFromPV3EnergyFraction"),
-            ),
-        userInts = cms.PSet(
-            #tightId = cms.InputTag("tightJetId"),
-            #tightIdLepVeto = cms.InputTag("tightJetIdLepVeto"),
-            vtxNtrk = cms.InputTag("bJetVars:vtxNtrk"),
-            #leptonPdgId = cms.InputTag("bJetVars:leptonPdgId"),
-            ),
-        )
-process.jetSequence = cms.Sequence(process.jetCorrFactorsNano+process.updatedJets+process.bJetVars+process.updatedJetsWithUserData)
+process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
 process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.InputTag('updatedJetsWithUserData')
 
 process.p = cms.Path(
@@ -164,29 +107,8 @@ process.p = cms.Path(
     process.jetCorrFactors *
     process.slimmedJetsJEC *
     process.prefiringweight *
-    process.jetSequence*
+    process.jetSecInfoUpdateSequence*
     process.ggNtuplizer
     )
 
-#process.out = cms.OutputModule(
-#    "PoolOutputModule",
-#    fileName = cms.untracked.string('recoBPHanalysis_withFilter.root'),
-#    outputCommands = cms.untracked.vstring(
-#        'keep *',
-#        #"drop *",
-#        #"keep *_selectedMuons_MuonPreselectionEfficiencyBoolInt_myVertexingProcedure",
-#        #"keep *_selectedTracks_TrackPreselectionEfficiencyBoolInt_myVertexingProcedure",
-#        #"keep *_tktkVertexingProducer_tktkVertexingEfficiencyBoolInt_myVertexingProcedure",
-#        #"keep *_mumuVertexingProducer_mumuVertexingEfficiencyBoolInt_myVertexingProcedure",
-#        #"keep *_mumuVertexingProducer_*_myVertexingProcedure",
-#        #"keep *_tktkVertexingProducer_*_myVertexingProcedure",
-#        #"keep *_generalV0Candidates_*_RECO",
-#        #"keep *_offlineBeamSpot_*_RECO",
-#        #"keep *_offlinePrimaryVertices_*_RECO",
-#        #"keep *_genParticles__HLT",
-#        #"keep *_TriggerResults__HLT",
-#    ),
-#    SelectEvents = cms.untracked.PSet( SelectEvents = cms.vstring('p') )
-#)
-
-#process.e = cms.EndPath(process.out)
+#print process.dumpPython()
