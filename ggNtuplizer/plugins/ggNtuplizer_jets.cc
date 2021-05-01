@@ -128,7 +128,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetNCH",       &jetNCH_);
   tree->Branch("jetNNP",       &jetNNP_);
   tree->Branch("jetMUF",       &jetMUF_);
-  if ( hasSecJet() ) {
+  if ( UpdatedJet_secvtx() ) {
       tree->Branch("jetSecVtxPt"   ,  &jetSecVtxPt_   );
       tree->Branch("jetSecVtxMass" ,  &jetSecVtxMass_ );
       tree->Branch("jetSecVtxNtrks",  &jetSecVtxNtrks_);
@@ -207,7 +207,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   nJet_ = 0;
 
   edm::Handle<edm::View<pat::Jet> > jetHandle;
-  if (hasSecJet() ) {
+  if (UpdatedJet_secvtx() ) {
     e.getByToken(nanoUpdatedUserJetsToken_, jetHandle);
   } else {
     e.getByToken(jetsAK4Label_, jetHandle);
@@ -310,7 +310,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetLepTrackEta_ .push_back(lepTrkEta);
     jetLepTrackPhi_ .push_back(lepTrkPhi);    
 
-    if ( hasSecJet() )
+    if ( UpdatedJet_secvtx() )
     {
         if ( iJet->hasUserFloat("vtxMass") )
         {

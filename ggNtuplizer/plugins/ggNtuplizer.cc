@@ -76,7 +76,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
 
    std::cerr << " construction 01" << nanoUpdatedUserJetsLabel << "\n";
-  if ( hasSecJet() )
+   std::cerr << " label = " << edm::InputTag(nanoUpdatedUserJetsLabel).label() << "\n";
+  if ( UpdatedJet_secvtx() )
       nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(edm::InputTag(nanoUpdatedUserJetsLabel));
    std::cerr << " construction end\n";
 
@@ -179,6 +180,7 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
     desc.setUnknown();
     descriptions.addDefault(desc);
 }
-bool ggNtuplizer::hasSecJet() const { return (nanoUpdatedUserJetsLabel != ""); }
+//bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
+bool ggNtuplizer::UpdatedJet_secvtx() const { return (edm::InputTag(nanoUpdatedUserJetsLabel).label() != ""); }
 
 DEFINE_FWK_MODULE(ggNtuplizer);
