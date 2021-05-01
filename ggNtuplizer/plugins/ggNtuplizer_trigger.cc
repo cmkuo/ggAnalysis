@@ -208,7 +208,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG150HEFilter"]     = 6;
        phoSingleFilters["hltEG175HEFilter"]     = 7;
        phoSingleFilters["hltEG200HEFilter"]     = 8;
-       phoSingleFilters["hltEG300erFilter"]     = 9;
+       phoSingleFilters["hltEG300erEtFilter"]   = 9;
     }
     else if ( year_ == 2018 )
     {
