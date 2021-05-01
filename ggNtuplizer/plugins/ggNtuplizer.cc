@@ -172,13 +172,10 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
 void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 {
-   std::cerr << " filling desc 01\n";
     //The following says we do not know what parameters are allowed so do no validation
     // Please change this to state exactly what you do use, even if it is no parameters
     edm::ParameterSetDescription desc;
-    desc.add<std::string>("nanoUpdatedUserJetsLabel", "");
-   std::cerr << " filling desc end\n";
-    
+
     desc.setUnknown();
     descriptions.addDefault(desc);
 }
