@@ -196,6 +196,16 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG120HEFilter"]     = 6;
        phoSingleFilters["hltEG175HEFilter"]     = 7;
        phoSingleFilters["hltEG300erEtFilter"]   = 8;
+
+       phoSingleFilters["hltEG22R9Id90HE10IsoMTrackIsoFilter"]  = 9;
+       phoSingleFilters["hltEG30R9Id90HE10IsoMTrackIsoFilter"]  = 10;
+       phoSingleFilters["hltEG36R9Id90HE10IsoMTrackIsoFilter"]  = 11;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 12;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 13;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 14;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 15;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 16;
+       phoSingleFilters["hltEG250erEtFilter"]                   = 17;
     }
     else if ( year_ == 2017 )
     {
@@ -209,6 +219,14 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG175HEFilter"]     = 7;
        phoSingleFilters["hltEG200HEFilter"]     = 8;
        phoSingleFilters["hltEG300erEtFilter"]   = 9;
+       
+       phoSingleFilters["hltEG20HEFilterLooseHoverE"]             = 10;
+       phoSingleFilters["hltEG30HEFilterLooseHoverE"]             = 11;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]    = 12;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]    = 13;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]    = 14;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"]   = 15;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"]   = 16;
     }
     else if ( year_ == 2018 )
     {
@@ -222,12 +240,14 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG200HEFilter"]     = 7; 
        phoSingleFilters["hltEG300erEtFilter"]   = 8;
 
-       phoSingleFilters["hltHtEcal800"]                         = 9;
-       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  =10;
-       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  =11;
-       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  =12;
-       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] =13;
-       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] =14;
+       phoSingleFilters["hltEG20HEFilterLooseHoverE"]           = 9;
+       phoSingleFilters["hltEG30HEFilterLooseHoverE"]           = 10;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 11;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 12;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 13;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 14;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 15;
+       phoSingleFilters["hltHtEcal800"]                         = 16;
     }
     else { throw std::invalid_argument("You need to select a year to select HLT path. The switch is in cmssw config file"); }
 
