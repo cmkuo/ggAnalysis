@@ -535,7 +535,7 @@ ULong64_t ggNtuplizer::matchDoublePhotonTriggerFilters(double pt, double eta, do
 ULong64_t ggNtuplizer::matchTriplePhotonTriggerFilters(double pt, double eta, double phi) {
 
   // bits in the return value correspond to decisions from filters defined above 
-  UInt_t result = 0;
+  ULong64_t result = 0;
 
   for (size_t f = 0; f < 64; ++f)
     for (size_t v = 0; v < trgTriplePhoPt[f].size(); ++v)
