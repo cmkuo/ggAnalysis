@@ -9,6 +9,7 @@ void setbit(UShort_t& x, UShort_t bit) {
 }
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
+  nanoUpdatedUserJetsLabel(ps.getParameter<edm::InputTag>("nanoUpdatedUserJetsLabel")),
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
 
@@ -73,6 +74,9 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
+
+  if ( UpdatedJet_secvtx() )
+      nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(nanoUpdatedUserJetsLabel);
 
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
@@ -164,13 +168,16 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
 }
 
-// void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
-// {
-//   //The following says we do not know what parameters are allowed so do no validation
-//   // Please change this to state exactly what you do use, even if it is no parameters
-//   edm::ParameterSetDescription desc;
-//   desc.setUnknown();
-//   descriptions.addDefault(desc);
-// }
+void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
+{
+    //The following says we do not know what parameters are allowed so do no validation
+    // Please change this to state exactly what you do use, even if it is no parameters
+    edm::ParameterSetDescription desc;
+
+    desc.setUnknown();
+    descriptions.addDefault(desc);
+}
+//bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
+bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
 
 DEFINE_FWK_MODULE(ggNtuplizer);
