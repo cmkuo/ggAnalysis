@@ -19,7 +19,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-'file:data16_94X.root'
+        'file:/data4/cmkuo/testfiles/DoubleEG_Run2016F_17Jul2018.root'
         )
                             )
 
