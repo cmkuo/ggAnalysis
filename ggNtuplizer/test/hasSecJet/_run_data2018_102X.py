@@ -6,25 +6,29 @@ process.load("FWCore.MessageLogger.MessageLogger_cfi")
 process.options = cms.untracked.PSet( allowUnscheduled = cms.untracked.bool(True) )
 
 process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
-#process.load("Configuration.Geometry.GeometryRecoDB_cff")
-process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
-process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
+#process.load("Configuration.Geometry.GeometryIdeal_cff" )
+process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff" )
+process.load('Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff')
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '102X_upgrade2018_realistic_v18')
+process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_v11', '') #2018ABC
+#process.GlobalTag = GlobalTag(process.GlobalTag, '102X_dataRun2_Prompt_v14', '') #2018D
 
 #process.Tracer = cms.Service("Tracer")
+
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(1000) )
 process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-#        'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/ZGToLLG_01J_5f_lowMLL_lowGPt_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/0A57E44E-7D41-9342-9F7D-56DBC704D224.root'
-                                'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/GluGluHToEEG_M125_MLL-0To60_TuneCP5_Dalitz_012j_13TeV_amcatnlo_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/59AD893F-8F76-6C4C-9DDE-109B29CBEEB4.root'
-        ))
+        'file:/data4/cmkuo/testfiles/DoubleMuon_Run2018C_17Sep2018.root'
+        #'file:/data4/cmkuo/testfiles/DoubleMuon_Run2018D_PR.root'
+        )
+                            )
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
 process.load( "PhysicsTools.PatAlgos.producersLayer1.patCandidates_cff" )
+process.load( "PhysicsTools.PatAlgos.triggerLayer1.triggerProducer_cff" )
 process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" )
 
 ### fix a bug in the ECAL-Tracker momentum combination when applying the scale and smearing
@@ -40,13 +44,19 @@ setupEgammaPostRecoSeq(process,
                                      'RecoEgamma.PhotonIdentification.Identification.cutBasedPhotonID_Fall17_94X_V2_cff']
                        )
 
-process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_mc.root'))
+#from PhysicsTools.PatAlgos.tools.cmsswVersionTools import *
+from PhysicsTools.PatAlgos.tools.coreTools import *
+runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outputModules = [] )
+#runOnData( process, outputModules = [] )
+#removeMCMatching(process, names=['All'], outputModules=[])
+
+process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 ### update JEC
 process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
 process.jetCorrFactors = process.updatedPatJetCorrFactors.clone(
     src = cms.InputTag("slimmedJets"),
-    levels = ['L1FastJet', 'L2Relative', 'L3Absolute'],
+    levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
     payload = 'AK4PFchs') 
 
 process.slimmedJetsJEC = process.updatedPatJets.clone(
@@ -58,32 +68,25 @@ process.slimmedJetsJEC = process.updatedPatJets.clone(
 from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
 runMetCorAndUncFromMiniAOD (
         process,
-        isData = False, # false for MC
+        isData = True, # false for MC
         fixEE2017 = True,
         fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
         postfix = "ModifiedMET"
 )
 
-# random generator for jet smearing
-process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
-                                                   ggNtuplizer  = cms.PSet(
-        initialSeed = cms.untracked.uint32(201678),
-        engineName = cms.untracked.string('TRandom3')
-        )
-                                                   )
-
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2018)
-process.ggNtuplizer.doGenParticles=cms.bool(True)
+process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
 process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
-process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "PAT")
 process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
 process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
+process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("slimmedMuons"),
@@ -91,12 +94,17 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
 
+process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
+process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.InputTag('updatedJetsWithUserData')
+
 process.p = cms.Path(
     process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
     process.cleanedMu *
+    process.ggMETFiltersSequence *
     process.jetCorrFactors *
     process.slimmedJetsJEC *
+    process.jetSecInfoUpdateSequence*
     process.ggNtuplizer
     )
 
