@@ -1,0 +1,37 @@
+# General C++ exclusion
+*.o
+*.so
+*.d
+*.pcm
+
+# General Python exclusion
+*.pyc
+
+# Swap files
+*.swp
+*.swo
+# for emacs temperary
+*~
+
+# General data file exclusions
+*.txt
+*.root
+*.log
+log*
+.remote-sync.json
+*.xgb
+
+# figure
+*.png
+*.pdf
+*.eps
+
+*.pyc
+
+# system file
+.nfs*
+# Specific file exclusion
+# [relative/path/to/file]
+
+# Specific file inclusion
+# ![relative/path/to/file]
