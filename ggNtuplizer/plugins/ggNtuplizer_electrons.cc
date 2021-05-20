@@ -94,7 +94,7 @@ vector<float> bcPhi_;
 vector<float> bcSigmaIEtaIEta_;
 vector<float> bcSigmaIEtaIPhi_;
 vector<float> bcR9_;
-vector<float> bcR13_;
+vector<float> bcR15_;
 vector<float> bcR22_;
 vector<float> bcR25_;
 
@@ -193,7 +193,7 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("bcSigmaIEtaIEta",           &bcSigmaIEtaIEta_);
   tree->Branch("bcSigmaIEtaIPhi",           &bcSigmaIEtaIPhi_);
   tree->Branch("bcR9",                      &bcR9_);
-  tree->Branch("bcR13",                     &bcR13_);
+  tree->Branch("bcR15",                     &bcR15_);
   tree->Branch("bcR22",                     &bcR22_);
   tree->Branch("bcR25",                     &bcR25_);
   tree->Branch("nGSFTrk",                   &nGSFTrk_);
@@ -465,7 +465,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   bcSigmaIEtaIEta_.clear();
   bcSigmaIEtaIPhi_.clear();
   bcR9_           .clear();
-  bcR13_          .clear();
+  bcR15_          .clear();
   bcR22_          .clear();
   bcR25_          .clear();
 
@@ -483,7 +483,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     bcSigmaIEtaIEta_.push_back(edm::isNotFinite(bcCov[0]) ? 0. : sqrt(bcCov[0]));
     bcSigmaIEtaIPhi_.push_back(bcCov[1]);
     bcR9_           .push_back(lazyToolnoZS.e3x3(*itbc)/lazyToolnoZS.e5x5(*itbc));
-    bcR13_          .push_back(lazyToolnoZS.e1x3(*itbc)/lazyToolnoZS.e5x5(*itbc));
+    bcR15_          .push_back(lazyToolnoZS.e1x5(*itbc)/lazyToolnoZS.e5x5(*itbc));
     bcR22_          .push_back(lazyToolnoZS.e2x2(*itbc)/lazyToolnoZS.e5x5(*itbc));
     bcR25_          .push_back(lazyToolnoZS.e2x5Max(*itbc)/lazyToolnoZS.e5x5(*itbc));
 
