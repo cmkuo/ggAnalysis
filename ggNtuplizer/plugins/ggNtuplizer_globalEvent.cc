@@ -17,6 +17,7 @@ float       vtx_;
 float       vty_;
 float       vtz_;
 float       rho_;
+float       rhoAll_;
 float       rhoCentral_;
 double      L1ECALPrefire_;
 double      L1ECALPrefireUp_;
@@ -43,6 +44,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vty",                  &vty_); 
   tree->Branch("vtz",                  &vtz_); 
   tree->Branch("rho",                  &rho_);
+  tree->Branch("rhoAll",               &rhoAll_);
   tree->Branch("rhoCentral",           &rhoCentral_);
   tree->Branch("L1ECALPrefire",        &L1ECALPrefire_);
   tree->Branch("L1ECALPrefireUp",      &L1ECALPrefireUp_);
@@ -69,6 +71,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
 
+  edm::Handle<double> rhoAllHandle;
+  e.getByToken(rhoAllLabel_, rhoAllHandle);
+
   edm::Handle<double> rhoCentralHandle;
   e.getByToken(rhoCentralLabel_, rhoCentralHandle);
 
@@ -77,6 +82,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   lumis_  = e.luminosityBlock();
   isData_ = e.isRealData();
   rho_    = *(rhoHandle.product());
+  rhoAll_ = *(rhoAllHandle.product());
   if (rhoCentralHandle.isValid()) rhoCentral_ = *(rhoCentralHandle.product());
   else rhoCentral_ = -99.;
 
