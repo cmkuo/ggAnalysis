@@ -46,7 +46,7 @@ vector<float>  jetSecVtxPt_;
 vector<float>  jetSecVtxMass_;
 vector<int  >  jetSecVtxNtrks_;
 vector<float>  jetSecVtx3DVal_;
-vector<float>  jetSecVtx3DSig_;
+vector<float>  jetSecVtx3DErr_;
 vector<float>  jetCSV2BJetTags_;
 vector<float>  jetDeepCSVTags_b_;
 vector<float>  jetDeepCSVTags_bb_;
@@ -155,7 +155,7 @@ void ggNtuplizer::branchesJets(TTree* tree) {
       tree->Branch("jetSecVtxMass" ,  &jetSecVtxMass_ );
       tree->Branch("jetSecVtxNtrks",  &jetSecVtxNtrks_);
       tree->Branch("jetSecVtx3DVal",  &jetSecVtx3DVal_);
-      tree->Branch("jetSecVtx3DSig",  &jetSecVtx3DSig_);
+      tree->Branch("jetSecVtx3DErr",  &jetSecVtx3DErr_);
   }
   if (development_) {
     tree->Branch("jetHFHAE",         &jetHFHAE_);
@@ -220,7 +220,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetSecVtxMass_                          .clear();
   jetSecVtxNtrks_                         .clear();
   jetSecVtx3DVal_                         .clear();
-  jetSecVtx3DSig_                         .clear();
+  jetSecVtx3DErr_                         .clear();
   if (development_) {
     jetHFHAE_                               .clear();
     jetHFEME_                               .clear();
@@ -351,7 +351,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
             jetSecVtxMass_     .push_back(iJet->userFloat("vtxMass"));
             jetSecVtxNtrks_    .push_back(iJet->userInt  ("vtxNtrk"));
             jetSecVtx3DVal_    .push_back(iJet->userFloat("vtx3dL"));
-            jetSecVtx3DSig_    .push_back(iJet->userFloat("vtx3deL"));
+            jetSecVtx3DErr_    .push_back(iJet->userFloat("vtx3deL"));
         }
         else
         {
@@ -359,7 +359,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
             jetSecVtxMass_     .push_back(0);
             jetSecVtxNtrks_    .push_back(0);
             jetSecVtx3DVal_    .push_back(0);
-            jetSecVtx3DSig_    .push_back(0);
+            jetSecVtx3DErr_    .push_back(0);
         }
     }
     
