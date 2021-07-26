@@ -17,6 +17,7 @@ float       vtx_;
 float       vty_;
 float       vtz_;
 float       rho_;
+float       rhoAll_;
 float       rhoCentral_;
 double      L1ECALPrefire_;
 double      L1ECALPrefireUp_;
@@ -43,6 +44,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vty",                  &vty_); 
   tree->Branch("vtz",                  &vtz_); 
   tree->Branch("rho",                  &rho_);
+  tree->Branch("rhoAll",               &rhoAll_);
   tree->Branch("rhoCentral",           &rhoCentral_);
   tree->Branch("L1ECALPrefire",        &L1ECALPrefire_);
   tree->Branch("L1ECALPrefireUp",      &L1ECALPrefireUp_);
@@ -69,6 +71,9 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
 
+  edm::Handle<double> rhoAllHandle;
+  e.getByToken(rhoAllLabel_, rhoAllHandle);
+
   edm::Handle<double> rhoCentralHandle;
   e.getByToken(rhoCentralLabel_, rhoCentralHandle);
 
@@ -77,6 +82,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
   lumis_  = e.luminosityBlock();
   isData_ = e.isRealData();
   rho_    = *(rhoHandle.product());
+  rhoAll_ = *(rhoAllHandle.product());
   if (rhoCentralHandle.isValid()) rhoCentral_ = *(rhoCentralHandle.product());
   else rhoCentral_ = -99.;
 
@@ -239,6 +245,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Photon165_R9Id90_HE10_IsoM_v")                         != string::npos) bitPho = 29;
       else if (name.find("HLT_ECALHT800_v")                                          != string::npos) bitPho = 30;
       else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_VBF_v")             != string::npos) bitPho = 31;
+      else if (name.find("HLT_Diphoton30_18_Solid_R9Id_AND_IsoCaloId_AND_HE_R9Id_Mass55_v")                     != string::npos) bitPho = 32;     
 
       // Jet triggers
       if      (name.find("HLT_QuadPFJet_BTagCSV_p016_VBF_Mqq460_v")                    != string::npos) bitJet =  0;
@@ -280,7 +287,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_PFHT800_4JetPt50_v")                                     != string::npos) bitJet = 36;
     }
 
-    if (year_ == 2017) {
+    if (year_ == 2017 || year_ == 2018) {
       // Electron or Muon or Cross triggers
       if      (name.find("HLT_DoubleMu20_7_Mass0to30_L1_DM4_v")                  != string::npos) bitEleMuX =  0; // 2017
       else if (name.find("HLT_DoubleMu20_7_Mass0to30_Photon23_v")                != string::npos) bitEleMuX =  1; // 2017
@@ -353,11 +360,11 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Photon200_v")                   != string::npos) bitPho = 10; // 2017
       else if (name.find("HLT_Photon600_v")                   != string::npos) bitPho = 11; 
       else if (name.find("HLT_Photon165_HE10_v")              != string::npos) bitPho = 12; 
-      else if (name.find("HLT_Photon42_R9Id85_OR_CaloId24b40e_Iso50T80L_Photon25_AND_HE10_R9Id65_Eta2_Mass15_v") != string::npos) bitPho = 13; // exist
-      else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v")                             != string::npos) bitPho = 14; // used
-      else if (name.find("HLT_Diphoton30_18_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelSeedMatch_Mass70_v")        != string::npos) bitPho = 15; // exist
-      else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")        != string::npos) bitPho = 16; // used
-      else if (name.find("HLT_Diphoton30EB_18EB_R9Id_OR_IsoCaloId_AND_HE_R9Id_DoublePixelVeto_Mass55_v")         != string::npos) bitPho = 17; // used
+      else if (name.find("HLT_DiEle27_WPTightCaloOnly_L1DoubleEG_v")                                             != string::npos) bitPho = 13; // 2017 & 2018
+      else if (name.find("HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass90_v")                             != string::npos) bitPho = 14; // 2017 & 2018
+      else if (name.find("HLT_Diphoton30_22_R9Id_OR_IsoCaloId_AND_HE_R9Id_Mass95_v")                             != string::npos) bitPho = 15; // 2017 & 2018
+      else if (name.find("HLT_Diphoton30PV_18PV_R9Id_AND_IsoCaloId_AND_HE_R9Id_PixelVeto_Mass55_v")              != string::npos) bitPho = 16; // 2017
+      else if (name.find("HLT_Diphoton30_18_R9IdL_AND_HE_AND_IsoCaloId_NoPixelVeto_Mass55_v")                    != string::npos) bitPho = 17; // 2018
       else if (name.find("HLT_Photon135_PFMET100_v")                          != string::npos) bitPho = 18; 
       else if (name.find("HLT_Photon120_R9Id90_HE10_Iso40_EBOnly_PFMET40_v")  != string::npos) bitPho = 19;
       else if (name.find("HLT_Photon22_R9Id90_HE10_Iso40_EBOnly_VBF_v")       != string::npos) bitPho = 20;
@@ -378,6 +385,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_ECALHT800_v")                                   != string::npos) bitPho = 35;
       else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_EBOnly_PFJetsMJJ300DEta3_v") != string::npos) bitPho = 36; 
       else if (name.find("HLT_Photon75_R9Id90_HE10_IsoM_EBOnly_PFJetsMJJ600DEta3_v") != string::npos) bitPho = 37;      
+      else if (name.find("HLT_Diphoton30_18_R9IdL_AND_HE_AND_IsoCaloId_NoPixelVeto_v")                           != string::npos) bitPho = 38; // 2018
 
       // Jet triggers
       if      (name.find("HLT_QuadPFJet_BTagCSV_p016_VBF_Mqq460_v")                    != string::npos) bitJet =  0;

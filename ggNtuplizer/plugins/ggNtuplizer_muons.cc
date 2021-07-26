@@ -182,7 +182,6 @@ void ggNtuplizer::fillMuons(const edm::Event& e, math::XYZPoint& pv, reco::Verte
     if (iMu->passed(reco::Muon::MiniIsoTight))           tmpmuIDbit += pow(2, 20);
     if (iMu->passed(reco::Muon::MiniIsoVeryTight))       tmpmuIDbit += pow(2, 21);
     muIDbit_.push_back(tmpmuIDbit);
-
     muFiredTrgs_  .push_back(matchMuonTriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
     muFiredL1Trgs_.push_back(matchL1TriggerFilters(iMu->pt(), iMu->eta(), iMu->phi()));
 

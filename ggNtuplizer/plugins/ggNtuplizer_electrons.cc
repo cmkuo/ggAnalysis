@@ -1,6 +1,7 @@
 #include "DataFormats/EgammaCandidates/interface/GsfElectron.h"
 #include "DataFormats/GsfTrackReco/interface/GsfTrackFwd.h"
 #include "DataFormats/EcalDetId/interface/ESDetId.h"
+#include "FWCore/Utilities/interface/isFinite.h"
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
 #include "RecoEgamma/EgammaTools/interface/ConversionTools.h"
@@ -66,27 +67,16 @@ vector<ULong64_t> eleFiredSingleTrgs_;
 vector<ULong64_t> eleFiredDoubleTrgs_;
 vector<ULong64_t> eleFiredL1Trgs_;
 vector<UShort_t>  eleIDbit_;
-vector<float>  eleScale_stat_up_;
-vector<float>  eleScale_stat_dn_;
-vector<float>  eleScale_syst_up_;
-vector<float>  eleScale_syst_dn_;
-vector<float>  eleScale_gain_up_;
-vector<float>  eleScale_gain_dn_;
-vector<float>  eleResol_rho_up_;
-vector<float>  eleResol_rho_dn_;
-vector<float>  eleResol_phi_up_;
-vector<float>  eleResol_phi_dn_;
-
-vector<vector<float> > eleGSFPt_;
-vector<vector<float> > eleGSFEta_;
-vector<vector<float> > eleGSFPhi_;
-vector<vector<float> > eleGSFCharge_;
-vector<vector<int> >   eleGSFHits_;
-vector<vector<int> >   eleGSFMissHits_;
-vector<vector<int> >   eleGSFNHitsMax_;
-vector<vector<float> > eleGSFVtxProb_;
-vector<vector<float> > eleGSFlxyPV_;
-vector<vector<float> > eleGSFlxyBS_;
+vector<float>     eleScale_stat_up_;
+vector<float>     eleScale_stat_dn_;
+vector<float>     eleScale_syst_up_;
+vector<float>     eleScale_syst_dn_;
+vector<float>     eleScale_gain_up_;
+vector<float>     eleScale_gain_dn_;
+vector<float>     eleResol_rho_up_;
+vector<float>     eleResol_rho_dn_;
+vector<float>     eleResol_phi_up_;
+vector<float>     eleResol_phi_dn_;
 
 vector<vector<float> > eleESEnEta_;
 vector<vector<float> > eleESEnPhi_;
@@ -97,10 +87,26 @@ vector<vector<int> >   eleESEnY_;
 vector<vector<int> >   eleESEnS_;
 vector<vector<float> > eleESEnE_;
 
-Int_t nGSFTrk_;
+Int_t         nBC_;
+vector<float> bcEn_;
+vector<float> bcEta_;
+vector<float> bcPhi_;
+vector<float> bcSigmaIEtaIEta_;
+vector<float> bcSigmaIEtaIPhi_;
+vector<float> bcR9_;
+vector<float> bcR15_;
+vector<float> bcR22_;
+vector<float> bcR25_;
+
+Int_t         nGSFTrk_;
 vector<float> gsfPt_;
 vector<float> gsfEta_;
 vector<float> gsfPhi_;
+vector<int>   gsfCharge_;
+vector<int>   gsfLayers_;
+vector<int>   gsfMissHits_;
+vector<float> gsfD0_;
+vector<float> gsfDz_;
 
 void ggNtuplizer::branchesElectrons(TTree* tree) {
 
@@ -153,16 +159,6 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
   tree->Branch("eleKFHits",                   &eleKFHits_);
   tree->Branch("eleKFChi2",                   &eleKFChi2_);
   tree->Branch("eleGSFChi2",                  &eleGSFChi2_);
-  tree->Branch("eleGSFPt",                    &eleGSFPt_);
-  tree->Branch("eleGSFEta",                   &eleGSFEta_);
-  tree->Branch("eleGSFPhi",                   &eleGSFPhi_);
-  tree->Branch("eleGSFCharge",                &eleGSFCharge_);
-  tree->Branch("eleGSFHits",                  &eleGSFHits_);
-  tree->Branch("eleGSFMissHits",              &eleGSFMissHits_);
-  tree->Branch("eleGSFNHitsMax",              &eleGSFNHitsMax_);
-  tree->Branch("eleGSFVtxProb",               &eleGSFVtxProb_);
-  tree->Branch("eleGSFlxyPV",                 &eleGSFlxyPV_);
-  tree->Branch("eleGSFlxyBS",                 &eleGSFlxyBS_);
   tree->Branch("eleFiredSingleTrgs",          &eleFiredSingleTrgs_);
   tree->Branch("eleFiredDoubleTrgs",          &eleFiredDoubleTrgs_);
   tree->Branch("eleFiredL1Trgs",              &eleFiredL1Trgs_);
@@ -189,12 +185,26 @@ void ggNtuplizer::branchesElectrons(TTree* tree) {
     tree->Branch("eleESEnY",                  &eleESEnY_);
     tree->Branch("eleESEnS",                  &eleESEnS_);
     tree->Branch("eleESEnE",                  &eleESEnE_);
-    tree->Branch("nGSFTrk",                   &nGSFTrk_);
-    tree->Branch("gsfPt",                     &gsfPt_);
-    tree->Branch("gsfEta",                    &gsfEta_);
-    tree->Branch("gsfPhi",                    &gsfPhi_);
   }
-  
+  tree->Branch("nBC",                       &nBC_);
+  tree->Branch("bcEn",                      &bcEn_);
+  tree->Branch("bcEta",                     &bcEta_);
+  tree->Branch("bcPhi",                     &bcPhi_);
+  tree->Branch("bcSigmaIEtaIEta",           &bcSigmaIEtaIEta_);
+  tree->Branch("bcSigmaIEtaIPhi",           &bcSigmaIEtaIPhi_);
+  tree->Branch("bcR9",                      &bcR9_);
+  tree->Branch("bcR15",                     &bcR15_);
+  tree->Branch("bcR22",                     &bcR22_);
+  tree->Branch("bcR25",                     &bcR25_);
+  tree->Branch("nGSFTrk",                   &nGSFTrk_);
+  tree->Branch("gsfPt",                     &gsfPt_);
+  tree->Branch("gsfEta",                    &gsfEta_);
+  tree->Branch("gsfPhi",                    &gsfPhi_);  
+  tree->Branch("gsfCharge",                 &gsfCharge_);
+  tree->Branch("gsfLayers",                 &gsfLayers_);
+  tree->Branch("gsfMissHits",               &gsfMissHits_);
+  tree->Branch("gsfD0",                     &gsfD0_);
+  tree->Branch("gsfDz",                     &gsfDz_);
 }
 
 void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, math::XYZPoint &pv) {
@@ -258,16 +268,6 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
   eleKFHits_                  .clear();
   eleKFChi2_                  .clear();
   eleGSFChi2_                 .clear();
-  eleGSFPt_                   .clear();
-  eleGSFEta_                  .clear();
-  eleGSFPhi_                  .clear();
-  eleGSFCharge_               .clear();
-  eleGSFHits_                 .clear();
-  eleGSFMissHits_             .clear();
-  eleGSFNHitsMax_             .clear();
-  eleGSFVtxProb_              .clear();
-  eleGSFlxyPV_                .clear();
-  eleGSFlxyBS_                .clear();
   eleFiredSingleTrgs_         .clear();
   eleFiredDoubleTrgs_         .clear();
   eleFiredL1Trgs_             .clear();
@@ -357,7 +357,7 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     eleSigmaIPhiIPhiFull5x5_.push_back(iEle->full5x5_sigmaIphiIphi());
     eleR9Full5x5_           .push_back(iEle->full5x5_r9());
     eleEcalDrivenSeed_      .push_back(iEle->ecalDrivenSeed());
-    
+
     eleScale_stat_up_.push_back(iEle->userFloat("energyScaleStatUp"));
     eleScale_stat_dn_.push_back(iEle->userFloat("energyScaleStatDown"));
     eleScale_syst_up_.push_back(iEle->userFloat("energyScaleSystUp"));
@@ -455,23 +455,77 @@ void ggNtuplizer::fillElectrons(const edm::Event &e, const edm::EventSetup &es, 
     nEle_++;
   }
 
-  if (development_) {
+  edm::Handle<reco::CaloClusterCollection> caloClusters;
+  e.getByToken(basicClusters_, caloClusters);
+
+  nBC_            = 0;
+  bcEn_           .clear();
+  bcEta_          .clear();
+  bcPhi_          .clear();
+  bcSigmaIEtaIEta_.clear();
+  bcSigmaIEtaIPhi_.clear();
+  bcR9_           .clear();
+  bcR15_          .clear();
+  bcR22_          .clear();
+  bcR25_          .clear();
+
+  for (CaloClusterCollection::const_iterator itbc = caloClusters->begin(); itbc != caloClusters->end(); ++itbc) {
+    if (itbc->energy()/cosh(itbc->eta()) < 1. || lazyToolnoZS.e5x5(*itbc) == 0.) continue;
+
+    bcEn_ .push_back(itbc->energy());
+    bcEta_ .push_back(itbc->eta());
+    bcPhi_.push_back(itbc->phi());
+
+    vector<float> bcCov;
+    bcCov.clear();
+    bcCov = lazyToolnoZS.localCovariances(*itbc);
+
+    bcSigmaIEtaIEta_.push_back(edm::isNotFinite(bcCov[0]) ? 0. : sqrt(bcCov[0]));
+    bcSigmaIEtaIPhi_.push_back(bcCov[1]);
+    bcR9_           .push_back(lazyToolnoZS.e3x3(*itbc)/lazyToolnoZS.e5x5(*itbc));
+    bcR15_          .push_back(lazyToolnoZS.e1x5(*itbc)/lazyToolnoZS.e5x5(*itbc));
+    bcR22_          .push_back(lazyToolnoZS.e2x2(*itbc)/lazyToolnoZS.e5x5(*itbc));
+    bcR25_          .push_back(lazyToolnoZS.e2x5Max(*itbc)/lazyToolnoZS.e5x5(*itbc));
+
+    nBC_++;
+  }
     
-    edm::Handle<edm::View<reco::GsfTrack> > GsfTrackHandle;
-    e.getByToken(gsfTracks_, GsfTrackHandle);
-    
-    nGSFTrk_ = 0;
-    gsfPt_ .clear();
-    gsfEta_.clear();
-    gsfPhi_.clear();
-    
-    for (edm::View<reco::GsfTrack>::const_iterator ig = GsfTrackHandle->begin(); ig != GsfTrackHandle->end(); ++ig) {
-      gsfPt_ .push_back(ig->pt());
-      gsfEta_.push_back(ig->eta());
-      gsfPhi_.push_back(ig->phi());
-      nGSFTrk_++;
+  edm::Handle<edm::View<reco::GsfTrack> > GsfTrackHandle;
+  e.getByToken(gsfTracks_, GsfTrackHandle);
+  
+  //edm::Handle<reco::ConversionCollection> conversionsCollection;
+  //e.getByToken(conversionsCollection_, conversionsCollection);
+
+  //edm::Handle<reco::BeamSpot> beamSpotHandle;
+  //e.getByToken(beamSpot_, beamSpotHandle);
+
+  nGSFTrk_     = 0;
+  gsfPt_      .clear();
+  gsfEta_     .clear();
+  gsfPhi_     .clear();
+  gsfCharge_  .clear(); 
+  gsfLayers_  .clear();
+  gsfMissHits_.clear();
+  gsfD0_      .clear();
+  gsfDz_      .clear();
+
+  for (edm::View<reco::GsfTrack>::const_iterator ig = GsfTrackHandle->begin(); ig != GsfTrackHandle->end(); ++ig) {
+    gsfPt_      .push_back(ig->pt());
+    gsfEta_     .push_back(ig->eta());
+    gsfPhi_     .push_back(ig->phi());
+    gsfCharge_  .push_back(ig->charge());
+    gsfLayers_  .push_back(ig->hitPattern().trackerLayersWithMeasurement());
+    gsfMissHits_.push_back(ig->hitPattern().numberOfAllHits(reco::HitPattern::MISSING_INNER_HITS));
+    gsfD0_      .push_back(ig->dxy(pv));
+    gsfDz_      .push_back(ig->dz(pv));
+
+    /*
+    for (reco::ConversionCollection::const_iterator conv = conversionsCollection->begin(); conv!= conversionsCollection->end(); ++conv) {
+      math::XYZVector mom(conv->refittedPairMomentum());
     }
-    
+    */
+
+    nGSFTrk_++;
   }
   
 }
