@@ -184,7 +184,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07"] = 30; //HLT_IsoMu24 (2017)
     muFilters["hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07"] = 31; //HLT_IsoMu27 (2017)
 
-    if ( year_ == 2016 )
+    if ( this->Year(e) == 2016 )
     {
        phoSingleFilters["hltEG22HEFilter"]      = 0;
        phoSingleFilters["hltEG30HEFilter"]      = 1;
@@ -206,7 +206,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 16;
        phoSingleFilters["hltEG250erEtFilter"]                   = 17;
     }
-    else if ( year_ == 2017 )
+    else if ( this->Year(e) == 2017 )
     {
        phoSingleFilters["hltEG25L1EG18HEFilter"]= 0;
        phoSingleFilters["hltEG33L1EG26HEFilter"]= 1;
@@ -227,7 +227,7 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
        phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"]   = 15;
        phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"]   = 16;
     }
-    else if ( year_ == 2018 )
+    else if ( this->Year(e) == 2018 )
     {
        phoSingleFilters["hltEG33L1EG26HEFilter"]= 0;
        phoSingleFilters["hltEG50HEFilter"]      = 1;

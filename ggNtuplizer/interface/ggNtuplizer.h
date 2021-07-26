@@ -97,6 +97,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   void cleanupPhotons();
   bool UpdatedJet_secvtx() const;
+  int Year(const edm::Event&) const;
 
   bool development_;
   bool addFilterInfoMINIAOD_;  
