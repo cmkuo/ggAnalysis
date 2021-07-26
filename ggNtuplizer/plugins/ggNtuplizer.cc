@@ -54,7 +54,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   conversionsCollection_     = consumes<reco::ConversionCollection>    (ps.getParameter<InputTag>("conversionsSrc"));
   beamSpot_                  = consumes<reco::BeamSpot>                (ps.getParameter<edm::InputTag>("beamSpotSrc"));
 
-  ecalBadCalibFilterUpdate_  = consumes<bool>                          (ps.getParameter<InputTag>("ecalBadCalibReducedMINIAODFilter"));
+  BadPFMuonFilterUpdateDz_   = consumes<bool>                          (ps.getParameter<InputTag>("BadPFMuonFilterUpdateDz"));
 
   photonCollection_          = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("photonSrc"));
   ootPhotonCollection_       = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("ootPhotonSrc"));

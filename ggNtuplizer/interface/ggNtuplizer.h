@@ -167,7 +167,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::ESHandle<CaloTopology>                       topology_;
 
   // for MET filters
-  edm::EDGetTokenT<bool> ecalBadCalibFilterUpdate_;
+  edm::EDGetTokenT<bool> BadPFMuonFilterUpdateDz_;
 
   //check
   edm::EDGetToken gsfEle_;

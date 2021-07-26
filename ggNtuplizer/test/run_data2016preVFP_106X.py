@@ -51,25 +51,6 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
-### update JEC
-process.load("PhysicsTools.PatAlgos.producersLayer1.jetUpdater_cff")
-process.jetCorrFactors = process.updatedPatJetCorrFactors.clone(
-    src = cms.InputTag("slimmedJets"),
-    levels = ['L1FastJet', 'L2Relative', 'L3Absolute', 'L2L3Residual'],
-    payload = 'AK4PFchs') 
-
-process.slimmedJetsJEC = process.updatedPatJets.clone(
-    jetSource = cms.InputTag("slimmedJets"),
-    jetCorrFactorsSource = cms.VInputTag(cms.InputTag("jetCorrFactors"))
-    )
-
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-        process,
-        isData = True,
-        postfix = "ModifiedMET"
-)
-
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
 process.ggNtuplizer.year=cms.int32(2016)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
@@ -79,10 +60,11 @@ process.ggNtuplizer.dumpJets=cms.bool(True)
 process.ggNtuplizer.dumpAK8Jets=cms.bool(False)
 process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
-process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
-process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
+#process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
+#process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
 #process.ggNtuplizer.patTriggerResults=cms.InputTag("TriggerResults", "", "DQM")
 process.ggNtuplizer.addFilterInfoMINIAOD=cms.bool(True)
+process.load("ggAnalysis.ggNtuplizer.ggMETFilters_cff")
 
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("slimmedMuons"),
@@ -91,11 +73,12 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    fractionOfSharedSegments = cms.double(0.499))
 
 process.p = cms.Path(
-    process.fullPatMetSequenceModifiedMET *
+#    process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
     process.cleanedMu *
-    process.jetCorrFactors *
-    process.slimmedJetsJEC *
+    process.ggMETFiltersSequence *
+#    process.jetCorrFactors *
+#    process.slimmedJetsJEC *
     process.ggNtuplizer
     )
 

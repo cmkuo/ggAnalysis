@@ -76,8 +76,8 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       "Flag_eeBadScFilter",
       "Flag_EcalDeadCellTriggerPrimitiveFilter",
       "Flag_BadPFMuonFilter",
-      "Flag_ecalBadCalibReducedMINIAODFilter",
-      "Flag_BadChargedCandidateFilter"
+      "Flag_BadChargedCandidateFilter",
+      "Flag_BadPFMuonDzFilter"
     };
 
     edm::Handle<edm::TriggerResults> patFilterResultsHandle;
@@ -86,7 +86,7 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
     
     auto&& filterNames = e.triggerNames(patFilterResults);
 
-    // === the following lines allow us to find the filters stored in the event ! ===
+    // === the following lines allow us to find the filters stored in the event ! ===    
     /*
     edm::TriggerNames const& triggerNames = e.triggerNames(patFilterResults);
     for ( edm::TriggerNames::Strings::const_iterator triggerName = triggerNames.triggerNames().begin();
@@ -97,25 +97,22 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
 	  
 	std::cout << " triggerName = " << (*triggerName) << " " << triggerDecision << std::endl;
       }
-    }    
+    }        
     */
-    
+
     for (unsigned iF = 0; iF < 9; ++iF) {
       unsigned index = filterNames.triggerIndex(filterNamesToCheck[iF]);
+
       if ( index == filterNames.size() ) {
 	//std::cout<<filterNamesToCheck[iF] << " is missing, exiting"<<std::endl;
-
-	edm::Handle<bool> passecalBadCalibFilterUpdate;
-	e.getByToken(ecalBadCalibFilterUpdate_, passecalBadCalibFilterUpdate);
-	if (passecalBadCalibFilterUpdate.isValid()) {
-	  bool passecalBadCalibFilterUpdate_ = (*passecalBadCalibFilterUpdate);	
-	  if (passecalBadCalibFilterUpdate_) metFilters_ += pow(2, iF+1);
+	edm::Handle<bool> passBadPFMuonFilterUpdateDz;
+	e.getByToken(BadPFMuonFilterUpdateDz_, passBadPFMuonFilterUpdateDz);
+	if (passBadPFMuonFilterUpdateDz.isValid()) {
+	  bool passBadPFMuonFilterUpdateDz_ = (*passBadPFMuonFilterUpdateDz);	
+	  if (!passBadPFMuonFilterUpdateDz_) metFilters_ += pow(2, iF+1);
 	}
-
-      } else {
-	if ( !patFilterResults.accept(index) ) {
-	  metFilters_ += pow(2, iF+1);
-	}
+      } else {	
+	if (!patFilterResults.accept(index)) metFilters_ += pow(2, iF+1);	
       }
     }
   } 
