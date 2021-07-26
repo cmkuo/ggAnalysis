@@ -1,17 +1,17 @@
-#### Current production tag : 
-#### Newest tag for testing : 
-#### Note that the current head version can be run with CMSSW_10_6_1
+#### This is the version to be used for Run-2 UL analysis
 
-##### To work with CMSSW_10_6_1 and head version, you do :
+##### To work with CMSSW_10_6_20 and head version, you do :
 
-cmsrel CMSSW_10_6_1 <br>	
-cd CMSSW_10_6_1/src <br>
+cmsrel CMSSW_10_6_20 <br>	
+cd CMSSW_10_6_20/src <br>
 cmsenv <br>
 git cms-init <br>
-git cms-merge-topic jainshilpi:ULV0_forusers <br>
-git clone https://github.com/jainshilpi/EgammaPostRecoTools.git -b ULV0 <br>
+
+git cms-addpkg RecoEgamma/EgammaTools  <br>
+git clone https://github.com/cms-egamma/EgammaPostRecoTools.git <br>
 mv EgammaPostRecoTools/python/EgammaPostRecoTools.py RecoEgamma/EgammaTools/python/. <br>
-git clone https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git -b UL2017SSV2 EgammaAnalysis/ElectronTools/data/ <br>
+git clone -b ULSSfiles_correctScaleSysMC https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data/ <br>
+git cms-addpkg EgammaAnalysis/ElectronTools <br>
 scram b -j 8 <br>
 git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
 git clone -b 106X https://github.com/cmkuo/ggAnalysis.git <br>
