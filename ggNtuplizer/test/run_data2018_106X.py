@@ -52,7 +52,7 @@ runOnData( process,  names=['Photons', 'Electrons','Muons','Taus','Jets'], outpu
 process.TFileService = cms.Service("TFileService", fileName = cms.string('ggtree_data.root'))
 
 process.load("ggAnalysis.ggNtuplizer.ggNtuplizer_miniAOD_cfi")
-process.ggNtuplizer.year=cms.int32(2016)
+process.ggNtuplizer.year=cms.int32(2018)
 process.ggNtuplizer.doGenParticles=cms.bool(False)
 process.ggNtuplizer.dumpPFPhotons=cms.bool(True)
 process.ggNtuplizer.dumpHFElectrons=cms.bool(False)
