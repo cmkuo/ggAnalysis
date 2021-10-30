@@ -13,13 +13,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
 
-   // testing
-   std::cout << " ulong64_t testing\n";
-   for ( int i=0; i<64; ++i )
-   { std::cout << (1ULL<<i) << std::endl; }
-   tester = 0;
-   // tested
-
   development_               = ps.getParameter<bool>("development");
   addFilterInfoMINIAOD_      = ps.getParameter<bool>("addFilterInfoMINIAOD");
   doNoHFMET_                 = ps.getParameter<bool>("doNoHFMET");
@@ -35,6 +28,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   dumpHFElectrons_           = ps.getParameter<bool>("dumpHFElectrons");
+  testing_                   = ps.getParameter<bool>("testing");
   year_                      = ps.getParameter<int>("year");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
@@ -118,13 +112,6 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 }
 
 ggNtuplizer::~ggNtuplizer() {
-   // testing
-   std::cout << "recorded photon trigger\n";
-   for ( int i=0; i<64; ++i )
-      if ( tester & (1ULL<<i) )
-         std::cout << i << std::endl;
-   std::cout << std::hex << tester << std::endl;
-   // tested
   cleanupPhotons();
   cleanupOOTPhotons();
   delete cicPhotonId_;
@@ -198,5 +185,15 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 }
 //bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
 bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
+bool ggNtuplizer::testing() const { return testing_; }
+int  ggNtuplizer::Year(const edm::Event& evt) const
+{
+    int y=0;
+    if      ( 271036 < evt.id().run() && evt.id().run() < 284044 ) y=2016;
+    else if ( 294645 < evt.id().run() && evt.id().run() < 306462 ) y=2017;
+    else if ( 315252 < evt.id().run() && evt.id().run() < 325765 ) y=2018;
+    if ( y != year_ && evt.id().run()!=1 ) std::cerr << "warning : input year=" << year_ << " and calculated year = "<<y<< std::endl;
+    return year_;
+}
 
 DEFINE_FWK_MODULE(ggNtuplizer);
