@@ -102,6 +102,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void cleanupPhotons();
   void cleanupOOTPhotons();
   bool UpdatedJet_secvtx() const;
+  bool testing() const;
+  int Year(const edm::Event&) const;
 
   bool development_;
   bool addFilterInfoMINIAOD_;  
@@ -117,6 +119,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpSoftDrop_;
   bool dumpPDFSystWeight_;
   bool dumpHFElectrons_;
+  bool testing_;
   int  year_;
 
   vector<int> newparticles_;
