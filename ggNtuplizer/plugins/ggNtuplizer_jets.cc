@@ -52,6 +52,17 @@ vector<float>  jetDeepCSVTags_b_;
 vector<float>  jetDeepCSVTags_bb_;
 vector<float>  jetDeepCSVTags_c_;
 vector<float>  jetDeepCSVTags_udsg_;
+
+vector<float>  jetDeepFlavourTags_b_;
+vector<float>  jetDeepFlavourTags_c_;
+vector<float>  jetDeepFlavourTags_g_;
+vector<float>  jetDeepFlavourTags_lepb_;
+vector<float>  jetDeepFlavourTags_bb_;
+vector<float>  jetDeepFlavourTags_uds_;
+vector<float>  jetDeepCSVDiscriminatorTags_BvsAll_;
+vector<float>  jetDeepCSVDiscriminatorTags_CvsB_;
+vector<float>  jetDeepCSVDiscriminatorTags_CvsL_;
+
 vector<int>    jetPartonID_;
 vector<int>    jetHadFlvr_;
 vector<bool>   jetPFLooseId_;
@@ -98,6 +109,17 @@ void ggNtuplizer::branchesJets(TTree* tree) {
   tree->Branch("jetDeepCSVTags_bb",   &jetDeepCSVTags_bb_);
   tree->Branch("jetDeepCSVTags_c",    &jetDeepCSVTags_c_);
   tree->Branch("jetDeepCSVTags_udsg", &jetDeepCSVTags_udsg_);
+
+  tree->Branch("jetDeepFlavourTags_b"                , &jetDeepFlavourTags_b_);
+  tree->Branch("jetDeepFlavourTags_c"                , &jetDeepFlavourTags_c_);
+  tree->Branch("jetDeepFlavourTags_g"                , &jetDeepFlavourTags_g_);
+  tree->Branch("jetDeepFlavourTags_lepb"             , &jetDeepFlavourTags_lepb_);
+  tree->Branch("jetDeepFlavourTags_bb"               , &jetDeepFlavourTags_bb_);
+  tree->Branch("jetDeepFlavourTags_uds"              , &jetDeepFlavourTags_uds_);
+  tree->Branch("jetDeepCSVDiscriminatorTags_BvsAll"  , &jetDeepCSVDiscriminatorTags_BvsAll_);
+  tree->Branch("jetDeepCSVDiscriminatorTags_CvsB"    , &jetDeepCSVDiscriminatorTags_CvsB_);
+  tree->Branch("jetDeepCSVDiscriminatorTags_CvsL"    , &jetDeepCSVDiscriminatorTags_CvsL_);
+
   if (doGenParticles_){
     tree->Branch("jetPartonID",       &jetPartonID_);
     tree->Branch("jetHadFlvr",        &jetHadFlvr_);
@@ -165,6 +187,17 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   jetDeepCSVTags_bb_                      .clear();
   jetDeepCSVTags_c_                       .clear();
   jetDeepCSVTags_udsg_                    .clear();
+
+  jetDeepFlavourTags_b_.clear();
+  jetDeepFlavourTags_c_.clear();
+  jetDeepFlavourTags_g_.clear();
+  jetDeepFlavourTags_lepb_.clear();
+  jetDeepFlavourTags_bb_.clear();
+  jetDeepFlavourTags_uds_.clear();
+  jetDeepCSVDiscriminatorTags_BvsAll_.clear();
+  jetDeepCSVDiscriminatorTags_CvsB_.clear();
+  jetDeepCSVDiscriminatorTags_CvsL_.clear();
+
   jetPartonID_                            .clear();
   jetHadFlvr_                             .clear();
   jetPFLooseId_                           .clear();
@@ -213,12 +246,6 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     e.getByToken(jetsAK4Label_, jetHandle);
   }
 
-  edm::Handle<edm::View<pat::Jet> > nanoUpdatedJetsHandle;
-  e.getByToken(nanoUpdatedUserJetsLabel_, nanoUpdatedJetsHandle);
-  
-  if ( !nanoUpdatedJetsHandle.isValid()) { edm::LogWarning("ggNtuplizer") << "---- updated jets from nanoAOD is not found in the event"; std::cerr << "nano updated jet not found!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n"; return; }
-
-
   if (!jetHandle.isValid()) {
     edm::LogWarning("ggNtuplizer") << "no pat::Jets (AK4) in event";
     return;
@@ -243,12 +270,7 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
   JetCorrectionUncertainty *jecUnc=0;
   jecUnc = new JetCorrectionUncertainty(JetCorPar);
 
-  // for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet)
-  for ( unsigned int iI=0; iI<jetHandle->size(); ++iI )
-  {
-     // ++UJetIter;
-     edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin() + iI;
-     edm::View<pat::Jet>::const_iterator UJetIter = nanoUpdatedJetsHandle->begin() + iI;
+  for (edm::View<pat::Jet>::const_iterator iJet = jetHandle->begin(); iJet != jetHandle->end(); ++iJet) {
 
     if (iJet->pt() < 20) continue;
     jetPt_.push_back(    iJet->pt());
@@ -347,6 +369,16 @@ void ggNtuplizer::fillJets(const edm::Event& e, const edm::EventSetup& es) {
     jetDeepCSVTags_bb_  .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probbb"));
     jetDeepCSVTags_c_   .push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probc"));
     jetDeepCSVTags_udsg_.push_back(iJet->bDiscriminator("pfDeepCSVJetTags:probudsg"));
+
+    jetDeepFlavourTags_b_                .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probb"));
+    jetDeepFlavourTags_c_                .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probc"));
+    jetDeepFlavourTags_g_                .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probg"));
+    jetDeepFlavourTags_lepb_             .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:problepb"));
+    jetDeepFlavourTags_bb_               .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probbb"));
+    jetDeepFlavourTags_uds_              .push_back(iJet->bDiscriminator("pfDeepFlavourJetTags:probuds"));
+    jetDeepCSVDiscriminatorTags_BvsAll_  .push_back(iJet->bDiscriminator("pfDeepCSVDiscriminatorsJetTags:BvsAll"));
+    jetDeepCSVDiscriminatorTags_CvsB_    .push_back(iJet->bDiscriminator("pfDeepCSVDiscriminatorsJetTags:CvsB"));
+    jetDeepCSVDiscriminatorTags_CvsL_    .push_back(iJet->bDiscriminator("pfDeepCSVDiscriminatorsJetTags:CvsL"));
   
     //parton id
     jetPartonID_.push_back(iJet->partonFlavour());
