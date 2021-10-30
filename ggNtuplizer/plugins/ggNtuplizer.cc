@@ -192,8 +192,14 @@ int  ggNtuplizer::Year(const edm::Event& evt) const
     if      ( 271036 < evt.id().run() && evt.id().run() < 284044 ) y=2016;
     else if ( 294645 < evt.id().run() && evt.id().run() < 306462 ) y=2017;
     else if ( 315252 < evt.id().run() && evt.id().run() < 325765 ) y=2018;
-    if ( y != year_ && evt.id().run()!=1 ) std::cerr << "warning : input year=" << year_ << " and calculated year = "<<y<< std::endl;
-    return year_;
+    if ( evt.id().run() == 1 )
+    {
+        printf("MC found: Use input year\n");
+        return year_;
+    }
+    if ( y != year_ )
+        std::cerr << "warning : input year:" << year_ << " is different from calculated year:" << y << ". Use calculated year\n";
+    return y;
 }
 
 DEFINE_FWK_MODULE(ggNtuplizer);
