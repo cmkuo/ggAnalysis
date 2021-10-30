@@ -96,7 +96,6 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    preselection = cms.string("track.isNonnull"),
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
-
 process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
 process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.InputTag('updatedJetsWithUserData')
 
