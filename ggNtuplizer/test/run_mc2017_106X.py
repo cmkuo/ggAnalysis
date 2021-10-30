@@ -10,7 +10,7 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '102X_upgrade2018_realistic_v18')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_mc2017_realistic_v8')
 
 #process.Tracer = cms.Service("Tracer")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -18,7 +18,7 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-                                '/store/mc/RunIISummer19UL17MiniAOD/DYJetsToLL_M-50_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/106X_mc2017_realistic_v6-v2/280000/FA2E91EA-C126-BF43-BCFA-54E3AB1D7CEA.root'
+                                '/store/mc/RunIISummer19UL17MiniAODv2/ZGTo2NuG_EtG075_TuneCP5_VBS_13TeV-madgraph-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/270000/47DD1386-3258-434E-8F4C-3C2D65AC6781.root'
                             ))
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
@@ -30,6 +30,7 @@ process.load( "PhysicsTools.PatAlgos.selectionLayer1.selectedPatCandidates_cff" 
 from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=True,
+                       runEnergyCorrections=True,
                        era='2017-UL',
                        eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
                                      'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
@@ -53,16 +54,6 @@ process.slimmedJetsJEC = process.updatedPatJets.clone(
     jetCorrFactorsSource = cms.VInputTag(cms.InputTag("jetCorrFactors"))
     )
 
-### reduce effect of high eta EE noise on the PF MET measurement
-from PhysicsTools.PatUtils.tools.runMETCorrectionsAndUncertainties import runMetCorAndUncFromMiniAOD
-runMetCorAndUncFromMiniAOD (
-        process,
-        isData = False, # false for MC
-        fixEE2017 = True,
-        fixEE2017Params = {'userawPt': True, 'ptThreshold':50.0, 'minEtaThreshold':2.65, 'maxEtaThreshold': 3.139} ,
-        postfix = "ModifiedMET"
-)
-
 # random generator for jet smearing
 process.RandomNumberGeneratorService = cms.Service("RandomNumberGeneratorService",
                                                    ggNtuplizer  = cms.PSet(
@@ -82,7 +73,7 @@ process.ggNtuplizer.dumpSoftDrop= cms.bool(True)
 process.ggNtuplizer.dumpTaus=cms.bool(False)
 process.ggNtuplizer.triggerEvent=cms.InputTag("slimmedPatTrigger", "", "PAT")
 process.ggNtuplizer.ak4JetSrc=cms.InputTag("slimmedJetsJEC")
-process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
+#process.ggNtuplizer.pfMETLabel=cms.InputTag("slimmedMETsModifiedMET")
 
 process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    src = cms.InputTag("slimmedMuons"),
@@ -91,7 +82,7 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    fractionOfSharedSegments = cms.double(0.499))
 
 process.p = cms.Path(
-    process.fullPatMetSequenceModifiedMET *
+#    process.fullPatMetSequenceModifiedMET *
     process.egammaPostRecoSeq *
     process.cleanedMu *
     process.jetCorrFactors *

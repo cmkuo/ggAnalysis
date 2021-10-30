@@ -1,6 +1,7 @@
 #include <TString.h>
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "RecoEcal/EgammaCoreTools/interface/EcalClusterLazyTools.h"
+#include "RecoCaloTools/Navigation/interface/CaloRectangle.h"
 #include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
 
 using namespace std;
@@ -37,8 +38,9 @@ vector<float>  phoPFChIso_;
 vector<float>  phoPFChPVIso_;
 vector<float>  phoPFPhoIso_;
 vector<float>  phoPFNeuIso_;
-vector<float>  phoPFChWorstVetoIso_;
 vector<float>  phoPFChWorstIso_;
+vector<float>  phoPFChWorstVetoIso_;
+vector<float>  phoTrkIsoHollowConeDR03_;
 vector<float>  phoEcalPFClusterIso_;
 vector<float>  phoHcalPFClusterIso_;
 //vector<float>  phoSeedBCE_;
@@ -52,11 +54,11 @@ vector<float>  phoSeedTime_;
 vector<float>  phoSeedEnergy_;
 vector<float>  phoMIPTotEnergy_;
 //vector<float>  phoSeedTimeFull5x5_;
-vector<float>  phoMIPChi2_;
-vector<float>  phoMIPSlope_;
-vector<float>  phoMIPIntercept_;
-vector<float>  phoMIPNhitCone_;
-vector<float>  phoMIPIsHalo_;
+//vector<float>  phoMIPChi2_;
+//vector<float>  phoMIPSlope_;
+//vector<float>  phoMIPIntercept_;
+//vector<float>  phoMIPNhitCone_;
+//vector<float>  phoMIPIsHalo_;
 vector<UShort_t> phoxtalBits_;
 vector<UShort_t> phoIDbit_;
 vector<float>    phoScale_stat_up_;
@@ -83,58 +85,59 @@ bool isInFootprint(const T& thefootprint, const U& theCandidate) {
 
 void ggNtuplizer::branchesPhotons(TTree* tree) {
   
-  tree->Branch("nPho",                    &nPho_);
-  tree->Branch("phoE",                    &phoE_);
-  tree->Branch("phoSigmaE",               &phoSigmaE_);
-  tree->Branch("phoEt",                   &phoEt_);
-  tree->Branch("phoEta",                  &phoEta_);
-  tree->Branch("phoPhi",                  &phoPhi_);
-  tree->Branch("phoCalibE",               &phoCalibE_);
-  tree->Branch("phoCalibEt",              &phoCalibEt_);
-  tree->Branch("phoSCE",                  &phoSCE_);
-  tree->Branch("phoSCRawE",               &phoSCRawE_);
-  tree->Branch("phoESEnP1",               &phoESEnP1_);
-  tree->Branch("phoESEnP2",               &phoESEnP2_);
-  tree->Branch("phoSCEta",                &phoSCEta_);
-  tree->Branch("phoSCPhi",                &phoSCPhi_);
-  tree->Branch("phoSCEtaWidth",           &phoSCEtaWidth_);
-  tree->Branch("phoSCPhiWidth",           &phoSCPhiWidth_);
-  tree->Branch("phoSCBrem",               &phoSCBrem_);
-  tree->Branch("phohasPixelSeed",         &phohasPixelSeed_);
-  tree->Branch("phoEleVeto",              &phoEleVeto_);
-  tree->Branch("phoR9",                   &phoR9_);
-  tree->Branch("phoHoverE",               &phoHoverE_);
-  tree->Branch("phoESEffSigmaRR",         &phoESEffSigmaRR_);
-  tree->Branch("phoSigmaIEtaIEtaFull5x5", &phoSigmaIEtaIEtaFull5x5_);
-  tree->Branch("phoSigmaIEtaIPhiFull5x5", &phoSigmaIEtaIPhiFull5x5_);
-  tree->Branch("phoSigmaIPhiIPhiFull5x5", &phoSigmaIPhiIPhiFull5x5_);
-  tree->Branch("phoE2x2Full5x5",          &phoE2x2Full5x5_);
-  tree->Branch("phoE5x5Full5x5",          &phoE5x5Full5x5_);
-  tree->Branch("phoR9Full5x5",            &phoR9Full5x5_);
+  tree->Branch("nPho",                      &nPho_);
+  tree->Branch("phoE",                      &phoE_);
+  tree->Branch("phoSigmaE",                 &phoSigmaE_);
+  tree->Branch("phoEt",                     &phoEt_);
+  tree->Branch("phoEta",                    &phoEta_);
+  tree->Branch("phoPhi",                    &phoPhi_);
+  tree->Branch("phoCalibE",                 &phoCalibE_);
+  tree->Branch("phoCalibEt",                &phoCalibEt_);
+  tree->Branch("phoSCE",                    &phoSCE_);
+  tree->Branch("phoSCRawE",                 &phoSCRawE_);
+  tree->Branch("phoESEnP1",                 &phoESEnP1_);
+  tree->Branch("phoESEnP2",                 &phoESEnP2_);
+  tree->Branch("phoSCEta",                  &phoSCEta_);
+  tree->Branch("phoSCPhi",                  &phoSCPhi_);
+  tree->Branch("phoSCEtaWidth",             &phoSCEtaWidth_);
+  tree->Branch("phoSCPhiWidth",             &phoSCPhiWidth_);
+  tree->Branch("phoSCBrem",                 &phoSCBrem_);
+  tree->Branch("phohasPixelSeed",           &phohasPixelSeed_);
+  tree->Branch("phoEleVeto",                &phoEleVeto_);
+  tree->Branch("phoR9",                     &phoR9_);
+  tree->Branch("phoHoverE",                 &phoHoverE_);
+  tree->Branch("phoESEffSigmaRR",           &phoESEffSigmaRR_);
+  tree->Branch("phoSigmaIEtaIEtaFull5x5",   &phoSigmaIEtaIEtaFull5x5_);
+  tree->Branch("phoSigmaIEtaIPhiFull5x5",   &phoSigmaIEtaIPhiFull5x5_);
+  tree->Branch("phoSigmaIPhiIPhiFull5x5",   &phoSigmaIPhiIPhiFull5x5_);
+  tree->Branch("phoE2x2Full5x5",            &phoE2x2Full5x5_);
+  tree->Branch("phoE5x5Full5x5",            &phoE5x5Full5x5_);
+  tree->Branch("phoR9Full5x5",              &phoR9Full5x5_);
   //tree->Branch("phoSeedBCE",              &phoSeedBCE_);
   //tree->Branch("phoSeedBCEta",            &phoSeedBCEta_);
-  tree->Branch("phoPFChIso",              &phoPFChIso_);
-  tree->Branch("phoPFChPVIso",            &phoPFChPVIso_);
-  tree->Branch("phoPFPhoIso",             &phoPFPhoIso_);
-  tree->Branch("phoPFNeuIso",             &phoPFNeuIso_);
-  tree->Branch("phoPFChWorstIso",         &phoPFChWorstIso_);
-  tree->Branch("phoPFChWorstVetoIso",     &phoPFChWorstVetoIso_);
-  tree->Branch("phoEcalPFClusterIso",     &phoEcalPFClusterIso_);
-  tree->Branch("phoHcalPFClusterIso",     &phoHcalPFClusterIso_);
-  tree->Branch("phoIDMVA",                &phoIDMVA_);
-  tree->Branch("phoFiredSingleTrgs",      &phoFiredSingleTrgs_);
-  tree->Branch("phoFiredDoubleTrgs",      &phoFiredDoubleTrgs_);
-  tree->Branch("phoFiredTripleTrgs",      &phoFiredTripleTrgs_);
-  tree->Branch("phoFiredL1Trgs",          &phoFiredL1Trgs_);
-  tree->Branch("phoSeedTime",             &phoSeedTime_);
-  tree->Branch("phoSeedEnergy",           &phoSeedEnergy_);
-  tree->Branch("phoMIPTotEnergy",         &phoMIPTotEnergy_);
+  tree->Branch("phoPFChIso",                &phoPFChIso_);
+  tree->Branch("phoPFChPVIso",              &phoPFChPVIso_);
+  tree->Branch("phoPFPhoIso",               &phoPFPhoIso_);
+  tree->Branch("phoPFNeuIso",               &phoPFNeuIso_);
+  tree->Branch("phoPFChWorstIso",           &phoPFChWorstIso_);
+  tree->Branch("phoPFChWorstVetoIso",       &phoPFChWorstVetoIso_);
+  tree->Branch("phoTrkIsoHollowConeDR03",   &phoTrkIsoHollowConeDR03_);
+  tree->Branch("phoEcalPFClusterIso",       &phoEcalPFClusterIso_);
+  tree->Branch("phoHcalPFClusterIso",       &phoHcalPFClusterIso_);
+  tree->Branch("phoIDMVA",                  &phoIDMVA_);
+  tree->Branch("phoFiredSingleTrgs",        &phoFiredSingleTrgs_);
+  tree->Branch("phoFiredDoubleTrgs",        &phoFiredDoubleTrgs_);
+  tree->Branch("phoFiredTripleTrgs",        &phoFiredTripleTrgs_);
+  tree->Branch("phoFiredL1Trgs",            &phoFiredL1Trgs_);
+  tree->Branch("phoSeedTime",               &phoSeedTime_);
+  tree->Branch("phoSeedEnergy",             &phoSeedEnergy_);
+  tree->Branch("phoMIPTotEnergy",           &phoMIPTotEnergy_);
   //tree->Branch("phoSeedTimeFull5x5",              &phoSeedTimeFull5x5_);
-  tree->Branch("phoMIPChi2",                      &phoMIPChi2_);
-  tree->Branch("phoMIPSlope",                     &phoMIPSlope_);
-  tree->Branch("phoMIPIntercept",                 &phoMIPIntercept_);
-  tree->Branch("phoMIPNhitCone",                  &phoMIPNhitCone_);
-  tree->Branch("phoMIPIsHalo",                    &phoMIPIsHalo_);
+  //tree->Branch("phoMIPChi2",                      &phoMIPChi2_);
+  //tree->Branch("phoMIPSlope",                     &phoMIPSlope_);
+  //tree->Branch("phoMIPIntercept",                 &phoMIPIntercept_);
+  //tree->Branch("phoMIPNhitCone",                  &phoMIPNhitCone_);
+  //tree->Branch("phoMIPIsHalo",                    &phoMIPIsHalo_);
 
   tree->Branch("phoxtalBits",      &phoxtalBits_);
   tree->Branch("phoIDbit",         &phoIDbit_);
@@ -185,8 +188,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoPFChPVIso_           .clear();
   phoPFPhoIso_            .clear();
   phoPFNeuIso_            .clear();
-  phoPFChWorstVetoIso_    .clear();
   phoPFChWorstIso_        .clear();
+  phoPFChWorstVetoIso_    .clear();
+  phoTrkIsoHollowConeDR03_.clear();
   phoEcalPFClusterIso_    .clear();
   phoHcalPFClusterIso_    .clear();
   //phoSeedBCE_           .clear();
@@ -199,13 +203,15 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoxtalBits_            .clear();
   phoSeedTime_            .clear();
   phoSeedEnergy_          .clear();
-  phoMIPTotEnergy_        .clear();  
-  //phoSeedTimeFull5x5_   .clear();
+  phoMIPTotEnergy_        .clear();
+  /*
+  phoSeedTimeFull5x5_   .clear();
   phoMIPChi2_           .clear();
   phoMIPSlope_          .clear();
   phoMIPIntercept_      .clear();
   phoMIPNhitCone_       .clear();
   phoMIPIsHalo_         .clear();
+  */
 
   phoIDbit_        .clear();
   phoScale_stat_up_.clear();
@@ -237,36 +243,35 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 
   for (edm::View<pat::Photon>::const_iterator iPho = photonHandle->begin(); iPho != photonHandle->end(); ++iPho) {
 
-    phoE_               .push_back(iPho->energy());
-    phoCalibE_          .push_back(iPho->userFloat("ecalEnergyPostCorr"));
-    phoEt_              .push_back(iPho->et());
-    phoCalibEt_         .push_back(iPho->et()*iPho->userFloat("ecalEnergyPostCorr")/iPho->energy());
-    phoSigmaE_          .push_back(iPho->userFloat("ecalEnergyErrPostCorr"));
-    phoEta_             .push_back(iPho->eta());
-    phoPhi_             .push_back(iPho->phi());
-    phoSCE_             .push_back((*iPho).superCluster()->energy());
-    phoSCRawE_          .push_back((*iPho).superCluster()->rawEnergy());
-    phoESEnP1_          .push_back((*iPho).superCluster()->preshowerEnergyPlane1());
-    phoESEnP2_          .push_back((*iPho).superCluster()->preshowerEnergyPlane2());
-    phoSCEta_           .push_back((*iPho).superCluster()->eta());
-    phoSCPhi_           .push_back((*iPho).superCluster()->phi());
-    phoSCEtaWidth_      .push_back((*iPho).superCluster()->etaWidth());
-    phoSCPhiWidth_      .push_back((*iPho).superCluster()->phiWidth());
-    phoSCBrem_          .push_back((*iPho).superCluster()->phiWidth()/(*iPho).superCluster()->etaWidth());
-    phohasPixelSeed_    .push_back((Int_t)iPho->hasPixelSeed());
-    phoEleVeto_         .push_back((Int_t)iPho->passElectronVeto());
-    phoR9_              .push_back(iPho->r9());
-    phoHoverE_          .push_back(iPho->hadTowOverEm());
-    phoESEffSigmaRR_    .push_back(lazyTool.eseffsirir(*((*iPho).superCluster())));
-    phoPFChIso_         .push_back(iPho->chargedHadronIso()); 
-    phoPFChPVIso_       .push_back(iPho->chargedHadronPFPVIso()); 
-    phoPFPhoIso_        .push_back(iPho->photonIso());
-    phoPFNeuIso_        .push_back(iPho->neutralHadronIso());
-    phoPFChWorstIso_    .push_back(iPho->chargedHadronWorstVtxIso()); 
-    phoPFChWorstVetoIso_.push_back(iPho->chargedHadronWorstVtxGeomVetoIso());
-    phoEcalPFClusterIso_.push_back(iPho->ecalPFClusterIso());
-    phoHcalPFClusterIso_.push_back(iPho->hcalPFClusterIso());
-    phoIDMVA_           .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
+    phoE_                     .push_back(iPho->energy());
+    phoCalibE_                .push_back(iPho->userFloat("ecalEnergyPostCorr"));
+    phoEt_                    .push_back(iPho->et());
+    phoCalibEt_               .push_back(iPho->et()*iPho->userFloat("ecalEnergyPostCorr")/iPho->energy());
+    phoSigmaE_                .push_back(iPho->userFloat("ecalEnergyErrPostCorr"));
+    phoEta_                   .push_back(iPho->eta());
+    phoPhi_                   .push_back(iPho->phi());
+    phoSCE_                   .push_back((*iPho).superCluster()->energy());
+    phoSCRawE_                .push_back((*iPho).superCluster()->rawEnergy());
+    phoESEnP1_                .push_back((*iPho).superCluster()->preshowerEnergyPlane1());
+    phoESEnP2_                .push_back((*iPho).superCluster()->preshowerEnergyPlane2());
+    phoSCEta_                 .push_back((*iPho).superCluster()->eta());
+    phoSCPhi_                 .push_back((*iPho).superCluster()->phi());
+    phoSCEtaWidth_            .push_back((*iPho).superCluster()->etaWidth());
+    phoSCPhiWidth_            .push_back((*iPho).superCluster()->phiWidth());
+    phoSCBrem_                .push_back((*iPho).superCluster()->phiWidth()/(*iPho).superCluster()->etaWidth());
+    phohasPixelSeed_          .push_back((Int_t)iPho->hasPixelSeed());
+    phoEleVeto_               .push_back((Int_t)iPho->passElectronVeto());
+    phoR9_                    .push_back(iPho->r9());
+    phoHoverE_                .push_back(iPho->hadTowOverEm());
+    phoESEffSigmaRR_          .push_back(lazyTool.eseffsirir(*((*iPho).superCluster())));
+    phoPFChIso_               .push_back(iPho->chargedHadronIso());
+    phoPFPhoIso_              .push_back(iPho->photonIso());
+    phoPFNeuIso_              .push_back(iPho->neutralHadronIso());
+    phoPFChWorstIso_          .push_back(iPho->chargedHadronWorstVtxIso());
+    phoTrkIsoHollowConeDR03_  .push_back(iPho->trkSumPtHollowConeDR03());
+    phoEcalPFClusterIso_      .push_back(iPho->ecalPFClusterIso());
+    phoHcalPFClusterIso_      .push_back(iPho->hcalPFClusterIso());
+    phoIDMVA_                 .push_back(iPho->userFloat("PhotonMVAEstimatorRunIIFall17v2Values"));  
 
     // VID decisions     
     UShort_t tmpphoIDbit = 0;        
@@ -280,7 +285,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoIDbit_.push_back(tmpphoIDbit);      
 
     // systematics for energy scale and resolution
-    /*
     phoScale_stat_up_.push_back(iPho->userFloat("energyScaleStatUp"));
     phoScale_stat_dn_.push_back(iPho->userFloat("energyScaleStatDown"));
     phoScale_syst_up_.push_back(iPho->userFloat("energyScaleSystUp"));
@@ -291,7 +295,7 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoResol_rho_dn_ .push_back(iPho->userFloat("energySigmaRhoDown"));
     phoResol_phi_up_ .push_back(iPho->userFloat("energySigmaPhiUp"));
     phoResol_phi_dn_ .push_back(iPho->userFloat("energySigmaPhiDown"));
-    */
+
     ///////////////////////////////SATURATED/UNSATURATED ///from ggFlash////
     DetId seed = (iPho->superCluster()->seed()->hitsAndFractions())[0].first;
     bool isBarrel = seed.subdetId() == EcalBarrel;
@@ -307,34 +311,32 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       phoSeedTime_  .push_back(-99.);
       phoSeedEnergy_.push_back(-99.);
     }
-    /*
+    
     unsigned short nSaturated = 0, nLeRecovered = 0, nNeighRecovered = 0, nGain1 = 0, nGain6 = 0, nWeired = 0;
     int isSaturated       = 0;
     int isSaturated_gain6 = 0;
     
     UShort_t tmpxtalbit = 0;
 
-    auto matrix5x5 = lazyTool.matrixDetId(seed,-2,+2,-2,+2);
-    for (auto & deId : matrix5x5 ) {
-      /// cout << "matrix " << deId.rawId() << endl;
-      auto rh = rechits->find(deId);
-      if( rh != rechits->end() ) {
-	nSaturated += rh->checkFlag( EcalRecHit::kSaturated );
-	nLeRecovered += rh->checkFlag( EcalRecHit::kLeadingEdgeRecovered );
-	nNeighRecovered += rh->checkFlag( EcalRecHit::kNeighboursRecovered );
-	nGain1 += rh->checkFlag( EcalRecHit::kHasSwitchToGain1 );
-	nGain6 += rh->checkFlag( EcalRecHit::kHasSwitchToGain6 );
-	nWeired += rh->checkFlag( EcalRecHit::kWeird ) || rh->checkFlag( EcalRecHit::kDiWeird );
-	
-	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated){ //this is to fill only once, i.e. only if xtal has this, no need to check for other xtals
+    auto matrix5x5 = CaloRectangleRange(2, seed, *topology_);
+    for (auto const& deId : matrix5x5 ) {
 
+      auto rh = rechits->find(deId);
+      if (rh != rechits->end()) {
+	nSaturated      += rh->checkFlag( EcalRecHit::kSaturated );
+	nLeRecovered    += rh->checkFlag( EcalRecHit::kLeadingEdgeRecovered );
+	nNeighRecovered += rh->checkFlag( EcalRecHit::kNeighboursRecovered );
+	nGain1          += rh->checkFlag( EcalRecHit::kHasSwitchToGain1 );
+	nGain6          += rh->checkFlag( EcalRecHit::kHasSwitchToGain6 );
+	nWeired         += rh->checkFlag( EcalRecHit::kWeird ) || rh->checkFlag( EcalRecHit::kDiWeird );
+	
+	if (rh->checkFlag( EcalRecHit::kHasSwitchToGain1 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated) { 
 	  setbit(tmpxtalbit, 0);
 	  isSaturated = 1;
 	  //break;
 	}
 	
-	if( rh->checkFlag( EcalRecHit::kHasSwitchToGain6 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated_gain6){ //this is to fill only once, i.e. only if xtal has this, no need to check for other xtals
-
+	if (rh->checkFlag( EcalRecHit::kHasSwitchToGain6 ) && rh->checkFlag( EcalRecHit::kSaturated ) && !isSaturated_gain6) {
 	  setbit(tmpxtalbit, 1);
 	  isSaturated_gain6 = 1;
 	  //break;
@@ -343,12 +345,11 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
       }//if( rh != rechits->end() ) 
        
       if (nWeired>0) setbit(tmpxtalbit,2);      
-      if (nGain6>0) setbit(tmpxtalbit,3); 
-
-    }//for(auto & deId : matrix5x5 )
+      if (nGain6>0)  setbit(tmpxtalbit,3); 
+    }
   
     phoxtalBits_.push_back(tmpxtalbit);
-    */
+
     phoFiredSingleTrgs_     .push_back(matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredDoubleTrgs_     .push_back(matchDoublePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
     phoFiredTripleTrgs_     .push_back(matchTriplePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi()));
@@ -364,13 +365,14 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
 
     //phoSeedBCE_        .push_back((*iPho).superCluster()->seed()->energy());
     //phoSeedBCEta_      .push_back((*iPho).superCluster()->seed()->eta());
-    
-    //phoSeedTimeFull5x5_.push_back(lazyToolnoZS.SuperClusterSeedTime(*((*iPho).superCluster())));
+    /*
+    phoSeedTimeFull5x5_.push_back(lazyToolnoZS.SuperClusterSeedTime(*((*iPho).superCluster())));
     phoMIPChi2_        .push_back(iPho->mipChi2());
     phoMIPSlope_       .push_back(iPho->mipSlope());
     phoMIPIntercept_   .push_back(iPho->mipIntercept());
     phoMIPNhitCone_    .push_back(iPho->mipNhitCone());
-    phoMIPIsHalo_      .push_back(iPho->mipIsHalo());    
+    phoMIPIsHalo_      .push_back(iPho->mipIsHalo());
+    */
     
     nPho_++;
 
