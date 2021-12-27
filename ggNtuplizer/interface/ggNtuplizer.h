@@ -74,6 +74,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesGenPart    (TTree*);
   void branchesMET        (TTree*);
   void branchesPhotons    (TTree*);
+  void branchesOOTPhotons (TTree*);
   void branchesPFPhotons  (TTree*);
   void branchesElectrons  (TTree*);
   void branchesHFElectrons(TTree*);
@@ -87,6 +88,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillGenPart    (const edm::Event&);
   void fillMET        (const edm::Event&, const edm::EventSetup&);
   void fillPhotons    (const edm::Event&, const edm::EventSetup&);
+  void fillOOTPhotons (const edm::Event&, const edm::EventSetup&);
   void fillPFPhotons  (const edm::Event&, const edm::EventSetup&);
   void fillElectrons  (const edm::Event&, const edm::EventSetup&, math::XYZPoint&);
   void fillHFElectrons(const edm::Event&);
@@ -96,6 +98,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillAK8Jets    (const edm::Event&, const edm::EventSetup&);
 
   void cleanupPhotons();
+  void cleanupOOTPhotons();
   bool UpdatedJet_secvtx() const;
   int Year(const edm::Event&) const;
 
@@ -137,6 +140,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::View<pat::MET> >           pfMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >      electronCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >        photonCollection_;
+  edm::EDGetTokenT<edm::View<pat::Photon> >        ootPhotonCollection_;
   edm::EDGetTokenT<edm::View<pat::Muon> >          muonCollection_;
   edm::EDGetTokenT<vector<pat::Tau> >              tauCollection_;
   edm::EDGetTokenT<EcalRecHitCollection>           ebReducedRecHitCollection_;
