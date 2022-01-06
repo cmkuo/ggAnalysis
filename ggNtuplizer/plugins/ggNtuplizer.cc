@@ -184,5 +184,14 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 }
 //bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
 bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
+int  ggNtuplizer::Year(const edm::Event& evt) const
+{
+    int y=0;
+    if      ( 271036 < evt.id().run() && evt.id().run() < 284044 ) y=2016;
+    else if ( 294645 < evt.id().run() && evt.id().run() < 306462 ) y=2017;
+    else if ( 315252 < evt.id().run() && evt.id().run() < 325765 ) y=2018;
+    if ( y != year_ ) std::cerr << "warning : wrong year found\n";
+    return year_;
+}
 
 DEFINE_FWK_MODULE(ggNtuplizer);
