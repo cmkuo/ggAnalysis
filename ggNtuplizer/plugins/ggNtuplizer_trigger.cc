@@ -184,21 +184,77 @@ void ggNtuplizer::initTriggerFilters(const edm::Event &e) {
     muFilters["hltL3crIsoL1sSingleMu22L1f0L2f10QL3f24QL3trkIsoFiltered0p07"] = 30; //HLT_IsoMu24 (2017)
     muFilters["hltL3crIsoL1sMu22Or25L1f0L2f10QL3f27QL3trkIsoFiltered0p07"] = 31; //HLT_IsoMu27 (2017)
 
-    phoSingleFilters["hltEG33L1EG26HEFilter"]                = 0;
-    phoSingleFilters["hltEG50HEFilter"]                      = 1;
-    phoSingleFilters["hltEG75HEFilter"]                      = 2;
-    phoSingleFilters["hltEG90HEFilter"]                      = 3;
-    phoSingleFilters["hltEG120HEFilter"]                     = 4;
-    phoSingleFilters["hltEG150HEFilter"]                     = 5;
-    phoSingleFilters["hltEG175HEFilter"]                     = 6;
-    phoSingleFilters["hltEG200HEFilter"]                     = 7; 
-    phoSingleFilters["hltEG300erEtFilter"]                   = 8;
-    phoSingleFilters["hltHtEcal800"]                         = 9;
-    phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 10;
-    phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 11;
-    phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 12;
-    phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 13;
-    phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 14;
+    if ( this->Year(e) == 2016 )
+    {
+       phoSingleFilters["hltEG22HEFilter"]      = 0;
+       phoSingleFilters["hltEG30HEFilter"]      = 1;
+       phoSingleFilters["hltEG36HEFilter"]      = 2;
+       phoSingleFilters["hltEG50HEFilter"]      = 3;
+       phoSingleFilters["hltEG75HEFilter"]      = 4;
+       phoSingleFilters["hltEG90HEFilter"]      = 5;
+       phoSingleFilters["hltEG120HEFilter"]     = 6;
+       phoSingleFilters["hltEG175HEFilter"]     = 7;
+       phoSingleFilters["hltEG300erEtFilter"]   = 8;
+
+       phoSingleFilters["hltEG22R9Id90HE10IsoMTrackIsoFilter"]  = 9;
+       phoSingleFilters["hltEG30R9Id90HE10IsoMTrackIsoFilter"]  = 10;
+       phoSingleFilters["hltEG36R9Id90HE10IsoMTrackIsoFilter"]  = 11;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 12;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 13;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 14;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 15;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 16;
+       phoSingleFilters["hltEG250erEtFilter"]                   = 17;
+    }
+    else if ( this->Year(e) == 2017 )
+    {
+       phoSingleFilters["hltEG25L1EG18HEFilter"]= 0;
+       phoSingleFilters["hltEG33L1EG26HEFilter"]= 1;
+       phoSingleFilters["hltEG50HEFilter"]      = 2;
+       phoSingleFilters["hltEG75HEFilter"]      = 3;
+       phoSingleFilters["hltEG90HEFilter"]      = 4;
+       phoSingleFilters["hltEG120HEFilter"]     = 5;
+       phoSingleFilters["hltEG150HEFilter"]     = 6;
+       phoSingleFilters["hltEG175HEFilter"]     = 7;
+       phoSingleFilters["hltEG200HEFilter"]     = 8;
+       phoSingleFilters["hltEG300erEtFilter"]   = 9;
+       
+       phoSingleFilters["hltEG20HEFilterLooseHoverE"]             = 10;
+       phoSingleFilters["hltEG30HEFilterLooseHoverE"]             = 11;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]    = 12;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]    = 13;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]    = 14;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"]   = 15;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"]   = 16;
+    }
+    else if ( this->Year(e) == 2018 )
+    {
+       phoSingleFilters["hltEG33L1EG26HEFilter"]= 0;
+       phoSingleFilters["hltEG50HEFilter"]      = 1;
+       phoSingleFilters["hltEG75HEFilter"]      = 2;
+       phoSingleFilters["hltEG90HEFilter"]      = 3;
+       phoSingleFilters["hltEG120HEFilter"]     = 4;
+       phoSingleFilters["hltEG150HEFilter"]     = 5;
+       phoSingleFilters["hltEG175HEFilter"]     = 6;
+       phoSingleFilters["hltEG200HEFilter"]     = 7; 
+       phoSingleFilters["hltEG300erEtFilter"]   = 8;
+
+       phoSingleFilters["hltEG20HEFilterLooseHoverE"]           = 9;
+       phoSingleFilters["hltEG30HEFilterLooseHoverE"]           = 10;
+       phoSingleFilters["hltEG50R9Id90HE10IsoMTrackIsoFilter"]  = 11;
+       phoSingleFilters["hltEG75R9Id90HE10IsoMTrackIsoFilter"]  = 12;
+       phoSingleFilters["hltEG90R9Id90HE10IsoMTrackIsoFilter"]  = 13;
+       phoSingleFilters["hltEG120R9Id90HE10IsoMTrackIsoFilter"] = 14;
+       phoSingleFilters["hltEG165R9Id90HE10IsoMTrackIsoFilter"] = 15;
+       phoSingleFilters["hltHtEcal800"]                         = 16;
+    }
+    else { throw std::invalid_argument("You need to select a year to select HLT path. The switch is in cmssw config file"); }
+
+
+
+
+
+
 
     //L1 seed for diphoton triggers  
     phoDoubleFilters["hltSingleEGL1SingleEG40ORL1SingleEG25ORL1DoubleEG2210ORL1DoubleEG1510Filter"]         = 0;

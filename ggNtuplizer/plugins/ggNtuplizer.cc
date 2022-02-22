@@ -9,6 +9,7 @@ void setbit(UShort_t& x, UShort_t bit) {
 }
 
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
+  nanoUpdatedUserJetsLabel(ps.getParameter<edm::InputTag>("nanoUpdatedUserJetsLabel")),
   hltPrescaleProvider_(ps, consumesCollector(), *this)
 {
 
@@ -27,6 +28,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   dumpHFElectrons_           = ps.getParameter<bool>("dumpHFElectrons");
+  testing_                   = ps.getParameter<bool>("testing");
   year_                      = ps.getParameter<int>("year");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
@@ -35,6 +37,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   vtxLabel_                  = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxLabel"));
   vtxBSLabel_                = consumes<reco::VertexCollection>        (ps.getParameter<InputTag>("VtxBSLabel"));
   rhoLabel_                  = consumes<double>                        (ps.getParameter<InputTag>("rhoLabel"));
+  rhoAllLabel_               = consumes<double>                        (ps.getParameter<InputTag>("rhoAllLabel"));
   rhoCentralLabel_           = consumes<double>                        (ps.getParameter<InputTag>("rhoCentralLabel"));
   trgEventLabel_             = consumes<trigger::TriggerEvent>         (ps.getParameter<InputTag>("triggerEvent"));
   triggerObjectsLabel_       = consumes<pat::TriggerObjectStandAloneCollection>(ps.getParameter<edm::InputTag>("triggerEvent"));
@@ -52,9 +55,10 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   conversionsCollection_     = consumes<reco::ConversionCollection>    (ps.getParameter<InputTag>("conversionsSrc"));
   beamSpot_                  = consumes<reco::BeamSpot>                (ps.getParameter<edm::InputTag>("beamSpotSrc"));
 
-  ecalBadCalibFilterUpdate_  = consumes<bool>                          (ps.getParameter<InputTag>("ecalBadCalibReducedMINIAODFilter"));
+  BadPFMuonFilterUpdateDz_   = consumes<bool>                          (ps.getParameter<InputTag>("BadPFMuonFilterUpdateDz"));
 
   photonCollection_          = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("photonSrc"));
+  ootPhotonCollection_       = consumes<View<pat::Photon> >            (ps.getParameter<InputTag>("ootPhotonSrc"));
   muonCollection_            = consumes<View<pat::Muon> >              (ps.getParameter<InputTag>("muonSrc"));
   ebReducedRecHitCollection_ = consumes<EcalRecHitCollection>          (ps.getParameter<InputTag>("ebReducedRecHitCollection"));
   eeReducedRecHitCollection_ = consumes<EcalRecHitCollection>          (ps.getParameter<InputTag>("eeReducedRecHitCollection"));
@@ -73,9 +77,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
-  std::cout << "p1 \n";
-  nanoUpdatedUserJetsLabel_ = consumes<View<pat::Jet>>                 (ps.getParameter<InputTag>("nanoUpdatedUserJetsLabel"));
-  std::cout << "p2 \n";
+  if ( UpdatedJet_secvtx() )
+      nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(nanoUpdatedUserJetsLabel);
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   prefweight_token_          = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProb"));
@@ -85,7 +88,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_02_10_05)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_06_20_00)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
@@ -97,6 +100,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   
   branchesMET(tree_);
   branchesPhotons(tree_);
+  if (!doGenParticles_) branchesOOTPhotons(tree_);
   branchesElectrons(tree_);
   branchesMuons(tree_);
   if (dumpPFPhotons_)   branchesPFPhotons(tree_);
@@ -109,6 +113,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 
 ggNtuplizer::~ggNtuplizer() {
   cleanupPhotons();
+  cleanupOOTPhotons();
   delete cicPhotonId_;
 }
 
@@ -142,6 +147,8 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
     }
   }
 
+  es.get<CaloTopologyRecord>().get(topology_);
+
   initTriggerFilters(e);
   fillGlobalEvent(e, es);
 
@@ -155,6 +162,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillElectrons(e, es, pv);
   fillMuons(e, pv, vtx);
   fillPhotons(e, es); 
+  if (!doGenParticles_)  fillOOTPhotons(e, es);
   if (dumpPFPhotons_)    fillPFPhotons(e, es);
   if (dumpHFElectrons_ ) fillHFElectrons(e);
   if (dumpTaus_)         fillTaus(e);
@@ -166,13 +174,32 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
 
 }
 
-// void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
-// {
-//   //The following says we do not know what parameters are allowed so do no validation
-//   // Please change this to state exactly what you do use, even if it is no parameters
-//   edm::ParameterSetDescription desc;
-//   desc.setUnknown();
-//   descriptions.addDefault(desc);
-// }
+void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
+{
+    //The following says we do not know what parameters are allowed so do no validation
+    // Please change this to state exactly what you do use, even if it is no parameters
+    edm::ParameterSetDescription desc;
+
+    desc.setUnknown();
+    descriptions.addDefault(desc);
+}
+//bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
+bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
+bool ggNtuplizer::testing() const { return testing_; }
+int  ggNtuplizer::Year(const edm::Event& evt) const
+{
+    int y=0;
+    if      ( 271036 < evt.id().run() && evt.id().run() < 284044 ) y=2016;
+    else if ( 294645 < evt.id().run() && evt.id().run() < 306462 ) y=2017;
+    else if ( 315252 < evt.id().run() && evt.id().run() < 325765 ) y=2018;
+    if ( evt.id().run() == 1 )
+    {
+        printf("MC found: Use input year\n");
+        return year_;
+    }
+    if ( y != year_ )
+        std::cerr << "warning : input year:" << year_ << " is different from calculated year:" << y << ". Use calculated year\n";
+    return y;
+}
 
 DEFINE_FWK_MODULE(ggNtuplizer);
