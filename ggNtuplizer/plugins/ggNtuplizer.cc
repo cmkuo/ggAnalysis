@@ -28,6 +28,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   dumpHFElectrons_           = ps.getParameter<bool>("dumpHFElectrons");
+  testing_                   = ps.getParameter<bool>("testing");
   year_                      = ps.getParameter<int>("year");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
@@ -76,10 +77,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   //boostedDoubleSVLabel_      = consumes<reco::JetTagCollection>        (ps.getParameter<InputTag>("boostedDoubleSVLabel"));
   newparticles_              =                                          ps.getParameter< vector<int > >("newParticles");
   //jecAK8PayloadNames_        =                                          ps.getParameter<std::vector<std::string> >("jecAK8PayloadNames"); 
-
   if ( UpdatedJet_secvtx() )
       nanoUpdatedUserJetsToken_  = consumes<View<pat::Jet> >(nanoUpdatedUserJetsLabel);
-
   //pfLooseId_                 = ps.getParameter<ParameterSet>("pfLooseId");
 
   prefweight_token_          = consumes<double>(edm::InputTag("prefiringweight:nonPrefiringProb"));
@@ -186,5 +185,21 @@ void ggNtuplizer::fillDescriptions(edm::ConfigurationDescriptions& descriptions)
 }
 //bool ggNtuplizer::UpdatedJet_secvtx() const { return (nanoUpdatedUserJetsLabel != ""); }
 bool ggNtuplizer::UpdatedJet_secvtx() const { return nanoUpdatedUserJetsLabel.label() != ""; }
+bool ggNtuplizer::testing() const { return testing_; }
+int  ggNtuplizer::Year(const edm::Event& evt) const
+{
+    int y=0;
+    if      ( 271036 < evt.id().run() && evt.id().run() < 284044 ) y=2016;
+    else if ( 294645 < evt.id().run() && evt.id().run() < 306462 ) y=2017;
+    else if ( 315252 < evt.id().run() && evt.id().run() < 325765 ) y=2018;
+    if ( evt.id().run() == 1 )
+    {
+        printf("MC found: Use input year\n");
+        return year_;
+    }
+    if ( y != year_ )
+        std::cerr << "warning : input year:" << year_ << " is different from calculated year:" << y << ". Use calculated year\n";
+    return y;
+}
 
 DEFINE_FWK_MODULE(ggNtuplizer);

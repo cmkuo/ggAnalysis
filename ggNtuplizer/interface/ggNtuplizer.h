@@ -102,6 +102,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void cleanupPhotons();
   void cleanupOOTPhotons();
   bool UpdatedJet_secvtx() const;
+  bool testing() const;
+  int Year(const edm::Event&) const;
 
   bool development_;
   bool addFilterInfoMINIAOD_;  
@@ -117,6 +119,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   bool dumpSoftDrop_;
   bool dumpPDFSystWeight_;
   bool dumpHFElectrons_;
+  bool testing_;
   int  year_;
 
   vector<int> newparticles_;
@@ -166,6 +169,8 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<edm::View<pat::Jet>>             nanoUpdatedUserJetsToken_;
   edm::ESHandle<CaloTopology>                       topology_;
 
+  edm::EDGetTokenT<edm::View<pat::Jet> >           nanoUpdatedUserJetsLabel_;
+
   // for MET filters
   edm::EDGetTokenT<bool> BadPFMuonFilterUpdateDz_;
 
@@ -197,6 +202,9 @@ class ggNtuplizer : public edm::EDAnalyzer {
   //boost::shared_ptr<FactorizedJetCorrector> jecAK8pSD_;
   //std::vector<std::string> jecAK8PayloadNames_;
   HLTPrescaleProvider hltPrescaleProvider_;
+
+
+  ULong64_t tester;
 };
 
 #endif

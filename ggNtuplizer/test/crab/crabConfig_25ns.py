@@ -37,9 +37,10 @@ if __name__ == '__main__':
     config.Data.unitsPerJob    = 40
     config.Data.inputDataset   = '/ZZ_TuneCUETP8M1_13TeV-pythia8/RunIISpring16MiniAODv2-PUSpring16_80X_mcRun2_asymptotic_2016_miniAODv2_v0-v1/MINIAODSIM'
     config.Data.outLFNDirBase  = '/store/user/cmkuo/job_spring16_ZZ'
-    p = Process(target=submit, args=(config,))
-    p.start()
-    p.join()
+    print config
+    #p = Process(target=submit, args=(config,))
+    #p.start()
+    #p.join()
 
 
 

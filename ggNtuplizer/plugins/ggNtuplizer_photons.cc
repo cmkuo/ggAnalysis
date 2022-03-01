@@ -375,6 +375,9 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     */
     
     nPho_++;
+
+
+    tester|=matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi());
   }
 
 }

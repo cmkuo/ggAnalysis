@@ -10,7 +10,7 @@ process.load('Configuration.StandardSequences.GeometryRecoDB_cff')
 process.load("Configuration.StandardSequences.MagneticField_AutoFromDBCurrent_cff")
 process.load("Configuration.StandardSequences.FrontierConditions_GlobalTag_condDBv2_cff")
 from Configuration.AlCa.GlobalTag_condDBv2 import GlobalTag
-process.GlobalTag = GlobalTag(process.GlobalTag, '106X_upgrade2018_realistic_v15_L1v1')
+process.GlobalTag = GlobalTag(process.GlobalTag, '106X_mc2017_realistic_v8')
 
 #process.Tracer = cms.Service("Tracer")
 process.maxEvents = cms.untracked.PSet( input = cms.untracked.int32(-1) )
@@ -18,14 +18,8 @@ process.MessageLogger.cerr.FwkReport.reportEvery = 1000
 
 process.source = cms.Source("PoolSource",
                             fileNames = cms.untracked.vstring(
-<<<<<<< HEAD:ggNtuplizer/test/run_mc2018_102X.py
-#        'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/ZGToLLG_01J_5f_lowMLL_lowGPt_TuneCP5_13TeV-amcatnloFXFX-pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/0A57E44E-7D41-9342-9F7D-56DBC704D224.root'
-                                'root://cmsxrootd.fnal.gov//store/mc/RunIIAutumn18MiniAOD/GluGluHToEEG_M125_MLL-0To60_TuneCP5_Dalitz_012j_13TeV_amcatnlo_pythia8/MINIAODSIM/102X_upgrade2018_realistic_v15-v1/100000/59AD893F-8F76-6C4C-9DDE-109B29CBEEB4.root'
-        ))
-=======
-                                '/store/mc/RunIISummer19UL18MiniAODv2/ZGTo2NuG_EtG075_TuneCP5_VBS_13TeV-madgraph-pythia8/MINIAODSIM/106X_upgrade2018_realistic_v16_L1v1-v1/280000/8710B91E-9E06-C641-B138-4A9502078AD2.root'
+                                '/store/mc/RunIISummer19UL17MiniAODv2/ZGTo2NuG_EtG075_TuneCP5_VBS_13TeV-madgraph-pythia8/MINIAODSIM/106X_mc2017_realistic_v9-v1/270000/47DD1386-3258-434E-8F4C-3C2D65AC6781.root'
                             ))
->>>>>>> f1febc581773dd9787d037218b851986defb7f58:ggNtuplizer/test/run_mc2018_106X.py
 
 #process.load("PhysicsTools.PatAlgos.patSequences_cff")
 
@@ -37,7 +31,7 @@ from RecoEgamma.EgammaTools.EgammaPostRecoTools import setupEgammaPostRecoSeq
 setupEgammaPostRecoSeq(process,
                        runVID=True,
                        runEnergyCorrections=True,
-                       era='2018-UL',
+                       era='2017-UL',
                        eleIDModules=['RecoEgamma.ElectronIdentification.Identification.cutBasedElectronID_Fall17_94X_V2_cff',
                                      'RecoEgamma.ElectronIdentification.Identification.heepElectronID_HEEPV70_cff',
                                      'RecoEgamma.ElectronIdentification.Identification.mvaElectronID_Fall17_iso_V2_cff',
@@ -86,6 +80,8 @@ process.cleanedMu = cms.EDProducer("PATMuonCleanerBySegments",
                                    preselection = cms.string("track.isNonnull"),
                                    passthrough = cms.string("isGlobalMuon && numberOfMatches >= 2"),
                                    fractionOfSharedSegments = cms.double(0.499))
+process.load("ggAnalysis.ggNtuplizer.jetSecVtxUpdateSeq_cfi")
+process.ggNtuplizer.nanoUpdatedUserJetsLabel=cms.InputTag('updatedJetsWithUserData')
 
 process.p = cms.Path(
 #    process.fullPatMetSequenceModifiedMET *
@@ -93,6 +89,7 @@ process.p = cms.Path(
     process.cleanedMu *
     process.jetCorrFactors *
     process.slimmedJetsJEC *
+    process.jetSecInfoUpdateSequence*
     process.ggNtuplizer
     )
 
