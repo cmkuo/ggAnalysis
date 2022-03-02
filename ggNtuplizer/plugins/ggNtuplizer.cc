@@ -53,6 +53,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   basicClusters_             = consumes<reco::CaloClusterCollection>   (ps.getParameter<InputTag>("basicClustersSrc"));
   gsfTracks_                 = consumes<View<reco::GsfTrack> >         (ps.getParameter<InputTag>("gsfTrackSrc"));
   conversionsCollection_     = consumes<reco::ConversionCollection>    (ps.getParameter<InputTag>("conversionsSrc"));
+  conversionsCollectionSL_   = consumes<reco::ConversionCollection>    (ps.getParameter<InputTag>("conversionsSLSrc"));
   beamSpot_                  = consumes<reco::BeamSpot>                (ps.getParameter<edm::InputTag>("beamSpotSrc"));
 
   BadPFMuonFilterUpdateDz_   = consumes<bool>                          (ps.getParameter<InputTag>("BadPFMuonFilterUpdateDz"));

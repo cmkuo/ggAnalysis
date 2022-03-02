@@ -156,6 +156,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<reco::GsfElectronCollection>     gsfElectronlabel_;
   edm::EDGetTokenT<edm::View<reco::GsfTrack> >      gsfTracks_;
   edm::EDGetTokenT<reco::ConversionCollection>      conversionsCollection_;
+  edm::EDGetTokenT<reco::ConversionCollection>      conversionsCollectionSL_;
   edm::EDGetTokenT<reco::BeamSpot>                  beamSpot_;
   edm::EDGetTokenT<reco::PFCandidateCollection>     pfAllParticles_;
   edm::EDGetTokenT<vector<pat::PackedCandidate> >   pckPFCdsLabel_;
