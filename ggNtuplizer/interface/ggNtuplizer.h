@@ -143,6 +143,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   edm::EDGetTokenT<vector<PileupSummaryInfo> >      puCollection_;
   edm::EDGetTokenT<vector<reco::GenParticle> >      genParticlesCollection_;
   edm::EDGetTokenT<edm::View<pat::MET> >            pfMETlabel_;
+  edm::EDGetTokenT<edm::View<pat::MET> >            puppiMETlabel_;
   edm::EDGetTokenT<edm::View<pat::Electron> >       electronCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >         photonCollection_;
   edm::EDGetTokenT<edm::View<pat::Photon> >         ootPhotonCollection_;

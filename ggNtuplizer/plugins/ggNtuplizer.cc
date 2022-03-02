@@ -57,6 +57,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   puCollection_              = consumes<vector<PileupSummaryInfo> >    (ps.getParameter<InputTag>("pileupCollection"));
   genParticlesCollection_    = consumes<vector<reco::GenParticle> >    (ps.getParameter<InputTag>("genParticleSrc"));
   pfMETlabel_                = consumes<View<pat::MET> >               (ps.getParameter<InputTag>("pfMETLabel"));
+  puppiMETlabel_             = consumes<View<pat::MET> >               (ps.getParameter<InputTag>("puppiMETLabel"));
   electronCollection_        = consumes<View<pat::Electron> >          (ps.getParameter<InputTag>("electronSrc"));
   basicClusters_             = consumes<reco::CaloClusterCollection>   (ps.getParameter<InputTag>("basicClustersSrc"));
   gsfTracks_                 = consumes<View<reco::GsfTrack> >         (ps.getParameter<InputTag>("gsfTrackSrc"));

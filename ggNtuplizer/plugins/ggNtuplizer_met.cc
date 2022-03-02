@@ -29,6 +29,8 @@ float pfMETPhi_T1JESUp_;
 float pfMETPhi_T1JESDo_;
 float pfMETPhi_T1UESUp_;
 float pfMETPhi_T1UESDo_;
+float puppiMET_;
+float puppiMETPhi_;
 
 void ggNtuplizer::branchesMET(TTree* tree) {
 
@@ -37,7 +39,7 @@ void ggNtuplizer::branchesMET(TTree* tree) {
     tree->Branch("genMETPhi",   &genMETPhi_);
   }
   if (addFilterInfoMINIAOD_)
-    tree->Branch("metFilters",       &metFilters_);
+  tree->Branch("metFilters",       &metFilters_);
   tree->Branch("pfMET",            &pfMET_);
   tree->Branch("pfMETPhi",         &pfMETPhi_);
   tree->Branch("pfMET_T1JERUp",    &pfMET_T1JERUp_);
@@ -60,7 +62,8 @@ void ggNtuplizer::branchesMET(TTree* tree) {
   tree->Branch("pfMETPhi_T1JESDo", &pfMETPhi_T1JESDo_);
   tree->Branch("pfMETPhi_T1UESUp", &pfMETPhi_T1UESUp_);
   tree->Branch("pfMETPhi_T1UESDo", &pfMETPhi_T1UESDo_);
-
+  tree->Branch("puppiMET",         &puppiMET_);
+  tree->Branch("puppiMETPhi",      &puppiMETPhi_);
 }
 
 void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
@@ -159,6 +162,19 @@ void ggNtuplizer::fillMET(const edm::Event& e, const edm::EventSetup& es) {
       genMETPhi_ = pfMET->genMET()->phi();
     }
 
-  } 
+  }
+
+  edm::Handle<edm::View<pat::MET> > puppiMETHandle;
+  e.getByToken(puppiMETlabel_, puppiMETHandle); 
+
+  puppiMET_     = -99;
+  puppiMETPhi_  = -99;
+
+  if (puppiMETHandle.isValid()) {
+    const pat::MET *puppiMET = 0;
+    puppiMET     = &(puppiMETHandle->front());
+    puppiMET_    = puppiMET->et();
+    puppiMETPhi_ = puppiMET->phi();
+  }
 
 }
