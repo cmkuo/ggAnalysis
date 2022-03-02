@@ -31,8 +31,17 @@ vector<float>  phoESEffSigmaRR_;
 vector<float>  phoSigmaIEtaIEtaFull5x5_;
 vector<float>  phoSigmaIEtaIPhiFull5x5_;
 vector<float>  phoSigmaIPhiIPhiFull5x5_;
+vector<float>  phoE1x3Full5x5_;
 vector<float>  phoE2x2Full5x5_;
+vector<float>  phoE2x5Full5x5_;
+vector<float>  phoE3x3Full5x5_;
 vector<float>  phoE5x5Full5x5_;
+vector<float>  phoEmax_;
+vector<float>  phoE2nd_;
+vector<float>  phoEtop_;
+vector<float>  phoEleft_;
+vector<float>  phoEright_;
+vector<float>  phoEbottom_;
 vector<float>  phoR9Full5x5_;
 vector<float>  phoPFChIso_;
 vector<float>  phoPFChPVIso_;
@@ -110,8 +119,17 @@ void ggNtuplizer::branchesPhotons(TTree* tree) {
   tree->Branch("phoSigmaIEtaIEtaFull5x5",   &phoSigmaIEtaIEtaFull5x5_);
   tree->Branch("phoSigmaIEtaIPhiFull5x5",   &phoSigmaIEtaIPhiFull5x5_);
   tree->Branch("phoSigmaIPhiIPhiFull5x5",   &phoSigmaIPhiIPhiFull5x5_);
+  tree->Branch("phoE1x3Full5x5",            &phoE1x3Full5x5_);
   tree->Branch("phoE2x2Full5x5",            &phoE2x2Full5x5_);
+  tree->Branch("phoE2x5Full5x5",            &phoE2x5Full5x5_);
+  tree->Branch("phoE3x3Full5x5",            &phoE3x3Full5x5_);
   tree->Branch("phoE5x5Full5x5",            &phoE5x5Full5x5_);
+  tree->Branch("phoEmax",                   &phoEmax_);
+  tree->Branch("phoE2nd",                   &phoE2nd_);
+  tree->Branch("phoEtop",                   &phoEtop_);
+  tree->Branch("phoEleft",                  &phoEleft_);
+  tree->Branch("phoEright",                 &phoEright_);
+  tree->Branch("phoEbottom",                &phoEbottom_);
   tree->Branch("phoR9Full5x5",              &phoR9Full5x5_);
   //tree->Branch("phoSeedBCE",              &phoSeedBCE_);
   //tree->Branch("phoSeedBCEta",            &phoSeedBCEta_);
@@ -181,8 +199,17 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
   phoSigmaIEtaIEtaFull5x5_.clear();
   phoSigmaIEtaIPhiFull5x5_.clear();
   phoSigmaIPhiIPhiFull5x5_.clear();
+  phoE1x3Full5x5_         .clear();
   phoE2x2Full5x5_         .clear();
+  phoE2x5Full5x5_         .clear();
+  phoE3x3Full5x5_         .clear();
   phoE5x5Full5x5_         .clear();
+  phoEmax_                .clear();
+  phoE2nd_                .clear();
+  phoEtop_                .clear();
+  phoEleft_               .clear();
+  phoEright_              .clear();
+  phoEbottom_             .clear();
   phoR9Full5x5_           .clear();
   phoPFChIso_             .clear();
   phoPFChPVIso_           .clear();
@@ -358,8 +385,17 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     phoSigmaIEtaIEtaFull5x5_ .push_back(iPho->full5x5_sigmaIetaIeta());
     phoSigmaIEtaIPhiFull5x5_ .push_back(iPho->full5x5_showerShapeVariables().sigmaIetaIphi);
     phoSigmaIPhiIPhiFull5x5_ .push_back(iPho->full5x5_showerShapeVariables().sigmaIphiIphi);
-    phoE2x2Full5x5_          .push_back(lazyToolnoZS.e2x2(*((*iPho).superCluster()->seed())));
+    phoE1x3Full5x5_          .push_back(iPho->full5x5_showerShapeVariables().e1x3);
+    phoE2x2Full5x5_          .push_back(iPho->full5x5_showerShapeVariables().e2x2);
+    phoE2x5Full5x5_          .push_back(iPho->full5x5_e2x5());
+    phoE3x3Full5x5_          .push_back(iPho->full5x5_e3x3());
     phoE5x5Full5x5_          .push_back(iPho->full5x5_e5x5());
+    phoEmax_                 .push_back(iPho->full5x5_maxEnergyXtal());
+    phoE2nd_                 .push_back(iPho->full5x5_showerShapeVariables().e2nd);
+    phoEtop_                 .push_back(iPho->full5x5_showerShapeVariables().eTop); 
+    phoEleft_                .push_back(iPho->full5x5_showerShapeVariables().eLeft); 
+    phoEright_               .push_back(iPho->full5x5_showerShapeVariables().eRight); 
+    phoEbottom_              .push_back(iPho->full5x5_showerShapeVariables().eBottom); 
     phoR9Full5x5_            .push_back(iPho->full5x5_r9());
     phoMIPTotEnergy_         .push_back(iPho->mipTotEnergy());
 
@@ -375,7 +411,6 @@ void ggNtuplizer::fillPhotons(const edm::Event& e, const edm::EventSetup& es) {
     */
     
     nPho_++;
-
 
     tester|=matchSinglePhotonTriggerFilters(iPho->et(), iPho->eta(), iPho->phi());
   }

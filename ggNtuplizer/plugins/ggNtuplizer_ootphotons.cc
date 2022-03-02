@@ -21,6 +21,11 @@ vector<float>  ootPhoR9Full5x5_;
 vector<float>  ootPhoSeedTime_;
 vector<float>  ootPhoSeedEnergy_;
 vector<float>  ootPhoMIPTotEnergy_;
+vector<int>    ootPhohasPixelSeed_;
+vector<float>  ootPhoEtop_;
+vector<float>  ootPhoEleft_;
+vector<float>  ootPhoEright_;
+vector<float>  ootPhoEbottom_;
 
 //Necessary for the Photon Footprint removal
 template <class T, class U>
@@ -51,6 +56,11 @@ void ggNtuplizer::branchesOOTPhotons(TTree* tree) {
   tree->Branch("ootPhoSeedTime",              &ootPhoSeedTime_);
   tree->Branch("ootPhoSeedEnergy",            &ootPhoSeedEnergy_);
   tree->Branch("ootPhoMIPTotEnergy",          &ootPhoMIPTotEnergy_);
+  tree->Branch("ootPhohasPixelSeed",          &ootPhohasPixelSeed_);
+  tree->Branch("ootPhoEtop",                  &ootPhoEtop_);
+  tree->Branch("ootPhoEleft",                 &ootPhoEleft_);
+  tree->Branch("ootPhoEright",                &ootPhoEright_);
+  tree->Branch("ootPhoEbottom",               &ootPhoEbottom_);
 
 }
 
@@ -72,6 +82,11 @@ void ggNtuplizer::fillOOTPhotons(const edm::Event& e, const edm::EventSetup& es)
   ootPhoSeedTime_            .clear();
   ootPhoSeedEnergy_          .clear();
   ootPhoMIPTotEnergy_        .clear();
+  ootPhohasPixelSeed_        .clear();
+  ootPhoEtop_                .clear();
+  ootPhoEleft_               .clear();
+  ootPhoEright_              .clear();
+  ootPhoEbottom_             .clear();
 
   nOOTPho_ = 0;
 
@@ -115,6 +130,12 @@ void ggNtuplizer::fillOOTPhotons(const edm::Event& e, const edm::EventSetup& es)
     ootPhoSigmaIEtaIEtaFull5x5_ .push_back(iOOTPho->full5x5_sigmaIetaIeta());
     ootPhoR9Full5x5_            .push_back(iOOTPho->full5x5_r9());
     ootPhoMIPTotEnergy_         .push_back(iOOTPho->mipTotEnergy());
+    ootPhohasPixelSeed_         .push_back((Int_t)iOOTPho->hasPixelSeed());
+
+    ootPhoEtop_                 .push_back(iOOTPho->full5x5_showerShapeVariables().eTop);
+    ootPhoEleft_                .push_back(iOOTPho->full5x5_showerShapeVariables().eLeft);
+    ootPhoEright_               .push_back(iOOTPho->full5x5_showerShapeVariables().eRight);
+    ootPhoEbottom_              .push_back(iOOTPho->full5x5_showerShapeVariables().eBottom);
 
     nOOTPho_++;
   }
