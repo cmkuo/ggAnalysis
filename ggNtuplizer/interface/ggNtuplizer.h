@@ -103,6 +103,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void cleanupOOTPhotons();
   bool UpdatedJet_secvtx() const;
   bool testing() const;
+  bool GettestingFROMps(const edm::ParameterSet& ps, const std::string& name); // this is temporal function. need to be removed in further version
   int Year(const edm::Event&) const;
 
   bool development_;

@@ -8,6 +8,13 @@ void setbit(UShort_t& x, UShort_t bit) {
   x |= (a << bit);
 }
 
+bool ggNtuplizer::GettestingFROMps(const edm::ParameterSet& ps, const std::string& name)
+{
+    for ( auto pName : ps.getParameterNames() )
+        if ( pName == name )
+            return ps.getParameter<bool>(name);
+    return false;
+}
 ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   nanoUpdatedUserJetsLabel(ps.getParameter<edm::InputTag>("nanoUpdatedUserJetsLabel")),
   hltPrescaleProvider_(ps, consumesCollector(), *this)
@@ -28,7 +35,8 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   dumpTaus_                  = ps.getParameter<bool>("dumpTaus");
   dumpPDFSystWeight_         = ps.getParameter<bool>("dumpPDFSystWeight");
   dumpHFElectrons_           = ps.getParameter<bool>("dumpHFElectrons");
-  testing_                   = ps.getParameter<bool>("testing");
+  //testing_                   = ps.getParameter<bool>("testing");
+  testing_                   = GettestingFROMps(ps, "testing");
   year_                      = ps.getParameter<int>("year");
 
   trgFilterDeltaPtCut_       = ps.getParameter<double>("trgFilterDeltaPtCut");
