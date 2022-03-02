@@ -111,6 +111,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   branchesMET(tree_);
   branchesPhotons(tree_);
   if (!doGenParticles_) branchesOOTPhotons(tree_);
+  branchesConversions(tree_);
   branchesElectrons(tree_);
   branchesMuons(tree_);
   if (dumpPFPhotons_)   branchesPFPhotons(tree_);
@@ -124,6 +125,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
 ggNtuplizer::~ggNtuplizer() {
   cleanupPhotons();
   cleanupOOTPhotons();
+  cleanupConversions();
   delete cicPhotonId_;
 }
 
@@ -173,6 +175,7 @@ void ggNtuplizer::analyze(const edm::Event& e, const edm::EventSetup& es) {
   fillMuons(e, pv, vtx);
   fillPhotons(e, es); 
   if (!doGenParticles_)  fillOOTPhotons(e, es);
+  fillConversions(e, es);
   if (dumpPFPhotons_)    fillPFPhotons(e, es);
   if (dumpHFElectrons_ ) fillHFElectrons(e);
   if (dumpTaus_)         fillTaus(e);

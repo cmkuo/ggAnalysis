@@ -18,6 +18,7 @@
 #include "DataFormats/BeamSpot/interface/BeamSpot.h"
 #include "DataFormats/CaloRecHit/interface/CaloCluster.h"
 #include "DataFormats/CaloRecHit/interface/CaloClusterFwd.h"
+#include "DataFormats/EgammaCandidates/interface/Conversion.h"
 #include "DataFormats/Common/interface/Handle.h"
 #include "DataFormats/Common/interface/TriggerResults.h"
 #include "DataFormats/HepMCCandidate/interface/GenParticle.h"
@@ -77,6 +78,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void branchesMET        (TTree*);
   void branchesPhotons    (TTree*);
   void branchesOOTPhotons (TTree*);
+  void branchesConversions(TTree*);
   void branchesPFPhotons  (TTree*);
   void branchesElectrons  (TTree*);
   void branchesHFElectrons(TTree*);
@@ -91,6 +93,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
   void fillMET        (const edm::Event&, const edm::EventSetup&);
   void fillPhotons    (const edm::Event&, const edm::EventSetup&);
   void fillOOTPhotons (const edm::Event&, const edm::EventSetup&);
+  void fillConversions(const edm::Event&, const edm::EventSetup&);
   void fillPFPhotons  (const edm::Event&, const edm::EventSetup&);
   void fillElectrons  (const edm::Event&, const edm::EventSetup&, math::XYZPoint&);
   void fillHFElectrons(const edm::Event&);
@@ -101,6 +104,7 @@ class ggNtuplizer : public edm::EDAnalyzer {
 
   void cleanupPhotons();
   void cleanupOOTPhotons();
+  void cleanupConversions();
   bool UpdatedJet_secvtx() const;
   bool testing() const;
   bool GettestingFROMps(const edm::ParameterSet& ps, const std::string& name); // this is temporal function. need to be removed in further version
