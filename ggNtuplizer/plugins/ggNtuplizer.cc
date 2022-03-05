@@ -98,7 +98,7 @@ ggNtuplizer::ggNtuplizer(const edm::ParameterSet& ps) :
   cicPhotonId_ = new CiCPhotonID(ps);
 
   Service<TFileService> fs;
-  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_06_20_00)");
+  tree_    = fs->make<TTree>("EventTree", "Event data (tag V10_06_30_00)");
   hEvents_ = fs->make<TH1F>("hEvents",    "total processed and skimmed events",   2,  0,   2);
 
   branchesGlobalEvent(tree_);
