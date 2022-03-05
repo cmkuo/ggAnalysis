@@ -1,9 +1,9 @@
 #### This is the version to be used for Run-2 UL analysis
 
-##### To work with CMSSW_10_6_20 and head version, you do :
+##### To work with CMSSW_10_6_30 and head version, you do :
 
-cmsrel CMSSW_10_6_20 <br>	
-cd CMSSW_10_6_20/src <br>
+cmsrel CMSSW_10_6_30 <br>	
+cd CMSSW_10_6_30/src <br>
 cmsenv <br>
 git cms-init <br>
 
@@ -13,8 +13,8 @@ mv EgammaPostRecoTools/python/EgammaPostRecoTools.py RecoEgamma/EgammaTools/pyth
 git clone -b ULSSfiles_correctScaleSysMC https://github.com/jainshilpi/EgammaAnalysis-ElectronTools.git EgammaAnalysis/ElectronTools/data/ <br>
 git cms-addpkg EgammaAnalysis/ElectronTools <br>
 scram b -j 8 <br>
-git clone https://github.com/cmkuo/HiggsAnalysis.git <br>
-git clone -b 106X https://github.com/cmkuo/ggAnalysis.git <br>
+git clone git@github.com:cmkuo/HiggsAnalysis.git <br>
+git clone -b 106X git@github.com:cmkuo/ggAnalysis.git <br>
 scram b -j 8 <br>
 
 The above code stores the decision in 64 integer. Each bit represents a decision<br>
