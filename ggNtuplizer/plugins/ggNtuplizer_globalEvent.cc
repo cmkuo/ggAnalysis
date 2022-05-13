@@ -1,7 +1,7 @@
 #include "FWCore/MessageLogger/interface/MessageLogger.h"
 #include "HLTrigger/HLTcore/interface/HLTConfigProvider.h"
 #include "FWCore/Common/interface/TriggerNames.h"
-#include "ggAnalysis/ggNtuplizer/interface/ggNtuplizer.h"
+#include "../interface/ggNtuplizer.h"
 
 using namespace std;
 
@@ -19,6 +19,7 @@ float       vty_;
 float       vtz_;
 float       rho_;
 float       rhoCentral_;
+/*
 ULong64_t   HLTEleMuX_;
 ULong64_t   HLTPho_;
 ULong64_t   HLTPhoRejectedByPS_;
@@ -27,6 +28,7 @@ ULong64_t   HLTEleMuXIsPrescaled_;
 ULong64_t   HLTPhoIsPrescaled_;
 ULong64_t   HLTJetIsPrescaled_;
 vector<int> phoPrescale_;
+*/
 
 void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
@@ -43,6 +45,7 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
   tree->Branch("vtz",                  &vtz_); 
   tree->Branch("rho",                  &rho_);
   tree->Branch("rhoCentral",           &rhoCentral_);
+  /*
   tree->Branch("HLTEleMuX",            &HLTEleMuX_);
   tree->Branch("HLTPho",               &HLTPho_);
   tree->Branch("HLTPhoRejectedByPS",   &HLTPhoRejectedByPS_);
@@ -53,14 +56,17 @@ void ggNtuplizer::branchesGlobalEvent(TTree* tree) {
 
   if (!doGenParticles_)
     tree->Branch("phoPrescale",          &phoPrescale_); 
+  */
 }
 
 void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es) {
 
+  /*
   if (!doGenParticles_) {
     phoPrescale_.clear();
     phoPrescale_.reserve(9);
   }
+  */
 
   edm::Handle<double> rhoHandle;
   e.getByToken(rhoLabel_, rhoHandle);
@@ -102,8 +108,8 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
 
     }
   } else
-    edm::LogWarning("ggNtuplizer") << "Primary vertices info not unavailable";
-
+    edm::LogWarning("egmNtuplizer") << "Primary vertices info not unavailable";
+  /*
   // HLT treatment
   HLTEleMuX_            = 0;
   HLTPho_               = 0;
@@ -290,7 +296,7 @@ void ggNtuplizer::fillGlobalEvent(const edm::Event& e, const edm::EventSetup& es
       else if (name.find("HLT_Photon175_v")      != string::npos) phoPrescale_.insert(phoPrescale_.begin()+7,hltCfg.prescaleValue(prescaleSet, name));
       else if (name.find("HLT_Photon250_NoHE_v") != string::npos) phoPrescale_.insert(phoPrescale_.end(),hltCfg.prescaleValue(prescaleSet, name));
     }
-
+    
   }
-
+*/
 }
