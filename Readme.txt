@@ -1,5 +1,5 @@
-# Ntuple for Egamma electron and photon identification in CMS
-# This ggtuplizer is mainly developed by cmkuo and contributed by A. Roy (https://github.com/ashimroy/EGMObjectDumper), A. Purohit (https://github.com/ArnabPurohit/PhotonDemoAnalyzer) and others from time to time. 
+# ggNtuplizer for Egamma electron and photon identification in CMS
+# This ntuplizer is mainly developed by cmkuo and contributed by A. Roy (https://github.com/ashimroy/EGMObjectDumper), A. Purohit (https://github.com/ArnabPurohit/PhotonDemoAnalyzer) and others from time to time. 
 # Key points in CMSSW_12_X: Some changes from accessing "ECalClusterLaZyTools" was made from CMSSW_11_X. These changes are included in this branch 12_X.  
 
 cmsrel CMSSW_12_2_1
